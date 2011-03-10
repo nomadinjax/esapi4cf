@@ -1,0 +1,4 @@
+This is currently an "unofficial" version of the Enterprise Security API (ESAPI) for ColdFusion.
+
+This is a direct port of the ESAPI for Java.  There are some dependencies on the ESAPI.jar file.
+
