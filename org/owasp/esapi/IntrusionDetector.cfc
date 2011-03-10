@@ -1,0 +1,14 @@
+<cfinterface hint="The IntrusionDetector interface is intended to track security relevant events and identify attack behavior. The implementation can use as much state as necessary to detect attacks, but note that storing too much state will burden your system.">
+
+	<cffunction access="public" returntype="void" name="addException" output="false" hint="Adds the exception to the IntrusionDetector.  This method should immediately log the exception so that developers throwing an IntrusionException do not have to remember to log every error.  The implementation should store the exception somewhere for the current user in order to check if the User has reached the threshold for any Enterprise Security Exceptions.  The User object is the recommended location for storing the current user's security exceptions.  If the User has reached any security thresholds, the appropriate security action can be taken and logged.">
+		<cfargument type="any" name="e" required="true" hint="the exception thrown">
+	</cffunction>
+
+	<!--- TODO
+
+		<cffunction name="addEvent">
+		</cffunction>
+
+		--->
+
+</cfinterface>
