@@ -1,4 +1,33 @@
-This is currently an "unofficial" version of the Enterprise Security API (ESAPI) for ColdFusion.
+OWASP ESAPI for ColdFusion/CFML "unofficial"
 
-This is a direct port of the ESAPI for Java.  There are some dependencies on the ESAPI.jar file.
+Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
 
+License: BSD license
+
+Notes:
+The official version of OWASP ESAPI for ColdFusion/CFML is available here:
+http://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML
+*** But this project was never completed and project is dormant. ***
+
+Dependencies:
+ESAPI.jar (included)
+JavaLoader (not included)
+
+Setup:
+1. Download the JavaLoader (http://javaloader.riaforge.org/)
+2. Setup JavaLoader off your webroot as /javaloader/
+3. Create a folder off your webroot as /cfesapi/
+4. Download these files into that folder
+
+Tests:
+- You can run the MXUnit tests using: /cfesapi/test/index.cfm (they take a couple minutes)
+
+Implementation:
+- You can extend any of the default implementations to overwrite the methods you need
+ and/or
+- You can create new implementations that implement the interfaces
+
+How:
+- Copy the /cfesapi/esapi/configuration/.esapi/ folder to another location and make changes to your copy
+- In your code, call ESAPI.securityConfiguration().setResourceDirectory("your config path")
+- Be sure to update the ESAPI.properties file with the location of your implementation CFC
