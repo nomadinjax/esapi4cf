@@ -1,9 +1,14 @@
-<!---
-	TODO: licensing
-	Since the CFESAPI is a "port" of the Java-ESAPI library and utilizes parts of the ESAPI.jar,
-	the licensing will most likely be the same.
-	@author Damon Miller
-	--->
+<cfscript>
+/*
+ * OWASP Enterprise Security API (ESAPI) for ColdFusion/CFML "unofficial"
+ *
+ * Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
+ *
+ * License: BSD license
+ *
+ * @author Damon Miller
+ */
+</cfscript>
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="ESAPI locator class is provided to make it easy to gain access to the current ESAPI classes in use. Use the set methods to override the reference implementations with instances of any custom ESAPI implementations.">
 
 	<cfscript>
@@ -11,12 +16,14 @@
 
 		static.securityConfigurationImplName = System.getProperty("cfesapi.org.owasp.esapi.SecurityConfiguration", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration");
 	</cfscript>
-	<!--- TODO
 
-		<cffunction name="clearCurrent">
-		</cffunction>
+	<cffunction access="public" returntype="void" name="clearCurrent" output="false" hint="Clears the current User, HttpRequest, and HttpResponse associated with the current thread. This method MUST be called as some containers do not properly clear threadlocal variables when the execution of a thread is complete. The suggested approach is to put this call in a finally block inside a filter. The advantages of having identity everywhere are worth the risk here.">
+		<cfscript>
+			authenticator().clearCurrent();
+			httpUtilities().clearCurrent();
+		</cfscript>
+	</cffunction>
 
-		--->
 
 	<cffunction access="public" returntype="any" name="currentRequest" output="false" hint="cfesapi.org.owasp.esapi.HttpServletRequest: Get the current HTTP Servlet Request being processed.">
 		<cfscript>
@@ -95,12 +102,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- TODO
 
-		<cffunction name="log">
-		</cffunction>
+	<cffunction access="public" returntype="Logger" name="log" output="false" hint="The default Logger.">
+		<cfscript>
+       		return logFactory().getLogger("DefaultLogger");
+    	</cfscript>
+	</cffunction>
 
-		--->
 
 	<cffunction access="public" returntype="Randomizer" name="randomizer" output="false" hint="the current ESAPI Randomizer being used to generate random numbers in this application.">
 		<cfscript>
@@ -132,14 +140,14 @@
 		<cfscript>
 			if (!structKeyExists(instance, arguments.typeName)) {
 				if (structKeyExists(arguments, "className") && structKeyExists(arguments, "typeName")) {
-					//try {
+					try {
 						instance[arguments.typeName] = createObject('component', arguments.className).init(this);
-					/*}
+					}
 					catch (Any e) {
 						throw(type=e.type,
 							message="Unable to instantiate " & arguments.className & ": " & e.message
 							detail=e.detail);
-					}*/
+					}
 				}
 			}
 			return instance[arguments.typeName];
