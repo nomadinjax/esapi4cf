@@ -140,14 +140,7 @@
 		<cfscript>
 			if (!structKeyExists(instance, arguments.typeName)) {
 				if (structKeyExists(arguments, "className") && structKeyExists(arguments, "typeName")) {
-					try {
-						instance[arguments.typeName] = createObject('component', arguments.className).init(this);
-					}
-					catch (Any e) {
-						throw(type=e.type,
-							message="Unable to instantiate " & arguments.className & ": " & e.message
-							detail=e.detail);
-					}
+					instance[arguments.typeName] = createObject('component', arguments.className).init(this);
 				}
 			}
 			return instance[arguments.typeName];
