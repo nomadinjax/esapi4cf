@@ -1,4 +1,4 @@
-<cfscript>
+<!---
 /*
  * OWASP Enterprise Security API (ESAPI) for ColdFusion/CFML "unofficial"
  *
@@ -8,7 +8,7 @@
  *
  * @author Damon Miller
  */
-</cfscript>
+--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="ESAPI locator class is provided to make it easy to gain access to the current ESAPI classes in use. Use the set methods to override the reference implementations with instances of any custom ESAPI implementations.">
 
 	<cfscript>
