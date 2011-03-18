@@ -1,6 +1,8 @@
 <cfcomponent output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.checked = false;
     	instance.unlimited = false;
     </cfscript>
@@ -40,17 +42,17 @@
 	            assert(!isNull(local.encrypted), "Encryption of test string failed!");
 	            local.em = local.cipher.getExemptionMechanism();
 	            if ( !isNull(local.em) ) {
-	                createObject("java", "java.lang.System").out.println("Cipher uses exemption mechanism " & local.em.getName());
+	                System.out.println("Cipher uses exemption mechanism " & local.em.getName());
 	                return false;   // This is actually an indeterminate case, but
 	                                // we can't bank on it at least for this
 	                                // (default) provider.
 	            }
 	        } catch( java.security.InvalidKeyException ikex ) {
-	            createObject("java", "java.lang.System").out.println("Invalid key size - unlimited strength crypto NOT installed!");
+	            System.out.println("Invalid key size - unlimited strength crypto NOT installed!");
 	            return false;
 	        } catch( java.lang.Exception ex ) {
-	            createObject("java", "java.lang.System").out.println("Caught unexpected exception: " & ex);
-	            ex.printStackTrace(createObject("java", "java.lang.System").out);
+	            System.out.println("Caught unexpected exception: " & ex);
+	            ex.printStackTrace(System.out);
 	            return false;
 	        }
 	        return true;

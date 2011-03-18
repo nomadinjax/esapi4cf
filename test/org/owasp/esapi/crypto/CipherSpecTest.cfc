@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 
 		instance.dfltAESCipher = "";
@@ -83,7 +85,7 @@
 	    	assertTrue( instance.cipherSpec.getCipherAlgorithm() == "AES");
 	    	assertTrue( instance.cipherSpec.getCipherMode() == "ECB" );
 	    	assertTrue( instance.cipherSpec.getPaddingScheme() == "NoPadding" );
-	    	// createObject("java", "java.lang.System").out.println("testCipherSpecInt(): " & instance.cipherSpec);
+	    	// System.out.println("testCipherSpecInt(): " & instance.cipherSpec);
 		</cfscript>
 	</cffunction>
 
@@ -261,10 +263,10 @@
 
 	            local.success = true;
 	        } catch(java.io.IOException ex) {
-	            ex.printStackTrace(createObject("java", "java.lang.System").err);
+	            ex.printStackTrace(System.err);
 	            fail("testSerialization(): Unexpected IOException: " & ex);
 	        } catch(java.lang.ClassNotFoundException ex) {
-	            ex.printStackTrace(createObject("java", "java.lang.System").err);
+	            ex.printStackTrace(System.err);
 	            fail("testSerialization(): Unexpected ClassNotFoundException: " & ex);
 	        } finally {
 	            // If test succeeds, remove the file. If it fails, leave it behind
@@ -273,7 +275,7 @@
 	                local.deleted = local.serializedFile.delete();
 	                if ( !local.deleted ) {
 	                    try {
-	                        createObject("java", "java.lang.System").err.println("Unable to delete file: " & local.serializedFile.getCanonicalPath() );
+	                        System.err.println("Unable to delete file: " & local.serializedFile.getCanonicalPath() );
 	                    } catch (IOException e) {
 	                        ; // Ignore
 	                    }

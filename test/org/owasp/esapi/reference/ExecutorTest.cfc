@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 	</cfscript>
 
@@ -25,8 +27,6 @@
 
 	<cffunction access="public" returntype="void" name="testExecuteWindowsSystemCommand" output="false" hint="Test of executeOSCommand method, of class org.owasp.esapi.Executor">
 		<cfscript>
-			System = createObject("java", "java.lang.System");
-
 			ioFile = createObject("java", "java.io.File");
 			ArrayList = createObject("java", "java.util.ArrayList");
 			Collections = createObject("java", "java.util.Collections");

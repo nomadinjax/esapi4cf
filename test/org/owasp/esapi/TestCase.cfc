@@ -1,12 +1,14 @@
 <cfcomponent extends="mxunit.framework.TestCase" output="false">
 
-	<!--- delete the users.txt file as running all these tests just once creates over 30+ users; the more users, the longer the tests take --->
 	<cfscript>
+		// delete the users.txt file as running all these tests just once creates tons of users
+		// the more users, the longer the tests take
 		filePath = expandPath("/cfesapi/esapi/configuration/.esapi/users.txt");
 		if (fileExists(filePath)) {
 			try {
 				fileDelete(filePath);
-			} catch (any e) {}
+			}
+			catch (Any e) {}
 		}
 	</cfscript>
 

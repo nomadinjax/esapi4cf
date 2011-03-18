@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 
 		instance.encryptor = "";
@@ -51,7 +53,7 @@
 	            assertTrue( "Hello" == local.pt.toString() );
 	        } catch (Exception e) {
 	            fail("Test failed: Caught exception: " & e.getClass().getName() & "; msg was: " & e);
-	            e.printStackTrace(createObject("java", "java.lang.System").err);
+	            e.printStackTrace(System.err);
 	        }
     	</cfscript>
 	</cffunction>
@@ -59,7 +61,7 @@
 	<cffunction access="public" returntype="void" name="testAsCipherText" output="false">
 		<cfscript>
 	        try {
-	            local.ct = instance.ESAPI.encryptor().encrypt( createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, "Hello") );
+	            local.ct = instance.ESAPI.encryptor().encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, "Hello") );
 	            local.cts = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherTextSerializer").init(ESAPI=instance.ESAPI, cipherTextObj=local.ct );
 	            local.result = local.cts.asCipherText();
 	            assertTrue( local.ct.equals(local.result) );

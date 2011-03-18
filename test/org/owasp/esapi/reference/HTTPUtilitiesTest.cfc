@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		static.CLASS = getMetaData(this);
 		static.CLASS_NAME = listLast(static.CLASS.name, ".");
 
@@ -29,10 +31,10 @@
 
 	<cffunction access="public" returntype="void" name="testCSRFToken" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println( "CSRFToken");
+			System.out.println( "CSRFToken");
 			local.username = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.user = instance.ESAPI.authenticator().createUser(local.username, "addCSRFToken", "addCSRFToken");
-			instance.ESAPI.authenticator().setCurrentUser( local.user );
+			instance.ESAPI.authenticator().setCurrentUser( user=local.user );
 			local.token = instance.ESAPI.httpUtilities().getCSRFToken();
 			assertEquals( 8, len(local.token) );
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
@@ -53,15 +55,15 @@
 			local.instance = instance.ESAPI.authenticator();
 			local.username = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			local.user = local.instance.createUser(local.username, "addCSRFToken", "addCSRFToken");
-			local.instance.setCurrentUser( local.user );
+			local.instance.setCurrentUser( user=local.user );
 
-			createObject("java", "java.lang.System").out.println("addCSRFToken");
+			System.out.println("addCSRFToken");
 			local.csrf1 = instance.ESAPI.httpUtilities().addCSRFToken("/test1");
-			createObject("java", "java.lang.System").out.println( "CSRF1:" & local.csrf1);
+			System.out.println( "CSRF1:" & local.csrf1);
 			assertTrue(local.csrf1.indexOf("?") > -1);
 
 			local.csrf2 = instance.ESAPI.httpUtilities().addCSRFToken("/test1?one=two");
-			createObject("java", "java.lang.System").out.println( "CSRF2:" & local.csrf2);
+			System.out.println( "CSRF2:" & local.csrf2);
 			assertTrue(local.csrf2.indexOf("&") > -1);
 		</cfscript>
 	</cffunction>
@@ -69,7 +71,7 @@
 
 	<cffunction access="public" returntype="void" name="testAssertSecureRequest" output="false" hint="Test of assertSecureRequest method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("assertSecureRequest");
+			System.out.println("assertSecureRequest");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			try {
 				local.request.setRequestURL( "http://example.com");
@@ -113,7 +115,7 @@
 
 	<cffunction access="public" returntype="void" name="testChangeSessionIdentifier" output="false" hint="Test of sendRedirect method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("changeSessionIdentifier");
+			System.out.println("changeSessionIdentifier");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			local.session = local.request.getSession();
@@ -199,7 +201,7 @@
 
 	<cffunction access="public" returntype="void" name="testKillAllCookies" output="false" hint="Test of killAllCookies method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("killAllCookies");
+			System.out.println("killAllCookies");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			assertTrue(local.response.getCookies().isEmpty());
@@ -216,7 +218,7 @@
 
 	<cffunction access="public" returntype="void" name="testKillCookie" output="false" hint="Test of killCookie method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("killCookie");
+			System.out.println("killCookie");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
@@ -234,7 +236,7 @@
 
 	<cffunction access="public" returntype="void" name="testSendSafeRedirect" output="false" hint="Test of sendRedirect method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("sendSafeRedirect");
+			System.out.println("sendSafeRedirect");
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			try {
 				instance.ESAPI.httpUtilities().sendRedirect(local.response, "/test1/abcdefg");
@@ -260,7 +262,7 @@
 
 	<cffunction access="public" returntype="void" name="testSetCookie" output="false" hint="Test of setCookie method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("setCookie");
+			System.out.println("setCookie");
 			local.instance = instance.ESAPI.httpUtilities();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			assertTrue(local.response.getHeaderNames().isEmpty());
@@ -284,7 +286,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetStateFromEncryptedCookie" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getStateFromEncryptedCookie");
+			System.out.println("getStateFromEncryptedCookie");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 
@@ -320,7 +322,7 @@
 
 	<cffunction access="public" returntype="void" name="testSaveStateInEncryptedCookie" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("saveStateInEncryptedCookie");
+			System.out.println("saveStateInEncryptedCookie");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
@@ -334,7 +336,7 @@
 				local.encrypted = local.value.substring(local.value.indexOf("=")+1, local.value.indexOf(";"));
 				local.serializedCiphertext = javaLoader().create("org.owasp.esapi.codecs.Hex").decode(local.encrypted);
 		        local.restoredCipherText = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI).fromPortableSerializedBytes(local.serializedCiphertext);
-		        instance.ESAPI.encryptor().decrypt(local.restoredCipherText);
+		        instance.ESAPI.encryptor().decrypt(ciphertext=local.restoredCipherText);
 			} catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
 				fail();
 			}
@@ -344,7 +346,7 @@
 
 	<cffunction access="public" returntype="void" name="testSaveTooLongStateInEncryptedCookieException" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("saveTooLongStateInEncryptedCookie");
+			System.out.println("saveTooLongStateInEncryptedCookie");
 
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
@@ -367,7 +369,7 @@
 
 	<cffunction access="public" returntype="void" name="testSetNoCacheHeaders" output="false" hint="Test set no cache headers.">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("setNoCacheHeaders");
+			System.out.println("setNoCacheHeaders");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
@@ -385,7 +387,7 @@
 
 	<cffunction access="public" returntype="void" name="testSetRememberToken" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("setRememberToken");
+			System.out.println("setRememberToken");
 			local.instance = instance.ESAPI.authenticator();
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			local.password = local.instance.generateStrongPassword();

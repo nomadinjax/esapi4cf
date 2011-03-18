@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 	</cfscript>
 
@@ -26,7 +28,7 @@
 
 	<cffunction access="public" returntype="void" name="testAddException" output="false" hint="Test of addException method, of class org.owasp.esapi.IntrusionDetector.">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("addException");
+			System.out.println("addException");
 			instance.ESAPI.intrusionDetector().addException( createObject("java", "java.lang.RuntimeException").init("message") );
 			instance.ESAPI.intrusionDetector().addException( createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, "user message", "log message") );
 			instance.ESAPI.intrusionDetector().addException( createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "user message", "log message") );
@@ -37,7 +39,7 @@
 		    local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
-			local.user.loginWithPassword("addException");
+			local.user.loginWithPassword(password="addException");
 
 			// Now generate some exceptions to disable account
 			for (local.i = 1; local.i <= instance.ESAPI.securityConfiguration().getQuota("cfesapi.org.owasp.esapi.errors.IntegrityException").count; local.i++ ) {
@@ -51,7 +53,7 @@
 
 	<cffunction access="public" returntype="void" name="testAddEvent" output="false" hint="Test of addEvent method, of class org.owasp.esapi.IntrusionDetector.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("addEvent");
+	        System.out.println("addEvent");
 			local.username = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 	        local.auth = instance.ESAPI.authenticator();
 			local.user = local.auth.createUser(local.username, "addEvent", "addEvent");
@@ -59,7 +61,7 @@
 		    local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
-			local.user.loginWithPassword("addEvent");
+			local.user.loginWithPassword(password="addEvent");
 
 	        // Now generate some events to disable user account
 	        for ( local.i = 1; local.i <= instance.ESAPI.securityConfiguration().getQuota("event.test").count; local.i++ ) {

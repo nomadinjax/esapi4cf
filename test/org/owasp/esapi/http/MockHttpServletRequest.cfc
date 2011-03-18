@@ -61,7 +61,13 @@
 	</cffunction>
 
 	<!--- getAuthType --->
-	<!--- getContextPath --->
+
+	<cffunction access="public" returntype="String" name="getContextPath" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="addParameter" output="false" hint="Adds the parameter.">
 		<cfargument type="String" name="name" required="true" hint="the name">
@@ -238,7 +244,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getLocale --->
+
+	<cffunction access="public" returntype="any" name="getLocale" output="false" hint="java.util.Locale">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
 	<!--- getLocales --->
 
 	<cffunction access="public" returntype="String" name="getParameter" output="false">
@@ -289,7 +301,13 @@
 	</cffunction>
 
 	<!--- setRemoteAddr --->
-	<!--- getRemoteHost --->
+
+	<cffunction access="public" returntype="String" name="getRemoteHost" output="false">
+		<cfscript>
+			return instance.remoteHost;
+		</cfscript>
+	</cffunction>
+
 	<!--- getRemotePort --->
 	<!--- getRequestDispatcher --->
 

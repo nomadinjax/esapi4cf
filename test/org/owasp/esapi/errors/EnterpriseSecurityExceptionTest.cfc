@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 	</cfscript>
 
@@ -22,7 +24,7 @@
 
 	<cffunction access="public" returntype="void" name="testExceptions" output="false" hint="Test of update method, of class org.owasp.esapi.AccessReferenceMap.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("exceptions");
+	        System.out.println("exceptions");
 	        local.e = "";
 	        local.e = createObject("component", "cfesapi.org.owasp.esapi.errors.EnterpriseSecurityException").init(instance.ESAPI);
 	        local.e = createObject("component", "cfesapi.org.owasp.esapi.errors.EnterpriseSecurityException").init(instance.ESAPI,"m1","m2");

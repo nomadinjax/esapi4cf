@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 
 		instance.unicodeStr = "A\u00ea\u00f1\u00fcC";	// I.e., "AêñüC"
@@ -32,7 +34,7 @@
 		    // do *NOT* change the test. It's a Windows thing. Sorry. Change your
 		    // OS instead. ;-)
 		    if ( ! instance.unicodeStr.equals(instance.altString) ) {
-		        createObject("java", "java.lang.System").err.println("Skipping MXUnit test case PlainTextTest.testUnicodeString() on OS " & createObject("java", "java.lang.System").getProperty("os.name") );
+		        System.err.println("Skipping MXUnit test case PlainTextTest.testUnicodeString() on OS " & System.getProperty("os.name") );
 		        return;
 		    }
 			try {
@@ -50,7 +52,7 @@
 
 			} catch (UnsupportedEncodingException e) {
 				fail("No UTF-8 byte encoding: " & e);
-				e.printStackTrace(createObject("java", "java.lang.System").err);
+				e.printStackTrace(System.err);
 			}
 		</cfscript>
 	</cffunction>
@@ -67,12 +69,12 @@
 	        } catch (NullPointerException e) {
 	            // Will get this case if assertions are not enabled for PlainText.
 	            // System.err.println("Caught NullPointerException; exception was: " + e);
-	            // e.printStackTrace(createObject("java", "java.lang.System").err);
+	            // e.printStackTrace(System.err);
 	            local.counter++;
 	        } catch (AssertionError e) {
 	            // Will get this case if assertions *are* enabled for PlainText.
-	            // createObject("java", "java.lang.System").err.println("Caught AssertionError; exception was: " + e);
-	            // e.printStackTrace(createObject("java", "java.lang.System").err);
+	            // System.err.println("Caught AssertionError; exception was: " + e);
+	            // e.printStackTrace(System.err);
 	            local.counter++;
 	        } finally {
 	            assertTrue( local.counter > 0 );
@@ -119,7 +121,7 @@
 				assertTrue( local.afterLen == local.sum );
 			} catch (UnsupportedEncodingException e) {
 				fail("No UTF-8 byte encoding: " & e);
-				e.printStackTrace(createObject("java", "java.lang.System").err);
+				e.printStackTrace(System.err);
 			}
 		</cfscript>
 	</cffunction>

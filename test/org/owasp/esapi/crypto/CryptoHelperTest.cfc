@@ -102,8 +102,6 @@
 
 	<cffunction access="public" returntype="void" name="testArrayCompare" output="false">
 		<cfscript>
-		System = createObject("java", "java.lang.System");
-
         local.ba1 = newByte(32);
         local.ba2 = newByte(32);
         local.ba3 = newByte(48);

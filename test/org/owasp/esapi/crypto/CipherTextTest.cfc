@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 
 	    static.POST_CLEANUP = true;
@@ -142,7 +144,7 @@
 			    // On a completely different note, as far as test coverage metrics goes,
 				// we really don't care if this is covered or nit as it is not our intent
 			    // to be causing exceptions here.
-				ex.printStackTrace(createObject("java", "java.lang.System").err);
+				ex.printStackTrace(System.err);
 				fail("Caught unexpected exception: " & ex.getClass().getName() & "; exception message was: " & ex.getMessage());
 			}
 		</cfscript>
@@ -180,7 +182,7 @@
 				local.ct.validateMAC( local.authKey );
 			} catch( Exception ex) {
 				// As far as test coverage goes, we really don't want this to be covered.
-				ex.printStackTrace(createObject("java", "java.lang.System").err);
+				ex.printStackTrace(System.err);
 				fail("Caught unexpected exception: " & ex.getClass().getName() & "; exception message was: " & ex.getMessage());
 			}
 		</cfscript>
@@ -191,7 +193,7 @@
 			Cipher = createObject("java", "javax.crypto.Cipher");
 			CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
 
-		    createObject("java", "java.lang.System").err.println("CipherTextTest.testPortableSerialization()...");
+		    System.err.println("CipherTextTest.testPortableSerialization()...");
 		    local.filename = "ciphertext-portable.ser";
 		    local.serializedFile = createObject("java", "java.io.File").init(local.filename);
 		    local.serializedFile.delete();    // Delete any old serialized file.
@@ -210,7 +212,7 @@
 		        local.ciphertext = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(ESAPI=instance.ESAPI, cipherSpec=local.cipherSpec, cipherText=local.raw);
 		        local.authKey = CryptoHelper.computeDerivedKey(local.key, len(local.key.getEncoded()) * 8, "authenticity");
 		        local.ciphertext.computeAndStoreMAC( local.authKey );
-	//          createObject("java", "java.lang.System").err.println("Original ciphertext being serialized: " & ciphertext);
+	//          System.err.println("Original ciphertext being serialized: " & ciphertext);
 		        local.serializedBytes = local.ciphertext.asPortableSerializedByteArray();
 
 		        local.fos = createObject("java", "java.io.FileOutputStream").init(local.serializedFile);
@@ -234,7 +236,7 @@
 	                ;    // Ignore
 	            }
 	            local.restoredCipherText = CipherText.fromPortableSerializedBytes(local.bytes);
-	//          createObject("java", "java.lang.System").err.println("Restored ciphertext: " & restoredCipherText);
+	//          System.err.println("Restored ciphertext: " & restoredCipherText);
 	            assertTrue( local.ciphertext.equals(local.restoredCipherText));
 		    } catch (EncryptionException e) {
 		        fail("Caught EncryptionException: " & e);
@@ -288,25 +290,25 @@
 	            assertEquals(local.ciphertext.getBase64EncodedRawCipherText(), local.restoredCipherText.getBase64EncodedRawCipherText(), "3: Serialized restored CipherText differs from saved CipherText");
 
 	        } catch(java.io.IOException ex) {
-	            ex.printStackTrace(createObject("java", "java.lang.System").err);
+	            ex.printStackTrace(System.err);
 	            fail("testJavaSerialization(): Unexpected IOException: " & ex);
 	        } catch(ClassNotFoundException ex) {
-	            ex.printStackTrace(createObject("java", "java.lang.System").err);
+	            ex.printStackTrace(System.err);
 	            fail("testJavaSerialization(): Unexpected ClassNotFoundException: " & ex);
 	        } catch (EncryptionException ex) {
-				ex.printStackTrace(createObject("java", "java.lang.System").err);
+				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected EncryptionException: " & ex);
 			} catch (IllegalBlockSizeException ex) {
-				ex.printStackTrace(createObject("java", "java.lang.System").err);
+				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected IllegalBlockSizeException: " & ex);
 			} catch (BadPaddingException ex) {
-				ex.printStackTrace(createObject("java", "java.lang.System").err);
+				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected BadPaddingException: " & ex);
 			} catch (InvalidKeyException ex) {
-				ex.printStackTrace(createObject("java", "java.lang.System").err);
+				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected InvalidKeyException: " & ex);
 			} catch (InvalidAlgorithmParameterException ex) {
-				ex.printStackTrace(createObject("java", "java.lang.System").err);
+				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected InvalidAlgorithmParameterException: " & ex);
 			}  finally {
 			    // FindBugs complains that we are ignoring this return value. We really don't care.

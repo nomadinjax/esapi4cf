@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 	</cfscript>
 
@@ -28,7 +30,7 @@
 
     <cffunction access="public" returntype="void" name="testHash" output="false" hint="Test of hash method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("testHash()");
+	        System.out.println("testHash()");
 	        local.instance = instance.ESAPI.encryptor();
 	        local.hash1 = local.instance.hash("test1", "salt");
 	        local.hash2 = local.instance.hash("test2", "salt");
@@ -41,24 +43,24 @@
 
     <cffunction access="public" returntype="void" name="testEncrypt" output="false" hint="Test of deprecated encrypt method for Strings.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("testEncrypt()");
+	        System.out.println("testEncrypt()");
 	        local.instance = instance.ESAPI.encryptor();
 	        local.plaintext = "test123456";	// Not multiple of block cipher size
-	        local.ciphertext = local.instance.encrypt(local.plaintext);
-	    	local.result = local.instance.decrypt(local.ciphertext);
+	        local.ciphertext = local.instance.encrypt(plain=local.plaintext);
+	    	local.result = local.instance.decrypt(ciphertext=local.ciphertext);
 	        assertEquals(local.plaintext, local.result);
     	</cfscript>
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="testDecrypt" output="false" hint="Test of deprecated decrypt method for Strings.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("testDecrypt()");
+	        System.out.println("testDecrypt()");
 	        local.instance = instance.ESAPI.encryptor();
 	        try {
 	            local.plaintext = "test123";
-	            local.ciphertext = local.instance.encrypt(local.plaintext);
+	            local.ciphertext = local.instance.encrypt(plain=local.plaintext);
 	            assertFalse(local.plaintext.equals(local.ciphertext));
-	        	local.result = local.instance.decrypt(local.ciphertext);
+	        	local.result = local.instance.decrypt(ciphertext=local.ciphertext);
 	        	assertEquals(local.plaintext, local.result);
 	        }
 	        catch( EncryptionException e ) {
@@ -69,18 +71,18 @@
 
     <cffunction access="public" returntype="void" name="testEncryptEmptyStrings" output="false" hint="Test of deprecated encrypt methods for empty String.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("testEncryptEmptyStrings()");
+	        System.out.println("testEncryptEmptyStrings()");
 	        local.instance = instance.ESAPI.encryptor();
 	        local.plaintext = "";
 	        try {
-	            // createObject("java", "java.lang.System").out.println("Deprecated encryption methods");
-	            local.ciphertext = local.instance.encrypt(local.plaintext);
-	            local.result = local.instance.decrypt(local.ciphertext);
+	            // System.out.println("Deprecated encryption methods");
+	            local.ciphertext = local.instance.encrypt(plain=local.plaintext);
+	            local.result = local.instance.decrypt(ciphertext=local.ciphertext);
 	            assertTrue( local.result == "" );
 
-	            // createObject("java", "java.lang.System").out.println("New encryption methods");
-	            local.ct = local.instance.encrypt(createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.plaintext));
-	            local.pt = local.instance.decrypt(local.ct);
+	            // System.out.println("New encryption methods");
+	            local.ct = local.instance.encrypt(plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.plaintext));
+	            local.pt = local.instance.decrypt(ciphertext=local.ct);
 	            assertTrue( local.pt.toString() == "" );
 	        } catch(java.lang.Exception e) {
 	            fail("testEncryptEmptyStrings() -- Caught exception: " & e);
@@ -91,7 +93,7 @@
     <!--- NULL test
 	<cffunction access="public" returntype="void" name="testEncryptNull" output="false" hint="Test deprecated encryption / decryption methods for null.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("testEncryptNull()");
+	        System.out.println("testEncryptNull()");
 	        local.instance = instance.ESAPI.encryptor();
 	        local.plaintext = "";
 	        try {
@@ -107,7 +109,7 @@
 
     <cffunction access="public" returntype="void" name="testNewEncryptDecrypt" output="false" hint="Test of new encrypt / decrypt methods added in ESAPI 2.0.">
 		<cfscript>
-	    	createObject("java", "java.lang.System").out.println("testNewEncryptDecrypt()");
+	    	System.out.println("testNewEncryptDecrypt()");
 	    	String = createObject("java", "java.lang.String");
 
 	    	try {
@@ -138,10 +140,10 @@
 		<cfargument type="numeric" name="keySize" required="true" hint="Size of key, in bits.">
 		<cfargument type="binary" name="plaintextBytes" required="true" hint="Byte array of plaintext.">
 		<cfscript>
-	    	createObject("java", "java.lang.System").out.println("New encrypt / decrypt: " & arguments.cipherXform);
+	    	System.out.println("New encrypt / decrypt: " & arguments.cipherXform);
 
 	    	if ( arguments.keySize > 128 && !javaLoader().create("org.owasp.esapi.crypto.CryptoPolicy").isUnlimitedStrengthCryptoAvailable() ) {
-	    	    createObject("java", "java.lang.System").out.println("Skipping test for cipher transformation " & arguments.cipherXform & " with key size of " & arguments.keySize & " bits because this requires JCE Unlimited Strength Jurisdiction Policy files to be installed and they are not.");
+	    	    System.out.println("Skipping test for cipher transformation " & arguments.cipherXform & " with key size of " & arguments.keySize & " bits because this requires JCE Unlimited Strength Jurisdiction Policy files to be installed and they are not.");
 	    	    return "";
 	    	}
 
@@ -161,14 +163,14 @@
 					arguments.keySize = 64;
 				} // Else... use specified keySize.
 				assertTrue( (arguments.keySize / 8) == len(local.skey.getEncoded()) );
-	//			createObject("java", "java.lang.System").out.println("testNewEncryptDecrypt(): Skey length (bits) = " + 8 * skey.getEncoded().length);
+	//			System.out.println("testNewEncryptDecrypt(): Skey length (bits) = " + 8 * skey.getEncoded().length);
 
 				// Change to a possibly different cipher. This is kludgey at best. Am thinking about an
 				// alternate way to do this using a new 'CryptoControls' class. Maybe not until release 2.1.
 				// Change the cipher transform from whatever it currently is to the specified cipherXform.
 		    	local.oldCipherXform = instance.ESAPI.securityConfiguration().setCipherTransformation(arguments.cipherXform);
 		    	if ( ! arguments.cipherXform.equals(local.oldCipherXform) ) {
-		    		createObject("java", "java.lang.System").out.println('Cipher xform changed from "' & local.oldCipherXform & '" to "' & arguments.cipherXform & '"');
+		    		System.out.println('Cipher xform changed from "' & local.oldCipherXform & '" to "' & arguments.cipherXform & '"');
 		    	}
 
 		    	// Get an Encryptor instance with the specified, possibly new, cipher transformation.
@@ -178,12 +180,12 @@
 
 		    	// Do the encryption with the new encrypt() method and get back the CipherText.
 		    	local.ciphertext = local.instance.encrypt(local.skey, local.plaintext);	// The new encrypt() method.
-		    	createObject("java", "java.lang.System").out.println("DEBUG: Encrypt(): CipherText object is -- " & local.ciphertext.toString());
+		    	System.out.println("DEBUG: Encrypt(): CipherText object is -- " & local.ciphertext.toString());
 		    	assertTrue( !isNull(local.ciphertext) );
-	//	    	createObject("java", "java.lang.System").out.println("DEBUG: After encryption: base64-encoded IV+ciphertext: " + local.ciphertext.getEncodedIVCipherText());
-	//	    	createObject("java", "java.lang.System").out.println("\t\tOr... " + instance.ESAPI.encoder().decodeFromBase64(local.ciphertext.getEncodedIVCipherText()) );
-	//	    	createObject("java", "java.lang.System").out.println("DEBUG: After encryption: base64-encoded raw ciphertext: " + local.ciphertext.getBase64EncodedRawCipherText());
-	//	    	createObject("java", "java.lang.System").out.println("\t\tOr... " + instance.ESAPI.encoder().decodeFromBase64(local.ciphertext.getBase64EncodedRawCipherText()) );
+	//	    	System.out.println("DEBUG: After encryption: base64-encoded IV+ciphertext: " + local.ciphertext.getEncodedIVCipherText());
+	//	    	System.out.println("\t\tOr... " + instance.ESAPI.encoder().decodeFromBase64(local.ciphertext.getEncodedIVCipherText()) );
+	//	    	System.out.println("DEBUG: After encryption: base64-encoded raw ciphertext: " + local.ciphertext.getBase64EncodedRawCipherText());
+	//	    	System.out.println("\t\tOr... " + instance.ESAPI.encoder().decodeFromBase64(local.ciphertext.getBase64EncodedRawCipherText()) );
 
 		    	// If we are supposed to have overwritten the plaintext, check this to see
 		    	// if origPlainText was indeed overwritten.
@@ -196,21 +198,21 @@
 		    	local.decryptedPlaintext  = local.instance.decrypt(local.skey, local.ciphertext);		// The new decrypt() method.
 
 		    	// Make sure we got back the same thing we started with.
-		    	createObject("java", "java.lang.System").out.println("\tOriginal plaintext: " & local.origPlainText.toString());
-		    	createObject("java", "java.lang.System").out.println("\tResult after decryption: " & local.decryptedPlaintext.toString());
+		    	System.out.println("\tOriginal plaintext: " & local.origPlainText.toString());
+		    	System.out.println("\tResult after decryption: " & local.decryptedPlaintext.toString());
 				assertTrue( local.origPlainText.toString() == local.decryptedPlaintext.toString(), "Failed to decrypt properly." );
 
 		    	// Restore the previous cipher transformation. For now, this is only way to do this.
 		    	local.previousCipherXform = instance.ESAPI.securityConfiguration().setCipherTransformation("");
 		    	assertTrue( local.previousCipherXform.equals( arguments.cipherXform ) );
 		    	local.defaultCipherXform = instance.ESAPI.securityConfiguration().getCipherTransformation();
-		    	assertTrue( local.defaultCipherXform.equals( oldCipherXform ) );
+		    	assertTrue( local.defaultCipherXform.equals( local.oldCipherXform ) );
 
 		    	return local.ciphertext.getEncodedIVCipherText();
-			} catch (Exception e) {
+			} catch (java.lang.Exception e) {
 				// OK if not counted toward code coverage.
-				createObject("java", "java.lang.System").out.println("testNewEncryptDecrypt(): Caught unexpected exception: " & e.getClass().getName());
-				e.printStackTrace(createObject("java", "java.lang.System").out);
+				System.out.println("testNewEncryptDecrypt(): Caught unexpected exception: " & e.getClass().getName());
+				e.printStackTrace(System.out);
 				fail("Caught unexpected exception; msg was: " & e);
 			}
 			return "";
@@ -234,7 +236,7 @@
 
     <cffunction access="public" returntype="void" name="testSign" output="false" hint="Test of sign method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("testSign()");
+	        System.out.println("testSign()");
 	        local.instance = instance.ESAPI.encryptor();
 	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
 	        local.signature = local.instance.sign(local.plaintext);
@@ -246,7 +248,7 @@
 
     <cffunction access="public" returntype="void" name="testVerifySignature" output="false" hint="Test of verifySignature method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
-		    createObject("java", "java.lang.System").out.println("testVerifySignature()");
+		    System.out.println("testVerifySignature()");
 	        local.instance = instance.ESAPI.encryptor();
 	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
 	        local.signature = local.instance.sign(local.plaintext);
@@ -256,7 +258,7 @@
 
     <cffunction access="public" returntype="void" name="testSeal" output="false" hint="Test of seal method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
-	        createObject("java", "java.lang.System").out.println("testSeal()");
+	        System.out.println("testSeal()");
 	        local.instance = instance.ESAPI.encryptor();
 	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
 	        local.seal = local.instance.seal( local.plaintext, createObject("java", "java.lang.Long").init(local.instance.getTimeStamp() + 1000*60).longValue() );
@@ -305,7 +307,7 @@
     <cffunction access="public" returntype="void" name="testVerifySeal" output="false" hint="Test of verifySeal method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 	        local.NSEC = 5;
-	        createObject("java", "java.lang.System").out.println("testVerifySeal()");
+	        System.out.println("testVerifySeal()");
 	        local.instance = instance.ESAPI.encryptor();
 	        local.plaintext = "ridiculous:with:delimiters";    // Should now work w/ : (issue #28)
 	        local.seal = local.instance.seal( local.plaintext, local.instance.getRelativeTimeStamp( 1000 * local.NSEC ) );
@@ -331,20 +333,19 @@
 	            // trace caused by an EncryptionException indicating "Invalid seal".
 	        	assertFalse( local.instance.verifySeal( local.plaintext ) );
 	        	local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.plaintext) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.plaintext) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, 100 & ":" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, 100 & ":" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext & ":badsig")  ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext & ":badsig")  ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext & ":" & local.instance.sign( Long.MAX_VALUE & ":random:" & local.plaintext) ) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext & ":" & local.instance.sign( Long.MAX_VALUE & ":random:" & local.plaintext) ) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
 	        } catch ( Exception e ) {
-	        	System = createObject("java", "java.lang.System");
 	        	// fail("Failed invalid seal test # " + progressMark + " to verify seal.");
 	            System.err.println("Failed seal verification at step ## " & local.progressMark);
 	            System.err.println("Exception was: " & e);
@@ -365,11 +366,11 @@
 		<cfscript>
 	        local.secretMsg = "Secret Message";
 	        instance.ESAPI.securityConfiguration().setCipherTransformation("AES/CBC/PKCS5Padding");
-	        local.ct = instance.ESAPI.encryptor().encrypt(createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.secretMsg));
+	        local.ct = instance.ESAPI.encryptor().encrypt(plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.secretMsg));
 
 	        local.serializedCipherText = local.ct.asPortableSerializedByteArray();
 
-	        local.plainText = instance.ESAPI.encryptor().decrypt(createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI).fromPortableSerializedBytes(local.serializedCipherText) );
+	        local.plainText = instance.ESAPI.encryptor().decrypt(ciphertext=createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI).fromPortableSerializedBytes(local.serializedCipherText) );
 
 	        assertTrue( local.secretMsg.equals( local.plainText.toString() ) );
     	</cfscript>

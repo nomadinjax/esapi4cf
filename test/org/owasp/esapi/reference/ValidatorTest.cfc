@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 
 		static.PREFERRED_ENCODING = "UTF-8";
@@ -49,7 +51,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidCreditCard" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidCreditCard");
+			System.out.println("getValidCreditCard");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 
@@ -75,7 +77,7 @@
 			DateFormat = createObject("java", "java.text.DateFormat");
 			Locale = createObject("java", "java.util.Locale");
 
-			createObject("java", "java.lang.System").out.println("getValidDate");
+			System.out.println("getValidDate");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			assertTrue(local.instance.getValidDate("datetest1", "June 23, 1967", DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US), false) != "");
@@ -91,7 +93,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidDirectoryPath" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidDirectoryPath");
+			System.out.println("getValidDirectoryPath");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// find a directory that exists
@@ -111,7 +113,7 @@
 		<cfscript>
 			Double = createObject("java", "java.lang.Double");
 
-			createObject("java", "java.lang.System").out.println("getValidDouble");
+			System.out.println("getValidDouble");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			local.instance.getValidDouble("dtest1", "1.0", 0, 20, true, local.errors);
@@ -132,7 +134,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidFileContent" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidFileContent");
+			System.out.println("getValidFileContent");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			local.bytes = "";
@@ -152,7 +154,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidFileName" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidFileName");
+			System.out.println("getValidFileName");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			local.testName = "aspe%20ct.jar";
@@ -163,7 +165,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidInput" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidInput");
+			System.out.println("getValidInput");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.instance.getValidInput(String, String, String, int, boolean, ValidationErrorList)
@@ -173,7 +175,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidInteger" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidInteger");
+			System.out.println("getValidInteger");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.instance.getValidInteger(String, String, int, int, boolean, ValidationErrorList)
@@ -183,7 +185,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidListItem" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidListItem");
+			System.out.println("getValidListItem");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.instance.getValidListItem(String, String, List, ValidationErrorList)
@@ -193,7 +195,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidNumber" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidNumber");
+			System.out.println("getValidNumber");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.instance.getValidNumber(String, String, long, long, boolean, ValidationErrorList)
@@ -203,7 +205,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidRedirectLocation" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidRedirectLocation");
+			System.out.println("getValidRedirectLocation");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.instance.getValidRedirectLocation(String, String, boolean, ValidationErrorList)
@@ -213,7 +215,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetValidSafeHTML" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("getValidSafeHTML");
+			System.out.println("getValidSafeHTML");
 			local.instance = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 
@@ -250,7 +252,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsInvalidFilename" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("testIsInvalidFilename");
+			System.out.println("testIsInvalidFilename");
 			local.instance = instance.ESAPI.validator();
 			local.invalidChars = createObject("java", "java.lang.String").init('/\:*?"<>|').toCharArray();
 			for (local.i = 1; local.i <= arrayLen(local.invalidChars); local.i++) {
@@ -267,7 +269,7 @@
 		<cfscript>
 			SimpleDateFormat = createObject("java", "java.text.SimpleDateFormat");
 
-			createObject("java", "java.lang.System").out.println("isValidDate");
+			System.out.println("isValidDate");
 			local.instance = instance.ESAPI.validator();
 			local.format = SimpleDateFormat.getDateInstance();
 			assertTrue(local.instance.isValidDate("datetest1", "September 11, 2001", local.format, true));
@@ -281,7 +283,7 @@
 		<cfscript>
 			ioFile = createObject("java", "java.io.File");
 
-			createObject("java", "java.lang.System").out.println("isValidDirectoryPath");
+			System.out.println("isValidDirectoryPath");
 
 			// get an encoder with a special list of codecs and make a validator out of it
 			local.list = [];
@@ -289,11 +291,11 @@
 			local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init(instance.ESAPI, local.list);
 			local.instance = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultValidator").init(instance.ESAPI, local.encoder);
 
-			local.isWindows = (createObject("java", "java.lang.System").getProperty("os.name").indexOf("Windows") != -1) ? true : false;
+			local.isWindows = (System.getProperty("os.name").indexOf("Windows") != -1) ? true : false;
 			local.parent = ioFile.init("/");
 
 			if (local.isWindows) {
-				local.sysRoot = ioFile.init(createObject("java", "java.lang.System").getenv("SystemRoot")).getCanonicalPath();
+				local.sysRoot = ioFile.init(System.getenv("SystemRoot")).getCanonicalPath();
 				// Windows paths that don't exist and thus should fail
 				assertFalse(local.instance.isValidDirectoryPath("test", "c:\ridiculous", local.parent, false));
 				assertFalse(local.instance.isValidDirectoryPath("test", "c:\jeff", local.parent, false));
@@ -345,7 +347,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsValidFileContent" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidFileContent");
+			System.out.println("isValidFileContent");
 			local.content = "";
 			try {
 			   local.content = createObject("java", "java.lang.String").init("This is some file content").getBytes(static.PREFERRED_ENCODING);
@@ -361,7 +363,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsValidFileName" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidFileName");
+			System.out.println("isValidFileName");
 			local.instance = instance.ESAPI.validator();
 			assertTrue(local.instance.isValidFileName(context="test", input="aspect.jar", allowNull=false), "Simple valid filename with a valid extension");
 			assertTrue(local.instance.isValidFileName(context="test", input="!@##$%^&{}[]()_+-=,.~'` abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.jar", allowNull=false), "All valid filename characters are accepted");
@@ -374,8 +376,8 @@
 		<cfscript>
 			ioFile = createObject("java", "java.io.File");
 
-			createObject("java", "java.lang.System").out.println("isValidFileUpload");
-			local.filepath = ioFile.init(createObject("java", "java.lang.System").getProperty("user.dir")).getCanonicalPath();
+			System.out.println("isValidFileUpload");
+			local.filepath = ioFile.init(System.getProperty("user.dir")).getCanonicalPath();
 			local.filename = "aspect.jar";
 			local.parent = ioFile.init("/").getCanonicalFile();
 			local.content = "";
@@ -410,7 +412,7 @@
 
 	<cffunction access="public" returntype="void" name="testisValidInput" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidInput");
+			System.out.println("isValidInput");
 			local.instance = instance.ESAPI.validator();
 			assertTrue(local.instance.isValidInput("test", "jeff.williams@aspectsecurity.com", "Email", 100, false));
 			assertFalse(local.instance.isValidInput("test", "jeff.williams@@aspectsecurity.com", "Email", 100, false));
@@ -438,7 +440,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsValidInteger" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidInteger");
+			System.out.println("isValidInteger");
 			local.instance = instance.ESAPI.validator();
 			//testing negative range
 			assertFalse(local.instance.isValidInteger("test", "-4", 1, 10, false));
@@ -475,7 +477,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsValidListItem" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidListItem");
+			System.out.println("isValidListItem");
 			local.instance = instance.ESAPI.validator();
 			local.list = [];
 			local.list.add("one");
@@ -488,7 +490,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsValidNumber" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidNumber");
+			System.out.println("isValidNumber");
 			local.instance = instance.ESAPI.validator();
 			//testing negative range
 			assertFalse(local.instance.isValidNumber("test", "-4", 1, 10, false));
@@ -525,7 +527,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsValidParameterSet" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidParameterSet");
+			System.out.println("isValidParameterSet");
 			local.requiredNames = [];
 			local.requiredNames.add("p1");
 			local.requiredNames.add("p2");
@@ -554,7 +556,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsValidPrintable" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidPrintable");
+			System.out.println("isValidPrintable");
 			local.instance = instance.ESAPI.validator();
 			assertTrue(local.instance.isValidPrintable("name", "abcDEF", 100, false));
 			assertTrue(local.instance.isValidPrintable("name", "!@##R()*$;><()", 100, false));
@@ -574,7 +576,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsValidSafeHTML" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println("isValidSafeHTML");
+			System.out.println("isValidSafeHTML");
 			local.instance = instance.ESAPI.validator();
 
 			assertTrue(local.instance.isValidSafeHTML("test", "<b>Jeff</b>", 100, false));
@@ -598,7 +600,7 @@
 			InputStreamReader = createObject("java", "java.io.InputStreamReader");
 			BufferedReader = createObject("java", "java.io.BufferedReader");
 
-			createObject("java", "java.lang.System").out.println("safeReadLine");
+			System.out.println("safeReadLine");
 
 			local.bytes = "";
 			try {

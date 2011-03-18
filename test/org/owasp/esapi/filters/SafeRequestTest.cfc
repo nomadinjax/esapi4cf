@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.ESAPI = "";
 	</cfscript>
 
@@ -20,7 +22,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetRequestParameters" output="false">
 		<cfscript>
-			createObject("java", "java.lang.System").out.println( "getRequestParameters");
+			System.out.println( "getRequestParameters");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest");
 			local.request.addParameter( "one","1" );
 			local.request.addParameter( "two","2" );
