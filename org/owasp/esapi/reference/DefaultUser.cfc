@@ -64,7 +64,7 @@
 		instance.failedLoginCount = 0;
 
 		/* This user's Locale. */
-		//instance.locale;
+		instance.locale = "";
 
 	    static.MAX_ROLE_LENGTH = 250;
 	</cfscript>
@@ -84,7 +84,7 @@
 
 			while( true ) {
 				local.id = newLong(abs( instance.ESAPI.randomizer().getRandomLong() ));
-				if ( !isObject(instance.ESAPI.authenticator().getUser( local.id )) && local.id != 0 ) {
+				if ( !isObject(instance.ESAPI.authenticator().getUserByAccountId( local.id )) && local.id != 0 ) {
 					instance.accountId = local.id;
 					break;
 				}
@@ -148,21 +148,21 @@
 
 	<cffunction access="public" returntype="numeric" name="getAccountId" output="false">
 		<cfscript>
-        	return instance.accountId;
+        	return duplicate(instance.accountId);
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getAccountName" output="false">
 		<cfscript>
-			return instance.accountName;
+			return duplicate(instance.accountName);
 		</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getCSRFToken" output="false">
 		<cfscript>
-			return instance.csrfToken;
+			return duplicate(instance.csrfToken);
 		</cfscript>
 	</cffunction>
 
@@ -176,7 +176,7 @@
 
 	<cffunction access="public" returntype="numeric" name="getFailedLoginCount" output="false">
 		<cfscript>
-			return instance.failedLoginCount;
+			return duplicate(instance.failedLoginCount);
 		</cfscript>
 	</cffunction>
 
@@ -201,7 +201,7 @@
 		if ( instance.lastHostAddress == "" ) {
 			return "unknown";
 		}
-        return instance.lastHostAddress;
+        return duplicate(instance.lastHostAddress);
     	</cfscript>
 	</cffunction>
 
@@ -230,7 +230,7 @@
 
 	<cffunction access="public" returntype="String" name="getScreenName" output="false">
 		<cfscript>
-			return instance.screenName;
+			return duplicate(instance.screenName);
 		</cfscript>
 	</cffunction>
 
@@ -253,7 +253,7 @@
 
 	<cffunction access="public" returntype="Array" name="getSessions" output="false">
 		<cfscript>
-	    	return instance.sessions;
+	    	return duplicate(instance.sessions);
 		</cfscript>
 	</cffunction>
 
@@ -474,7 +474,7 @@
 	<cffunction access="public" returntype="void" name="setLastHostAddress" output="false">
 		<cfargument type="String" name="remoteHost" required="true">
 		<cfscript>
-			if ( instance.lastHostAddress != "" && !lastHostAddress.equals(arguments.remoteHost)) {
+			if ( instance.lastHostAddress != "" && !instance.lastHostAddress.equals(arguments.remoteHost)) {
 	        	// returning remote address not remote hostname to prevent DNS lookup
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationHostException").init(instance.ESAPI, "Host change", "User session just jumped from " & instance.lastHostAddress & " to " & arguments.remoteHost );
 				throw(message=cfex.getMessage(), type=cfex.getType());
@@ -546,10 +546,18 @@
 
 	<!--- clone --->
 	<!--- getLocale --->
-	<!--- setLocale --->
+
+	<cffunction access="public" returntype="void" name="setLocale" output="false">
+		<cfargument type="any" name="locale" required="true" hint="java.util.Locale: the locale to set">
+		<cfscript>
+			instance.locale = arguments.locale;
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="Struct" name="getEventMap" output="false">
 		<cfscript>
+			// do not wrap with duplicate(); needs to be modifiable
     		return instance.eventMap;
     	</cfscript>
 	</cffunction>

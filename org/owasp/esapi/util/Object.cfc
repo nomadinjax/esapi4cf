@@ -1,6 +1,8 @@
 <cfcomponent output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		instance.version = "2.0_rc10";
 		instance.javaLoaderKey = "cfesapi-" & instance.version & "-javaloader";
 	</cfscript>
@@ -13,14 +15,19 @@
 						expandPath("/cfesapi/esapi/ESAPI-" & instance.version & ".jar"),
 						// Custom bridge between CFESAPI and ESAPI for Java
 						expandPath("/cfesapi/esapi/libs/cfesapi.jar"),
-						// Log4J
+						// Log4JLogger
 						expandPath("/cfesapi/esapi/libs/log4j-1.2.12.jar"),
-						// AntiSamy
-						expandPath("/cfesapi/esapi/libs/xercesImpl-2.6.2.jar"),
+						// AccessController - ACRPolicyFileLoader#load()
+						expandPath("/cfesapi/esapi/libs/commons-beanutils-1.7.0.jar"),
+						expandPath("/cfesapi/esapi/libs/commons-collections-3.2.jar"),
+						expandPath("/cfesapi/esapi/libs/commons-configuration-1.5.jar"),
+						expandPath("/cfesapi/esapi/libs/commons-lang-2.3.jar"),
+						// Validator#getValidSafeHTML() - HTMLValidationRule (AntiSamy)
+						expandPath("/cfesapi/esapi/libs/antisamy-1.4.jar"),
 						expandPath("/cfesapi/esapi/libs/batik-css-1.7.jar"),
 						expandPath("/cfesapi/esapi/libs/nekohtml-1.9.12.jar"),
-						expandPath("/cfesapi/esapi/libs/antisamy-1.4.jar"),
-						// File Upload
+						expandPath("/cfesapi/esapi/libs/xercesImpl-2.6.2.jar"),
+						// HTTPUtilities#getFileUploads()
 						expandPath("/cfesapi/esapi/libs/commons-fileupload-1.2.jar")
 					]);
 				}

@@ -11,7 +11,7 @@
 		<cfargument type="String" name="key" required="true">
 		<cfscript>
 			instance.ESAPI = arguments.ESAPI;
-       		instance.key = key;
+       		instance.key = arguments.key;
 
        		return this;
     	</cfscript>
@@ -25,7 +25,9 @@
 
 	        local.now = createObject("java", "java.util.Date").init();
 	        instance.times.add( 0, local.now );
-	        while ( instance.times.size() > arguments.count ) instance.times.remove( instance.times.size()-1 );
+	        while ( instance.times.size() > arguments.count ) {
+	       		instance.times.remove( instance.times.size()-1 );
+	        }
 	        if ( instance.times.size() == arguments.count ) {
 	            local.past = instance.times.get( arguments.count-1 );
 	            local.plong = local.past.getTime();

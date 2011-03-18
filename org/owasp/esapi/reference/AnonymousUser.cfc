@@ -38,7 +38,13 @@
 
 	<!--- getLastLoginTime --->
 	<!--- getLastPasswordChangeTime --->
-	<!--- getRoles --->
+
+	<cffunction access="public" returntype="Array" name="getRoles" output="false">
+		<cfscript>
+        	return [];
+		</cfscript>
+	</cffunction>
+
 	<!--- getScreenName --->
 
 	<cffunction access="package" returntype="void" name="addSession" output="false" hint="Adds a session for this User.">
@@ -85,7 +91,14 @@
 	<!--- verifyPassword --->
 	<!--- setLastFailedLoginTime --->
 	<!--- setLastLoginTime --->
-	<!--- setLastHostAddress --->
+
+	<cffunction access="public" returntype="void" name="setLastHostAddress" output="false">
+		<cfargument type="String" name="remoteHost" required="true">
+		<cfscript>
+        	throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+        </cfscript>
+	</cffunction>
+
 	<!--- setLastPasswordChangeTime --->
 
 	<cffunction access="public" returntype="Struct" name="getEventMap" output="false">

@@ -15,10 +15,10 @@
 			if (structKeyExists(arguments, "userMessage") && structKeyExists(arguments, "logMessage")) {
 				local.ret = '';
 				if (structKeyExists(arguments, "cause")) {
-					local.ret = super.init(arguments.userMessage, arguments.cause);
+					super.init(arguments.userMessage, arguments.cause);
 				}
 				else {
-					local.ret = super.init(arguments.userMessage);
+					super.init(arguments.userMessage);
 				}
 
 				instance.ESAPI = arguments.ESAPI;
@@ -28,12 +28,9 @@
 				if (!instance.ESAPI.securityConfiguration().getDisableIntrusionDetection()) {
 					instance.ESAPI.intrusionDetector().addException(this);
 				}
+			}
 
-				return local.ret;
-			}
-			else {
-				return this;
-			}
+			return this;
 		</cfscript>
 	</cffunction>
 

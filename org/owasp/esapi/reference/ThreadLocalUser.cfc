@@ -14,14 +14,10 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="getUser" output="false">
+	<cffunction access="public" returntype="any" name="getUser" output="false" hint="cfesapi.org.owasp.esapi.User">
 		<cfscript>
 			local.session = instance.ESAPI.httpUtilities().getCurrentRequest().getSession(true);
-			local.user = local.session.getAttribute(instance.ESAPI.authenticator().USER);
-			if (!isNull(local.user) && isObject(local.user)) {
-				return local.user;
-			}
-			return createObject("component", "cfesapi.org.owasp.esapi.reference.AnonymousUser");
+			return local.session.getAttribute(instance.ESAPI.authenticator().USER);
         </cfscript>
 	</cffunction>
 

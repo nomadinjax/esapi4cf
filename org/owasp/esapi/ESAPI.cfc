@@ -9,7 +9,7 @@
 	<cfscript>
 		instance.overrideConfig = "";
 
-		static.securityConfigurationImplName = createObject("java", "java.lang.System").getProperty("cfesapi.org.owasp.esapi.SecurityConfiguration", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration");
+		static.securityConfigurationImplName = System.getProperty("cfesapi.org.owasp.esapi.SecurityConfiguration", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration");
 	</cfscript>
 	<!--- TODO
 
@@ -31,12 +31,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- TODO
 
-		<cffunction name="accessController">
-		</cffunction>
+	<cffunction access="public" returntype="AccessController" name="accessController" output="false" hint="the current ESAPI AccessController object being used to maintain the access control rules for this application.">
+		<cfscript>
+        	return make( securityConfiguration().getAccessControlImplementation(), "AccessController" );
+		</cfscript>
+	</cffunction>
 
-		--->
 
 	<cffunction access="public" returntype="Authenticator" name="authenticator" output="false" hint="the current ESAPI Authenticator object being used to authenticate users for this application.">
 		<cfscript>

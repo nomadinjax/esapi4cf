@@ -55,7 +55,13 @@
 
 	<cffunction access="public" returntype="string" name="getType" output="false">
 		<cfscript>
-			return getMetaData().name;
+			// NOTE: depending on how CFESAPI folder is mapped, getMetaData().name may be full path or just CFC name
+			// need to make this consistent
+			local.name = getMetaData().name;
+			if (listLen(local.name, ".") EQ 1) {
+				local.name = "cfesapi.org.owasp.esapi.errors." & local.name;
+			}
+			return local.name;
 		</cfscript>
 	</cffunction>
 

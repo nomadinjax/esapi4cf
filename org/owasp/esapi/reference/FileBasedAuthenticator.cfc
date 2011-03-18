@@ -120,7 +120,7 @@
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Account creation failed", "Attempt to create user with null accountName");
 				throw(message=cfex.getMessage(), type=cfex.getType());
 	        }*/
-	        if (isObject(getUser(arguments.accountName))) {
+	        if (isObject(getUserByAccountName(arguments.accountName))) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName);
 				throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
@@ -132,7 +132,7 @@
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password");
 				throw(message=cfex.getMessage(), type=cfex.getType());
 	        }*/
-	        verifyPasswordStrength(newPassword=arguments.password1);
+	        verifyPasswordStrength("", arguments.password1);
 
 	        if (!arguments.password1.equals(arguments.password2)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match");
@@ -248,9 +248,21 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- getUser(long accountId) --->
 
-	<cffunction access="public" returntype="any" name="getUser" output="false" hint="cfesapi.org.owasp.esapi.User">
+	<cffunction access="public" returntype="any" name="getUserByAccountId" output="false" hint="cfesapi.org.owasp.esapi.User: Returns the User matching the provided accountId.  If the accoundId is not found, an Anonymous User or null may be returned.">
+		<cfargument type="numeric" name="accountId" required="true" hint="the account id">
+		<cfscript>
+			if (arguments.accountId == 0) {
+	            return createObject("component", "AnonymousUser");
+	        }
+	        loadUsersIfNecessary();
+	        local.u = instance.userMap.get(arguments.accountId);
+	        return !isNull(local.u) ? local.u : "";
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="getUserByAccountName" output="false" hint="cfesapi.org.owasp.esapi.User: Returns the User matching the provided accountName.  If the accoundId is not found, an Anonymous User or null may be returned.">
 		<cfargument type="String" name="accountName" required="true">
 		<cfscript>
 	        if (arguments.accountName == "") {
@@ -372,7 +384,7 @@
 		        local.user.accountId = local.accountId;
 
 		        local.password = local.parts[3];
-	       		verifyPasswordStrength(newPassword=local.password);
+	       		verifyPasswordStrength("", local.password);
 		        setHashedPassword(local.user, local.password);
 
 		        local.roles = local.parts[4].toLowerCase().split(" *, *");
@@ -409,7 +421,23 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- removeUser --->
+
+	<cffunction access="public" returntype="void" name="removeUser" output="false">
+		<cfargument type="String" name="accountName" required="true">
+		<cfscript>
+	        loadUsersIfNecessary();
+	        local.user = getUserByAccountName(arguments.accountName);
+	        if (!isObject(local.user)) {
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName);
+				throw(message=cfex.getMessage(), type=cfex.getType());
+	        }
+	        instance.userMap.remove(local.user.getAccountId());
+	        instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Removing user " & local.user.getAccountName());
+	        instance.passwordMap.remove(local.user);
+	        saveUsers();
+    	</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="saveUsers" output="false" hint="Saves the user database to the file system. In this implementation you must call save to commit any changes to the user file. Otherwise changes will be lost when the program ends.">
 		<cfargument type="any" name="writer" required="false" hint="java.io.PrintWriter">
@@ -418,10 +446,11 @@
 				local.userNames = getUserNames();
 		        for (local.i = 1; local.i <= arrayLen(local.userNames); local.i++) {
 		        	local.accountName = local.userNames[local.i];
-		            local.u = getUser(local.accountName);
+		            local.u = getUserByAccountName(local.accountName);
 		            if (isObject(local.u) && !local.u.isAnonymous()) {
 		                writer.println(save(local.u));
-		            } else {
+		            }
+		            else {
 		                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Problem saving user", "Skipping save of user " & local.accountName);
 						throw(message=cfex.getMessage(), type=cfex.getType());
 		            }
@@ -438,12 +467,14 @@
 	            saveUsers(local.writer);
 	            local.writer.flush();
 	            instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User file written to disk");
-	       	} catch (IOException e) {
+	       	}
+	       	catch (java.io.IOException e) {
 	            instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Internal Error", "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
 				throw(message=cfex.getMessage(), type=cfex.getType());
-	        } finally {
-	            if (local.writer != "") {
+	        }
+	        finally {
+	            if (isObject(local.writer)) {
 	                local.writer.close();
 	                instance.lastModified = instance.userDB.lastModified();
 	                instance.lastChecked = instance.lastModified;
@@ -490,27 +521,29 @@
 	<cffunction access="private" returntype="String" name="dump" output="false" hint="Dump a collection as a comma-separated list.">
 		<cfargument type="Array" name="c" required="true" hint="the collection to convert to a comma separated list">
 		<cfscript>
-	        local.sb = createObject("java", "java.lang.StringBuilder").init();
+	        /*local.sb = createObject("java", "java.lang.StringBuilder").init();
 	        for (local.s in arguments.c) {
 	            local.sb.append(local.s).append(",");
 	        }
 	        if ( arguments.c.size() > 0) {
 	        	return local.sb.toString().substring(0, local.sb.length() - 1);
 	        }
-	        return "";
+	        return "";*/
+
+			return arrayToList(arguments.c);
         </cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="verifyAccountNameStrength" output="false" hint="This implementation simply verifies that account names are at least 5 characters long. This helps to defeat a brute force attack, however the real strength comes from the name length and complexity.">
-		<cfargument type="String" name="newAccountName" required="true">
+		<cfargument type="String" name="accountName" required="true">
 		<cfscript>
-	        if (arguments.newAccountName == "") {
+	        if (arguments.accountName == "") {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account with a null account name");
 				throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
-	        if (!instance.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.newAccountName, "AccountName", static.MAX_ACCOUNT_NAME_LENGTH, false)) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.newAccountName);
+	        if (!instance.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.accountName, "AccountName", static.MAX_ACCOUNT_NAME_LENGTH, false)) {
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName);
 				throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
     	</cfscript>
@@ -518,7 +551,7 @@
 
 
 	<cffunction access="public" returntype="void" name="verifyPasswordStrength" output="false" hint="This implementation checks: - for any 3 character substrings of the old password - for use of a length character sets &gt; 16 (where character sets are upper, lower, digit, and special">
-		<cfargument type="String" name="oldPassword" required="false">
+		<cfargument type="String" name="oldPassword" required="true">
 		<cfargument type="String" name="newPassword" required="true">
 		<cfscript>
 			Arrays = createObject("java", "java.util.Arrays");
@@ -530,7 +563,7 @@
 	        }
 
 	        // can't change to a password that contains any 3 character substring of old password
-	        if (!isNull(arguments.oldPassword)) {
+	        if (len(arguments.oldPassword)) {
 	            local.length = arguments.oldPassword.length();
 	            for (local.i = 0; local.i < local.length - 2; local.i++) {
 	                local.sub = arguments.oldPassword.substring(local.i, local.i + 3);

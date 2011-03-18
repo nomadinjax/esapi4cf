@@ -150,7 +150,7 @@
 		<cfscript>
 		    if ( isCollected(CipherTextFlags.CIPHERTEXT) ) {
 		        local.copy = newByte( len(instance.raw_ciphertext_) );
-		        createObject("java", "java.lang.System").arraycopy(instance.raw_ciphertext_, 0, local.copy, 0, len(instance.raw_ciphertext_));
+		        System.arraycopy(instance.raw_ciphertext_, 0, local.copy, 0, len(instance.raw_ciphertext_));
 		        return local.copy;
 		    } else {
 		        instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Raw ciphertext not set yet; unable to retrieve; returning null");
@@ -183,8 +183,8 @@
 		        local.iv = getIV();
 		        local.raw = getRawCipherText();
 		        local.ivPlusCipherText = newByte( len(local.iv) + len(local.raw) );
-		        createObject("java", "java.lang.System").arraycopy(local.iv, 0, local.ivPlusCipherText, 0, len(local.iv));
-		        createObject("java", "java.lang.System").arraycopy(local.raw, 0, local.ivPlusCipherText, len(local.iv), len(local.raw));
+		        System.arraycopy(local.iv, 0, local.ivPlusCipherText, 0, len(local.iv));
+		        System.arraycopy(local.raw, 0, local.ivPlusCipherText, len(local.iv), len(local.raw));
 		        // Then return the base64 encoded result
 		        return instance.ESAPI.encoder().encodeForBase64(local.ivPlusCipherText, false);
 		    } else {
@@ -377,7 +377,7 @@
 	            return toBinary("");
 	        }
 	        local.copy = newByte( len(instance.separate_mac_) );
-	        createObject("java", "java.lang.System").arraycopy(instance.separate_mac_, 0, local.copy, 0, len(instance.separate_mac_));
+	        System.arraycopy(instance.separate_mac_, 0, local.copy, 0, len(instance.separate_mac_));
 	        return local.copy;
     	</cfscript>
 	</cffunction>

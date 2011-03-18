@@ -610,7 +610,7 @@
 
 	<cffunction access="public" returntype="any" name="getUploadTempDirectory" output="false" hint="java.io.File">
 		<cfscript>
-	    	local.dir = getESAPIProperty(this.UPLOAD_TEMP_DIRECTORY, createObject("java", "java.lang.System").getProperty("java.io.tmpdir", "UploadTempDir"));
+	    	local.dir = getESAPIProperty(this.UPLOAD_TEMP_DIRECTORY, System.getProperty("java.io.tmpdir", "UploadTempDir"));
 	    	return createObject("java", "java.io.File").init( local.dir );
     	</cfscript>
 	</cffunction>

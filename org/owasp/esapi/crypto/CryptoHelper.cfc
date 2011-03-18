@@ -104,7 +104,7 @@
 				} else {
 					local.len = min(len(local.tmpKey), arguments.keySize - local.totalCopied);
 				}
-				createObject("java", "java.lang.System").arraycopy(local.tmpKey, 0, local.derivedKey, local.destPos, local.len);
+				System.arraycopy(local.tmpKey, 0, local.derivedKey, local.destPos, local.len);
 				local.inputBytes = local.tmpKey;
 				local.totalCopied += len(local.tmpKey);
 				local.destPos += local.len;
@@ -189,7 +189,7 @@
 		<cfargument type="numeric" name="length" required="false" default="#len(arguments.src)#" hint="the number of array elements to be copied.">
 		<cfscript>
 			try {
-				createObject("java", "java.lang.System").arraycopy(arguments.src, 0, arguments.dest, 0, arguments.length);
+				System.arraycopy(arguments.src, 0, arguments.dest, 0, arguments.length);
 			} catch(java.lang.ArrayIndexOutOfBoundsException e) {
 				throw(object=e);
 			} catch(java.lang.NullPointerException e) {

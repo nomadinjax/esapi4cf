@@ -760,11 +760,11 @@
 					local.c = arguments.in.read();
 					if ( local.c == -1 ) {
 						if (local.sb.length() == 0) {
-							return "";
+							return;
 						}
 						break;
 					}
-					if (local.c == '\n' || local.c == '\r') {
+					if (local.c == 13 || local.c == 10) {
 						break;
 					}
 					local.count++;
@@ -775,7 +775,7 @@
 					local.sb.append(chr(local.c));
 				}
 				return local.sb.toString();
-			} catch (IOException e) {
+			} catch (java.lang.IOException e) {
 				e = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException").init(instance.ESAPI, "Invalid input", "Invalid readLine. Problem reading from input stream", e);
 				throw(message=e.getMessage(), type=e.getType());
 			}

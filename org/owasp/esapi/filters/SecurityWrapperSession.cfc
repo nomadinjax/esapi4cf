@@ -24,7 +24,13 @@
 	</cffunction>
 
 	<!--- public java.lang.String getId(); --->
-	<!--- public long getLastAccessedTime(); --->
+
+	<cffunction access="public" returntype="numeric" name="getLastAccessedTime" output="false">
+		<cfscript>
+			return instance.session.getLastAccessedTime();
+		</cfscript>
+	</cffunction>
+
 	<!--- public javax.servlet.ServletContext getServletContext(); --->
 	<!--- public void setMaxInactiveInterval(int interval); --->
 	<!--- public int getMaxInactiveInterval(); --->
@@ -76,8 +82,19 @@
 
 	<cffunction access="public" returntype="void" name="invalidate" output="false">
 		<cfscript>
-			// TODO: how this works still needs to be ironed out
+			// causes errors after its called
 			//instance.session.invalidate();
+
+			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
+			if (local.applicationName != "") {
+				local.jTracker = createObject("java", "coldfusion.runtime.SessionTracker");
+				// TODO: test this more to ensure it is doing what we are expercting
+				// doesn't help that Adobe has no docs on their Java CF classes
+
+				//writedump(instance.session);
+				local.jTracker.cleanUp(instance.session, local.applicationName);
+				//writedump(var=instance.session,abort=true);
+			}
 		</cfscript>
 	</cffunction>
 

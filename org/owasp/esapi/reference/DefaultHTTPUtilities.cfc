@@ -288,7 +288,7 @@
 	<cffunction access="public" returntype="String" name="getCSRFToken" output="false">
 		<cfscript>
 			local.user = instance.ESAPI.authenticator().getCurrentUser();
-			if (isNull(local.user)) return "";
+			if (!isObject(local.user)) return "";
 			return local.user.getCSRFToken();
 		</cfscript>
 	</cffunction>
@@ -439,12 +439,14 @@
 
 
 	<cffunction access="public" returntype="void" name="killAllCookies" output="false">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
 		<cfscript>
-			local.cookies = getCurrentRequest().getCookies();
+			local.cookies = arguments.request.getCookies();
 			if (arrayLen(local.cookies)) {
 				for (local.i=1; local.i<=arrayLen(local.cookies); local.i++) {
 					local.cookie = local.cookies[local.i];
-					killCookie(name=local.cookie.getName());
+					killCookie(arguments.request, arguments.response, local.cookie.getName());
 				}
 			}
     	</cfscript>
@@ -604,7 +606,37 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- setRememberToken --->
+	<cffunction access="public" returntype="String" name="setRememberToken" output="false" hint="Save the user's remember me data in an encrypted cookie and send it to the user. Any old remember me cookie is destroyed first. Setting this cookie will keep the user logged in until the maxAge passes, the password is changed, or the cookie is deleted. If the cookie exists for the current user, it will automatically be used by ESAPI to log the user in, if the data is valid and not expired.">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
+		<cfargument type="String" name="password" required="true">
+		<cfargument type="numeric" name="maxAge" required="true">
+		<cfargument type="String" name="domain" required="true">
+		<cfargument type="String" name="path" required="true">
+		<cfscript>
+			local.user = instance.ESAPI.authenticator().getCurrentUser();
+			try {
+				killCookie(arguments.request, arguments.response, this.REMEMBER_TOKEN_COOKIE_NAME );
+				// seal already contains random data
+				local.clearToken = local.user.getAccountName() & "|" & arguments.password;
+				local.expiry = instance.ESAPI.encryptor().getRelativeTimeStamp(arguments.maxAge * 1000);
+				local.cryptToken = instance.ESAPI.encryptor().seal(local.clearToken, local.expiry);
+
+	            // TODO - URLEncode cryptToken before creating cookie? See Google Issue # 144 - KWW
+
+				local.cookie = createObject("java", "javax.servlet.http.Cookie").init( this.REMEMBER_TOKEN_COOKIE_NAME, local.cryptToken );
+				local.cookie.setMaxAge( arguments.maxAge );
+				local.cookie.setDomain( arguments.domain );
+				local.cookie.setPath( arguments.path );
+				arguments.response.addCookie( local.cookie );
+				instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Enabled remember me token for " & user.getAccountName() );
+				return local.cryptToken;
+			} catch( cfesapi.org.owasp.esapi.errors.IntegrityException e ) {
+				instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to set remember me token failed for " & user.getAccountName(), e );
+				return "";
+			}
+		</cfscript>
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="verifyCSRFToken" output="false" hint="This implementation uses the CSRF_TOKEN_NAME parameter for the token.">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
@@ -649,7 +681,7 @@
 		<cfargument type="String" name="plaintext" required="true">
 		<cfscript>
 	        local.pt = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, arguments.plaintext);
-	        local.ct = instance.ESAPI.encryptor().encrypt(local.pt);
+	        local.ct = instance.ESAPI.encryptor().encrypt(plain=local.pt);
 	        local.serializedCiphertext = local.ct.asPortableSerializedByteArray();
 	        return javaLoader().create("org.owasp.esapi.codecs.Hex").encode(local.serializedCiphertext, false);
     	</cfscript>
@@ -661,7 +693,7 @@
 		<cfscript>
 	        local.serializedCiphertext = javaLoader().create("org.owasp.esapi.codecs.Hex").decode(arguments.ciphertext);
 	        local.restoredCipherText = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI).fromPortableSerializedBytes(local.serializedCiphertext);
-	        local.plaintext = instance.ESAPI.encryptor().decrypt(local.restoredCipherText);
+	        local.plaintext = instance.ESAPI.encryptor().decrypt(ciphertext=local.restoredCipherText);
 	        return local.plaintext.toString();
     	</cfscript>
 	</cffunction>

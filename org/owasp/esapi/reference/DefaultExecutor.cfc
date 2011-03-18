@@ -14,7 +14,7 @@
 			instance.ESAPI = arguments.ESAPI;
 			instance.logger = instance.ESAPI.getLogger("Executor");
 
-			if ( createObject("java", "java.lang.System").getProperty("os.name").indexOf("Windows") != -1 ) {
+			if ( System.getProperty("os.name").indexOf("Windows") != -1 ) {
 				instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Using WindowsCodec for Executor. If this is not running on Windows this could allow injection" );
 				instance.codec = javaLoader().create("org.owasp.esapi.codecs.WindowsCodec").init();
 			} else {
