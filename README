@@ -1,4 +1,5 @@
-OWASP ESAPI for ColdFusion/CFML "unofficial"
+OWASP Enterprise Security API (ESAPI) for ColdFusion/CFML "unofficial"
+BETA
 
 Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
 
@@ -19,8 +20,9 @@ Setup:
 3. Create a folder off your webroot as /cfesapi/
 4. Download these files into that folder
 
-Tests:
+MXUnit Tests:
 - You can run the MXUnit tests using: /cfesapi/test/index.cfm (they take a couple minutes)
+- There are currently 254 tests; 228 successes; 14 failures; 12 errors (almost there)
 
 Implementation:
 - You can extend any of the default implementations to overwrite the methods you need
