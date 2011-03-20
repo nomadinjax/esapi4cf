@@ -51,7 +51,7 @@
 
 
 	<cffunction access="public" returntype="void" name="addCookie" output="false" hint="This implementation uses a custom 'set-cookie' header rather than Java's cookie interface which doesn't allow the use of HttpOnly. Configure the HttpOnly and Secure settings in ESAPI.properties.">
-		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
 		<cfargument type="any" name="cookie" required="true" hint="javax.servlet.http.Cookie">
 		<cfscript>
 	        local.name = arguments.cookie.getName();
@@ -105,7 +105,7 @@
 
 
 	<cffunction access="public" returntype="void" name="addHeader" output="false">
-		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
 		<cfargument type="String" name="name" required="true">
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
@@ -187,7 +187,14 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- clearCurrent --->
+
+	<cffunction access="public" returntype="void" name="clearCurrent" output="false">
+		<cfscript>
+			instance.currentRequest.set("");
+			instance.currentResponse.set("");
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="private" returntype="String" name="createCookieHeader" output="false">
 		<cfargument type="String" name="name" required="true">
@@ -218,8 +225,28 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- decryptHiddenField --->
-	<!--- decryptQueryString --->
+
+	<cffunction access="public" returntype="String" name="decryptHiddenField" output="false">
+		<cfargument type="String" name="encrypted" required="true">
+		<cfscript>
+	    	try {
+	    		return decryptString(arguments.encrypted);
+	    	} catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "Invalid request","Tampering detected. Hidden field data did not decrypt properly.", e);
+				throw(message=cfex.getMessage(), type=cfex.getType());
+	    	}
+    	</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="Struct" name="decryptQueryString" output="false">
+		<cfargument type="String" name="encrypted" required="true">
+		<cfscript>
+        	local.plaintext = decryptString(arguments.encrypted);
+			return queryToMap(local.plaintext);
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="Struct" name="decryptStateFromCookie" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
@@ -229,15 +256,28 @@
 	    		if ( local.encrypted == "" ) return {};
 	    		local.plaintext = decryptString(local.encrypted);
 	    		return queryToMap( local.plaintext );
-	    	} catch( cfesapi.org.owasp.esapi.errors..ValidationException e ) {
+	    	} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
 	        	return {};
 	    	}
     	</cfscript>
 	</cffunction>
 
-	<!--- encryptHiddenField --->
-	<!--- encryptQueryString --->
-	<!--- decryptStateFromCookie --->
+
+	<cffunction access="public" returntype="String" name="encryptHiddenField" output="false">
+		<cfargument type="String" name="value" required="true">
+		<cfscript>
+    		return encryptString(arguments.value);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="encryptQueryString" output="false">
+		<cfargument type="String" name="query" required="true">
+		<cfscript>
+	    	return encryptString(arguments.query);
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="encryptStateInCookie" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
@@ -294,7 +334,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="any" name="getCurrentRequest" output="false" hint="cfesapi.org.owasp.esapi.HttpServletRequest">
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpServletRequest" name="getCurrentRequest" output="false">
 		<cfscript>
 	    	return instance.currentRequest.getRequest();
     	</cfscript>
@@ -310,7 +350,7 @@
 
 	<cffunction access="public" returntype="Array" name="getFileUploads" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
-		<cfargument type="any" name="finalDir" required="false" default="#instance.ESAPI.securityConfiguration().getUploadDirectory()#" hint="java.io.File">
+		<cfargument type="any" name="destinationDir" required="false" default="#instance.ESAPI.securityConfiguration().getUploadDirectory()#" hint="java.io.File">
 		<cfargument type="Array" name="allowedExtensions" required="false" default="#instance.ESAPI.securityConfiguration().getAllowedFileExtensions()#">
 		<cfscript>
     		local.tempDir = instance.ESAPI.securityConfiguration().getUploadTempDirectory();
@@ -321,10 +361,10 @@
 			    }
 			}
 
-			if( arguments.finalDir != ""){
-				if ( !arguments.finalDir.exists() ) {
-					if ( !arguments.finalDir.mkdirs() ) {
-						cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failed", "Could not create final upload directory: " & arguments.finalDir.getAbsolutePath() );
+			if( arguments.destinationDir != ""){
+				if ( !arguments.destinationDir.exists() ) {
+					if ( !arguments.destinationDir.mkdirs() ) {
+						cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failed", "Could not create final upload directory: " & arguments.destinationDir.getAbsolutePath() );
 						throw(message=cfex.getMessage(), type=cfex.getType());
 					}
 				}
@@ -336,7 +376,7 @@
 						throw(message=cfex.getMessage(), type=cfex.getType());
 					}
 				}
-				arguments.finalDir = instance.ESAPI.securityConfiguration().getUploadDirectory();
+				arguments.destinationDir = instance.ESAPI.securityConfiguration().getUploadDirectory();
 			}
 
 			local.newFiles = [];
@@ -369,7 +409,7 @@
 						}
 
 						instance.logger.info(Logger.SECURITY_SUCCESS, "File upload requested: " & local.filename);
-						local.f = createObject("java", "java.io.File").init(arguments.finalDir, local.filename);
+						local.f = createObject("java", "java.io.File").init(arguments.destinationDir, local.filename);
 	               		if (local.f.exists()) {
 							local.parts = local.filename.split("\\/.");
 							local.extension = "";
@@ -377,7 +417,7 @@
 								local.extension = local.parts[local.parts.length - 1];
 							}
 							local.filenm = filename.substring(0, filename.length() - local.extension.length());
-							local.f = createObject("java", "java.io.File").createTempFile(local.filenm, "." & local.extension, arguments.finalDir);
+							local.f = createObject("java", "java.io.File").createTempFile(local.filenm, "." & local.extension, arguments.destinationDir);
 						}
 						local.item.write(local.f);
 	               		local.newFiles.add(local.f);
@@ -421,18 +461,20 @@
 
 
 	<cffunction access="public" returntype="String" name="getHeader" output="false">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
 		<cfargument type="String" name="name" required="true">
 		<cfscript>
-    		local.value = getCurrentRequest().getHeader(arguments.name);
+    		local.value = arguments.request.getHeader(arguments.name);
         	return instance.ESAPI.validator().getValidInput("HTTP header value: " & local.value, local.value, "HTTPHeaderValue", 150, false);
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getParameter" output="false">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
 		<cfargument type="String" name="name" required="true">
 		<cfscript>
-    		local.value = getCurrentRequest().getParameter(arguments.name);
+    		local.value = arguments.request.getParameter(arguments.name);
 	    	return instance.ESAPI.validator().getValidInput("HTTP parameter value: " & local.value, local.value, "HTTPParameterValue", 2000, true);
     	</cfscript>
 	</cffunction>
@@ -476,7 +518,7 @@
 
 	<cffunction access="public" returntype="void" name="logHTTPRequest" output="false" hint="Formats an HTTP request into a log suitable string. This implementation logs the remote host IP address (or hostname if available), the request method (GET/POST), the URL, and all the querystring and form parameters. All the parameters are presented as though they were in the URL even if they were in a form. Any parameters that match items in the parameterNamesToObfuscate are shown as eight asterisks.">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
-		<cfargument type="cfesapi.org.owasp.esapi.Logger" name="logger" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.Logger" name="logger" required="false" default="#instance.logger#">
 		<cfargument type="Array" name="parameterNamesToObfuscate" required="false">
 		<cfscript>
 			local.params = createObject("java", "java.lang.StringBuilder").init();
@@ -533,10 +575,24 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- sendForward --->
+
+	<cffunction access="public" returntype="void" name="sendForward" output="false" hint="This implementation simply checks to make sure that the forward location starts with 'WEB-INF' and is intended for use in frameworks that forward to JSP files inside the WEB-INF folder.">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
+		<cfargument type="String" name="location" required="true">
+		<cfscript>
+			if (!location.startsWith("WEB-INF")) {
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Forward failed", "Bad forward location: " & arguments.location);
+				throw(message=cfex.getMessage(), type=cfex.getType());
+			}
+			local.dispatcher = arguments.request.getRequestDispatcher(arguments.location);
+			local.dispatcher.forward( arguments.request, arguments.response );
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="sendRedirect" output="false" hint="This implementation checks against the list of safe redirect locations defined in ESAPI.properties.">
-		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
 		<cfargument type="String" name="location" required="true">
 		<cfscript>
 	        if (!instance.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
@@ -547,7 +603,14 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- setContentType --->
+
+	<cffunction access="public" returntype="void" name="setContentType" output="false">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
+		<cfscript>
+			arguments.response.setContentType(instance.ESAPI.securityConfiguration().getResponseContentType());
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="setCurrentHTTP" output="false">
 		<cfargument type="any" name="request" required="true">
@@ -578,6 +641,7 @@
 
 
 	<cffunction access="public" returntype="void" name="setHeader" output="false">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
 		<cfargument type="String" name="name" required="true">
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
@@ -586,7 +650,7 @@
 	            local.strippedValue = javaLoader().create("org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.value);
 	            local.safeName = instance.ESAPI.validator().getValidInput("setHeader", local.strippedName, "HTTPHeaderName", 20, false);
 	            local.safeValue = instance.ESAPI.validator().getValidInput("setHeader", local.strippedValue, "HTTPHeaderValue", 500, false);
-	            getCurrentResponse().setHeader(local.safeName, local.safeValue);
+	            arguments.response.setHeader(local.safeName, local.safeValue);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to set invalid header denied", e);
 	        }
@@ -605,6 +669,7 @@
 			arguments.response.setDateHeader("Expires", -1);
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="setRememberToken" output="false" hint="Save the user's remember me data in an encrypted cookie and send it to the user. Any old remember me cookie is destroyed first. Setting this cookie will keep the user logged in until the maxAge passes, the password is changed, or the cookie is deleted. If the cookie exists for the current user, it will automatically be used by ESAPI to log the user in, if the data is valid and not expired.">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">
@@ -637,6 +702,7 @@
 			}
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="verifyCSRFToken" output="false" hint="This implementation uses the CSRF_TOKEN_NAME parameter for the token.">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false" default="#getCurrentRequest()#">

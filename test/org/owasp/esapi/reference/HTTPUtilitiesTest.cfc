@@ -1,5 +1,15 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
+	<!--- TODO: need tests for:
+		clearCurrent()
+		decryptHiddenField()
+		decryptQueryString()
+		encryptHiddenField()
+		encryptQueryString()
+		sendForward()
+		setContentType()
+		setHeader()
+		--->
 	<cfscript>
 		System = createObject("java", "java.lang.System");
 
@@ -424,6 +434,7 @@
 			assertEquals( local.test2, createObject("java", "java.lang.Float").init(43).floatValue() );
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testGetRequestAttribute" output="false">
 		<cfscript>
