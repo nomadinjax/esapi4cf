@@ -65,7 +65,7 @@
 	            local.cts = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherTextSerializer").init(ESAPI=instance.ESAPI, cipherTextObj=local.ct );
 	            local.result = local.cts.asCipherText();
 	            assertTrue( local.ct.equals(local.result) );
-	            local.pt = instance.ESAPI.encryptor().decrypt(local.result);
+	            local.pt = instance.ESAPI.encryptor().decrypt(ciphertext=local.result);
 	            assertTrue( "Hello" == local.pt.toString() );
 	        } catch (EncryptionException e) {
 	            fail("Caught EncryptionException; exception msg: " & e);
