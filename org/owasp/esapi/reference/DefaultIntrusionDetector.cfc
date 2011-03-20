@@ -17,22 +17,22 @@
 
 
 	<cffunction access="public" returntype="void" name="addException" output="false">
-		<cfargument type="any" name="e" required="true">
+		<cfargument type="any" name="exception" required="true">
 		<cfscript>
 			if (instance.ESAPI.securityConfiguration().getDisableIntrusionDetection()) return;
 
-	        if (isInstanceOf(arguments.e, "cfesapi.org.owasp.esapi.errors.EnterpriseSecurityException")) {
-	            instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.e.getLogMessage(), arguments.e );
+	        if (isInstanceOf(arguments.exception, "cfesapi.org.owasp.esapi.errors.EnterpriseSecurityException")) {
+	            instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.exception.getLogMessage(), arguments.exception );
 	        }
 	        else {
-	            instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.e.getMessage(), arguments.e );
+	            instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.exception.getMessage(), arguments.exception );
 	        }
 
 	        // add the exception to the current user, which may trigger a detector
 			local.user = instance.ESAPI.authenticator().getCurrentUser();
-	        local.eventName = getMetaData(arguments.e).name;
+	        local.eventName = getMetaData(arguments.exception).name;
 
-	        if (isInstanceOf(arguments.e, "cfesapi.org.owasp.esapi.errors.IntrusionException")) {
+	        if (isInstanceOf(arguments.exception, "cfesapi.org.owasp.esapi.errors.IntrusionException")) {
 	            return;
 	        }
 
