@@ -15,7 +15,8 @@
 	            instance.secureRandom = createObject("java", "java.security.SecureRandom").getInstance(local.algorithm);
 	        } catch (java.security.NoSuchAlgorithmException e) {
 	            // Can't throw an exception from the constructor, but this will get it logged and tracked
-	            new EncryptionException("Error creating randomizer", "Can't find random algorithm " & local.algorithm, e);
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Error creating randomizer", "Can't find random algorithm " & local.algorithm, e);
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
 
 	        return this;
@@ -70,7 +71,16 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- getRandomFilename --->
+
+	<cffunction access="public" returntype="String" name="getRandomFilename" output="false">
+		<cfargument type="String" name="extension" required="true">
+		<cfscript>
+	        local.fn = getRandomString(12, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & "." & arguments.extension;
+	        instance.logger.debug(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated new random filename: " & local.fn );
+	        return local.fn;
+    	</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getRandomGUID" output="false">
 		<cfscript>

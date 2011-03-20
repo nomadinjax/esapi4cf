@@ -1,5 +1,11 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
+	<!--- TODO: need tests for:
+		getRandomBoolean()
+		getRandomLong()
+		getRandomFilename()
+		getRandomBytes()
+		--->
 	<cfscript>
 		System = createObject("java", "java.lang.System");
 
@@ -25,7 +31,8 @@
 		</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testGetRandomString" output="false" hint="Test of getRandomString method, of class org.owasp.esapi.Randomizer.">
+
+	<cffunction access="public" returntype="void" name="testGetRandomString" output="false" hint="Test of getRandomString method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
 	        System.out.println("getRandomString");
 			DefaultEncoder = javaLoader().create("org.owasp.esapi.Encoder");
@@ -44,7 +51,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testGetRandomInteger" output="false" hint="Test of getRandomInteger method, of class org.owasp.esapi.Randomizer.">
+
+	<cffunction access="public" returntype="void" name="testGetRandomInteger" output="false" hint="Test of getRandomInteger method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
 	        System.out.println("getRandomInteger");
 	        local.min = -20;
@@ -61,7 +69,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testGetRandomReal" output="false" hint="Test of getRandomReal method, of class org.owasp.esapi.Randomizer.">
+
+	<cffunction access="public" returntype="void" name="testGetRandomReal" output="false" hint="Test of getRandomReal method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
 	        System.out.println("getRandomReal");
 	        Float = createObject("java", "java.lang.Float");
@@ -79,7 +88,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testGetRandomGUID" output="false" hint="Test of getRandomGUID method, of class org.owasp.esapi.Randomizer.">
+
+	<cffunction access="public" returntype="void" name="testGetRandomGUID" output="false" hint="Test of getRandomGUID method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
 	        System.out.println("getRandomGUID");
 	        local.instance = instance.ESAPI.randomizer();
@@ -91,5 +101,6 @@
 	        }
     	</cfscript>
 	</cffunction>
+
 
 </cfcomponent>
