@@ -27,7 +27,7 @@
 		<cfargument type="numeric" name="maxLength" required="true" hint="The maximum post-canonicalized String length allowed.">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
 		<cfargument type="boolean" name="canonicalize" required="false" default="true" hint="If canonicalize is true then input will be canonicalized before validation">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -44,7 +44,7 @@
 		<cfargument type="String" name="input" required="true" hint="The actual user input data to validate.">
 		<cfargument type="any" name="format" required="true" hint="java.text.DateFormat: Required formatting of date inputted.">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -61,7 +61,7 @@
 		<cfargument type="String" name="input" required="true" hint="The actual user input data to validate.">
 		<cfargument type="numeric" name="maxLength" required="true" hint="The maximum String length allowed.">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -76,7 +76,7 @@
 		<cfargument type="String" name="context" required="true" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in.">
 		<cfargument type="String" name="input" required="true" hint="The actual user input data to validate.">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -93,7 +93,7 @@
 		<cfargument type="String" name="input" required="true" hint="The actual input data to validate.">
 		<cfargument type="any" name="parent" required="true" hint="java.io.File">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -110,7 +110,7 @@
 		<cfargument type="String" name="input" required="true" hint="The actual input data to validate.">
 		<cfargument type="Array" name="allowedExtensions" required="true">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -129,7 +129,7 @@
 		<cfargument type="numeric" name="minValue" required="true" hint="Lowest legal value for input.">
 		<cfargument type="numeric" name="maxValue" required="true" hint="Highest legal value for input.">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -148,10 +148,18 @@
 		<cfargument type="numeric" name="minValue" required="true" hint="Lowest legal value for input.">
 		<cfargument type="numeric" name="maxValue" required="true" hint="Highest legal value for input.">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
-	<!--- isValidDouble --->
+
+	<cffunction access="public" returntype="boolean" name="isValidDouble" output="false" hint="Calls getValidDouble and returns true if no exceptions are thrown.">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfargument type="numeric" name="minValue" required="true">
+		<cfargument type="numeric" name="maxValue" required="true">
+		<cfargument type="boolean" name="allowNull" required="true">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="any" name="getValidDouble" output="false" hint="Returns a validated real number as a double. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
 		<cfargument type="String" name="context" required="true" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in.">
@@ -159,7 +167,7 @@
 		<cfargument type="numeric" name="minValue" required="true" hint="Lowest legal value for input.">
 		<cfargument type="numeric" name="maxValue" required="true" hint="Highest legal value for input.">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -176,13 +184,13 @@
 		<cfargument type="binary" name="input" required="true" hint="The actual input data to validate.">
 		<cfargument type="numeric" name="maxBytes" required="true" hint="The maximum number of bytes allowed in a legal file.">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isValidFileUpload" output="false" hint="Calls getValidFileUpload and returns true if no exceptions are thrown.">
 		<cfargument type="String" name="context" required="true">
-		<cfargument type="String" name="directorypath" required="true">
+		<cfargument type="String" name="filepath" required="true">
 		<cfargument type="String" name="filename" required="true">
 		<cfargument type="any" name="parent" required="true" hint="java.io.File">
 		<cfargument type="binary" name="content" required="true">
@@ -190,7 +198,19 @@
 		<cfargument type="boolean" name="allowNull" requird="true">
 	</cffunction>
 
-	<!--- assertValidFileUpload --->
+
+	<cffunction access="public" returntype="void" name="assertValidFileUpload" output="false" hint="Validates the filepath, filename, and content of a file. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
+		<cfargument type="String" name="context" required="true" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in.">
+		<cfargument type="String" name="filepath" required="true" hint="The file path of the uploaded file.">
+		<cfargument type="String" name="filename" required="true" hint="The filename of the uploaded file">
+		<cfargument type="any" name="parent" required="true" hint="java.io.File">
+		<cfargument type="binary" name="content" required="true" hint="A byte array containing the content of the uploaded file.">
+		<cfargument type="numeric" name="maxBytes" required="true" hint="The max number of bytes allowed for a legal file upload.">
+		<cfargument type="Array" name="allowedExtensions" required="true">
+		<cfargument type="boolean" name="allowNull" requird="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="boolean" name="isValidListItem" output="false" hint="Calls getValidListItem and returns true if no exceptions are thrown.">
 		<cfargument type="String" name="context" required="true">
@@ -203,7 +223,7 @@
 		<cfargument type="String" name="context" required="true" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in.">
 		<cfargument type="String" name="input" required="true" hint="The value to search 'list' for.">
 		<cfargument type="Array" name="list" required="true" hint="The list to search for 'input'.">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -220,7 +240,7 @@
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="true">
 		<cfargument type="Array" name="required" required="true" hint="parameters that are required to be in HTTP request">
 		<cfargument type="Array" name="optional" required="true" hint="additional parameters that may be in HTTP request">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -237,11 +257,24 @@
 		<cfargument type="any" name="input" required="true" hint="String or Array: data to be returned as valid and printable">
 		<cfargument type="numeric" name="maxLength" required="true" hint="Maximum number of bytes stored in 'input'">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
-		<cfargument type="ValidationErrorList" name="errors" required="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
-	<!--- isValidRedirectLocation --->
-	<!--- getValidRedirectLocation --->
+
+	<cffunction access="public" returntype="boolean" name="isValidRedirectLocation" output="false" hint="Calls getValidRedirectLocation and returns true if no exceptions are thrown.">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfargument type="boolean" name="allowNull" required="true">
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getValidRedirectLocation" output="false" hint="Returns a canonicalized and validated redirect location as a String. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
+		<cfargument type="String" name="context" required="true" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in.">
+		<cfargument type="String" name="input" required="true" hint="redirect location to be returned as valid, according to encoding rules set in ESAPI.properties">
+		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="safeReadLine" output="false" hint="Reads from an input stream until end-of-line or a maximum number of characters. This method protects against the inherent denial of service attack in reading until the end of a line. If an attacker doesn't ever send a newline character, then a normal input stream reader will read until all memory is exhausted and the platform throws an OutOfMemoryError and probably terminates.">
 		<cfargument type="any" name="in" required="true" hint="java.io.InputStream: The InputStream from which to read data">
