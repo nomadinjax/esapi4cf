@@ -83,4 +83,19 @@
 	</cffunction>
 
 
+	<cffunction access="public" returntype="any" name="sanitize" output="false">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfscript>
+			local.toReturn = createObject("java", "java.lang.Integer").valueOf( 0 );
+			try {
+				local.toReturn = safelyParse(arguments.context, arguments.input);
+			} catch (cfesapi.org.owasp.esapi.errorsValidationException e ) {
+				// do nothing
+			}
+			return local.toReturn;
+		</cfscript>
+	</cffunction>
+
+
 </cfcomponent>

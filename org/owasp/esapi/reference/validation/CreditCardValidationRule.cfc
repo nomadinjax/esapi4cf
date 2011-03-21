@@ -39,10 +39,15 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="String" name="getValid" output="false">
+	<cffunction access="public" returntype="any" name="getValid" output="false">
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
+			if (structKeyExists(arguments, "errorList")) {
+				return super.getValid(argumentCollection=arguments);
+			}
+
 			try {
 				// CHECKME should this allow empty Strings? "   " us IsBlank instead?
 			    if ( javaLoader().create("org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
@@ -67,6 +72,7 @@
 			}
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="package" returntype="boolean" name="validCreditCardFormat" output="false" hint="Performs additional validation on the card nummber. This implementation performs Luhn algorithm checking">
 		<cfargument type="String" name="ccNum" required="true" hint="number to be validated">
@@ -101,6 +107,38 @@
 			}
 
 			return local.sum % 10 == 0;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="sanitize" output="false">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfscript>
+			return whitelist( arguments.input, javaLoader().create("org.owasp.esapi.EncoderConstants").CHAR_DIGITS );
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setStringValidatorRule" output="false">
+		<cfargument type="cfesapi.org.owasp.esapi.reference.validation.StringValidationRule" name="ccrule" required="true" hint="the ccrule to set">
+		<cfscript>
+			instance.ccrule = arguments.ccrule;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="StringValidationRule" name="getStringValidatorRule" output="false">
+		<cfscript>
+			return instance.ccrule;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setMaxCardLength" output="false">
+		<cfargument type="numeric" name="maxCardLength" required="true" hint="the maxCardLength to set">
+		<cfscript>
+			instance.maxCardLength = arguments.maxCardLength;
 		</cfscript>
 	</cffunction>
 

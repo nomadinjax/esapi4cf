@@ -1,6 +1,5 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.ValidationRule" output="false" hint="Abstract Class">
 
-	<!--- Abstract Class -- DO NOT INSTANTIATE DIRECTLY --->
 	<cfscript>
 		instance.ESAPI = "";
 
@@ -59,7 +58,15 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- assertValid --->
+
+	<cffunction access="public" returntype="void" name="assertValid" output="false">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfscript>
+			getValid( arguments.context, arguments.input );
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="any" name="getValid" output="false">
 		<cfargument type="String" name="context" required="true">
@@ -117,12 +124,12 @@
 
 	<cffunction access="public" returntype="String" name="whitelist" output="false" hint="Removes characters that aren't in the whitelist from the input String.">
 		<cfargument type="String" name="input" required="true" hint="String to be sanitized">
-		<cfargument type="Array" name="whitelist" required="true" hint="allowed characters">
+		<cfargument type="Array" name="list" required="true" hint="allowed characters">
 		<cfscript>
 			local.stripped = createObject("java", "java.lang.StringBuilder").init();
 			for (local.i = 1; local.i <= len(arguments.input); local.i++) {
 				local.c = mid(arguments.input, local.i, 1);
-				if (arrayFind(arguments.whitelist, local.c)) {
+				if (arrayFind(arguments.list, local.c)) {
 					local.stripped.append(local.c);
 				}
 			}

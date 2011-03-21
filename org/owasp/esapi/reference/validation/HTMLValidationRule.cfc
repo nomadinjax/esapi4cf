@@ -20,13 +20,13 @@
 			try {
 				local.resourceStream = instance.ESAPI.securityConfiguration().getResourceStream("antisamy-esapi.xml");
 			} catch (java.io.IOException e) {
-				throw new ConfigurationRuntimeException("Couldn't find antisamy-esapi.xml", e);
+				throw(object=javaLoader().create("org.apache.commons.configuration.ConfigurationRuntimeException").init("Couldn't find antisamy-esapi.xml", e));
 			}
 	        if (!isNull(local.resourceStream)) {
 	        	try {
 					instance.antiSamyPolicy = javaLoader().create("org.owasp.validator.html.Policy").getInstance(local.resourceStream);
-				} catch (PolicyException e) {
-					throw new ConfigurationRuntimeException("Couldn't parse antisamy policy", e);
+				} catch (org.owasp.validator.html.PolicyException e) {
+					throw(object=javaLoader().create("org.apache.commons.configuration.ConfigurationRuntimeException").init("Couldn't parse antisamy policy", e));
 				}
 			}
 
@@ -35,11 +35,31 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="String" name="getValid" output="false">
+	<cffunction access="public" returntype="any" name="getValid" output="false">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
+		<cfscript>
+			if (structKeyExists(arguments, "errorList")) {
+				return super.getValid(argumentCollection=arguments);
+			}
+
+			return invokeAntiSamy( arguments.context, arguments.input );
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="sanitize" output="false">
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return invokeAntiSamy( arguments.context, arguments.input );
+			local.safe = "";
+			try {
+				local.safe = invokeAntiSamy( arguments.context, arguments.input );
+			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				// just return safe
+			}
+			return local.safe;
 		</cfscript>
 	</cffunction>
 
@@ -53,7 +73,8 @@
 				if (allowNull) {
 					return "";
 				}
-				throw new ValidationException( arguments.context & " is required", "AntiSamy validation error: context=" & arguments.context & ", input=" & arguments.input, arguments.context );
+				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(ESAPI=instance.ESAPI, userMessage=arguments.context & " is required", logMessage="AntiSamy validation error: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
+				throw(message=cfex.getMessage(), type=cfex.getType());
 		    }
 
 			local.canonical = super.getValid( arguments.context, arguments.input );
@@ -70,9 +91,11 @@
 				return local.test.getCleanHTML().trim();
 
 			} catch (org.owasp.validator.html.ScanException e) {
-				throw new ValidationException( arguments.context & ": Invalid HTML input", "Invalid HTML input: context=" & arguments.context & " error=" & e.getMessage(), e, arguments.context );
+				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(instance.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input: context=" & arguments.context & " error=" & e.getMessage(), e, arguments.context );
+				throw(message=cfex.getMessage(), type=cfex.getType());
 			} catch (org.owasp.validator.html.PolicyException e) {
-				throw new ValidationException( arguments.context & ": Invalid HTML input", "Invalid HTML input does not follow rules in antisamy-esapi.xml: context=" & arguments.context & " error=" & e.getMessage(), e, arguments.context );
+				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(instance.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input does not follow rules in antisamy-esapi.xml: context=" & arguments.context & " error=" & e.getMessage(), e, arguments.context );
+				throw(message=cfex.getMessage(), type=cfex.getType());
 			}
 		</cfscript>
 	</cffunction>

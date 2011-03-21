@@ -46,6 +46,21 @@
 	</cffunction>
 
 
+	<cffunction access="public" returntype="any" name="sanitize" output="false">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfscript>
+			local.toReturn = createObject("java", "java.lang.Double").valueOf(0);
+			try {
+				local.toReturn = safelyParse(arguments.context, arguments.input);
+			} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
+				// do nothing
+			}
+			return local.toReturn;
+		</cfscript>
+	</cffunction>
+
+
 	<cffunction access="private" returntype="any" name="safelyParse" output="false" hint="Returns Double or null">
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">

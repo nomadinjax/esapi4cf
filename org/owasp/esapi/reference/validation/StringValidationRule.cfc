@@ -72,6 +72,14 @@
 	</cffunction>
 
 
+	<cffunction access="public" returntype="void" name="setMinimumLength" output="false">
+		<cfargument type="numeric" name="length" required="true">
+		<cfscript>
+			instance.minLength = arguments.length;
+		</cfscript>
+	</cffunction>
+
+
 	<cffunction access="public" returntype="void" name="setMaximumLength" output="false">
 		<cfargument type="numeric" name="length" required="true">
 		<cfscript>
@@ -84,6 +92,71 @@
 		<cfargument type="boolean" name="flag" required="true">
 		<cfscript>
 			instance.validateInputAndCanonical = arguments.flag;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="private" returntype="String" name="checkWhitelist" output="false" hint="checks input against whitelists.">
+		<cfargument type="String" name="context" required="true" hint="The context to include in exception messages">
+		<cfargument type="String" name="input" required="true" hint="the input to check">
+		<cfargument type="String" name="orig" required="false" default="#arguments.input#" hint="A origional input to include in exception messages. This is not included if it is the same as input.">
+		<cfscript>
+			// check whitelist patterns
+			for (local.i = 1; local.i <= arrayLen(instance.whitelistPatterns); local.i++) {
+				local.p = instance.whitelistPatterns[local.i];
+				if ( !local.p.matcher(arguments.input).matches() ) {
+					NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
+					cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(
+						ESAPI = instance.ESAPI,
+						userMessage = arguments.context & ": Invalid input. Please conform to regex " & local.p.pattern() & ( instance.maxLength == createObject("java", "java.lang.Integer").MAX_VALUE ? "" : " with a maximum length of " & instance.maxLength ),
+						logMessage = "Invalid input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & local.p.pattern() & ", input=" & arguments.input & (NullSafe.equals(arguments.orig,arguments.input) ? "" : ", orig=" & arguments.orig),
+						context = arguments.context
+					);
+					throw(message=cfex.getMessage(), type=cfex.getType());
+				}
+			}
+
+			return arguments.input;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="private" returntype="String" name="checkBlacklist" output="false" hint="checks input against blacklists.">
+		<cfargument type="String" name="context" required="true" hint="The context to include in exception messages">
+		<cfargument type="String" name="input" required="true" hint="the input to check">
+		<cfargument type="String" name="orig" required="false" default="#arguments.input#" hint="A origional input to include in exception messages. This is not included if it is the same as input.">
+		<cfscript>
+			// check blacklist patterns
+			for (local.p in instance.blacklistPatterns) {
+				if ( local.p.matcher(arguments.input).matches() ) {
+					NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
+					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. Dangerous input matching " & local.p.pattern() & " detected.", logMessage="Dangerous input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & local.p.pattern() & ", input=" & arguments.input & (NullSafe.equals(arguments.orig,arguments.input) ? "" : ", orig=" & arguments.orig), context=arguments.context );
+					throw(type=cfex.getType(), message=cfex.getMessage());
+				}
+			}
+
+			return arguments.input;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="private" returntype="String" name="checkLength" output="false" hint="checks input lengths">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfargument type="String" name="orig" required="false" default="#arguments.input#">
+		<cfscript>
+			if (arguments.input.length() < instance.minLength) {
+				NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The minimum length of " & instance.minLength & " characters was not met.", logMessage="Input does not meet the minimum length of " & instance.minLength & " by " & (instance.minLength - arguments.input.length()) & " characters: context=" & arguments.context & ", type=" & getTypeName() & "), input=" & arguments.input & (NullSafe.equals(arguments.input,arguments.orig) ? "" : ", orig=" & arguments.orig), context=arguments.context );
+				throw(type=cfex.getType(), message=cfex.getMessage());
+			}
+
+			if (arguments.input.length() > instance.maxLength) {
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The maximum length of " & instance.maxLength & " characters was exceeded.", logMessage="Input exceeds maximum allowed length of " & instance.maxLength & " by " & (arguments.input.length()-instance.maxLength) & " characters: context=" & arguments.context & ", type=" & getTypeName() & ", orig=" & arguments.orig &", input=" & arguments.input, context=arguments.context );
+				throw(type=cfex.getType(), message=cfex.getMessage());
+			}
+
+			return arguments.input;
 		</cfscript>
 	</cffunction>
 
@@ -106,7 +179,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="String" name="getValid" output="false">
+	<cffunction access="public" returntype="any" name="getValid" output="false">
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
@@ -166,75 +239,11 @@
 	</cffunction>
 
 
-	<cffunction access="private" returntype="String" name="checkLength" output="false" hint="checks input lengths">
+	<cffunction access="public" returntype="any" name="sanitize" output="false">
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
-		<cfargument type="String" name="orig" required="false" default="#arguments.input#">
 		<cfscript>
-			if (arguments.input.length() < instance.minLength) {
-				NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The minimum length of " & instance.minLength & " characters was not met.", logMessage="Input does not meet the minimum length of " & instance.minLength & " by " & (instance.minLength - arguments.input.length()) & " characters: context=" & arguments.context & ", type=" & getTypeName() & "), input=" & arguments.input & (NullSafe.equals(arguments.input,arguments.orig) ? "" : ", orig=" & arguments.orig), context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getMessage());
-			}
-
-			if (arguments.input.length() > instance.maxLength) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The maximum length of " & instance.maxLength & " characters was exceeded.", logMessage="Input exceeds maximum allowed length of " & instance.maxLength & " by " & (arguments.input.length()-instance.maxLength) & " characters: context=" & arguments.context & ", type=" & getTypeName() & ", orig=" & arguments.orig &", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getMessage());
-			}
-
-			return arguments.input;
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="private" returntype="String" name="checkWhitelist" output="false" hint="checks input against whitelists.">
-		<cfargument type="String" name="context" required="true" hint="The context to include in exception messages">
-		<cfargument type="String" name="input" required="true" hint="the input to check">
-		<cfargument type="String" name="orig" required="false" default="#arguments.input#" hint="A origional input to include in exception messages. This is not included if it is the same as input.">
-		<cfscript>
-			// check whitelist patterns
-			for (local.i = 1; local.i <= arrayLen(instance.whitelistPatterns); local.i++) {
-				local.p = instance.whitelistPatterns[local.i];
-				if ( !local.p.matcher(arguments.input).matches() ) {
-					NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
-					cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(
-						ESAPI = instance.ESAPI,
-						userMessage = arguments.context & ": Invalid input. Please conform to regex " & local.p.pattern() & ( instance.maxLength == createObject("java", "java.lang.Integer").MAX_VALUE ? "" : " with a maximum length of " & instance.maxLength ),
-						logMessage = "Invalid input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & local.p.pattern() & ", input=" & arguments.input & (NullSafe.equals(arguments.orig,arguments.input) ? "" : ", orig=" & arguments.orig),
-						context = arguments.context
-					);
-					throw(message=cfex.getMessage(), type=cfex.getType());
-				}
-			}
-
-			return arguments.input;
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="private" returntype="String" name="checkBlacklist" output="false" hint="checks input against blacklists.">
-		<cfargument type="String" name="context" required="true" hint="The context to include in exception messages">
-		<cfargument type="String" name="input" required="true" hint="the input to check">
-		<cfargument type="String" name="orig" required="false" default="#arguments.input#" hint="A origional input to include in exception messages. This is not included if it is the same as input.">
-		<cfscript>
-			// check blacklist patterns
-			for (local.p in instance.blacklistPatterns) {
-				if ( local.p.matcher(arguments.input).matches() ) {
-					NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. Dangerous input matching " & local.p.pattern() & " detected.", logMessage="Dangerous input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & local.p.pattern() & ", input=" & arguments.input & (NullSafe.equals(arguments.orig,arguments.input) ? "" : ", orig=" & arguments.orig), context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getMessage());
-				}
-			}
-
-			return arguments.input;
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="setMinimumLength" output="false">
-		<cfargument type="numeric" name="length" required="true">
-		<cfscript>
-			instance.minLength = arguments.length;
+			return whitelist( arguments.input, javaLoader().create("org.owasp.esapi.EncoderConstants").CHAR_ALPHANUMERICS );
 		</cfscript>
 	</cffunction>
 

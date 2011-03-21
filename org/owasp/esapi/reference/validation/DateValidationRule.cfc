@@ -30,11 +30,31 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="Date" name="getValid" output="false">
+	<cffunction access="public" returntype="any" name="getValid" output="false">
+		<cfargument type="String" name="context" required="true">
+		<cfargument type="String" name="input" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
+		<cfscript>
+			if (structKeyExists(arguments, "errorList")) {
+				return super.getValid(argumentCollection=arguments);
+			}
+
+			return safelyParse(arguments.context, arguments.input);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="sanitize" output="false">
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return safelyParse(arguments.context, arguments.input);
+			local.date = createObject("java", "java.util.Date").init(0);
+			try {
+				local.date = safelyParse(arguments.context, arguments.input);
+			} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
+				// do nothing
+		    }
+			return local.date;
 		</cfscript>
 	</cffunction>
 
