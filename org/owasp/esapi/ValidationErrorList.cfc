@@ -1,15 +1,8 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="The ValidationErrorList class defines a well-formed collection of ValidationExceptions so that groups of validation functions can be called in a non-blocking fashion.">
 
 	<cfscript>
 		instance.errorList = {};
 	</cfscript>
-
-	<cffunction access="public" returntype="numeric" name="size" output="false" hint="Returns the numbers of errors present.">
-		<cfscript>
-			return instance.errorList.size();
-		</cfscript>
-	</cffunction>
-
 
 	<cffunction access="public" returntype="void" name="addError" output="false" hint="Adds a new error to list with a unique named context. No action taken if either element is null. Existing contexts will be overwritten.">
 		<cfargument type="String" name="context" required="true" hint="Unique named context for this ValidationErrorList.">
@@ -24,11 +17,32 @@
 	</cffunction>
 
 
+	<cffunction access="public" returntype="Array" name="errors" output="false" hint="list of ValidationException, or empty list of no errors exist.">
+		<cfscript>
+			return listToArray(structValueList(instance.errorList));
+		</cfscript>
+	</cffunction>
+
+
 	<cffunction access="public" returntype="any" name="getError" output="false" hint="cfesapi.org.owasp.esapi.errors.ValidationException: Retrieves ValidationException for given context if one exists.">
 		<cfargument type="String" name="context" required="true" hint="unique name for each error">
 		<cfscript>
 			if (isNull(arguments.context)) return "";
 			return instance.errorList.get(arguments.context);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="boolean" name="isEmpty" output="false" hint="Returns true if no error are present.">
+		<cfscript>
+			return instance.errorList.isEmpty();
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="size" output="false" hint="Returns the numbers of errors present.">
+		<cfscript>
+			return instance.errorList.size();
 		</cfscript>
 	</cffunction>
 
