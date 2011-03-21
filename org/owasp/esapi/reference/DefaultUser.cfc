@@ -167,7 +167,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="Date" name="getExpirationTime" output="false">
+	<cffunction access="public" returntype="any" name="getExpirationTime" output="false" hint="Date">
 		<cfscript>
 			return instance.expirationTime.clone();
 		</cfscript>
@@ -189,7 +189,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="Date" name="getLastFailedLoginTime" output="false">
+	<cffunction access="public" returntype="any" name="getLastFailedLoginTime" output="false" hint="Date">
 		<cfscript>
 			return instance.lastFailedLoginTime.clone();
 		</cfscript>
@@ -206,14 +206,14 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="Date" name="getLastLoginTime" output="false">
+	<cffunction access="public" returntype="any" name="getLastLoginTime" output="false" hint="Date">
 		<cfscript>
 			return instance.lastLoginTime.clone();
 		</cfscript>
 	</cffunction>
 
 
-	<cffunction access="public" returntype="Date" name="getLastPasswordChangeTime" output="false">
+	<cffunction access="public" returntype="any" name="getLastPasswordChangeTime" output="false" hint="Date">
 		<cfscript>
 			return instance.lastPasswordChangeTime.clone();
 		</cfscript>
@@ -545,7 +545,13 @@
 	</cffunction>
 
 	<!--- clone --->
-	<!--- getLocale --->
+
+	<cffunction access="public" returntype="any" name="getLocale" output="false" hint="java.util.Locale">
+		<cfscript>
+			return instance.locale;
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="setLocale" output="false">
 		<cfargument type="any" name="locale" required="true" hint="java.util.Locale: the locale to set">

@@ -1,5 +1,9 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
+	<!--- TODO: need tests for:
+		getLocale()
+		setLocale()
+		--->
 	<cfscript>
 		System = createObject("java", "java.lang.System");
 
