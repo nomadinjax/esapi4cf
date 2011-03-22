@@ -29,7 +29,7 @@
 		<cfargument type="String" name="val" required="true">
 		<cfscript>
 			local.properties = createObject("java", "java.util.Properties").init();
-			local.properties.setProperty(arguments.key, arguments.val);
+			local.properties.setProperty(arguments.key, javaCast("string", arguments.val));
 			return createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, local.properties);
 		</cfscript>
 	</cffunction>
@@ -180,7 +180,7 @@
 			assertEquals(128, local.secConf.getEncryptionKeyLength());
 
 			local.expected = 256;
-			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").KEY_LENGTH, createObject("java", "java.lang.String").valueOf(local.expected));
+			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").KEY_LENGTH, local.expected);
 			assertEquals(local.expected, local.secConf.getEncryptionKeyLength());
 		</cfscript>
 	</cffunction>
@@ -218,7 +218,7 @@
 
 
 			local.properties = createObject("java", "java.util.Properties").init();
-			local.properties.setProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").APPROVED_EXECUTABLES, createObject("java", "java.lang.String").valueOf("/bin/bzip2,/bin/diff, /bin/cvs"));
+			local.properties.setProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").APPROVED_EXECUTABLES, "/bin/bzip2,/bin/diff, /bin/cvs");
 			local.secConf = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, local.properties);
 			local.allowedExecutables = local.secConf.getAllowedExecutables();
 			assertEquals(3, arrayLen(local.allowedExecutables));
@@ -239,7 +239,7 @@
 			assertFalse(local.allowedFileExtensions.isEmpty());
 
 			local.properties = createObject("java", "java.util.Properties").init();
-			local.properties.setProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").APPROVED_UPLOAD_EXTENSIONS, createObject("java", "java.lang.String").valueOf(".txt,.xml,.html,.png"));
+			local.properties.setProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").APPROVED_UPLOAD_EXTENSIONS, ".txt,.xml,.html,.png");
 			local.secConf = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, local.properties);
 			local.allowedFileExtensions = local.secConf.getAllowedFileExtensions();
 			assertEquals(4, arrayLen(local.allowedFileExtensions));
@@ -255,7 +255,7 @@
 			assertTrue(local.secConf.getAllowedFileUploadSize() > (1024 * 100));
 
 			local.expected = (1024 * 1000);
-			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").MAX_UPLOAD_FILE_BYTES, createObject("java", "java.lang.String").valueOf(local.expected));
+			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").MAX_UPLOAD_FILE_BYTES, local.expected);
 			assertEquals(local.expected, local.secConf.getAllowedFileUploadSize());
 		</cfscript>
 	</cffunction>
@@ -440,7 +440,7 @@
 			assertEquals(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").DEFAULT_MAX_LOG_FILE_SIZE, local.secConf.getMaxLogFileSize());
 
 			local.maxLogSize = (1024 * 1000);
-			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").MAX_LOG_FILE_SIZE, createObject("java", "java.lang.String").valueOf(local.maxLogSize));
+			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").MAX_LOG_FILE_SIZE, local.maxLogSize);
 			assertEquals(local.maxLogSize, local.secConf.getMaxLogFileSize());
 		</cfscript>
 	</cffunction>

@@ -113,14 +113,14 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="File" name="getUploadDirectory" output="false">
+	<cffunction access="public" returntype="any" name="getUploadDirectory" output="false">
 		<cfscript>
 			return instance.wrapped.getUploadDirectory();
 		</cfscript>
 	</cffunction>
 
 
-	<cffunction access="public" returntype="File" name="getUploadTempDirectory" output="false">
+	<cffunction access="public" returntype="any" name="getUploadTempDirectory" output="false">
 		<cfscript>
 			return instance.wrapped.getUploadTempDirectory();
 		</cfscript>

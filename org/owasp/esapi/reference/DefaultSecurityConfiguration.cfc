@@ -10,7 +10,7 @@
 		/* The name of the ESAPI property file */
 		static.RESOURCE_FILE = "ESAPI.properties";
 
-		//this.REMEMBER_TOKEN_DURATION = "Authenticator.RememberTokenDuration";
+		this.REMEMBER_TOKEN_DURATION = "Authenticator.RememberTokenDuration";
 	    this.IDLE_TIMEOUT_DURATION = "Authenticator.IdleTimeoutDuration";
 	    this.ABSOLUTE_TIMEOUT_DURATION = "Authenticator.AbsoluteTimeoutDuration";
 	    this.ALLOWED_LOGIN_ATTEMPTS = "Authenticator.AllowedLoginAttempts";
@@ -27,14 +27,14 @@
 	    this.MASTER_SALT = "Encryptor.MasterSalt";
 	    this.KEY_LENGTH = "Encryptor.EncryptionKeyLength";
 	    this.ENCRYPTION_ALGORITHM = "Encryptor.EncryptionAlgorithm";
-	    //this.HASH_ALGORITHM = "Encryptor.HashAlgorithm";
-	    //this.HASH_ITERATIONS = "Encryptor.HashIterations";
+	    this.HASH_ALGORITHM = "Encryptor.HashAlgorithm";
+	    this.HASH_ITERATIONS = "Encryptor.HashIterations";
 	    this.CHARACTER_ENCODING = "Encryptor.CharacterEncoding";
 	    this.RANDOM_ALGORITHM = "Encryptor.RandomAlgorithm";
-	    //this.DIGITAL_SIGNATURE_ALGORITHM = "Encryptor.DigitalSignatureAlgorithm";
-	    //this.DIGITAL_SIGNATURE_KEY_LENGTH = "Encryptor.DigitalSignatureKeyLength";
+	    this.DIGITAL_SIGNATURE_ALGORITHM = "Encryptor.DigitalSignatureAlgorithm";
+	    this.DIGITAL_SIGNATURE_KEY_LENGTH = "Encryptor.DigitalSignatureKeyLength";
 		// New in ESAPI Java 2.0
-		//this.PREFERRED_JCE_PROVIDER = "Encryptor.PreferredJCEProvider";
+		this.PREFERRED_JCE_PROVIDER = "Encryptor.PreferredJCEProvider";
 	    this.CIPHERTEXT_USE_MAC = "Encryptor.CipherText.useMAC";
 	    this.PLAINTEXT_OVERWRITE = "Encryptor.PlainText.overwrite";
 	    this.IV_TYPE = "Encryptor.ChooseIVMethod";
@@ -46,11 +46,11 @@
     	this.APPROVED_EXECUTABLES = "Executor.ApprovedExecutables";
 
     	this.FORCE_HTTPONLYSESSION = "HttpUtilities.ForceHttpOnlySession";
-	    //this.FORCE_SECURESESSION = "HttpUtilities.SecureSession";
+	    this.FORCE_SECURESESSION = "HttpUtilities.SecureSession";
 	    this.FORCE_HTTPONLYCOOKIES = "HttpUtilities.ForceHttpOnlyCookies";
 	    this.FORCE_SECURECOOKIES = "HttpUtilities.ForceSecureCookies";
 		this.MAX_HTTP_HEADER_SIZE = "HttpUtilities.MaxHeaderSize";
-	    //this.UPLOAD_DIRECTORY = "HttpUtilities.UploadDir";
+	    this.UPLOAD_DIRECTORY = "HttpUtilities.UploadDir";
 	    this.UPLOAD_TEMP_DIRECTORY = "HttpUtilities.UploadTempDir";
 	    this.APPROVED_UPLOAD_EXTENSIONS = "HttpUtilities.ApprovedUploadExtensions";
 	    this.MAX_UPLOAD_FILE_BYTES = "HttpUtilities.MaxUploadFileBytes";
@@ -65,7 +65,7 @@
 	    this.LOG_SERVER_IP = "Logger.LogServerIP";
 	    this.VALIDATION_PROPERTIES = "Validator.ConfigurationFile";
 
-		/**
+		/*
 		 * The default max log file size is set to 10,000,000 bytes (10 Meg). If the current log file exceeds the current
 		 * max log file size, the logger will move the old log data into another log file. There currently is a max of
 		 * 1000 log files of the same name. If that is exceeded it will presumably start discarding the oldest logs.
@@ -228,8 +228,8 @@
 		<cfscript>
 	    	local.key = getESAPIPropertyEncoded( this.MASTER_KEY, toBinary("") );
 	    	if ( isNull(local.key) || len(local.key) == 0 ) {
-	    		e = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Property '" & this.MASTER_KEY & "' missing or empty in ESAPI.properties file.");
-           		throw(message=e.getMessage(), type=e.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Property '" & this.MASTER_KEY & "' missing or empty in ESAPI.properties file.");
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 	    	}
 	    	return local.key;
     	</cfscript>
@@ -270,8 +270,8 @@
 		<cfscript>
 	    	local.salt = getESAPIPropertyEncoded( this.MASTER_SALT, toBinary("") );
 	    	if ( isNull(local.salt) || len(local.salt) == 0 ) {
-	    		e = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Property '" & this.MASTER_SALT & "' missing or empty in ESAPI.properties file.");
-           		throw(message=e.getMessage(), type=e.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Property '" & this.MASTER_SALT & "' missing or empty in ESAPI.properties file.");
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 	    	}
 	    	return local.salt;
     	</cfscript>
@@ -526,13 +526,13 @@
 	    		// that for a given key, any particular IV is *NEVER* reused. For
 	    		// now, we will assume that generating a random IV is usually going
 	    		// to be sufficient to prevent this.
-	    		e = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "'" & this.IV_TYPE & "=specified' is not yet implemented. Use 'fixed' or 'random'");
-           		throw(message=e.getMessage(), type=e.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "'" & this.IV_TYPE & "=specified' is not yet implemented. Use 'fixed' or 'random'");
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 	    	} else {
 	    		// TODO: Once 'specified' is legal, adjust exception msg, below.
 	    		// DISCUSS: Could just log this and then silently return "random" instead.
-	    		e = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, local.value & " is illegal value for " & this.IV_TYPE & ". Use 'random' (preferred) or 'fixed'.");
-           		throw(message=e.getMessage(), type=e.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, local.value & " is illegal value for " & this.IV_TYPE & ". Use 'random' (preferred) or 'fixed'.");
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 	    	}
     	</cfscript>
 	</cffunction>
@@ -543,21 +543,33 @@
 	    	if ( getIVType().equalsIgnoreCase("fixed") ) {
 	    		local.ivAsHex = getESAPIProperty(this.FIXED_IV, ""); // No default
 	    		if ( isNull(local.ivAsHex) || local.ivAsHex.trim() == "" ) {
-	    			e = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Fixed IV requires property " & this.FIXED_IV & " to be set, but it is not.");
-	           		throw(message=e.getMessage(), type=e.getType());
+	    			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Fixed IV requires property " & this.FIXED_IV & " to be set, but it is not.");
+	           		throw(message=cfex.getMessage(), type=cfex.getType());
 	    		}
 	    		return local.ivAsHex;		// We do no further checks here as we have no context.
 	    	} else {
 	    		// DISCUSS: Should we just log a warning here and return null instead?
 	    		//			If so, may cause NullPointException somewhere later.
-	    		e = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "IV type not 'fixed' (set to '" & getIVType() & "'), so no fixed IV applicable.");
-           		throw(message=e.getMessage(), type=e.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "IV type not 'fixed' (set to '" & getIVType() & "'), so no fixed IV applicable.");
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 	    	}
     	</cfscript>
 	</cffunction>
 
-	<!--- getHashAlgorithm --->
-	<!--- getHashIterations --->
+
+	<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false">
+		<cfscript>
+        	return getESAPIProperty(this.HASH_ALGORITHM, "SHA-512");
+    	</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getHashIterations" output="false">
+		<cfscript>
+    		return getESAPIProperty(this.HASH_ITERATIONS, 1024);
+    	</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false">
 		<cfscript>
@@ -583,8 +595,20 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getDigitalSignatureAlgorithm --->
-	<!--- getDigitalSignatureKeyLength --->
+
+	<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false">
+		<cfscript>
+        	return getESAPIProperty(this.DIGITAL_SIGNATURE_ALGORITHM, "SHAwithDSA");
+    	</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getDigitalSignatureKeyLength" output="false">
+		<cfscript>
+        	return getESAPIProperty(this.DIGITAL_SIGNATURE_KEY_LENGTH, 1024);
+    	</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getRandomAlgorithm" output="false">
 		<cfscript>
@@ -606,7 +630,14 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- getUploadDirectory --->
+
+	<cffunction access="public" returntype="any" name="getUploadDirectory" output="false" hint="java.io.File">
+		<cfscript>
+	    	local.dir = getESAPIProperty( this.UPLOAD_DIRECTORY, "UploadDir");
+	    	return createObject("java", "java.io.File").init( local.dir );
+    	</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="any" name="getUploadTempDirectory" output="false" hint="java.io.File">
 		<cfscript>
@@ -628,7 +659,7 @@
 
 
 	<cffunction access="public" returntype="any" name="getQuota" output="false" hint="cfesapi.org.owasp.esapi.reference.Threshold">
-		<cfargument type="String" name="eventName" output="false">
+		<cfargument type="String" name="eventName" required="true">
 		<cfscript>
 			local.count = getESAPIProperty("IntrusionDetector." & arguments.eventName & ".count", 0);
 			local.interval = getESAPIProperty("IntrusionDetector." & arguments.eventName & ".interval", 0);
@@ -717,7 +748,13 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- getForceSecureSession --->
+
+	<cffunction access="public" returntype="boolean" name="getForceSecureSession" output="false">
+		<cfscript>
+    		return getESAPIProperty( this.FORCE_SECURESESSION, true );
+    	</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="boolean" name="getForceHttpOnlyCookies" output="false">
 		<cfscript>
@@ -746,7 +783,14 @@
     	</cfscript>
 	</cffunction>
 
-	<!--- getRememberTokenDuration --->
+
+	<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false">
+		<cfscript>
+	        local.days = getESAPIProperty( this.REMEMBER_TOKEN_DURATION, 14 );
+	        return (1000 * 60 * 60 * 24 * local.days);
+    	</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false">
 		<cfscript>
@@ -800,7 +844,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getPreferredJCEProvider --->
+
+	<cffunction access="public" returntype="String" name="getPreferredJCEProvider" output="false">
+		<cfscript>
+	   		return properties.getProperty(this.PREFERRED_JCE_PROVIDER); // No default!
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="Array" name="getCombinedCipherModes" output="false">
 		<cfscript>

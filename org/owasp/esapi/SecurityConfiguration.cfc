@@ -48,18 +48,18 @@
 	<cffunction access="public" returntype="String" name="getHTTPUtilitiesImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI HTTPUtilities implementation.">
 	</cffunction>
 
-	<!---<cffunction access="public" returntype="binary" name="getMasterKey" output="false" hint="Gets the master key. This password is used to encrypt/decrypt other files or types of data that need to be protected by your application.">
-		</cffunction>
 
-		--->
-	<!---<cffunction access="public" returntype="File" name="getUploadDirectory" output="false" hint="Retrieves the upload directory as specified in the ESAPI.properties file.">
-		</cffunction>
+	<cffunction access="public" returntype="binary" name="getMasterKey" output="false" hint="Gets the master key. This password is used to encrypt/decrypt other files or types of data that need to be protected by your application.">
+	</cffunction>
 
-		--->
-	<!---<cffunction access="public" returntype="File" name="getUploadTempDirectory" output="false" hint="Retrieves the temp directory to use when uploading files, as specified in ESAPI.properties.">
-		</cffunction>
 
-		--->
+	<cffunction access="public" returntype="any" name="getUploadDirectory" output="false" hint="java.io.File: Retrieves the upload directory as specified in the ESAPI.properties file.">
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="getUploadTempDirectory" output="false" hint="java.io.File: Retrieves the temp directory to use when uploading files, as specified in ESAPI.properties.">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="numeric" name="getEncryptionKeyLength" output="false" hint="Gets the key length to use in cryptographic operations declared in the ESAPI properties file.">
 	</cffunction>
@@ -102,10 +102,10 @@
 		<cfargument type="String" name="cipherXform" required="true" hint="The new cipher transformation. See getCipherTransformation for format. If null is passed as the parameter, the cipher transformation will be set to the the default taken from the property Encryptor.CipherTransformation in the ESAPI.properties file. BEWARE: there is NO sanity checking here (other than the empty string, and then, only if Java assertions are enabled), so if you set this wrong, you will not get any errors until you later try to use it to encrypt or decrypt data.">
 	</cffunction>
 
-	<!---<cffunction access="public" returntype="String" name="getPreferredJCEProvider" output="false" hint="Retrieve the PREFERRED JCE provider for ESAPI and your application. ESAPI 2.0 now allows setting the property Encryptor.PreferredJCEProvider in the ESAPI.properties file, which will cause the specified JCE provider to be automatically and dynamically loaded (assuming that SecurityManager permissions allow) as the Ii&gt;preferred&lt;/i&gt; JCE provider. (Note this only happens if the JCE provider is not already loaded.) This method returns the property Encryptor.PreferredJCEProvider. By default, this Encryptor.PreferredJCEProvider property is set to an empty string, which means that the preferred JCE provider is not changed.">
-		</cffunction>
 
-		--->
+	<cffunction access="public" returntype="String" name="getPreferredJCEProvider" output="false" hint="Retrieve the PREFERRED JCE provider for ESAPI and your application. ESAPI 2.0 now allows setting the property Encryptor.PreferredJCEProvider in the ESAPI.properties file, which will cause the specified JCE provider to be automatically and dynamically loaded (assuming that SecurityManager permissions allow) as the Ii&gt;preferred&lt;/i&gt; JCE provider. (Note this only happens if the JCE provider is not already loaded.) This method returns the property Encryptor.PreferredJCEProvider. By default, this Encryptor.PreferredJCEProvider property is set to an empty string, which means that the preferred JCE provider is not changed.">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="boolean" name="useMACforCipherText" output="false" hint="Determines whether the CipherText should be used with a Message Authentication Code (MAC). Generally this makes for a more robust cryptographic scheme, but there are some minor performance implications. Controlled by the ESAPI property Encryptor.CipherText.useMAC.">
 	</cffunction>
@@ -130,14 +130,14 @@
 	<cffunction access="public" returntype="Array" name="getAdditionalAllowedCipherModes" output="false" hint="Return List of strings of additional cipher modes that are permitted (i.e., in ADDITION to those returned by getPreferredCipherModes()) to be used for encryption and decryption operations. The list is taken from the comma-separated list of cipher modes specified by the ESAPI property Encryptor.cipher_modes.additional_allowed.">
 	</cffunction>
 
-	<!---<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false" hint="Gets the hashing algorithm used by ESAPI to hash data.">
-		</cffunction>
 
-		--->
-	<!---<cffunction access="public" returntype="numeric" name="getHashIterations" output="false" hint="Gets the hash iterations used by ESAPI to hash data.">
-		</cffunction>
+	<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false" hint="Gets the hashing algorithm used by ESAPI to hash data.">
+	</cffunction>
 
-		--->
+
+	<cffunction access="public" returntype="numeric" name="getHashIterations" output="false" hint="Gets the hash iterations used by ESAPI to hash data.">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false" hint="Gets the character encoding scheme supported by this application. This is used to set the character encoding scheme on requests and responses when setCharacterEncoding() is called on SafeRequests and SafeResponses. This scheme is also used for encoding/decoding URLs and any other place where the current encoding scheme needs to be known. Note: This does not get the configured response content type. That is accessed by calling getResponseContentType().">
 	</cffunction>
@@ -150,35 +150,35 @@
 	<cffunction access="public" returntype="Array" name="getDefaultCanonicalizationCodecs" output="false" hint="Returns the List of Codecs to use when canonicalizing data">
 	</cffunction>
 
-	<!---<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false" hint="Gets the digital signature algorithm used by ESAPI to generate and verify signatures.">
-		</cffunction>
 
-		--->
-	<!---<cffunction access="public" returntype="numeric" name="getDigitalSignatureKeyLength" output="false" hint="Gets the digital signature key length used by ESAPI to generate and verify signatures.">
-		</cffunction>
+	<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false" hint="Gets the digital signature algorithm used by ESAPI to generate and verify signatures.">
+	</cffunction>
 
-		--->
+
+	<cffunction access="public" returntype="numeric" name="getDigitalSignatureKeyLength" output="false" hint="Gets the digital signature key length used by ESAPI to generate and verify signatures.">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getRandomAlgorithm" output="false" hint="Gets the random number generation algorithm used to generate random numbers where needed.">
 	</cffunction>
 
-	<!---<cffunction access="public" returntype="numeric" name="getAllowedLoginAttempts" output="false" hint="Gets the number of login attempts allowed before the user's account is locked. If this many failures are detected within the alloted time period, the user's account will be locked.">
-		</cffunction>
 
-		--->
-	<!---<cffunction access="public" returntype="numeric" name="getMaxOldPasswordHashes" output="false" hint="Gets the maximum number of old password hashes that should be retained. These hashes can be used to ensure that the user doesn't reuse the specified number of previous passwords when they change their password.">
-		</cffunction>
+	<cffunction access="public" returntype="numeric" name="getAllowedLoginAttempts" output="false" hint="Gets the number of login attempts allowed before the user's account is locked. If this many failures are detected within the alloted time period, the user's account will be locked.">
+	</cffunction>
 
-		--->
+
+	<cffunction access="public" returntype="numeric" name="getMaxOldPasswordHashes" output="false" hint="Gets the maximum number of old password hashes that should be retained. These hashes can be used to ensure that the user doesn't reuse the specified number of previous passwords when they change their password.">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="boolean" name="getDisableIntrusionDetection" output="false" hint="Allows for complete disabling of all intrusion detection mechanisms">
 	</cffunction>
 
-	<!---<cffunction access="public" returntype="Threshold" name="getQuota" output="false" hint="Gets the intrusion detection quota for the specified event.">
-		<cfargument type="String" name="eventName" required="true" hint="the name of the event whose quota is desired">
-		</cffunction>
 
-		--->
+	<cffunction access="public" returntype="any" name="getQuota" output="false" hint="cfesapi.org.owasp.esapi.reference.Threshold: Gets the intrusion detection quota for the specified event.">
+		<cfargument type="String" name="eventName" required="true" hint="the name of the event whose quota is desired">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="any" name="getResourceFile" output="false" hint="java.io.File: Gets a file from the resource directory">
 		<cfargument type="String" name="filename" required="true" hint="The file name resource.">
@@ -188,10 +188,10 @@
 	<cffunction access="public" returntype="boolean" name="getForceHttpOnlySession" output="false" hint="Forces new cookies to have HttpOnly flag set.">
 	</cffunction>
 
-	<!---<cffunction access="public" returntype="boolean" name="getForceSecureSession" output="false" hint="Forces session cookies to have Secure flag set.">
-		</cffunction>
 
-		--->
+	<cffunction access="public" returntype="boolean" name="getForceSecureSession" output="false" hint="Forces session cookies to have Secure flag set.">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="boolean" name="getForceHttpOnlyCookies" output="false" hint="Forces new cookies to have HttpOnly flag set.">
 	</cffunction>
@@ -218,18 +218,18 @@
 	<cffunction access="public" returntype="String" name="getResponseContentType" output="false" hint="Gets the content type for responses used when setSafeContentType() is called. Note: This does not get the configured character encoding scheme. That is accessed by calling getCharacterEncoding().">
 	</cffunction>
 
-	<!---<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false" hint="Gets the length of the time to live window for remember me tokens (in milliseconds).">
-		</cffunction>
 
-		--->
-	<!---<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false" hint="Gets the idle timeout length for sessions (in milliseconds). This is the amount of time that a session can live before it expires due to lack of activity. Applications or frameworks could provide a reauthenticate function that enables a session to continue after reauthentication.">
-		</cffunction>
+	<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false" hint="Gets the length of the time to live window for remember me tokens (in milliseconds).">
+	</cffunction>
 
-		--->
-	<!---<cffunction access="public" returntype="numeric" name="getSessionAbsoluteTimeoutLength" output="false" hint="Gets the absolute timeout length for sessions (in milliseconds). This is the amount of time that a session can live before it expires regardless of the amount of user activity. Applications or frameworks could provide a reauthenticate function that enables a session to continue after reauthentication.">
-		</cffunction>
 
-		--->
+	<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false" hint="Gets the idle timeout length for sessions (in milliseconds). This is the amount of time that a session can live before it expires due to lack of activity. Applications or frameworks could provide a reauthenticate function that enables a session to continue after reauthentication.">
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getSessionAbsoluteTimeoutLength" output="false" hint="Gets the absolute timeout length for sessions (in milliseconds). This is the amount of time that a session can live before it expires regardless of the amount of user activity. Applications or frameworks could provide a reauthenticate function that enables a session to continue after reauthentication.">
+	</cffunction>
+
 
 	<cffunction access="public" returntype="boolean" name="getLogEncodingRequired" output="false" hint="Returns whether HTML entity encoding should be applied to log entries.">
 	</cffunction>

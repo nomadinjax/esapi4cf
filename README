@@ -22,7 +22,7 @@ Setup:
 
 MXUnit Tests:
 - You can run the MXUnit tests using: /cfesapi/test/index.cfm (they take a couple minutes)
-- There are currently 254 tests; 229 successes; 14 failures; 11 errors (almost there)
+- There are currently 254 tests = 12 failures + 11 errors + 231 successes (almost there)
 
 Implementation:
 - You can extend any of the default implementations to overwrite the methods you need
