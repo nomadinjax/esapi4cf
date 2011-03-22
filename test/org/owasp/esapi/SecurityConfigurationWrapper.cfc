@@ -296,7 +296,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="Threshold" name="getQuota" output="false">
+	<cffunction access="public" returntype="any" name="getQuota" output="false">
 		<cfargument type="String" name="eventName" required="true">
 		<cfscript>
 			return instance.wrapped.getQuota(arguments.eventName);
