@@ -38,27 +38,27 @@
 	    	try {
 	            // executable must exist
 	            if (!arguments.executable.exists()) {
-	                e = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such executable: " & arguments.executable);
-            		throw(message=e.getMessage(), type=e.getType());
+	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such executable: " & arguments.executable);
+            		throw(message=cfex.getMessage(), type=cfex.getType());
 	            }
 
 	            // executable must use canonical path
 	            if ( !arguments.executable.isAbsolute() ) {
-	                e = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-absolute path: " & arguments.executable);
-            		throw(message=e.getMessage(), type=e.getType());
+	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-absolute path: " & arguments.executable);
+            		throw(message=cfex.getMessage(), type=cfex.getType());
 	            }
 
 	            // executable must use canonical path
 	            if ( !arguments.executable.getPath() == arguments.executable.getCanonicalPath() ) {
-	            	e = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-canonical path: " & arguments.executable);
-            		throw(message=e.getMessage(), type=e.getType());
+	            	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-canonical path: " & arguments.executable);
+            		throw(message=cfex.getMessage(), type=cfex.getType());
 	        	}
 
 	            // exact, absolute, canonical path to executable must be listed in ESAPI configuration
 	            local.approved = instance.ESAPI.securityConfiguration().getAllowedExecutables();
 	            if (!local.approved.contains(arguments.executable.getPath())) {
-	                e = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke executable that is not listed as an approved executable in ESAPI configuration: " & arguments.executable.getPath() & " not listed in " & local.approved );
-            		throw(message=e.getMessage(), type=e.getType());
+	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke executable that is not listed as an approved executable in ESAPI configuration: " & arguments.executable.getPath() & " not listed in " & local.approved );
+            		throw(message=cfex.getMessage(), type=cfex.getType());
 	            }
 
 	            // escape any special characters in the parameters
@@ -69,8 +69,8 @@
 
 	            // working directory must exist
 	            if (!arguments.workdir.exists()) {
-	                e = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath());
-            		throw(message=e.getMessage(), type=e.getType());
+	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath());
+            		throw(message=cfex.getMessage(), type=cfex.getType());
 	            }
 
 	            // set the command into the list and create command array
@@ -114,8 +114,8 @@
 	            	local.process.waitFor();
 	            } catch (Throwable e) {
 	            	local.process.destroy();
-	            	e = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
-            		throw(message=e.getMessage(), type=e.getType());
+	            	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
+            		throw(message=cfex.getMessage(), type=cfex.getType());
 	            }
 
 	            local.output = local.outputBuffer.toString();
@@ -135,9 +135,9 @@
 
 	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "System command complete");
 	            return ExecuteResult.init(exitValue, local.output, local.errors);
-	        } catch (IOException e) {
-	            e = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
-           		throw(message=e.getMessage(), type=e.getType());
+	        } catch (java.io.IOException e) {
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
     	</cfscript>
 	</cffunction>

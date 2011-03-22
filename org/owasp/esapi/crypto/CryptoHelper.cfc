@@ -36,8 +36,8 @@
 				local.kgen.init(arguments.keySize);
 				return local.kgen.generateKey();
 			} catch (java.security.NoSuchAlgorithmException e) {
-				e = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Failed to generate random secret key", "Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e);
-           		throw(message=e.getMessage(), type=e.getType());
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Failed to generate random secret key", "Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e);
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 			}
 		</cfscript>
 	</cffunction>
@@ -63,8 +63,8 @@
 			try {
 				local.inputBytes = arguments.purpose.getBytes("UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				e = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " + e.getMessage(), e);
-           		throw(message=e.getMessage(), type=e.getType());
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.getMessage(), e);
+           		throw(message=cfex.getMessage(), type=cfex.getType());
 			}
 
 				// Note that keyDerivationKey is going to be some SecretKey like an AES or
