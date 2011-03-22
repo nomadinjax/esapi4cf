@@ -40,8 +40,8 @@
 
 	        // validate the name and value
 	        local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
-	        local.cookieName = instance.ESAPI.validator().getValidInput(context="cookie name", input=local.name, type="HTTPCookieName", maxLength=50, allowNull=false, errors=local.errors);
-	        local.cookieValue = instance.ESAPI.validator().getValidInput(context="cookie value", input=local.value, type="HTTPCookieValue", maxLength=instance.ESAPI.securityConfiguration().getMaxHttpHeaderSize(), allowNull=false, errors=local.errors);
+	        local.cookieName = instance.ESAPI.validator().getValidInput(context="cookie name", input=local.name, type="HTTPCookieName", maxLength=50, allowNull=false, errorList=local.errors);
+	        local.cookieValue = instance.ESAPI.validator().getValidInput(context="cookie value", input=local.value, type="HTTPCookieValue", maxLength=instance.ESAPI.securityConfiguration().getMaxHttpHeaderSize(), allowNull=false, errorList=local.errors);
 
 	        // if there are no errors, then just set a cookie header
 	        if (local.errors.size() == 0) {
