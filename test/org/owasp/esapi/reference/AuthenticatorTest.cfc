@@ -1,7 +1,6 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
 		DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
 
 		instance.ESAPI = "";

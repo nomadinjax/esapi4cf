@@ -1,7 +1,6 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
 		Logger = createObject("java", "org.owasp.esapi.Logger");
 
 		instance.ESAPI = "";

@@ -1,8 +1,6 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-
 		instance.ESAPI = "";
 
 		instance.unicodeStr = "A\u00ea\u00f1\u00fcC";	// I.e., "AêñüC"

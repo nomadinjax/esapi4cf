@@ -1,8 +1,6 @@
 <cfcomponent output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-
 		instance.checked = false;
     	instance.unlimited = false;
     </cfscript>

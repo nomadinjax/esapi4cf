@@ -7,8 +7,6 @@
 		getRandomBytes()
 		--->
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-
 		instance.ESAPI = "";
 	</cfscript>
 

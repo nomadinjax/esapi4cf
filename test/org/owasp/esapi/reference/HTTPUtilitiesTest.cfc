@@ -11,8 +11,6 @@
 		setHeader()
 		--->
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-
 		static.CLASS = getMetaData(this);
 		static.CLASS_NAME = listLast(static.CLASS.name, ".");
 

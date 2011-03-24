@@ -5,7 +5,6 @@
 		setLocale()
 		--->
 	<cfscript>
-		System = createObject("java", "java.lang.System");
 		DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 
 		instance.ESAPI = "";

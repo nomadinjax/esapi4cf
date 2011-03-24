@@ -1,6 +1,8 @@
 <cfcomponent extends="mxunit.framework.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		// delete the users.txt file as running all these tests just once creates tons of users
 		// the more users, the longer the tests take
 		filePath = expandPath("/cfesapi/esapi/configuration/.esapi/users.txt");
