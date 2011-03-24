@@ -29,7 +29,7 @@
 				local.policyParameter.set(local.parameterName, local.parameterValue);
 			}
 			local.policyParameter.lock(); //This line makes the policyParameter read only.
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Loaded " & local.numberOfParameters & " parameters: " & local.policyParameter.toString());
+			instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Loaded " & local.numberOfParameters & " parameters: " & local.policyParameter.toString());
 			return local.policyParameter;
 		</cfscript>
 	</cffunction>

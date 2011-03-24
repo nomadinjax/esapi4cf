@@ -6,7 +6,7 @@
 
 	<cffunction access="public" returntype="DynaBeanACRParameter" name="init" output="false">
 		<cfscript>
-			instance.policyProperties = javaLoader().create("org.apache.commons.beanutils.LazyDynaMap").init();
+			instance.policyProperties = createObject("java", "org.apache.commons.beanutils.LazyDynaMap").init();
 
 			return this;
 		</cfscript>

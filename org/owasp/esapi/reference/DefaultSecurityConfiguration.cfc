@@ -678,7 +678,7 @@
 
 	<cffunction access="public" returntype="numeric" name="getLogLevel" output="false">
 		<cfscript>
-			Logger = javaLoader().create("org.owasp.esapi.Logger");
+			Logger = createObject("java", "org.owasp.esapi.Logger");
 
 	        local.level = getESAPIProperty(this.LOG_LEVEL, "WARNING" );
 

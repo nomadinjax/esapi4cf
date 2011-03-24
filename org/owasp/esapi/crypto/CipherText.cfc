@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
+		Logger = createObject("java", "org.owasp.esapi.Logger");
+
 		instance.serialVersionUID = 20100122; // Format: YYYYMMDD
 
 		instance.ESAPI = "";
@@ -132,7 +134,7 @@
 	        if ( isCollected(CipherTextFlags.INITVECTOR) ) {
 	            return instance.cipherSpec_.getIV();
 	        } else {
-	            instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "IV not set yet; unable to retrieve; returning null");
+	            instance.logger.error(Logger.SECURITY_FAILURE, "IV not set yet; unable to retrieve; returning null");
 	            return toBinary("");
 	        }
     	</cfscript>
@@ -153,7 +155,7 @@
 		        System.arraycopy(instance.raw_ciphertext_, 0, local.copy, 0, len(instance.raw_ciphertext_));
 		        return local.copy;
 		    } else {
-		        instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Raw ciphertext not set yet; unable to retrieve; returning null");
+		        instance.logger.error(Logger.SECURITY_FAILURE, "Raw ciphertext not set yet; unable to retrieve; returning null");
 		        return toBinary("");
 		    }
 		</cfscript>
@@ -188,7 +190,7 @@
 		        // Then return the base64 encoded result
 		        return instance.ESAPI.encoder().encodeForBase64(local.ivPlusCipherText, false);
 		    } else {
-		        instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Raw ciphertext and/or IV not set yet; unable to retrieve; returning null");
+		        instance.logger.error(Logger.SECURITY_FAILURE, "Raw ciphertext and/or IV not set yet; unable to retrieve; returning null");
 		        return "";
 		    }
 		</cfscript>
@@ -236,7 +238,7 @@
 		    } else if ( ! local.usesMAC ) {           // Doesn't use MAC
 		        return true;
 		    } else {                            // Uses MAC but it has not been computed / stored.
-		        instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Cannot validate MAC as it was never computed and stored. Decryption result may be garbage even when decryption succeeds.");
+		        instance.logger.warning(Logger.SECURITY_FAILURE, "Cannot validate MAC as it was never computed and stored. Decryption result may be garbage even when decryption succeeds.");
 		        return true;    // Need to return 'true' here because of encrypt() / decrypt() methods don't support this.
 		    }
 		</cfscript>
@@ -277,7 +279,7 @@
 	           		throw(message=cfex.getMessage(), type=cfex.getType());
 	            }
 	            if ( isCollected(CipherTextFlags.CIPHERTEXT) ) {
-	                instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Raw ciphertext was already set; resetting.");
+	                instance.logger.warning(Logger.SECURITY_FAILURE, "Raw ciphertext was already set; resetting.");
 	            }
 	            instance.raw_ciphertext_ = newByte( len(arguments.ciphertext) );
 	            CryptoHelper.copyByteArray(arguments.ciphertext, instance.raw_ciphertext_);
@@ -285,7 +287,7 @@
 	            setEncryptionTimestampCurrent();
 	        } else {
 	            local.logMsg = "Programming error: Attempt to set ciphertext after MAC already computed.";
-	            instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, local.logMsg);
+	            instance.logger.error(Logger.SECURITY_FAILURE, local.logMsg);
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "MAC already set; cannot store new raw ciphertext", local.logMsg);
            		throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
@@ -298,10 +300,10 @@
 		<cfargument type="binary" name="ciphertext" required="true" hint="The raw ciphertext.">
 		<cfscript>
 	        if ( isCollected(CipherTextFlags.INITVECTOR) ) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "IV was already set; resetting.");
+	            instance.logger.warning(Logger.SECURITY_FAILURE, "IV was already set; resetting.");
 	        }
 	        if ( isCollected(CipherTextFlags.CIPHERTEXT) ) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Raw ciphertext was already set; resetting.");
+	            instance.logger.warning(Logger.SECURITY_FAILURE, "Raw ciphertext was already set; resetting.");
 	        }
 	        if ( ! macComputed() ) {
 	            if ( isNull(arguments.ciphertext) || len(arguments.ciphertext) == 0 ) {
@@ -322,7 +324,7 @@
 	            setCiphertext( arguments.ciphertext );
 	        } else {
 	            local.logMsg = "MAC already computed from previously set IV and raw ciphertext; may not be reset -- object is immutable.";
-	            instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, local.logMsg);  // Discuss: By throwing, this gets logged as warning, but it's really error! Why is an exception only a warning???
+	            instance.logger.error(Logger.SECURITY_FAILURE, local.logMsg);  // Discuss: By throwing, this gets logged as warning, but it's really error! Why is an exception only a warning???
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Validation of decryption failed.", local.logMsg);
            		throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
@@ -345,7 +347,7 @@
 	        // from a serialized CipherText object, we want to keep the original
 	        // encryption timestamp.
 	        if ( instance.encryption_timestamp_ != 0 ) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "Attempt to reset non-zero CipherText encryption timestamp to current time!");
+	            instance.logger.warning(Logger.EVENT_FAILURE, "Attempt to reset non-zero CipherText encryption timestamp to current time!");
 	        }
 	        instance.encryption_timestamp_ = getTickCount();
     	</cfscript>
@@ -357,7 +359,7 @@
 		<cfscript>
 	        assert(arguments.timestamp > 0, "Timestamp must be greater than zero.");
 	        if ( instance.encryption_timestamp_ == 0 ) {     // Only set it if it's not yet been set.
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "Attempt to reset non-zero CipherText encryption timestamp to " & createObject("java", "java.util.Date").init( javaCast("long", arguments.timestamp) ) + "!");
+	            instance.logger.warning(Logger.EVENT_FAILURE, "Attempt to reset non-zero CipherText encryption timestamp to " & createObject("java", "java.util.Date").init( javaCast("long", arguments.timestamp) ) + "!");
 	        }
 	        instance.encryption_timestamp_ = arguments.timestamp;
     	</cfscript>
@@ -419,10 +421,10 @@
 						CryptoHelper.arrayCompare(this.separate_mac_, local.that.separate_mac_) &&
 						this.encryption_timestamp_ == local.that.encryption_timestamp_ );
 	            } else {
-	                instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "CipherText.equals(): Cannot compare two CipherText objects that are not complete, and therefore immutable!");
-	                instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "This CipherText: " & this.collectedAll() & ";other CipherText: " & local.that.collectedAll());
-	                instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "CipherText.equals(): Progress comparison: " & ((this.progress == local.that.progress) ? "Same" : "Different"));
-	                instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "CipherText.equals(): Status this: " & this.progress & "; status other CipherText object: " & local.that.progress);
+	                instance.logger.warning(Logger.EVENT_FAILURE, "CipherText.equals(): Cannot compare two CipherText objects that are not complete, and therefore immutable!");
+	                instance.logger.info(Logger.EVENT_FAILURE, "This CipherText: " & this.collectedAll() & ";other CipherText: " & local.that.collectedAll());
+	                instance.logger.info(Logger.EVENT_FAILURE, "CipherText.equals(): Progress comparison: " & ((this.progress == local.that.progress) ? "Same" : "Different"));
+	                instance.logger.info(Logger.EVENT_FAILURE, "CipherText.equals(): Status this: " & this.progress & "; status other CipherText object: " & local.that.progress);
 	                // CHECKME: Perhaps we should throw a RuntimeException instead???
 	                return false;
 	            }
@@ -449,10 +451,10 @@
 	            local.result = local.mac.doFinal( getRawCipherText() );
 	            return local.result;
 	        } catch (NoSuchAlgorithmException e) {
-	            instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Cannot compute MAC w/out HmacSHA1.", e);
+	            instance.logger.error(Logger.SECURITY_FAILURE, "Cannot compute MAC w/out HmacSHA1.", e);
 	            return "";
 	        } catch (InvalidKeyException e) {
-	            instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Cannot comput MAC; invalid 'key' for HmacSHA1.", e);
+	            instance.logger.error(Logger.SECURITY_FAILURE, "Cannot comput MAC; invalid 'key' for HmacSHA1.", e);
 	            return "";
 	        }
     	</cfscript>

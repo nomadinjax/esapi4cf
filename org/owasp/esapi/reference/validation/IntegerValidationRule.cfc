@@ -47,7 +47,7 @@
 			// do not allow empty Strings such as "   " - so trim to ensure isEmpty catches "    "
 			if (!isNull(arguments.input)) arguments.input = arguments.input.trim();
 
-		    if ( javaLoader().create("org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
+		    if ( createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
 				if (instance.allowNull) {
 					return "";
 				}

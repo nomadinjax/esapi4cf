@@ -42,7 +42,7 @@
 	<cffunction access="public" returntype="void" name="testCSRFToken" output="false">
 		<cfscript>
 			System.out.println( "CSRFToken");
-			local.username = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
+			local.username = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.user = instance.ESAPI.authenticator().createUser(local.username, "addCSRFToken", "addCSRFToken");
 			instance.ESAPI.authenticator().setCurrentUser( user=local.user );
 			local.token = instance.ESAPI.httpUtilities().getCSRFToken();
@@ -63,7 +63,7 @@
 	<cffunction access="public" returntype="void" name="testAddCSRFToken" output="false" hint="Test of addCSRFToken method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
 			local.instance = instance.ESAPI.authenticator();
-			local.username = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.username = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			local.user = local.instance.createUser(local.username, "addCSRFToken", "addCSRFToken");
 			local.instance.setCurrentUser( user=local.user );
 
@@ -344,7 +344,7 @@
 				instance.ESAPI.httpUtilities().encryptStateInCookie(local.response, local.map);
 				local.value = local.response.getHeader( "Set-Cookie" );
 				local.encrypted = local.value.substring(local.value.indexOf("=")+1, local.value.indexOf(";"));
-				local.serializedCiphertext = javaLoader().create("org.owasp.esapi.codecs.Hex").decode(local.encrypted);
+				local.serializedCiphertext = createObject("java", "org.owasp.esapi.codecs.Hex").decode(local.encrypted);
 		        local.restoredCipherText = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI).fromPortableSerializedBytes(local.serializedCiphertext);
 		        instance.ESAPI.encryptor().decrypt(ciphertext=local.restoredCipherText);
 			} catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
@@ -362,7 +362,7 @@
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 
-			local.foo = instance.ESAPI.randomizer().getRandomString(4096, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.foo = instance.ESAPI.randomizer().getRandomString(4096, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 
 			local.map = {};
 			local.map.put("long", local.foo);
@@ -399,7 +399,7 @@
 		<cfscript>
 			System.out.println("setRememberToken");
 			local.instance = instance.ESAPI.authenticator();
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			local.password = local.instance.generateStrongPassword();
 			local.user = local.instance.createUser(local.accountName, local.password, local.password);
 			local.user.enable();

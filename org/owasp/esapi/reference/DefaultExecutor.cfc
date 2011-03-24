@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Executor" output="false" hint="Reference implementation of the Executor interface. This implementation is very restrictive. Commands must exactly equal the canonical path to an executable on the system. ">
 
 	<cfscript>
+		Logger = createObject("java", "org.owasp.esapi.Logger");
+
 		instance.ESAPI = "";
 
 		/* The logger. */
@@ -15,11 +17,11 @@
 			instance.logger = instance.ESAPI.getLogger("Executor");
 
 			if ( System.getProperty("os.name").indexOf("Windows") != -1 ) {
-				instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Using WindowsCodec for Executor. If this is not running on Windows this could allow injection" );
-				instance.codec = javaLoader().create("org.owasp.esapi.codecs.WindowsCodec").init();
+				instance.logger.warning( Logger.SECURITY_SUCCESS, "Using WindowsCodec for Executor. If this is not running on Windows this could allow injection" );
+				instance.codec = createObject("java", "org.owasp.esapi.codecs.WindowsCodec").init();
 			} else {
-				instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Using UnixCodec for Executor. If this is not running on Unix this could allow injection" );
-				instance.codec = javaLoader().create("org.owasp.esapi.codecs.UnixCodec").init();
+				instance.logger.warning( Logger.SECURITY_SUCCESS, "Using UnixCodec for Executor. If this is not running on Unix this could allow injection" );
+				instance.codec = createObject("java", "org.owasp.esapi.codecs.UnixCodec").init();
 			}
 
 			return this;
@@ -88,9 +90,9 @@
 	            local.pb.redirectErrorStream(arguments.redirectErrorStream);
 
 	            if ( arguments.logParams ) {
-	            	instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " " & arguments.params & " in " & workdir);
+	            	instance.logger.warning(Logger.SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " " & arguments.params & " in " & workdir);
 	            } else {
-	            	instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " [sensitive parameters obscured] in " & workdir);
+	            	instance.logger.warning(Logger.SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " [sensitive parameters obscured] in " & workdir);
 	            }
 
 	            local.outputBuffer = createObject("java", "java.lang.StringBuilder").init();
@@ -127,13 +129,13 @@
 	            	if (local.logErrors.length() > local.MAX_LEN) {
 	            		local.logErrors = local.logErrors.substring(0, local.MAX_LEN) & "(truncated at " & local.MAX_LEN & " characters)";
 	            	}
-	            	instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Error during system command: " & local.logErrors );
+	            	instance.logger.warning( Logger.SECURITY_SUCCESS, "Error during system command: " & local.logErrors );
 	            }
 	            if ( local.exitValue != 0 ) {
-	            	instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "System command exited with non-zero status: " & local.exitValue );
+	            	instance.logger.warning( Logger.EVENT_FAILURE, "System command exited with non-zero status: " & local.exitValue );
 	            }
 
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "System command complete");
+	            instance.logger.warning(Logger.SECURITY_SUCCESS, "System command complete");
 	            return ExecuteResult.init(exitValue, local.output, local.errors);
 	        } catch (java.io.IOException e) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);

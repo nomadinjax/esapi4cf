@@ -1,7 +1,7 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
-		Logger = javaLoader().create("org.owasp.esapi.Logger");
+		Logger = createObject("java", "org.owasp.esapi.Logger");
 
 		instance.ESAPI = "";
 		instance.logger = "";
@@ -24,7 +24,7 @@
 			local.config = "";
 			local.file = instance.ESAPI.securityConfiguration().getResourceFile("ESAPI-AccessControlPolicy.xml");
 			try {
-			    local.config = javaLoader().create("org.apache.commons.configuration.XMLConfiguration").init(local.file);
+			    local.config = createObject("java", "org.apache.commons.configuration.XMLConfiguration").init(local.file);
 			}
 			catch(org.apache.commons.configuration.ConfigurationException cex) {
 				if(local.file == "") {

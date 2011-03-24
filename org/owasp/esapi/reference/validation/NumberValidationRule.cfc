@@ -66,7 +66,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 			// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-		    if ( javaLoader().create("org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
+		    if ( createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
 				if (instance.allowNull) {
 					return "";
 				}

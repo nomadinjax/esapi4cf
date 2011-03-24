@@ -28,10 +28,10 @@
 
 	        instance.logMessage = arguments.logMessage;
 			if (structKeyExists(arguments, "cause")) {
-				instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "INTRUSION - " & arguments.logMessage, arguments.cause);
+				instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "INTRUSION - " & arguments.logMessage, arguments.cause);
 			}
 			else {
-	        	instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "INTRUSION - " & arguments.logMessage);
+	        	instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "INTRUSION - " & arguments.logMessage);
 			}
 
 			return this;

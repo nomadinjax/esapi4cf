@@ -397,7 +397,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetLogLevel" output="false">
 		<cfscript>
-			Logger = javaLoader().create("org.owasp.esapi.Logger");
+			Logger = createObject("java", "org.owasp.esapi.Logger");
 
 			local.secConf = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, createObject("java", "java.util.Properties").init());
 			assertEquals(Logger.WARNING, local.secConf.getLogLevel());

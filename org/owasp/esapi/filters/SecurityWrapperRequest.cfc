@@ -54,7 +54,7 @@
 	                }
 	                local.newCookies.add(local.n);
 	            } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-	                instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Skipping bad cookie: " & local.c.getName() & "=" & local.c.getValue(), e );
+	                instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Skipping bad cookie: " & local.c.getName() & "=" & local.c.getValue(), e );
 	            }
 	        }
 	        return local.newCookies;
@@ -222,7 +222,7 @@
 		<cfscript>
 			local.port = getHttpServletRequest().getServerPort();
 			if ( local.port < 0 || local.port > 65536 ) {
-				instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "HTTP server port out of range: " & local.port );
+				instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "HTTP server port out of range: " & local.port );
 				local.port = 0;
 			}
 			return local.port;
@@ -252,7 +252,7 @@
 					local.cleanValue = instance.ESAPI.validator().getValidInput("HTTP parameter value: " & local.value, local.value, "HTTPParameterValue", 2000, true);
 					local.newValues.add(local.cleanValue);
 				} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-					instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Skipping bad parameter");
+					instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Skipping bad parameter");
 				}
 			}
 			return local.newValues;

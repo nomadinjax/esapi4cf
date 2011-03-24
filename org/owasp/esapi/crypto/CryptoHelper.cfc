@@ -80,7 +80,7 @@
 				local.mac = createObject("java", "javax.crypto.Mac").getInstance("HmacSHA1");
 				local.mac.init(local.sk);
 			} catch( InvalidKeyException ex ) {
-				instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Created HmacSHA1 Mac but SecretKey sk has alg " & local.sk.getAlgorithm(), ex);
+				instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Created HmacSHA1 Mac but SecretKey sk has alg " & local.sk.getAlgorithm(), ex);
 				throw(object=ex);
 			}
 
@@ -165,7 +165,7 @@
 	                // Error on side of security. If this fails and can't verify MAC
 	                // assume it is invalid. Note that CipherText.toString() does not
 	                // print the actual ciphertext.
-	                instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Unable to validate MAC for ciphertext " & arguments.ct, ex);
+	                instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Unable to validate MAC for ciphertext " & arguments.ct, ex);
 	                return false;
 	            }
 	        }

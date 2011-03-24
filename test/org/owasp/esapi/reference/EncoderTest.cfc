@@ -342,8 +342,8 @@
 		<cfscript>
 	        System.out.println("encodeForSQL");
 	        local.instance = instance.ESAPI.encoder();
-			MySQLCodec = javaLoader().create("org.owasp.esapi.codecs.MySQLCodec");
-			OracleCodec = javaLoader().create("org.owasp.esapi.codecs.OracleCodec");
+			MySQLCodec = createObject("java", "org.owasp.esapi.codecs.MySQLCodec");
+			OracleCodec = createObject("java", "org.owasp.esapi.codecs.OracleCodec");
 
 	        local.mySQL1 = MySQLCodec.init( MySQLCodec.ANSI_MODE );
 	        assertEquals("", local.instance.encodeForSQL(local.mySQL1, ""), "ANSI_MODE");
@@ -520,7 +520,7 @@
     <cffunction access="public" returntype="void" name="testEncodeForBase64" output="false" hint="Test of encodeForBase64 method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 			Arrays = createObject("java", "java.util.Arrays");
-			DefaultEncoder = javaLoader().create("org.owasp.esapi.reference.DefaultEncoder");
+			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 
 	        System.out.println("encodeForBase64");
 	        local.instance = instance.ESAPI.encoder();
@@ -545,7 +545,7 @@
     <cffunction access="public" returntype="void" name="testDecodeFromBase64" output="false" hint="Test of decodeFromBase64 method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 			Arrays = createObject("java", "java.util.Arrays");
-			DefaultEncoder = javaLoader().create("org.owasp.esapi.reference.DefaultEncoder");
+			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 
 			System.out.println("decodeFromBase64");
 			local.instance = instance.ESAPI.encoder();
@@ -578,13 +578,13 @@
     <cffunction access="public" returntype="void" name="testWindowsCodec" output="false" hint="Test of WindowsCodec">
 		<cfscript>
 			Character = createObject("java", "java.lang.Character");
-			DefaultEncoder = javaLoader().create("org.owasp.esapi.reference.DefaultEncoder");
-			PushbackString = javaLoader().create("org.owasp.esapi.codecs.PushbackString");
+			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
+			PushbackString = createObject("java", "org.owasp.esapi.codecs.PushbackString");
 
 	        System.out.println("WindowsCodec");
 	        local.instance = instance.ESAPI.encoder();
 
-	        local.win = javaLoader().create("org.owasp.esapi.codecs.WindowsCodec").init();
+	        local.win = createObject("java", "org.owasp.esapi.codecs.WindowsCodec").init();
 	        local.immune = Character.toChars(0);
 	        assertEquals("", local.instance.encodeForOS(local.win, ""));
 
@@ -618,12 +618,12 @@
     <cffunction access="public" returntype="void" name="testUnixCodec" output="false" hint="Test of UnixCodec">
 		<cfscript>
 			Character = createObject("java", "java.lang.Character");
-			PushbackString = javaLoader().create("org.owasp.esapi.codecs.PushbackString");
+			PushbackString = createObject("java", "org.owasp.esapi.codecs.PushbackString");
 
 	        System.out.println("UnixCodec");
 	        local.instance = instance.ESAPI.encoder();
 
-	        local.unix = javaLoader().create("org.owasp.esapi.codecs.UnixCodec").init();
+	        local.unix = createObject("java", "org.owasp.esapi.codecs.UnixCodec").init();
 	        local.immune = Character.toChars(0);
 	        assertEquals("", local.instance.encodeForOS(local.unix, ""));
 

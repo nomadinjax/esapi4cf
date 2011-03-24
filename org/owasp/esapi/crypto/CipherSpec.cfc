@@ -67,7 +67,7 @@
 		<cfargument type="String" name="cipherXform" required="true" hint="The cipher transformation string; e.g., 'DESede/CBC/PKCS5Padding'.">
 		<cfargument type="boolean" name="fromCipher" required="false" default="false" hint="If true, the cipher transformation was set via Cipher.getAlgorithm() which may only return the actual algorithm. In that case we check and if all 3 parts were not specified, then we specify the parts that were based on 'ECB' as the default cipher mode and 'NoPadding' as the default padding scheme.">
 		<cfscript>
-			assert(javaLoader().create("org.owasp.esapi.StringUtilities").notNullOrEmpty(arguments.cipherXform, true), "cipherXform may not be null or empty");
+			assert(createObject("java", "org.owasp.esapi.StringUtilities").notNullOrEmpty(arguments.cipherXform, true), "cipherXform may not be null or empty");
 			local.parts = arrayLen(arguments.cipherXform.split("/"));
 			assert (( !arguments.fromCipher ? (local.parts == 3) : true ), "Malformed cipherXform (" & arguments.cipherXform & '); must have form: "alg/mode/paddingscheme"');
 			if ( arguments.fromCipher && (local.parts != 3)  ) {

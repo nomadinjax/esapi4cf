@@ -2,7 +2,7 @@
 
 	<cfscript>
 		System = createObject("java", "java.lang.System");
-		DefaultEncoder = javaLoader().create("org.owasp.esapi.Encoder");
+		DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
 
 		instance.ESAPI = "";
 	</cfscript>

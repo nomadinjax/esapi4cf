@@ -20,13 +20,13 @@
 			try {
 				local.resourceStream = instance.ESAPI.securityConfiguration().getResourceStream("antisamy-esapi.xml");
 			} catch (java.io.IOException e) {
-				throw(object=javaLoader().create("org.apache.commons.configuration.ConfigurationRuntimeException").init("Couldn't find antisamy-esapi.xml", e));
+				throw(object=createObject("java", "org.apache.commons.configuration.ConfigurationRuntimeException").init("Couldn't find antisamy-esapi.xml", e));
 			}
 	        if (!isNull(local.resourceStream)) {
 	        	try {
-					instance.antiSamyPolicy = javaLoader().create("org.owasp.validator.html.Policy").getInstance(local.resourceStream);
+					instance.antiSamyPolicy = createObject("java", "org.owasp.validator.html.Policy").getInstance(local.resourceStream);
 				} catch (org.owasp.validator.html.PolicyException e) {
-					throw(object=javaLoader().create("org.apache.commons.configuration.ConfigurationRuntimeException").init("Couldn't parse antisamy policy", e));
+					throw(object=createObject("java", "org.apache.commons.configuration.ConfigurationRuntimeException").init("Couldn't parse antisamy policy", e));
 				}
 			}
 
@@ -69,7 +69,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 			// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-		    if ( javaLoader().create("org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
+		    if ( createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
 				if (allowNull) {
 					return "";
 				}
@@ -80,12 +80,12 @@
 			local.canonical = super.getValid( arguments.context, arguments.input );
 
 			try {
-				local.as = javaLoader().create("org.owasp.validator.html.AntiSamy").init();
+				local.as = createObject("java", "org.owasp.validator.html.AntiSamy").init();
 				local.test = local.as.scan(local.canonical, instance.antiSamyPolicy);
 
 				local.errors = local.test.getErrorMessages();
 				if ( !local.errors.isEmpty() ) {
-					instance.logger.info( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Cleaned up invalid HTML input: " & arrayToList(local.errors) );
+					instance.logger.info( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Cleaned up invalid HTML input: " & arrayToList(local.errors) );
 				}
 
 				return local.test.getCleanHTML().trim();

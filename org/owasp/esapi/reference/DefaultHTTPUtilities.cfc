@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.HTTPUtilities" output="false">
 
 	<cfscript>
+		jLogger = createObject("java", "org.owasp.esapi.Logger");
+
 		this.REMEMBER_TOKEN_COOKIE_NAME = "rtoken";
 		this.MAX_COOKIE_LEN = 4096;            // From RFC 2109
 		//this.MAX_COOKIE_PAIRS = 20;			// From RFC 2109
@@ -84,7 +86,7 @@
 	        	}
 	            return;
 	        }
-	        instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add unsafe data to cookie (skip mode). Skipping cookie and continuing.");
+	        instance.logger.warning(jLogger.SECURITY_FAILURE, "Attempt to add unsafe data to cookie (skip mode). Skipping cookie and continuing.");
     	</cfscript>
 	</cffunction>
 
@@ -110,13 +112,13 @@
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
 	        try {
-	            local.strippedName = javaLoader().create("org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.name);
-	            local.strippedValue = javaLoader().create("org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.value);
+	            local.strippedName = createObject("java", "org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.name);
+	            local.strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.value);
 	            local.safeName = instance.ESAPI.validator().getValidInput("addHeader", local.strippedName, "HTTPHeaderName", 20, false);
 	            local.safeValue = instance.ESAPI.validator().getValidInput("addHeader", local.strippedValue, "HTTPHeaderValue", 500, false);
 	            arguments.response.addHeader(local.safeName, local.safeValue);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-	            logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add invalid header denied", e);
+	            instance.logger.warning(jLogger.SECURITY_FAILURE, "Attempt to add invalid header denied", e);
 	        }
     	</cfscript>
 	</cffunction>
@@ -295,14 +297,14 @@
 	             	local.sb.append(local.name).append("=").append(local.value);
 		    		if ( local.i.hasNext() ) local.sb.append( "&" );
 	    		} catch( cfesapi.org.owasp.esapi.errors.EncodingException e ) {
-	    			instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem encrypting state in cookie - skipping entry", e );
+	    			instance.logger.error(jLogger.SECURITY_FAILURE, "Problem encrypting state in cookie - skipping entry", e );
 	    		}
 	    	}
 
 			local.encrypted = encryptString(local.sb.toString());
 
 			if ( local.encrypted.length() > (this.MAX_COOKIE_LEN ) ) {
-				instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem encrypting state in cookie - skipping entry");
+				instance.logger.error(jLogger.SECURITY_FAILURE, "Problem encrypting state in cookie - skipping entry");
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure", "Encrypted cookie state of " & local.encrypted.length() & " longer than allowed " & this.MAX_COOKIE_LEN );
 				throw(message=cfex.getMessage(), type=cfex.getType());
 			}
@@ -388,8 +390,8 @@
 				}
 
 				// this factory will store ALL files in the temp directory, regardless of size
-				local.factory = javaLoader().create("org.apache.commons.fileupload.disk.DiskFileItemFactory").init(0, local.tempDir);
-				local.upload = javaLoader().create("org.apache.commons.fileupload.servlet.ServletFileUpload").init(local.factory);
+				local.factory = createObject("java", "org.apache.commons.fileupload.disk.DiskFileItemFactory").init(0, local.tempDir);
+				local.upload = createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload").init(local.factory);
 				local.upload.setSizeMax(instance.maxBytes);
 
 				if (local.session != "") {
@@ -408,7 +410,7 @@
 							throw(message=cfex.getMessage(), type=cfex.getType());
 						}
 
-						instance.logger.info(Logger.SECURITY_SUCCESS, "File upload requested: " & local.filename);
+						instance.logger.info(jLogger.SECURITY_SUCCESS, "File upload requested: " & local.filename);
 						local.f = createObject("java", "java.io.File").init(arguments.destinationDir, local.filename);
 	               		if (local.f.exists()) {
 							local.parts = local.filename.split("\\/.");
@@ -423,7 +425,7 @@
 	               		local.newFiles.add(local.f);
 						// delete temporary file
 						local.item.delete();
-						logger.fatal(Logger.SECURITY_SUCCESS, "File successfully uploaded: " & local.f);
+						instance.logger.fatal(jLogger.SECURITY_SUCCESS, "File successfully uploaded: " & local.f);
 	               		if (local.session != "") {
 						    local.session.setAttribute("progress", createObject("java", "java.lang.Long").toString(0));
 						}
@@ -549,7 +551,7 @@
 				}
 		    }
 		    local.msg = arguments.request.getMethod() & " " & arguments.request.getRequestURL() & (local.params.length() > 0 ? "?" & local.params : "");
-		    arguments.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, local.msg);
+		    arguments.logger.info(jLogger.SECURITY_SUCCESS, local.msg);
 	    </cfscript>
 	</cffunction>
 
@@ -596,7 +598,7 @@
 		<cfargument type="String" name="location" required="true">
 		<cfscript>
 	        if (!instance.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
-	            instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Bad redirect location: " & arguments.location);
+	            instance.logger.fatal(jLogger.SECURITY_FAILURE, "Bad redirect location: " & arguments.location);
 	            throw(object=createObject("java", "java.io.IOException").init("Redirect failed"));
 	        }
 	        arguments.response.sendRedirect(arguments.location);
@@ -646,13 +648,13 @@
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
 	        try {
-	            local.strippedName = javaLoader().create("org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.name);
-	            local.strippedValue = javaLoader().create("org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.value);
+	            local.strippedName = createObject("java", "org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.name);
+	            local.strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.value);
 	            local.safeName = instance.ESAPI.validator().getValidInput("setHeader", local.strippedName, "HTTPHeaderName", 20, false);
 	            local.safeValue = instance.ESAPI.validator().getValidInput("setHeader", local.strippedValue, "HTTPHeaderValue", 500, false);
 	            arguments.response.setHeader(local.safeName, local.safeValue);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to set invalid header denied", e);
+	            instance.logger.warning(jLogger.SECURITY_FAILURE, "Attempt to set invalid header denied", e);
 	        }
 		</cfscript>
 	</cffunction>
@@ -694,10 +696,10 @@
 				local.cookie.setDomain( arguments.domain );
 				local.cookie.setPath( arguments.path );
 				arguments.response.addCookie( local.cookie );
-				instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Enabled remember me token for " & user.getAccountName() );
+				instance.logger.info(jLogger.SECURITY_SUCCESS, "Enabled remember me token for " & user.getAccountName() );
 				return local.cryptToken;
 			} catch( cfesapi.org.owasp.esapi.errors.IntegrityException e ) {
-				instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to set remember me token failed for " & user.getAccountName(), e );
+				instance.logger.warning(jLogger.SECURITY_FAILURE, "Attempt to set remember me token failed for " & user.getAccountName(), e );
 				return "";
 			}
 		</cfscript>
@@ -749,7 +751,7 @@
 	        local.pt = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, arguments.plaintext);
 	        local.ct = instance.ESAPI.encryptor().encrypt(plain=local.pt);
 	        local.serializedCiphertext = local.ct.asPortableSerializedByteArray();
-	        return javaLoader().create("org.owasp.esapi.codecs.Hex").encode(local.serializedCiphertext, false);
+	        return createObject("java", "org.owasp.esapi.codecs.Hex").encode(local.serializedCiphertext, false);
     	</cfscript>
 	</cffunction>
 
@@ -757,7 +759,7 @@
 	<cffunction access="private" returntype="String" name="decryptString" output="false" hint="Helper method to decrypt a hex-encode serialized ciphertext string and to decrypt it using the new Encryptor decryption methods.">
 		<cfargument type="String" name="ciphertext" required="true">
 		<cfscript>
-	        local.serializedCiphertext = javaLoader().create("org.owasp.esapi.codecs.Hex").decode(arguments.ciphertext);
+	        local.serializedCiphertext = createObject("java", "org.owasp.esapi.codecs.Hex").decode(arguments.ciphertext);
 	        local.restoredCipherText = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI).fromPortableSerializedBytes(local.serializedCiphertext);
 	        local.plaintext = instance.ESAPI.encryptor().decrypt(ciphertext=local.restoredCipherText);
 	        return local.plaintext.toString();

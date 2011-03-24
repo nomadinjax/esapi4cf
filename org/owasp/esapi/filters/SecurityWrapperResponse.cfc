@@ -52,20 +52,20 @@
 
 	        // if there was an error
 	        if (instance.mode.equals("skip")) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add unsafe data to cookie (skip mode). Skipping cookie and continuing.");
+	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add unsafe data to cookie (skip mode). Skipping cookie and continuing.");
 	            return;
 	        }
 
 	        // add the original cookie to the response and continue
 	        if (instance.mode.equals("log")) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add unsafe data to cookie (log mode). Adding unsafe cookie anyway and continuing.");
+	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add unsafe data to cookie (log mode). Adding unsafe cookie anyway and continuing.");
 	            getHttpServletResponse().addCookie(arguments.cookie);
 	            return;
 	        }
 
 	        // create a sanitized cookie header and continue
 	        if (instance.mode.equals("sanitize")) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add unsafe data to cookie (sanitize mode). Sanitizing cookie and continuing.");
+	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add unsafe data to cookie (sanitize mode). Sanitizing cookie and continuing.");
 	            local.header = createCookieHeader(local.cookieName, local.cookieValue, local.maxAge, local.domain, local.path, local.secure);
 	            this.addHeader("Set-Cookie", local.header);
 	            return;
@@ -113,13 +113,13 @@
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
 	        try {
-	            local.strippedName = javaLoader().create("org.owasp.esapi.StringUtilities").stripControls(arguments.name);
-	            local.strippedValue = javaLoader().create("org.owasp.esapi.StringUtilities").stripControls(arguments.value);
+	            local.strippedName = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.name);
+	            local.strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.value);
 	            local.safeName = instance.ESAPI.validator().getValidInput("addHeader", local.strippedName, "HTTPHeaderName", 20, false);
 	            local.safeValue = instance.ESAPI.validator().getValidInput("addHeader", local.strippedValue, "HTTPHeaderValue", instance.ESAPI.securityConfiguration().getMaxHttpHeaderSize(), false);
 	            getHttpServletResponse().setHeader(local.safeName, local.safeValue);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add invalid header denied", e);
+	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to add invalid header denied", e);
 	        }
         </cfscript>
 	</cffunction>
@@ -137,13 +137,13 @@
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
 	        try {
-	            local.strippedName = javaLoader().create("org.owasp.esapi.StringUtilities").stripControls(arguments.name);
-	            local.strippedValue = javaLoader().create("org.owasp.esapi.StringUtilities").stripControls(arguments.value);
+	            local.strippedName = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.name);
+	            local.strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.value);
 	            local.safeName = instance.ESAPI.validator().getValidInput("setHeader", local.strippedName, "HTTPHeaderName", 20, false);
 	            local.safeValue = instance.ESAPI.validator().getValidInput("setHeader", local.strippedValue, "HTTPHeaderValue", instance.ESAPI.securityConfiguration().getMaxHttpHeaderSize(), false);
 	            getHttpServletResponse().setHeader(local.safeName, local.safeValue);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to set invalid header denied", e);
+	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to set invalid header denied", e);
 	        }
         </cfscript>
 	</cffunction>
@@ -157,7 +157,7 @@
 	            local.safeName = instance.ESAPI.validator().getValidInput("safeSetDateHeader", arguments.name, "HTTPHeaderName", 20, false);
 	            getHttpServletResponse().setDateHeader(local.safeName, arguments.date);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to set invalid date header name denied", e);
+	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Attempt to set invalid date header name denied", e);
 	        }
 		</cfscript>
 	</cffunction>

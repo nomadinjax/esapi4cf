@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Logger" output="false">
 
 	<cfscript>
+		jLevel = createObject("java", "org.apache.log4j.Level");
+
 		instance.ESAPI = "";
 
 		/* The log4j object used by this class to log everything. */
@@ -29,13 +31,12 @@
 			instance.logServerIP = instance.ESAPI.securityConfiguration().getLogServerIP();
 
             instance.moduleName = arguments.moduleName;
-            instance.log4jlogger = javaLoader().create("org.apache.log4j.Logger").getLogger(instance.applicationName & ":" & arguments.moduleName);
+            instance.log4jlogger = createObject("java", "org.apache.log4j.Logger").getLogger(instance.applicationName & ":" & arguments.moduleName);
 
             return this;
         </cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="void" name="setLevel" output="false" hint="Note: In this implementation, this change is not persistent, meaning that if the application is restarted, the log level will revert to the level defined in the ESAPI SecurityConfiguration properties file.">
 		<cfargument type="numeric" name="level" required="true">
@@ -44,7 +45,7 @@
 				instance.log4jlogger.setLevel(convertESAPILeveltoLoggerLevel( arguments.level ));
 			}
 			catch (java.lang.IllegalArgumentException e) {
-				error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "", e);
+				error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "", e);
 			}
 		</cfscript>
 	</cffunction>
@@ -53,7 +54,6 @@
 	<cffunction access="private" returntype="any" name="convertESAPILeveltoLoggerLevel" output="false" hint="org.apache.log4j.Level: Converts the ESAPI logging level (a number) into the levels used by Java's logger.">
 		<cfargument type="numeric" name="level" required="true" hint="The ESAPI to convert.">
 		<cfscript>
-			jLevel = javaLoader().create("org.apache.log4j.Level");
 			switch (arguments.level) {
 				case /*Logger.OFF*/		2147483647:	return jLevel.OFF;
 				case /*Logger.FATAL*/	1000:		return jLevel.FATAL;
@@ -70,74 +70,68 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="void" name="trace" output="false">
 		<cfargument type="any" name="type" required="true" hint="org.owasp.esapi.Logger$EventType">
 		<cfargument type="String" name="message" required="true">
 		<cfargument type="any" name="throwable" required="false" hint="java.lang.Throwable">
 		<cfscript>
-			arguments.level = javaLoader().create("org.apache.log4j.Level").TRACE;
+			arguments.level = jLevel.TRACE;
             logMessage(argumentCollection=arguments);
         </cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="void" name="debug" output="false">
 		<cfargument type="any" name="type" required="true" hint="org.owasp.esapi.Logger$EventType">
 		<cfargument type="String" name="message" required="true">
 		<cfargument type="any" name="throwable" required="false" hint="java.lang.Throwable">
 		<cfscript>
-			arguments.level = javaLoader().create("org.apache.log4j.Level").DEBUG;
+			arguments.level = jLevel.DEBUG;
             logMessage(argumentCollection=arguments);
         </cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="void" name="info" output="false">
 		<cfargument type="any" name="type" required="true" hint="org.owasp.esapi.Logger$EventType">
 		<cfargument type="String" name="message" required="true">
 		<cfargument type="any" name="throwable" required="false" hint="java.lang.Throwable">
 		<cfscript>
-			arguments.level = javaLoader().create("org.apache.log4j.Level").INFO;
+			arguments.level = jLevel.INFO;
 			logMessage(argumentCollection=arguments);
 		</cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="void" name="warning" output="false">
 		<cfargument type="any" name="type" required="true" hint="org.owasp.esapi.Logger$EventType">
 		<cfargument type="String" name="message" required="true">
 		<cfargument type="any" name="throwable" required="false" hint="java.lang.Throwable">
 		<cfscript>
-			arguments.level = javaLoader().create("org.apache.log4j.Level").WARN;
+			arguments.level = jLevel.WARN;
             logMessage(argumentCollection=arguments);
         </cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="void" name="error" output="false">
 		<cfargument type="any" name="type" required="true" hint="org.owasp.esapi.Logger$EventType">
 		<cfargument type="String" name="message" required="true">
 		<cfargument type="any" name="throwable" required="false" hint="java.lang.Throwable">
 		<cfscript>
-			arguments.level = javaLoader().create("org.apache.log4j.Level").ERROR;
+			arguments.level = jLevel.ERROR;
 			logMessage(argumentCollection=arguments);
 		</cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="void" name="fatal" output="false">
 		<cfargument type="any" name="type" required="true" hint="org.owasp.esapi.Logger$EventType">
 		<cfargument type="String" name="message" required="true">
 		<cfargument type="any" name="throwable" required="false" hint="java.lang.Throwable">
 		<cfscript>
-			arguments.level = javaLoader().create("org.apache.log4j.Level").FATAL;
+			arguments.level = jLevel.FATAL;
             logMessage(argumentCollection=arguments);
         </cfscript>
 	</cffunction>
@@ -192,51 +186,45 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="boolean" name="isDebugEnabled" output="false">
 		<cfscript>
-    	    return instance.log4jlogger.isEnabledFor(javaLoader().create("org.apache.log4j.Level").DEBUG);
+    	    return instance.log4jlogger.isEnabledFor(jLevel.DEBUG);
         </cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="boolean" name="isErrorEnabled" output="false">
 		<cfscript>
-    	    return instance.log4jlogger.isEnabledFor(javaLoader().create("org.apache.log4j.Level").ERROR);
+    	    return instance.log4jlogger.isEnabledFor(jLevel.ERROR);
     	</cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="boolean" name="isFatalEnabled" output="false">
 		<cfscript>
-    	    return instance.log4jlogger.isEnabledFor(javaLoader().create("org.apache.log4j.Level").FATAL);
+    	    return instance.log4jlogger.isEnabledFor(jLevel.FATAL);
     	</cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="boolean" name="isInfoEnabled" output="false">
 		<cfscript>
-    	    return instance.log4jlogger.isEnabledFor(javaLoader().create("org.apache.log4j.Level").INFO);
+    	    return instance.log4jlogger.isEnabledFor(jLevel.INFO);
         </cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="boolean" name="isTraceEnabled" output="false">
 		<cfscript>
-            return instance.log4jlogger.isEnabledFor(javaLoader().create("org.apache.log4j.Level").TRACE);
+            return instance.log4jlogger.isEnabledFor(jLevel.TRACE);
         </cfscript>
 	</cffunction>
 
-	<!--- {@inheritDoc} --->
 
 	<cffunction access="public" returntype="boolean" name="isWarningEnabled" output="false">
 		<cfscript>
-    	    return instance.log4jlogger.isEnabledFor(javaLoader().create("org.apache.log4j.Level").WARN);
+    	    return instance.log4jlogger.isEnabledFor(jLevel.WARN);
         </cfscript>
 	</cffunction>
 

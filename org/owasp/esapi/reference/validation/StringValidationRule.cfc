@@ -105,7 +105,7 @@
 			for (local.i = 1; local.i <= arrayLen(instance.whitelistPatterns); local.i++) {
 				local.p = instance.whitelistPatterns[local.i];
 				if ( !local.p.matcher(arguments.input).matches() ) {
-					NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
+					NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 					cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(
 						ESAPI = instance.ESAPI,
 						userMessage = arguments.context & ": Invalid input. Please conform to regex " & local.p.pattern() & ( instance.maxLength == createObject("java", "java.lang.Integer").MAX_VALUE ? "" : " with a maximum length of " & instance.maxLength ),
@@ -129,7 +129,7 @@
 			// check blacklist patterns
 			for (local.p in instance.blacklistPatterns) {
 				if ( local.p.matcher(arguments.input).matches() ) {
-					NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
+					NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. Dangerous input matching " & local.p.pattern() & " detected.", logMessage="Dangerous input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & local.p.pattern() & ", input=" & arguments.input & (NullSafe.equals(arguments.orig,arguments.input) ? "" : ", orig=" & arguments.orig), context=arguments.context );
 					throw(type=cfex.getType(), message=cfex.getMessage());
 				}
@@ -146,7 +146,7 @@
 		<cfargument type="String" name="orig" required="false" default="#arguments.input#">
 		<cfscript>
 			if (arguments.input.length() < instance.minLength) {
-				NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
+				NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The minimum length of " & instance.minLength & " characters was not met.", logMessage="Input does not meet the minimum length of " & instance.minLength & " by " & (instance.minLength - arguments.input.length()) & " characters: context=" & arguments.context & ", type=" & getTypeName() & "), input=" & arguments.input & (NullSafe.equals(arguments.input,arguments.orig) ? "" : ", orig=" & arguments.orig), context=arguments.context );
 				throw(type=cfex.getType(), message=cfex.getMessage());
 			}
@@ -166,13 +166,13 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="String" name="orig" required="false" default="#arguments.input#">
 		<cfscript>
-			if(!javaLoader().create("org.owasp.esapi.StringUtilities").isEmpty(arguments.input)) {
+			if(!createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input)) {
 				return arguments.input;
 			}
 			if (instance.allowNull) {
 				return "";
 			}
-			NullSafe = javaLoader().create("org.owasp.esapi.util.NullSafe");
+			NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input required.", logMessage="Input required: context=" & arguments.context & "), input=" & arguments.input & (NullSafe.equals(arguments.input,arguments.orig) ? "" : ", orig=" & arguments.orig), context=arguments.context );
 			throw(type=cfex.getType(), message=cfex.getMessage());
 		</cfscript>
@@ -243,7 +243,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return whitelist( arguments.input, javaLoader().create("org.owasp.esapi.EncoderConstants").CHAR_ALPHANUMERICS );
+			return whitelist( arguments.input, createObject("java", "org.owasp.esapi.EncoderConstants").CHAR_ALPHANUMERICS );
 		</cfscript>
 	</cffunction>
 

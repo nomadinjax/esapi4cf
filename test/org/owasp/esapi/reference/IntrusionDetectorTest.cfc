@@ -32,7 +32,7 @@
 			instance.ESAPI.intrusionDetector().addException( createObject("java", "java.lang.RuntimeException").init("message") );
 			instance.ESAPI.intrusionDetector().addException( createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, "user message", "log message") );
 			instance.ESAPI.intrusionDetector().addException( createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "user message", "log message") );
-			local.username = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
+			local.username = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 	        local.auth = instance.ESAPI.authenticator();
 			local.user = local.auth.createUser(local.username, "addException", "addException");
 			local.user.enable();
@@ -54,7 +54,7 @@
 	<cffunction access="public" returntype="void" name="testAddEvent" output="false" hint="Test of addEvent method, of class org.owasp.esapi.IntrusionDetector.">
 		<cfscript>
 	        System.out.println("addEvent");
-			local.username = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.username = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 	        local.auth = instance.ESAPI.authenticator();
 			local.user = local.auth.createUser(local.username, "addEvent", "addEvent");
 			local.user.enable();

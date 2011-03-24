@@ -243,7 +243,7 @@
 
 	<cffunction access="public" returntype="String" name="resetCSRFToken" output="false">
 		<cfscript>
-			instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
+			instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			return instance.csrfToken;
         </cfscript>
 	</cffunction>

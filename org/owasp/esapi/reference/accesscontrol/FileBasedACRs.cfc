@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
+		Logger = createObject("java", "org.owasp.esapi.Logger");
+
 		instance.ESAPI = "";
 
 		/* The url map. */
@@ -240,7 +242,7 @@
 				local.canonical = instance.ESAPI.encoder().canonicalize(arguments.roles[local.x].trim());
 
 				if(!instance.ESAPI.validator().isValidInput("Validating user roles in FileBasedAccessController", local.canonical, "RoleName", 20, false)) {
-					instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Role: " & arguments.roles[local.x].trim() & " is invalid, so was not added to the list of roles for this Rule.");
+					instance.logger.warning( Logger.SECURITY_FAILURE, "Role: " & arguments.roles[local.x].trim() & " is invalid, so was not added to the list of roles for this Rule.");
 				} else {
 					local.ret.add(local.canonical.trim());
 				}
@@ -275,22 +277,22 @@
 						local.action = local.parts[3].trim();
 						local.rule.allow = local.action.equalsIgnoreCase("allow");
 						if (local.map.containsKey(local.rule.path)) {
-							instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem in access control file. Duplicate rule ignored: " & local.rule);
+							instance.logger.warning( Logger.SECURITY_FAILURE, "Problem in access control file. Duplicate rule ignored: " & local.rule);
 						} else {
 							local.map.put(local.rule.path, local.rule);
 						}
 					}
 					local.line = instance.ESAPI.validator().safeReadLine(local.is, 500);
 				}
-			} catch (FileNotFoundException e) {
-				instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem in access control file: " & local.ruleset, e );
+			} catch (java.io.FileNotFoundException e) {
+				instance.logger.warning( Logger.SECURITY_FAILURE, "Problem in access control file: " & local.ruleset, e );
 			} finally {
 				try {
 					if (isObject(local.is)) {
 						local.is.close();
 					}
 				} catch (java.io.IOException e) {
-					instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure closing access control file: " & local.ruleset, e);
+					instance.logger.warning(Logger.SECURITY_FAILURE, "Failure closing access control file: " & local.ruleset, e);
 				}
 			}
 			return local.map;
@@ -325,22 +327,22 @@
 							local.rule.actions.add(local.action[local.x].trim());
 						}
 						if (local.map.containsKey(local.rule.path)) {
-							logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem in access control file. Duplicate rule ignored: " & local.rule);
+							logger.warning( Logger.SECURITY_FAILURE, "Problem in access control file. Duplicate rule ignored: " & local.rule);
 						} else {
 							local.map.put(local.rule.path, local.rule);
 						}
 					}
 					local.line = instance.ESAPI.validator().safeReadLine(local.is, 500);
 				}
-			} catch (FileNotFoundException e) {
-				instance.logger.warning( javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem in access control file : " & local.ruleset, e );
+			} catch (java.io.FileNotFoundException e) {
+				instance.logger.warning( Logger.SECURITY_FAILURE, "Problem in access control file : " & local.ruleset, e );
 			} finally {
 				try {
 					if (isObject(local.is)) {
 						local.is.close();
 					}
 				} catch (java.io.IOException e) {
-					instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure closing access control file : " & local.ruleset, e);
+					instance.logger.warning(Logger.SECURITY_FAILURE, "Failure closing access control file : " & local.ruleset, e);
 				}
 			}
 			return local.map;
