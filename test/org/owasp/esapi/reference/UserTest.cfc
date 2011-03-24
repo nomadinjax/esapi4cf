@@ -6,6 +6,7 @@
 		--->
 	<cfscript>
 		System = createObject("java", "java.lang.System");
+		DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 
 		instance.ESAPI = "";
 	</cfscript>
@@ -33,7 +34,7 @@
 	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.reference.DefaultUser" name="createTestUser" output="false" hint="Creates the test user.">
 		<cfargument type="String" name="password" required="true" hint="the password">
 		<cfscript>
-			local.username = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.username = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.e = createObject("java", "java.lang.Exception").init();
 			System.out.println("Creating user " & local.username & " for " & local.e.getStackTrace()[1].getMethodName());
 			local.user = instance.ESAPI.authenticator().createUser(local.username, arguments.password, arguments.password);
@@ -46,9 +47,9 @@
 		<cfscript>
 			System.out.println("addRole");
 			local.instance = instance.ESAPI.authenticator();
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = instance.ESAPI.authenticator().generateStrongPassword();
-			local.role = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			local.role = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_LOWERS);
 			local.user = local.instance.createUser(local.accountName, local.password, local.password);
 			local.user.addRole(local.role);
 			assertTrue(local.user.isInRole(local.role));
@@ -170,7 +171,7 @@
 		<cfscript>
 			System.out.println("getAccountName");
 			local.user = createTestUser("getAccountName");
-			local.accountName = instance.ESAPI.randomizer().getRandomString(7, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(7, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.user.setAccountName(local.accountName);
 			assertEquals(local.accountName.toLowerCase(), local.user.getAccountName());
 			assertFalse("ridiculous" == local.user.getAccountName());
@@ -236,9 +237,9 @@
 		<cfscript>
 			System.out.println("getRoles");
 			local.instance = instance.ESAPI.authenticator();
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = instance.ESAPI.authenticator().generateStrongPassword();
-			local.role = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			local.role = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_LOWERS);
 			local.user = local.instance.createUser(local.accountName, local.password, local.password);
 			local.user.addRole(local.role);
 			local.roles = local.user.getRoles();
@@ -251,7 +252,7 @@
 		<cfscript>
 			System.out.println("getScreenName");
 			local.user = createTestUser("getScreenName");
-			local.screenName = instance.ESAPI.randomizer().getRandomString(7, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.screenName = instance.ESAPI.randomizer().getRandomString(7, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.user.setScreenName(local.screenName);
 			assertEquals(local.screenName, local.user.getScreenName());
 			assertFalse("ridiculous" == local.user.getScreenName());
@@ -263,7 +264,7 @@
 		<cfscript>
 	        System.out.println("getSessions");
 	        local.instance = instance.ESAPI.authenticator();
-	        local.accountName = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+	        local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 	        local.password = instance.ESAPI.authenticator().generateStrongPassword();
 	        local.user = local.instance.createUser(local.accountName, local.password, local.password);
 	        local.session1 = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpSession").init();
@@ -497,7 +498,7 @@
 	<cffunction access="public" returntype="void" name="testRemoveRole" output="false" hint="Test of testRemoveRole method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("removeRole");
-			local.role = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			local.role = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_LOWERS);
 			local.user = createTestUser("removeRole");
 			local.user.addRole(local.role);
 			assertTrue(local.user.isInRole(local.role));
@@ -522,7 +523,7 @@
 		<cfscript>
 			System.out.println("setAccountName");
 			local.user = createTestUser("setAccountName");
-			local.accountName = instance.ESAPI.randomizer().getRandomString(7, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(7, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.user.setAccountName(local.accountName);
 			assertEquals(local.accountName.toLowerCase(), local.user.getAccountName());
 			assertFalse("ridiculous" == local.user.getAccountName());
@@ -535,7 +536,7 @@
 			local.longAgo = createObject("java", "java.util.Date").init(javaCast("long", 0));
 			local.now = createObject("java", "java.util.Date").init();
 			assertTrue(longAgo.before(local.now), "new Date(0) returned " & local.longAgo & " which is considered before new Date() " & local.now & ". Please report this output to the email list or as a issue");
-			local.password = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.password = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.user = createTestUser(local.password);
 			local.user.setExpirationTime(local.longAgo);
 			assertTrue( local.user.isExpired() );
@@ -565,7 +566,7 @@
 		<cfscript>
 			System.out.println("setScreenName");
 			local.user = createTestUser("setScreenName");
-			local.screenName = instance.ESAPI.randomizer().getRandomString(7, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			local.screenName = instance.ESAPI.randomizer().getRandomString(7, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.user.setScreenName(local.screenName);
 			assertEquals(local.screenName, local.user.getScreenName());
 			assertFalse("ridiculous" == local.user.getScreenName());

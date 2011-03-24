@@ -10,19 +10,23 @@ The official version of OWASP ESAPI for ColdFusion/CFML is available here:
 http://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML
 *** But this project was never completed and project is dormant. ***
 
+Compatibility:
+- Adobe ColdFusion 9.01
+...more to come...
+
 Dependencies:
-ESAPI.jar (included)
-JavaLoader (not included)
+- ESAPI.jar (included)
 
 Setup:
-1. Download the JavaLoader (http://javaloader.riaforge.org/)
-2. Setup JavaLoader off your webroot as /javaloader/
-3. Create a folder off your webroot as /cfesapi/
-4. Download these files into that folder
+1. Create a folder off your webroot as /cfesapi/
+2. Download these files into that folder
+3. Copy /cfesapi/esapi/esapi-2.0_rc10.jar to your cfusion lib folder.
+4. Copy contents of /cfesapi/esapi/libs/ to your cfusion lib folder.
+5. Restart ColdFusion.
 
 MXUnit Tests:
 - You can run the MXUnit tests using: /cfesapi/test/index.cfm (they take a couple minutes)
-- There are currently 254 tests = 12 failures + 11 errors + 231 successes (almost there)
+- There are currently 254 tests = 11 failures + 13 errors + 230 successes (almost there)
 
 Implementation:
 - You can extend any of the default implementations to overwrite the methods you need

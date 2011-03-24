@@ -75,8 +75,8 @@
 	<cffunction access="public" returntype="String" name="getRandomFilename" output="false">
 		<cfargument type="String" name="extension" required="true">
 		<cfscript>
-	        local.fn = getRandomString(12, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & "." & arguments.extension;
-	        instance.logger.debug(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated new random filename: " & local.fn );
+	        local.fn = getRandomString(12, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & "." & arguments.extension;
+	        instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated new random filename: " & local.fn );
 	        return local.fn;
     	</cfscript>
 	</cffunction>

@@ -22,7 +22,7 @@
 			// This will throw ConfigurationException if IV type is not set to
 			// 'fixed', which it's not. (We have it set to 'random'.)
 			// myIV = Hex.decode( ESAPI.securityConfiguration().getFixedIV() );
-			instance.myIV = javaLoader().create("org.owasp.esapi.codecs.Hex").decode( "0x000102030405060708090a0b0c0d0e0f" );
+			instance.myIV = createObject("java", "org.owasp.esapi.codecs.Hex").decode( "0x000102030405060708090a0b0c0d0e0f" );
 
 			instance.dfltAESCipher   = createObject("java", "javax.crypto.Cipher").getInstance("AES");
 			instance.dfltECBCipher   = createObject("java", "javax.crypto.Cipher").getInstance("AES/ECB/NoPadding");

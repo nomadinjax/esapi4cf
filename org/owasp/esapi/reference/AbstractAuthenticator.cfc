@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Authenticator" output="false" hint="A partial implementation of the Authenticator interface. This class should not implement any methods that would be meant to modify a User object, since that's probably implementation specific.">
 
 	<cfscript>
+		Logger = createObject("java", "org.owasp.esapi.Logger");
+
 		/* Key for user in session */
     	this.USER = "ESAPIUserSessionKey";
 
@@ -69,7 +71,7 @@
 
 	            local.data = instance.ESAPI.encryptor().unseal(local.token).split("\|");
 	            if (arrayLen(local.data) != 2) {
-	                instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Found corrupt or expired remember token");
+	                instance.logger.warning(Logger.SECURITY_FAILURE, "Found corrupt or expired remember token");
 	                instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 	                return "";
 	            }
@@ -80,17 +82,17 @@
 	            System.out.println("DATA1: " & local.password);
 	            local.user = getUserByAccountName(local.username);
 	            if (!isObject(local.user)) {
-	                instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Found valid remember token but no user matching " & local.username);
+	                instance.logger.warning(Logger.SECURITY_FAILURE, "Found valid remember token but no user matching " & local.username);
 	                return "";
 	            }
 
-	            instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Logging in user with remember token: " & local.user.getAccountName());
+	            instance.logger.info(Logger.SECURITY_SUCCESS, "Logging in user with remember token: " & local.user.getAccountName());
 	            local.user.loginWithPassword(local.password);
 	            return local.user;
 	        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationException ae) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Login via remember me cookie failed", ae);
+	            instance.logger.warning(Logger.SECURITY_FAILURE, "Login via remember me cookie failed", ae);
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Remember token was missing, corrupt, or expired");
+	            instance.logger.warning(Logger.SECURITY_FAILURE, "Remember token was missing, corrupt, or expired");
 	        }
 	        instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 	        return "";
@@ -107,7 +109,7 @@
 	        // if a logged-in user is requesting to login, log them out first
 	        local.user = getCurrentUser();
 	        if (isObject(local.user) && !local.user.isAnonymous()) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User requested relogin. Performing logout then authentication");
+	            instance.logger.warning(Logger.SECURITY_SUCCESS, "User requested relogin. Performing logout then authentication");
 	            local.user.logout();
 	        }
 

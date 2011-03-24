@@ -125,7 +125,7 @@
 	            // Should never happen. UTF8 is built into the rt.jar. We don't use native encoding as
 	            // a fall-back because that simply is not guaranteed to be portable across Java
 	            // platforms and could cause really bizarre errors way downstream.
-	            instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "Ignoring caught UnsupportedEncodingException converting string to UTF8 encoding. Results suspect. Corrupt rt.jar????");
+	            instance.logger.error(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "Ignoring caught UnsupportedEncodingException converting string to UTF8 encoding. Results suspect. Corrupt rt.jar????");
 	        }
     	</cfscript>
 	</cffunction>
@@ -147,7 +147,7 @@
 		<cfargument type="any" name="baos" required="true" hint="java.io.ByteArrayOutputStream">
 		<cfargument type="numeric" name="s" required="true">
 		<cfscript>
-	        local.shortAsByteArray = javaLoader().create("org.owasp.esapi.util.ByteConversionUtil").fromShort(arguments.s);
+	        local.shortAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromShort(arguments.s);
 	        assert(len(local.shortAsByteArray) == 2);
 	        baos.write(local.shortAsByteArray, 0, 2);
     	</cfscript>
@@ -160,7 +160,7 @@
 	        local.shortAsByteArray = newByte(2);
 	        local.ret = arguments.bais.read(local.shortAsByteArray, 0, 2);
 	        assert(local.ret == 2, "readShort: Failed to read 2 bytes.");
-	        return javaLoader().create("org.owasp.esapi.util.ByteConversionUtil").toShort(local.shortAsByteArray);
+	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toShort(local.shortAsByteArray);
     	</cfscript>
 	</cffunction>
 
@@ -169,7 +169,7 @@
 		<cfargument type="any" name="baos" required="true" hint="java.io.ByteArrayOutputStream">
 		<cfargument type="numeric" name="i" required="true">
 		<cfscript>
-	        local.intAsByteArray = javaLoader().create("org.owasp.esapi.util.ByteConversionUtil").fromInt(arguments.i);
+	        local.intAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromInt(arguments.i);
 	        baos.write(local.intAsByteArray, 0, 4);
     	</cfscript>
 	</cffunction>
@@ -181,7 +181,7 @@
 	        local.intAsByteArray = newByte(4);
 	        local.ret = arguments.bais.read(local.intAsByteArray, 0, 4);
 	        assert(local.ret == 4, "readInt: Failed to read 4 bytes.");
-	        return javaLoader().create("org.owasp.esapi.util.ByteConversionUtil").toInt(local.intAsByteArray);
+	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toInt(local.intAsByteArray);
     	</cfscript>
 	</cffunction>
 
@@ -190,7 +190,7 @@
 		<cfargument type="any" name="baos" required="true" hint="java.io.ByteArrayOutputStream">
 		<cfargument type="numeric" name="l" required="true">
 		<cfscript>
-	        local.longAsByteArray = javaLoader().create("org.owasp.esapi.util.ByteConversionUtil").fromLong(arguments.l);
+	        local.longAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromLong(arguments.l);
 	        assert(len(local.longAsByteArray) == 8);
 	        baos.write(local.longAsByteArray, 0, 8);
     	</cfscript>
@@ -203,7 +203,7 @@
 	        local.longAsByteArray = newByte(8);
 	        local.ret = arguments.bais.read(local.longAsByteArray, 0, 8);
 	        assert(local.ret == 8, "readLong: Failed to read 8 bytes.");
-	        return javaLoader().create("org.owasp.esapi.util.ByteConversionUtil").toLong(local.longAsByteArray);
+	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toLong(local.longAsByteArray);
 		</cfscript>
 	</cffunction>
 
@@ -290,7 +290,7 @@
 		<cfargument type="String" name="msg" required="true">
 		<cfscript>
 	        if ( instance.logger.isDebugEnabled() ) {
-	            instance.logger.debug(javaLoader().create("org.owasp.esapi.Logger").EVENT_SUCCESS, arguments.msg);
+	            instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_SUCCESS, arguments.msg);
 	        }
     	</cfscript>
 	</cffunction>

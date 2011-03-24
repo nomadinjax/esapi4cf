@@ -35,14 +35,14 @@
 	<cffunction access="public" returntype="void" name="testGetRandomString" output="false" hint="Test of getRandomString method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
 	        System.out.println("getRandomString");
-			DefaultEncoder = javaLoader().create("org.owasp.esapi.Encoder");
+			DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
 
 	        local.length = 20;
 	        local.instance = instance.ESAPI.randomizer();
 	        for ( local.i = 0; local.i < 100; local.i++ ) {
 	            local.result = local.instance.getRandomString(local.length, DefaultEncoder.CHAR_ALPHANUMERICS );
 	            for ( local.j=0;local.j<local.result.length();local.j++ ) {
-	            	if ( !javaLoader().create("org.owasp.esapi.codecs.Codec").containsCharacter( local.result.charAt(local.j), DefaultEncoder.CHAR_ALPHANUMERICS) ) {
+	            	if ( !createObject("java", "org.owasp.esapi.codecs.Codec").containsCharacter( local.result.charAt(local.j), DefaultEncoder.CHAR_ALPHANUMERICS) ) {
 	            		fail();
 	            	}
 	            }

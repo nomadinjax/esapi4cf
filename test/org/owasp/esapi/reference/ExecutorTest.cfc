@@ -30,7 +30,7 @@
 			ioFile = createObject("java", "java.io.File");
 			ArrayList = createObject("java", "java.util.ArrayList");
 			Collections = createObject("java", "java.util.Collections");
-			WindowsCodec = javaLoader().create("org.owasp.esapi.codecs.WindowsCodec");
+			WindowsCodec = createObject("java", "org.owasp.esapi.codecs.WindowsCodec");
 
 			System.out.println("executeWindowsSystemCommand");
 

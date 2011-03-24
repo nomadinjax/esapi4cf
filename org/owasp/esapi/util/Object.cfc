@@ -4,36 +4,24 @@
 		System = createObject("java", "java.lang.System");
 
 		instance.version = "2.0_rc10";
-		instance.javaLoaderKey = "cfesapi-" & instance.version & "-javaloader";
 	</cfscript>
-	<cfif not structKeyExists(server, instance.javaLoaderKey)>
-		<cflock name="#instance.javaLoaderKey#" throwontimeout="true" timeout="5">
-			<cfscript>
-				if (!structKeyExists(server, instance.javaLoaderKey)) {
-					server[instance.javaLoaderKey] = createObject("component", "javaloader.JavaLoader").init([
-						// ESAPI
-						expandPath("/cfesapi/esapi/ESAPI-" & instance.version & ".jar"),
-						// Custom bridge between CFESAPI and ESAPI for Java
-						expandPath("/cfesapi/esapi/libs/cfesapi.jar"),
-						// Log4JLogger
-						expandPath("/cfesapi/esapi/libs/log4j-1.2.12.jar"),
-						// AccessController - ACRPolicyFileLoader#load()
-						expandPath("/cfesapi/esapi/libs/commons-beanutils-1.7.0.jar"),
-						expandPath("/cfesapi/esapi/libs/commons-collections-3.2.jar"),
-						expandPath("/cfesapi/esapi/libs/commons-configuration-1.5.jar"),
-						expandPath("/cfesapi/esapi/libs/commons-lang-2.3.jar"),
-						// Validator#getValidSafeHTML() - HTMLValidationRule (AntiSamy)
-						expandPath("/cfesapi/esapi/libs/antisamy-1.4.jar"),
-						expandPath("/cfesapi/esapi/libs/batik-css-1.7.jar"),
-						expandPath("/cfesapi/esapi/libs/nekohtml-1.9.12.jar"),
-						expandPath("/cfesapi/esapi/libs/xercesImpl-2.6.2.jar"),
-						// HTTPUtilities#getFileUploads()
-						expandPath("/cfesapi/esapi/libs/commons-fileupload-1.2.jar")
-					]);
-				}
-			</cfscript>
-		</cflock>
-	</cfif>
+	<!---
+		// ESAPI
+		* expandPath("/cfesapi/esapi/ESAPI-" & instance.version & ".jar"),
+		// Custom bridge between CFESAPI and ESAPI for Java
+		expandPath("/cfesapi/esapi/libs/cfesapi.jar"),
+		// Log4JLogger
+		expandPath("/cfesapi/esapi/libs/log4j-1.2.12.jar"),
+		// AccessController - ACRPolicyFileLoader#load()
+		* expandPath("/cfesapi/esapi/libs/commons-configuration-1.5.jar"),
+		// Validator#getValidSafeHTML() - HTMLValidationRule (AntiSamy)
+		* expandPath("/cfesapi/esapi/libs/antisamy-1.4.jar"),
+		expandPath("/cfesapi/esapi/libs/batik-css-1.7.jar"),
+		expandPath("/cfesapi/esapi/libs/nekohtml-1.9.12.jar"),
+		expandPath("/cfesapi/esapi/libs/xercesImpl-2.6.2.jar"),
+		// HTTPUtilities#getFileUploads()
+		* expandPath("/cfesapi/esapi/libs/commons-fileupload-1.2.jar")
+	--->
 	<!--- public methods --->
 
 	<cffunction access="public" returntype="String" name="version" output="false" hint="Returns the CFESAPI version">
@@ -44,17 +32,9 @@
 
 	<!--- private methods --->
 
-	<cffunction access="private" returntype="javaloader.JavaLoader" name="javaLoader" output="false" hint="Returns the JavaLoader object used by CFESAPI">
-		<cfscript>
-			return server[instance.javaLoaderKey];
-		</cfscript>
-	</cffunction>
-
-
 	<cffunction access="private" returntype="any" name="importClass" output="false">
 		<cfargument type="String" name="path" required="true">
 		<cfargument type="String" name="name" required="false" default="">
-		<cfargument type="javaloader.JavaLoader" name="javaloader" required="false">
 		<cfscript>
 			if (len(trim(arguments.name))) {
 				local.name = arguments.name;
@@ -63,12 +43,7 @@
 				local.name = listLast(arguments.path, ".");
 			}
 
-			if (structKeyExists(arguments, "javaloader")) {
-				variables[local.name] = arguments.javaloader.create(arguments.path);
-			}
-			else {
-				variables[local.name] = createObject("java", arguments.path);
-			}
+			variables[local.name] = createObject("java", arguments.path);
 		</cfscript>
 	</cffunction>
 

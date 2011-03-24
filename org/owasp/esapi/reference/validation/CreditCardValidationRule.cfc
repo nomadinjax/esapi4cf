@@ -50,7 +50,7 @@
 
 			try {
 				// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-			    if ( javaLoader().create("org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
+			    if ( createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
 					if (allowNull) {
 						return "";
 					}
@@ -115,7 +115,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return whitelist( arguments.input, javaLoader().create("org.owasp.esapi.EncoderConstants").CHAR_DIGITS );
+			return whitelist( arguments.input, createObject("java", "org.owasp.esapi.EncoderConstants").CHAR_DIGITS );
 		</cfscript>
 	</cffunction>
 

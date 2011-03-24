@@ -2,6 +2,7 @@
 
 	<cfscript>
 		System = createObject("java", "java.lang.System");
+		Logger = createObject("java", "org.owasp.esapi.Logger");
 
 		instance.ESAPI = "";
 		instance.testCount = 0;
@@ -12,8 +13,6 @@
 		<cfscript>
 			structClear(session);
 			structClear(request);
-
-			Logger = javaLoader().create("org.owasp.esapi.Logger");
 
 			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 

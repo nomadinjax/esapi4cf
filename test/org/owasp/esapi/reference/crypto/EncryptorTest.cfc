@@ -142,7 +142,7 @@
 		<cfscript>
 	    	System.out.println("New encrypt / decrypt: " & arguments.cipherXform);
 
-	    	if ( arguments.keySize > 128 && !javaLoader().create("org.owasp.esapi.crypto.CryptoPolicy").isUnlimitedStrengthCryptoAvailable() ) {
+	    	if ( arguments.keySize > 128 && !createObject("java", "org.owasp.esapi.crypto.CryptoPolicy").isUnlimitedStrengthCryptoAvailable() ) {
 	    	    System.out.println("Skipping test for cipher transformation " & arguments.cipherXform & " with key size of " & arguments.keySize & " bits because this requires JCE Unlimited Strength Jurisdiction Policy files to be installed and they are not.");
 	    	    return "";
 	    	}
@@ -238,7 +238,7 @@
 		<cfscript>
 	        System.out.println("testSign()");
 	        local.instance = instance.ESAPI.encryptor();
-	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
+	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
 	        local.signature = local.instance.sign(local.plaintext);
 	        assertTrue( local.instance.verifySignature( local.signature, local.plaintext ) );
 	        assertFalse( local.instance.verifySignature( local.signature, "ridiculous" ) );
@@ -250,7 +250,7 @@
 		<cfscript>
 		    System.out.println("testVerifySignature()");
 	        local.instance = instance.ESAPI.encryptor();
-	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
+	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
 	        local.signature = local.instance.sign(local.plaintext);
 	        assertTrue( local.instance.verifySignature( local.signature, local.plaintext ) );
     	</cfscript>
@@ -260,7 +260,7 @@
 		<cfscript>
 	        System.out.println("testSeal()");
 	        local.instance = instance.ESAPI.encryptor();
-	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, javaLoader().create("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
+	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
 	        local.seal = local.instance.seal( local.plaintext, createObject("java", "java.lang.Long").init(local.instance.getTimeStamp() + 1000*60).longValue() );
 	        local.instance.verifySeal( local.seal );
 

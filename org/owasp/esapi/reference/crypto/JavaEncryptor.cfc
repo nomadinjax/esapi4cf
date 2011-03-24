@@ -259,7 +259,7 @@
 				 //
 				 if ( local.keySize != local.keyLen ) {
 					 // DISCUSS: Technically this is not a security "failure" per se, but not really a "success" either.
-					 instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Encryption key length mismatch. ESAPI.EncryptionKeyLength is " & local.keyLen & " bits, but length of actual encryption key is " & local.keySize & " bits.  Did you remember to regenerate your master key (if that is what you are using)???");
+					 instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Encryption key length mismatch. ESAPI.EncryptionKeyLength is " & local.keyLen & " bits, but length of actual encryption key is " & local.keySize & " bits.  Did you remember to regenerate your master key (if that is what you are using)???");
 				 }
 				 // DISCUSS: Reconsider these warnings. If thousands of encryptions are done in tight loop, no one needs
 				 //          more than 1 warning. Should we do something more intelligent here?
@@ -269,10 +269,10 @@
 					 //	throw the following exception.
 					 //				 throw new ConfigurationException("Actual key size of " + keySize + " bits smaller than specified " +
 					 //						  "encryption key length (ESAPI.EncryptionKeyLength) of " + keyLen + " bits.");
-					 instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Actual key size of " & local.keySize & " bits SMALLER THAN specified encryption key length (ESAPI.EncryptionKeyLength) of " & local.keyLen & " bits with cipher algorithm " & local.cipherAlg);
+					 instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Actual key size of " & local.keySize & " bits SMALLER THAN specified encryption key length (ESAPI.EncryptionKeyLength) of " & local.keyLen & " bits with cipher algorithm " & local.cipherAlg);
 				 }
 				 if ( local.keySize < 112 ) {		// NIST Special Pub 800-57 considers 112-bits to be the minimally safe key size from 2010-2030.
-					 instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Potentially unsecure encryption. Key size of " & local.keySize & "bits not sufficiently long for " & local.cipherAlg & ". Should use appropriate algorithm with key size of *at least* 112 bits except when required by legacy apps. See NIST Special Pub 800-57.");
+					 instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Potentially unsecure encryption. Key size of " & local.keySize & "bits not sufficiently long for " & local.cipherAlg & ". Should use appropriate algorithm with key size of *at least* 112 bits except when required by legacy apps. See NIST Special Pub 800-57.");
 				 }
 				 // Check if algorithm mentioned in SecretKey is same as that being used for Cipher object.
 				 // They should be the same. If they are different, things could fail. (E.g., DES and DESede
@@ -285,7 +285,7 @@
 					 //			 either, but personally I'd prefer the squeaky wheel to the annoying throwing of
 					 //			 a ConfigurationException (which is a RuntimeException). Less likely to upset
 					 //			 the development community.
-					 instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Encryption mismatch between cipher algorithm (" & local.cipherAlg & ") and SecretKey algorithm (" & local.skeyAlg & "). Cipher will use algorithm " & local.cipherAlg);
+					 instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Encryption mismatch between cipher algorithm (" & local.cipherAlg & ") and SecretKey algorithm (" & local.skeyAlg & "). Cipher will use algorithm " & local.cipherAlg);
 				 }
 
 				 local.ivBytes = "";
@@ -335,7 +335,7 @@
 				 } else {
 					 local.encrypter.init(Cipher.ENCRYPT_MODE, local.encKey);
 				 }
-				 instance.logger.debug(javaLoader().create("org.owasp.esapi.Logger").EVENT_SUCCESS, "Encrypting with " & local.cipherSpec.toString());
+				 instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_SUCCESS, "Encrypting with " & local.cipherSpec.toString());
 				 local.raw = local.encrypter.doFinal(local.plaintext);
 		         // Convert to CipherText.
 		         local.ciphertext = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(ESAPI=instance.ESAPI, cipherSpec=local.cipherSpec, cipherText=local.raw);
@@ -348,7 +348,7 @@
 				     local.authKey = CryptoHelper.computeDerivedKey( arguments.key, local.keySize, "authenticity");
 				     local.ciphertext.computeAndStoreMAC(  local.authKey );
 				 }
-				 instance.logger.debug(javaLoader().create("org.owasp.esapi.Logger").EVENT_SUCCESS, "JavaEncryptor.encrypt(SecretKey,byte[],boolean,boolean) -- success!");
+				 instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_SUCCESS, "JavaEncryptor.encrypt(SecretKey,byte[],boolean,boolean) -- success!");
 				 local.success = true;	// W00t!!!
 				 return local.ciphertext;
 			} catch (java.security.InvalidKeyException ike) {
@@ -413,11 +413,11 @@
 						return local.plaintext.toString();	// Convert back to a Java String
 					} catch (java.io.UnsupportedEncodingException e) {
 						// Should never happen; UTF-8 should be in rt.jar.
-						instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "UTF-8 encoding not available! Decryption failed.", e);
+						instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "UTF-8 encoding not available! Decryption failed.", e);
 						return "";	// CHECKME: Or re-throw or what? Could also use native encoding, but that's
 						// likely to cause unexpected and undesired effects far downstream.
 					} catch (java.ui.IOException e) {
-						instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Base64 decoding of IV+ciphertext failed. Decryption failed.", e);
+						instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Base64 decoding of IV+ciphertext failed. Decryption failed.", e);
 						return "";
 					}
 				}
@@ -440,7 +440,7 @@
 		        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Invalid cipher mode " & arguments.ciphertext.getCipherMode() & " not permitted for decryption or encryption operations.");
 				throw(message=cfex.getMessage(), type=cfex.getType());
 		    }
-		    instance.logger.debug(javaLoader().create("org.owasp.esapi.Logger").EVENT_SUCCESS, "Args valid for JavaEncryptor.decrypt(SecretKey,CipherText): " & arguments.ciphertext.toString());
+		    instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_SUCCESS, "Args valid for JavaEncryptor.decrypt(SecretKey,CipherText): " & arguments.ciphertext.toString());
 
 		    local.plaintext = "";
 		    local.caughtException = false;
@@ -484,7 +484,7 @@
 		            local.logMsg = "Programming error: unexpected progress mark == " & local.progressMark;
 		        break;
 		        }
-		        instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, local.logMsg);
+		        instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, local.logMsg);
 		        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, ex); // Re-throw
 				throw(message=cfex.getMessage(), type=cfex.getType());
 		    }
@@ -650,7 +650,7 @@
 	                ; // Ignore; should never happen since UTF-8 built into rt.jar
 	            }
 				// mix in some random data so even identical data and timestamp produces different seals
-				local.nonce = instance.ESAPI.randomizer().getRandomString(10, javaLoader().create("org.owasp.esapi.EncoderConstants").CHAR_ALPHANUMERICS);
+				local.nonce = instance.ESAPI.randomizer().getRandomString(10, createObject("java", "org.owasp.esapi.EncoderConstants").CHAR_ALPHANUMERICS);
 				local.plaintext = arguments.timestamp & ":" & local.nonce & ":" & local.b64data;
 				// add integrity check; signature is already base64 encoded.
 				local.sig = this.sign( local.plaintext );
@@ -755,7 +755,7 @@
 	        // counters) and then every Nth time thereafter. Logging every single
 	        // time is likely to be way too much logging.
 	        if ( (local.counter % instance.logEveryNthUse) == 0 ) {
-	            instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.where & arguments.msg);
+	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.where & arguments.msg);
 	        }
     	</cfscript>
 	</cffunction>

@@ -48,7 +48,7 @@
 	            local.hashes.remove(local.hashes.size() - 1);
 	        }
 	        instance.passwordMap.put(arguments.user.getAccountId(), local.hashes);
-	        instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "New hashed password stored for " & arguments.user.getAccountName());
+	        instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "New hashed password stored for " & arguments.user.getAccountName());
     	</cfscript>
 	</cffunction>
 
@@ -147,7 +147,7 @@
 				throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
 	        instance.userMap.put(local.user.getAccountId(), local.user);
-	        instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "New user created: " & arguments.accountName);
+	        instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "New user created: " & arguments.accountName);
 	        saveUsers();
 	        return local.user;
     	</cfscript>
@@ -161,7 +161,7 @@
 			if (structKeyExists(arguments, "user") && structKeyExists(arguments, "oldPassword")) {
         		local.newPassword = _generateStrongPassword(arguments.oldPassword);
 				if (!isNull(local.newPassword)) {
-					instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated strong password for " & arguments.user.getAccountName());
+					instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated strong password for " & arguments.user.getAccountName());
 				}
 				return local.newPassword;
 			}
@@ -174,7 +174,7 @@
 	<cffunction access="private" returntype="String" name="_generateStrongPassword" output="false" hint="Generate a strong password that is not similar to the specified old password.">
 		<cfargument type="String" name="oldPassword" required="true" hint="the password to be compared to the new password for similarity">
 		<cfscript>
-			EncoderConstants = javaLoader().create("org.owasp.esapi.EncoderConstants");
+			EncoderConstants = createObject("java", "org.owasp.esapi.EncoderConstants");
 
 	        local.r = instance.ESAPI.randomizer();
 	        local.letters = local.r.getRandomInteger(4, 6);  // inclusive, exclusive
@@ -183,7 +183,7 @@
 	        local.passDigits = local.r.getRandomString(local.digits, EncoderConstants.CHAR_PASSWORD_DIGITS);
 	        local.passSpecial = local.r.getRandomString(1, EncoderConstants.CHAR_PASSWORD_SPECIALS);
 	        local.newPassword = local.passLetters & local.passSpecial & local.passDigits;
-	        if (javaLoader().create("org.owasp.esapi.StringUtilities").getLevenshteinDistance(arguments.oldPassword, local.newPassword) > 5) {
+	        if (createObject("java", "org.owasp.esapi.StringUtilities").getLevenshteinDistance(arguments.oldPassword, local.newPassword) > 5) {
 	            return local.newPassword;
 	        }
 	        return _generateStrongPassword(arguments.oldPassword);
@@ -217,7 +217,7 @@
 					throw(message=cfex.getMessage(), type=cfex.getType());
 	            }
 	            setHashedPassword(arguments.user, local.newHash);
-	            instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password changed for user: " & local.accountName);
+	            instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password changed for user: " & local.accountName);
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Password change failed", "Encryption exception changing password for " & local.accountName, ee);
 				throw(message=cfex.getMessage(), type=cfex.getType());
@@ -237,13 +237,13 @@
 	            if (local.hash.equals(local.currentHash)) {
 	                arguments.user.setLastLoginTime(now());
 	                arguments.user.setFailedLoginCount(0);
-	                instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password verified for " & local.accountName);
+	                instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password verified for " & local.accountName);
 	                return true;
 	            }
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
-	            instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Encryption error verifying password for " & local.accountName);
+	            instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Encryption error verifying password for " & local.accountName);
 	        }
-	        instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Password verification failed for " & local.accountName);
+	        instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Password verification failed for " & local.accountName);
 	        return false;
     	</cfscript>
 	</cffunction>
@@ -310,9 +310,9 @@
 	            instance.userDB = createObject("java", "java.io.File").init(expandPath(instance.ESAPI.securityConfiguration().getResourceDirectory()), "users.txt");
 	            try {
 	                if (!instance.userDB.createNewFile()) throw(object=createObject("java", "java.io.IOException").init("Unable to create the user file"));
-	                instance.logger.warning(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Created " & instance.userDB.getAbsolutePath());
+	                instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Created " & instance.userDB.getAbsolutePath());
 	            } catch (java.io.IOException e) {
-	                instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Could not create " & instance.userDB.getAbsolutePath(), e);
+	                instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Could not create " & instance.userDB.getAbsolutePath(), e);
 	            }
 	        }
 
@@ -333,7 +333,7 @@
 
 	<cffunction access="private" returntype="void" name="loadUsersImmediately" output="false">
 		<cfscript>
-            instance.logger.trace(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Loading users from " & instance.userDB.getAbsolutePath());
+            instance.logger.trace(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Loading users from " & instance.userDB.getAbsolutePath());
 
             local.reader = "";
             try {
@@ -344,7 +344,7 @@
                     if (local.line.length() > 0 && local.line.charAt(0) != chr(35)) {
                         local.user = _createUser(local.line);
                         if (local.map.containsKey(newLong(local.user.getAccountId()))) {
-                            instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem in user file. Skipping duplicate user: " & local.user, "");
+                            instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem in user file. Skipping duplicate user: " & local.user, "");
                         }
                         local.map.put(local.user.getAccountId(), local.user);
                     }
@@ -352,16 +352,16 @@
                 }
                 instance.userMap = local.map;
                 instance.lastModified = getTickCount();
-                instance.logger.trace(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User file reloaded: " & local.map.size());
+                instance.logger.trace(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "User file reloaded: " & local.map.size());
             } catch (Exception e) {
-                instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure loading user file: " & instance.userDB.getAbsolutePath(), e);
+                instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure loading user file: " & instance.userDB.getAbsolutePath(), e);
             } finally {
                 try {
                     if (!isNull(local.reader)) {
                         local.reader.close();
                     }
                 } catch (java.io.IOException e) {
-                    instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure closing user file: " & instance.userDB.getAbsolutePath(), e);
+                    instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure closing user file: " & instance.userDB.getAbsolutePath(), e);
                 }
             }
         </cfscript>
@@ -432,7 +432,7 @@
 				throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
 	        instance.userMap.remove(local.user.getAccountId());
-	        instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Removing user " & local.user.getAccountName());
+	        instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Removing user " & local.user.getAccountName());
 	        instance.passwordMap.remove(local.user);
 	        saveUsers();
     	</cfscript>
@@ -466,10 +466,10 @@
 	            local.writer.println();
 	            saveUsers(local.writer);
 	            local.writer.flush();
-	            instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User file written to disk");
+	            instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "User file written to disk");
 	       	}
 	       	catch (java.io.IOException e) {
-	            instance.logger.fatal(javaLoader().create("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
+	            instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Internal Error", "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
 				throw(message=cfex.getMessage(), type=cfex.getType());
 	        }
@@ -555,7 +555,7 @@
 		<cfargument type="String" name="newPassword" required="true">
 		<cfscript>
 			Arrays = createObject("java", "java.util.Arrays");
-			EncoderConstants = javaLoader().create("org.owasp.esapi.EncoderConstants");
+			EncoderConstants = createObject("java", "org.owasp.esapi.EncoderConstants");
 
 	        if (isNull(arguments.newPassword)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid password", "New password cannot be null");

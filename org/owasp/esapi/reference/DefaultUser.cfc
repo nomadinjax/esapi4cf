@@ -1,6 +1,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.User" output="false">
 
 	<cfscript>
+		Logger = createObject("java", "org.owasp.esapi.Logger");
+
 		instance.ESAPI = "";
 
 		/* The idle timeout length specified in the ESAPI config file. */
@@ -101,7 +103,7 @@
 			local.roleName = arguments.role.toLowerCase();
 			if ( instance.ESAPI.validator().isValidInput("addRole", local.roleName, "RoleName", static.MAX_ROLE_LENGTH, false) ) {
 				instance.roles.add(local.roleName);
-				instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Role " & local.roleName & " added to " & getAccountName() );
+				instance.logger.info(Logger.SECURITY_SUCCESS, "Role " & local.roleName & " added to " & getAccountName() );
 			} else {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Add role failed", "Attempt to add invalid role " & local.roleName & " to " & getAccountName() );
 				throw(message=cfex.getMessage(), type=cfex.getType());
@@ -133,7 +135,7 @@
 	<cffunction access="public" returntype="void" name="disable" output="false">
 		<cfscript>
 			instance.enabled = false;
-			instance.logger.info( javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account disabled: " & getAccountName() );
+			instance.logger.info( Logger.SECURITY_SUCCESS, "Account disabled: " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -141,7 +143,7 @@
 	<cffunction access="public" returntype="void" name="enable" output="false">
 		<cfscript>
 			instance.enabled = true;
-			instance.logger.info( javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account enabled: " & getAccountName() );
+			instance.logger.info( Logger.SECURITY_SUCCESS, "Account enabled: " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -341,7 +343,7 @@
 	<cffunction access="public" returntype="void" name="lock" output="false">
 		<cfscript>
 			instance.locked = true;
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account locked: " & getAccountName() );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "Account locked: " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -388,7 +390,7 @@
 				instance.ESAPI.authenticator().setCurrentUser(this);
 				setLastLoginTime(createObject("java", "java.util.Date").init());
 	            setLastHostAddress( instance.ESAPI.httpUtilities().getCurrentRequest().getRemoteAddr() );
-				instance.logger.trace(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User logged in: " & getAccountName() );
+				instance.logger.trace(Logger.SECURITY_SUCCESS, "User logged in: " & getAccountName() );
 			} else {
 				instance.loggedIn = false;
 				setLastFailedLoginTime(createObject("java", "java.util.Date").init());
@@ -414,7 +416,7 @@
 			}
 			instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), "JSESSIONID");
 			instance.loggedIn = false;
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Logout successful" );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "Logout successful" );
 			instance.ESAPI.authenticator().setCurrentUser( createObject("component", "cfesapi.org.owasp.esapi.reference.AnonymousUser") );
 		</cfscript>
 	</cffunction>
@@ -424,7 +426,7 @@
 		<cfargument type="String" name="role" required="true">
 		<cfscript>
 			instance.roles.remove(arguments.role.toLowerCase());
-			instance.logger.trace(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Role " & role & " removed from " & getAccountName() );
+			instance.logger.trace(Logger.SECURITY_SUCCESS, "Role " & role & " removed from " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -433,7 +435,7 @@
 		<cfscript>
 			// user.csrfToken = instance.ESAPI.encryptor().hash( session.getId(),user.name );
 			// user.csrfToken = instance.ESAPI.encryptor().encrypt( address + ":" + ESAPI.encryptor().getTimeStamp();
-			instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, javaLoader().create("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
+			instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			return instance.csrfToken;
 		</cfscript>
 	</cffunction>
@@ -448,7 +450,7 @@
 			if ( local.old.equals( "" ) ) {
 				local.old = "[nothing]";
 			}
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account name changed from " & local.old & " to " & getAccountName() );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "Account name changed from " & local.old & " to " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -457,7 +459,7 @@
 		<cfargument type="Date" name="expirationTime" required="true">
 		<cfscript>
 			instance.expirationTime = createObject("java", "java.util.Date").init( javaCast("long", arguments.expirationTime.getTime()) );
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account expiration time set to " & instance.expirationTime & " for " & getAccountName() );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "Account expiration time set to " & instance.expirationTime & " for " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -466,7 +468,7 @@
 		<cfargument type="Date" name="lastFailedLoginTime" required="true">
 		<cfscript>
 			instance.lastFailedLoginTime = arguments.lastFailedLoginTime;
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Set last failed login time to " & instance.lastFailedLoginTime & " for " & getAccountName() );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "Set last failed login time to " & instance.lastFailedLoginTime & " for " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -488,7 +490,7 @@
 		<cfargument type="Date" name="lastLoginTime" required="true">
 		<cfscript>
 			instance.lastLoginTime = arguments.lastLoginTime;
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Set last successful login time to " & instance.lastLoginTime & " for " & getAccountName() );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "Set last successful login time to " & instance.lastLoginTime & " for " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -497,7 +499,7 @@
 		<cfargument type="Date" name="lastPasswordChangeTime" required="true">
 		<cfscript>
 			instance.lastPasswordChangeTime = arguments.lastPasswordChangeTime;
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Set last password change time to " & instance.lastPasswordChangeTime & " for " & getAccountName() );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "Set last password change time to " & instance.lastPasswordChangeTime & " for " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -507,7 +509,7 @@
 		<cfscript>
 			instance.roles = [];
 			this.addRoles(arguments.roles);
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Adding roles " & arrayToList(arguments.roles) & " to " & getAccountName() );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "Adding roles " & arrayToList(arguments.roles) & " to " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -516,7 +518,7 @@
 		<cfargument type="String" name="screenName" required="true">
 		<cfscript>
 			instance.screenName = arguments.screenName;
-			instance.logger.info(javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "ScreenName changed to " & arguments.screenName & " for " & getAccountName() );
+			instance.logger.info(Logger.SECURITY_SUCCESS, "ScreenName changed to " & arguments.screenName & " for " & getAccountName() );
 		</cfscript>
 	</cffunction>
 
@@ -532,7 +534,7 @@
 		<cfscript>
 			instance.locked = false;
 			instance.failedLoginCount = 0;
-			instance.logger.info( javaLoader().create("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account unlocked: " & getAccountName() );
+			instance.logger.info( Logger.SECURITY_SUCCESS, "Account unlocked: " & getAccountName() );
 		</cfscript>
 	</cffunction>
 

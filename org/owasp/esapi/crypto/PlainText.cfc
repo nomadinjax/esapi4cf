@@ -26,7 +26,7 @@
 					instance.rawBytes = arguments.str.getBytes("UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					// Should never happen.
-					instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "PlainText(String) CTOR failed: Can't find UTF-8 byte-encoding!", e);
+					instance.logger.error(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "PlainText(String) CTOR failed: Can't find UTF-8 byte-encoding!", e);
 					throw(object=createObject("java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
 				}
 			}
@@ -42,7 +42,7 @@
 				return createObject("java", "java.lang.String").init(instance.rawBytes, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				// Should never happen.
-				instance.logger.error(javaLoader().create("org.owasp.esapi.Logger").EVENT_FAILURE, "PlainText.toString() failed: Can't find UTF-8 byte-encoding!", e);
+				instance.logger.error(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "PlainText.toString() failed: Can't find UTF-8 byte-encoding!", e);
 				throw(object=createObject("java", "java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
 			}
 		</cfscript>
