@@ -5,23 +5,6 @@
 
 		instance.version = "2.0_rc10";
 	</cfscript>
-	<!---
-		// ESAPI
-		* expandPath("/cfesapi/esapi/ESAPI-" & instance.version & ".jar"),
-		// Custom bridge between CFESAPI and ESAPI for Java
-		expandPath("/cfesapi/esapi/libs/cfesapi.jar"),
-		// Log4JLogger
-		expandPath("/cfesapi/esapi/libs/log4j-1.2.12.jar"),
-		// AccessController - ACRPolicyFileLoader#load()
-		* expandPath("/cfesapi/esapi/libs/commons-configuration-1.5.jar"),
-		// Validator#getValidSafeHTML() - HTMLValidationRule (AntiSamy)
-		* expandPath("/cfesapi/esapi/libs/antisamy-1.4.jar"),
-		expandPath("/cfesapi/esapi/libs/batik-css-1.7.jar"),
-		expandPath("/cfesapi/esapi/libs/nekohtml-1.9.12.jar"),
-		expandPath("/cfesapi/esapi/libs/xercesImpl-2.6.2.jar"),
-		// HTTPUtilities#getFileUploads()
-		* expandPath("/cfesapi/esapi/libs/commons-fileupload-1.2.jar")
-	--->
 	<!--- public methods --->
 
 	<cffunction access="public" returntype="String" name="version" output="false" hint="Returns the CFESAPI version">
