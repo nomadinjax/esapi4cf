@@ -31,7 +31,7 @@
 		<cfscript>
 			if (!isNull(instance.accessControlRules.get(arguments.key))) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Duplicate keys are not allowed. " & "Key: " & arguments.key, "");
-            	throw(message=cfex.getMessage(), type=cfex.getType());
+            	throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 			//try {
 				local.accessControlRule = createObject("component", arguments.accessControlRuleClassName).init(instance.ESAPI);
@@ -40,7 +40,7 @@
 			/*}
 			catch (Application e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, 'Unable to create Access Control Rule for key: "' & arguments.key & '" with policyParameters: "' & arguments.policyParameter.toString() & '"', "", e);
-            	throw(message=cfex.getMessage(), type=cfex.getType());
+            	throw(type=cfex.getType(), message=cfex.getMessage());
 			}*/
 		</cfscript>
 	</cffunction>

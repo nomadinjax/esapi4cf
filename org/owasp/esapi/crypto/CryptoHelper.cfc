@@ -37,7 +37,7 @@
 				return local.kgen.generateKey();
 			} catch (java.security.NoSuchAlgorithmException e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Failed to generate random secret key", "Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e);
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 		</cfscript>
 	</cffunction>
@@ -64,15 +64,15 @@
 				local.inputBytes = arguments.purpose.getBytes("UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.getMessage(), e);
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 
-				// Note that keyDerivationKey is going to be some SecretKey like an AES or
-				// DESede key, but not an HmacSHA1 key. That means it is not likely
-				// going to be 20 bytes but something different. Experiments show
-				// that doesn't really matter though as the SecretKeySpec CTOR on
-				// the following line still returns the appropriate sized key for
-				// HmacSHA1.
+			// Note that keyDerivationKey is going to be some SecretKey like an AES or
+			// DESede key, but not an HmacSHA1 key. That means it is not likely
+			// going to be 20 bytes but something different. Experiments show
+			// that doesn't really matter though as the SecretKeySpec CTOR on
+			// the following line still returns the appropriate sized key for
+			// HmacSHA1.
 			local.sk = createObject("java", "javax.crypto.spec.SecretKeySpec").init(arguments.keyDerivationKey.getEncoded(), "HmacSHA1");
 			local.mac = "";
 

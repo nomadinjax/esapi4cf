@@ -29,10 +29,10 @@
 			catch(org.apache.commons.configuration.ConfigurationException cex) {
 				if(local.file == "") {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Unable to load configuration file for the following: " & "ESAPI-AccessControlPolicy.xml", "", cex);
-            		throw(message=cfex.getMessage(), type=cfex.getType());
+            		throw(type=cfex.getType(), message=cfex.getMessage());
 				}
 			    cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Unable to load configuration file from the following location: " & local.file.getAbsolutePath(), "", cex);
-            	throw(message=cfex.getMessage(), type=cfex.getType());
+            	throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 
 			local.property = local.config.getProperty("AccessControlRules.AccessControlRule[@name]");
@@ -65,7 +65,7 @@
 					" Probably: Rule.name: " & local.ruleName &
 					" Probably: Rule.class: " & local.ruleClass &
 					" " & e.getMessage(), "", e);
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 			return local.policyDTO;
 		</cfscript>

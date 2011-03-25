@@ -69,7 +69,7 @@
 					return "";
 				}
 				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input date required", logMessage="Input date required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context);
-				throw(message=cfex.getMessage(), type=cfex.getType());
+				throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 
 		    local.canonical = instance.encoder.canonicalize(arguments.input);
@@ -78,7 +78,7 @@
 				return instance.format.parse(local.canonical);
 			} catch (java.lang.Exception e) {
 				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(instance.ESAPI, arguments.context & ": Invalid date must follow the " & instance.format.getNumberFormat() & " format", "Invalid date: context=" & arguments.context & ", format=" & instance.format & ", input=" & arguments.input, e, arguments.context);
-				throw(message=cfex.getMessage(), type=cfex.getType());
+				throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 		</cfscript>
 	</cffunction>

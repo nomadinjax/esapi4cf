@@ -89,7 +89,7 @@
 			if ( local.foundCount >= 2 && local.mixedCount > 1 ) {
 			    if ( arguments.strict ) {
                 	cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.IntrusionException').init(instance.ESAPI, "Input validation failure", "Multiple ("& local.foundCount &"x) and mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
-            		throw(message=cfex.getMessage(), type=cfex.getType());
+            		throw(type=cfex.getType(), message=cfex.getMessage());
 			    } else {
 			        instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Multiple ("& local.foundCount &"x) and mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
 			    }
@@ -97,7 +97,7 @@
 			else if ( local.foundCount >= 2 ) {
 			    if ( arguments.strict ) {
                 	cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.IntrusionException').init(instance.ESAPI, "Input validation failure", "Multiple ("& local.foundCount &"x) encoding detected in " & arguments.input );
-            		throw(message=cfex.getMessage(), type=cfex.getType());
+            		throw(type=cfex.getType(), message=cfex.getMessage());
 			    } else {
 			        instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Multiple ("& local.foundCount &"x) encoding detected in " & arguments.input );
 			    }
@@ -105,7 +105,7 @@
 			else if ( local.mixedCount > 1 ) {
 			    if ( arguments.strict ) {
 	                cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.IntrusionException').init(instance.ESAPI, "Input validation failure", "Mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
-            		throw(message=cfex.getMessage(), type=cfex.getType());
+            		throw(type=cfex.getType(), message=cfex.getMessage());
 			    } else {
 			        instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
 			    }
@@ -292,10 +292,10 @@
 				return createObject("java", "java.net.URLEncoder").encode(arguments.input, instance.ESAPI.securityConfiguration().getCharacterEncoding());
 			} catch (java.io.UnsupportedEncodingException ex) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Encoding failure", "Character encoding not supported", ex);
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 			} catch (java.lang.Exception e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Encoding failure", "Problem URL encoding input", e);
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 		</cfscript>
 	</cffunction>
@@ -309,10 +309,10 @@
 				return createObject("java", "java.net.URLDecoder").decode(local.canonical, instance.ESAPI.securityConfiguration().getCharacterEncoding());
 			} catch (java.io.UnsupportedEncodingException ex) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Decoding failed", "Character encoding not supported", ex);
-				throw(message=cfex.getMessage(), type=cfex.getType());
+				throw(type=cfex.getType(), message=cfex.getMessage());
 			} catch (java.lang.Exception e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Decoding failed", "Problem URL decoding input", e);
-				throw(message=cfex.getMessage(), type=cfex.getType());
+				throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 		</cfscript>
 	</cffunction>

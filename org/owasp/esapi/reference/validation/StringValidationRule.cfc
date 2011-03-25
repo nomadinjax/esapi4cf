@@ -112,7 +112,7 @@
 						logMessage = "Invalid input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & local.p.pattern() & ", input=" & arguments.input & (NullSafe.equals(arguments.orig,arguments.input) ? "" : ", orig=" & arguments.orig),
 						context = arguments.context
 					);
-					throw(message=cfex.getMessage(), type=cfex.getType());
+					throw(type=cfex.getType(), message=cfex.getMessage());
 				}
 			}
 

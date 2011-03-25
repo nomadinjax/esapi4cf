@@ -228,8 +228,8 @@
 		<cfscript>
 	    	local.key = getESAPIPropertyEncoded( this.MASTER_KEY, toBinary("") );
 	    	if ( isNull(local.key) || len(local.key) == 0 ) {
-	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Property '" & this.MASTER_KEY & "' missing or empty in ESAPI.properties file.");
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("Property '" & this.MASTER_KEY & "' missing or empty in ESAPI.properties file.");
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 	    	}
 	    	return local.key;
     	</cfscript>
@@ -270,8 +270,8 @@
 		<cfscript>
 	    	local.salt = getESAPIPropertyEncoded( this.MASTER_SALT, toBinary("") );
 	    	if ( isNull(local.salt) || len(local.salt) == 0 ) {
-	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Property '" & this.MASTER_SALT & "' missing or empty in ESAPI.properties file.");
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("Property '" & this.MASTER_SALT & "' missing or empty in ESAPI.properties file.");
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 	    	}
 	    	return local.salt;
     	</cfscript>
@@ -526,13 +526,13 @@
 	    		// that for a given key, any particular IV is *NEVER* reused. For
 	    		// now, we will assume that generating a random IV is usually going
 	    		// to be sufficient to prevent this.
-	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "'" & this.IV_TYPE & "=specified' is not yet implemented. Use 'fixed' or 'random'");
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("'" & this.IV_TYPE & "=specified' is not yet implemented. Use 'fixed' or 'random'");
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 	    	} else {
 	    		// TODO: Once 'specified' is legal, adjust exception msg, below.
 	    		// DISCUSS: Could just log this and then silently return "random" instead.
-	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, local.value & " is illegal value for " & this.IV_TYPE & ". Use 'random' (preferred) or 'fixed'.");
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(local.value & " is illegal value for " & this.IV_TYPE & ". Use 'random' (preferred) or 'fixed'.");
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 	    	}
     	</cfscript>
 	</cffunction>
@@ -543,15 +543,15 @@
 	    	if ( getIVType().equalsIgnoreCase("fixed") ) {
 	    		local.ivAsHex = getESAPIProperty(this.FIXED_IV, ""); // No default
 	    		if ( isNull(local.ivAsHex) || local.ivAsHex.trim() == "" ) {
-	    			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "Fixed IV requires property " & this.FIXED_IV & " to be set, but it is not.");
-	           		throw(message=cfex.getMessage(), type=cfex.getType());
+	    			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("Fixed IV requires property " & this.FIXED_IV & " to be set, but it is not.");
+	           		throw(type=cfex.getType(), message=cfex.getMessage());
 	    		}
 	    		return local.ivAsHex;		// We do no further checks here as we have no context.
 	    	} else {
 	    		// DISCUSS: Should we just log a warning here and return null instead?
 	    		//			If so, may cause NullPointException somewhere later.
-	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init(instance.ESAPI, "IV type not 'fixed' (set to '" & getIVType() & "'), so no fixed IV applicable.");
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("IV type not 'fixed' (set to '" & getIVType() & "'), so no fixed IV applicable.");
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 	    	}
     	</cfscript>
 	</cffunction>

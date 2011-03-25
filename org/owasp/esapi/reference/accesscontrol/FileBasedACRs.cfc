@@ -141,7 +141,7 @@
 
 			if (local.part.indexOf("..") != -1) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "Attempt to manipulate access control path", "Attempt to manipulate access control path: " & arguments.path );
-				throw(message=cfex.getMessage(), type=cfex.getType());
+				throw(type=cfex.getType(), message=cfex.getMessage());
 			}
 
 			// extract extension if any

@@ -235,7 +235,7 @@
 	            if ( ! CryptoHelper.isAllowedCipherMode(local.cipherMode) ) {
 	                local.msg = "Cipher mode " & local.cipherMode & " is not an allowed cipher mode";
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, local.msg, local.msg);
-	           		throw(message=cfex.getMessage(), type=cfex.getType());
+	           		throw(type=cfex.getType(), message=cfex.getMessage());
 	            }
 	            local.keySize = readShort(local.bais);
 	            debug("convertToCipherText: keySize = " & local.keySize);
@@ -277,10 +277,10 @@
 	            return local.ct;
 	        } catch(cfesapi.org.owasp.esapi.errors.EncryptionException ex) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", ex);
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 	        } catch (java.io.IOException e) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", e);
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 	        }
     	</cfscript>
 	</cffunction>

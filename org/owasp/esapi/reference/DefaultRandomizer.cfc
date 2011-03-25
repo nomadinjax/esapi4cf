@@ -16,7 +16,7 @@
 	        } catch (java.security.NoSuchAlgorithmException e) {
 	            // Can't throw an exception from the constructor, but this will get it logged and tracked
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Error creating randomizer", "Can't find random algorithm " & local.algorithm, e);
-           		throw(message=cfex.getMessage(), type=cfex.getType());
+           		throw(type=cfex.getType(), message=cfex.getMessage());
 	        }
 
 	        return this;
