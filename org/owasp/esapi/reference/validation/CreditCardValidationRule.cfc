@@ -55,14 +55,14 @@
 						return "";
 					}
 	       			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input credit card required", logMessage="Input credit card required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context);
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			    }
 
 			   	local.canonical = instance.ccrule.getValid( arguments.context, arguments.input );
 
 				if( ! validCreditCardFormat(local.canonical)) {
 	       			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid credit card input", logMessage="Invalid credit card input: context=" & arguments.context, context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 				}
 
 				return local.canonical;

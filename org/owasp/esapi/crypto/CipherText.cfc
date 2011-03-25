@@ -252,7 +252,7 @@
 		    if ( ! collectedAll() ) {
 		        local.msg = "Can't serialize this CipherText object yet as not all mandatory information has been collected";
 		        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Can't serialize incomplete ciphertext info", local.msg);
-           		throw(type=cfex.getType(), message=cfex.getMessage());
+           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		    }
 
 		    // If we are supposed to be using a (separate) MAC, also make sure
@@ -261,7 +261,7 @@
 		    if (  local.usesMAC && ! macComputed() ) {
 		        local.msg = "Programming error: MAC is required for this cipher mode (" & getCipherMode() & "), but MAC has not yet been computed and stored. Call the method computeAndStoreMAC(SecretKey) first before attempting serialization.";
 		        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Can't serialize ciphertext info: Data integrity issue.", local.msg);
-           		throw(type=cfex.getType(), message=cfex.getMessage());
+           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		    }
 
 		    // OK, everything ready, so give it a shot.
@@ -276,7 +276,7 @@
 	        if ( ! macComputed() ) {
 	            if ( isNull(arguments.ciphertext) || len(arguments.ciphertext) == 0 ) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption faled; no ciphertext", "Ciphertext may not be null or 0 length!");
-	           		throw(type=cfex.getType(), message=cfex.getMessage());
+	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	            if ( isCollected(CipherTextFlags.CIPHERTEXT) ) {
 	                instance.logger.warning(Logger.SECURITY_FAILURE, "Raw ciphertext was already set; resetting.");
@@ -289,7 +289,7 @@
 	            local.logMsg = "Programming error: Attempt to set ciphertext after MAC already computed.";
 	            instance.logger.error(Logger.SECURITY_FAILURE, local.logMsg);
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "MAC already set; cannot store new raw ciphertext", local.logMsg);
-           		throw(type=cfex.getType(), message=cfex.getMessage());
+           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
     	</cfscript>
 	</cffunction>
@@ -308,16 +308,16 @@
 	        if ( ! macComputed() ) {
 	            if ( isNull(arguments.ciphertext) || len(arguments.ciphertext) == 0 ) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption faled; no ciphertext", "Ciphertext may not be null or 0 length!");
-	           		throw(type=cfex.getType(), message=cfex.getMessage());
+	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	            if ( isNull(arguments.iv) || len(arguments.iv) == 0 ) {
 	                if ( requiresIV() ) {
 	                    cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failed -- mandatory IV missing", "Cipher mode " & getCipherMode() & " has null or empty IV");
-		           		throw(type=cfex.getType(), message=cfex.getMessage());
+		           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	                }
 	            } else if ( len(arguments.iv) != getBlockSize() ) {
                     cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failed -- bad parameters passed to encrypt", "IV length does not match cipher block size of " & getBlockSize());
-	           		throw(type=cfex.getType(), message=cfex.getMessage());
+	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	            instance.cipherSpec_.setIV(arguments.iv);
 	            received(CipherTextFlags.INITVECTOR);
@@ -326,7 +326,7 @@
 	            local.logMsg = "MAC already computed from previously set IV and raw ciphertext; may not be reset -- object is immutable.";
 	            instance.logger.error(Logger.SECURITY_FAILURE, local.logMsg);  // Discuss: By throwing, this gets logged as warning, but it's really error! Why is an exception only a warning???
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Validation of decryption failed.", local.logMsg);
-           		throw(type=cfex.getType(), message=cfex.getMessage());
+           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
     	</cfscript>
 	</cffunction>

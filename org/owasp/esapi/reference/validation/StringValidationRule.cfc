@@ -112,7 +112,7 @@
 						logMessage = "Invalid input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & local.p.pattern() & ", input=" & arguments.input & (NullSafe.equals(arguments.orig,arguments.input) ? "" : ", orig=" & arguments.orig),
 						context = arguments.context
 					);
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 				}
 			}
 
@@ -131,7 +131,7 @@
 				if ( local.p.matcher(arguments.input).matches() ) {
 					NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. Dangerous input matching " & local.p.pattern() & " detected.", logMessage="Dangerous input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & local.p.pattern() & ", input=" & arguments.input & (NullSafe.equals(arguments.orig,arguments.input) ? "" : ", orig=" & arguments.orig), context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 				}
 			}
 
@@ -148,12 +148,12 @@
 			if (arguments.input.length() < instance.minLength) {
 				NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The minimum length of " & instance.minLength & " characters was not met.", logMessage="Input does not meet the minimum length of " & instance.minLength & " by " & (instance.minLength - arguments.input.length()) & " characters: context=" & arguments.context & ", type=" & getTypeName() & "), input=" & arguments.input & (NullSafe.equals(arguments.input,arguments.orig) ? "" : ", orig=" & arguments.orig), context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			if (arguments.input.length() > instance.maxLength) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The maximum length of " & instance.maxLength & " characters was exceeded.", logMessage="Input exceeds maximum allowed length of " & instance.maxLength & " by " & (arguments.input.length()-instance.maxLength) & " characters: context=" & arguments.context & ", type=" & getTypeName() & ", orig=" & arguments.orig &", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			return arguments.input;
@@ -174,7 +174,7 @@
 			}
 			NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input required.", logMessage="Input required: context=" & arguments.context & "), input=" & arguments.input & (NullSafe.equals(arguments.input,arguments.orig) ? "" : ", orig=" & arguments.orig), context=arguments.context );
-			throw(type=cfex.getType(), message=cfex.getMessage());
+			throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		</cfscript>
 	</cffunction>
 

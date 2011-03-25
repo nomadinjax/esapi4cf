@@ -52,7 +52,7 @@
 					return "";
 				}
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input number required", logMessage="Input number required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		    }
 
 		    // canonicalize
@@ -60,7 +60,7 @@
 
 			if (instance.minValue > instance.maxValue) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid number input: context", logMessage="Validation parameter error for number: maxValue ( " & instance.maxValue & ") must be greater than minValue ( " & instance.minValue & ") for " & arguments.context, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			// validate min and max
@@ -68,16 +68,16 @@
 				local.i = createObject("java", "java.lang.Integer").valueOf(local.canonical);
 				if (local.i < instance.minValue) {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context, logMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 				}
 				if (local.i > instance.maxValue) {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage="Invalid number input must be between " & minValue & " and " & instance.maxValue & ": context=" & arguments.context, logMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 				}
 				return local.i;
 			} catch (java.lang.NumberFormatException e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 		</cfscript>
 	</cffunction>

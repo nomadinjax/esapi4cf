@@ -119,12 +119,12 @@
 	                local.username = "unspecified user";
 	            }
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Authentication failed", "Authentication failed for " & local.username & " because of blank username or password");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 	        local.user = getUserByAccountName(local.username);
 	        if (!isObject(local.user)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Authentication failed", "Authentication failed because user " & local.username & " doesn't exist");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 	        local.user.loginWithPassword(local.password);
 
@@ -140,7 +140,7 @@
 		<cfscript>
 	        if (isNull(arguments.request) || isNull(arguments.response)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid request", "Request or response objects were null");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        // if there's a user in the session then use that
@@ -163,15 +163,15 @@
 	        try {
 	            instance.ESAPI.httpUtilities().assertSecureRequest(arguments.request);
 	        } catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Attempt to login with an insecure request", e.getLogMessage(), e);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Attempt to login with an insecure request", e.detail, e);
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        // don't let anonymous user log in
 	        if (local.user.isAnonymous()) {
 	            local.user.logout();
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Anonymous user cannot be set to current user. User: " & local.user.getAccountName());
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        // don't let disabled users log in
@@ -180,7 +180,7 @@
 	            local.user.incrementFailedLoginCount();
 	            local.user.setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & local.user.getAccountName());
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        // don't let locked users log in
@@ -189,7 +189,7 @@
 	            local.user.incrementFailedLoginCount();
 	            local.user.setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & local.user.getAccountName());
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        // don't let expired users log in
@@ -198,7 +198,7 @@
 	            local.user.incrementFailedLoginCount();
 	            local.user.setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Expired user cannot be set to current user. User: " & local.user.getAccountName());
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        // check session inactivity timeout
@@ -207,7 +207,7 @@
 	            local.user.incrementFailedLoginCount();
 	            local.user.setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Session inactivity timeout: " & local.user.getAccountName());
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        // check session absolute timeout
@@ -216,7 +216,7 @@
 	            local.user.incrementFailedLoginCount();
 	            local.user.setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Session absolute timeout: " & local.user.getAccountName());
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        //set Locale to the user object in the session from request

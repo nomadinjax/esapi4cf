@@ -130,12 +130,12 @@
 		    local.sb = arguments.request.getRequestURL();
 		    if ( isNull(local.sb) ) {
 		    	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Insecure request received", "HTTP request URL was null" );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		    }
 		    local.url = local.sb.toString();
 		    if ( !local.url.startsWith( "https" ) ) {
 		    	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Insecure request received", "HTTP request did not use SSL" );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		    }
 		</cfscript>
 	</cffunction>
@@ -147,13 +147,13 @@
 			try {
 				assertSecureChannel( arguments.request );
 			} catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
-				throw(message=e.getMessage(), type=e.getType());
+				throw(type=e.type, message=e.message, detail=e.detail);
 			}
 			local.receivedMethod = arguments.request.getMethod();
 			local.requiredMethod = "POST";
 			if ( !local.receivedMethod.equals( local.requiredMethod ) ) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Insecure request received", "Received request using " & local.receivedMethod & " when only " & local.requiredMethod & " is allowed" );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 		</cfscript>
 	</cffunction>
@@ -235,7 +235,7 @@
 	    		return decryptString(arguments.encrypted);
 	    	} catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
 	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "Invalid request","Tampering detected. Hidden field data did not decrypt properly.", e);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	    	}
     	</cfscript>
 	</cffunction>
@@ -306,7 +306,7 @@
 			if ( local.encrypted.length() > (this.MAX_COOKIE_LEN ) ) {
 				instance.logger.error(jLogger.SECURITY_FAILURE, "Problem encrypting state in cookie - skipping entry");
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure", "Encrypted cookie state of " & local.encrypted.length() & " longer than allowed " & this.MAX_COOKIE_LEN );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 	    	local.cookie = createObject("java", "javax.servlet.http.Cookie").init( this.ESAPI_STATE, local.encrypted );
@@ -359,7 +359,7 @@
 			if ( !local.tempDir.exists() ) {
 			    if ( !local.tempDir.mkdirs() ) {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failed", "Could not create temp directory: " & local.tempDir.getAbsolutePath() );
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			    }
 			}
 
@@ -367,7 +367,7 @@
 				if ( !arguments.destinationDir.exists() ) {
 					if ( !arguments.destinationDir.mkdirs() ) {
 						cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failed", "Could not create final upload directory: " & arguments.destinationDir.getAbsolutePath() );
-						throw(type=cfex.getType(), message=cfex.getMessage());
+						throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 					}
 				}
 			}
@@ -375,7 +375,7 @@
 				if ( !instance.ESAPI.securityConfiguration().getUploadDirectory().exists()) {
 					if ( !instance.ESAPI.securityConfiguration().getUploadDirectory().mkdirs() ) {
 						cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failed", "Could not create final upload directory: " & instance.ESAPI.securityConfiguration().getUploadDirectory().getAbsolutePath() );
-						throw(type=cfex.getType(), message=cfex.getMessage());
+						throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 					}
 				}
 				arguments.destinationDir = instance.ESAPI.securityConfiguration().getUploadDirectory();
@@ -386,7 +386,7 @@
 				local.session = arguments.request.getSession(false);
 				if (!arguments.request.isMultipartContent()) {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failed", "Not a multipart request");
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 				}
 
 				// this factory will store ALL files in the temp directory, regardless of size
@@ -407,7 +407,7 @@
 
 	               		if (!instance.ESAPI.validator().isValidFileName("upload", local.filename, arguments.allowedExtensions, false)) {
 							cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload only simple filenames with the following extensions " & arguments.allowedExtensions, "Upload failed isValidFileName check");
-							throw(type=cfex.getType(), message=cfex.getMessage());
+							throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 						}
 
 						instance.logger.info(jLogger.SECURITY_SUCCESS, "File upload requested: " & local.filename);
@@ -433,11 +433,11 @@
 				}
 			} catch (java.lang.Exception e) {
 				if (isInstanceOf(e, "cfesapi.org.owasp.esapi.errors.ValidationUploadException")) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, e.getUserMessage(), e.getLogMessage(), e);
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, e.getUserMessage(), e.detail, e);
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 				}
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failure", "Problem during upload:" & e.getMessage(), e);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 			return Collections.synchronizedList(local.newFiles);
     	</cfscript>
@@ -585,7 +585,7 @@
 		<cfscript>
 			if (!location.startsWith("WEB-INF")) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Forward failed", "Bad forward location: " & arguments.location);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 			local.dispatcher = arguments.request.getRequestDispatcher(arguments.location);
 			local.dispatcher.forward( arguments.request, arguments.response );
@@ -718,7 +718,7 @@
 			local.token = arguments.request.getParameter(this.CSRF_TOKEN_NAME);
 			if ( !local.user.getCSRFToken() == local.token ) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "Authentication failed", "Possibly forged HTTP request without proper CSRF token detected");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
     	</cfscript>
 	</cffunction>

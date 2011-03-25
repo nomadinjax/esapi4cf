@@ -106,7 +106,7 @@
 				instance.logger.info(Logger.SECURITY_SUCCESS, "Role " & local.roleName & " added to " & getAccountName() );
 			} else {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Add role failed", "Attempt to add invalid role " & local.roleName & " to " & getAccountName() );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 		</cfscript>
 	</cffunction>
@@ -355,7 +355,7 @@
 				setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 				incrementFailedLoginCount();
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Missing password: " & getAccountName()  );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			// don't let disabled users log in
@@ -363,7 +363,7 @@
 				setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 				incrementFailedLoginCount();
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Disabled user attempt to login: " & getAccountName() );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			// don't let locked users log in
@@ -371,7 +371,7 @@
 				setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 				incrementFailedLoginCount();
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Locked user attempt to login: " & getAccountName() );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			// don't let expired users log in
@@ -379,7 +379,7 @@
 				setLastFailedLoginTime(createObject("java", "java.util.Date").init());
 				incrementFailedLoginCount();
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Expired user attempt to login: " & getAccountName() );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			logout();
@@ -399,7 +399,7 @@
 					lock();
 				}
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Incorrect password provided for " & getAccountName() );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 		</cfscript>
 	</cffunction>
@@ -479,7 +479,7 @@
 			if ( instance.lastHostAddress != "" && !instance.lastHostAddress.equals(arguments.remoteHost)) {
 	        	// returning remote address not remote hostname to prevent DNS lookup
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationHostException").init(instance.ESAPI, "Host change", "User session just jumped from " & instance.lastHostAddress & " to " & arguments.remoteHost );
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 			instance.lastHostAddress = arguments.remoteHost;
     	</cfscript>

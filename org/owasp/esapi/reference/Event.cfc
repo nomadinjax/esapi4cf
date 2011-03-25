@@ -34,7 +34,7 @@
 	            local.nlong = local.now.getTime();
 	            if ( local.nlong - local.plong < arguments.interval * 1000 ) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "Threshold exceeded", "Exceeded threshold for " & instance.key );
-	           		throw(type=cfex.getType(), message=cfex.getMessage());
+	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	        }
     	</cfscript>

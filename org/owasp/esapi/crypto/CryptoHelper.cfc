@@ -37,7 +37,7 @@
 				return local.kgen.generateKey();
 			} catch (java.security.NoSuchAlgorithmException e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Failed to generate random secret key", "Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e);
-           		throw(type=cfex.getType(), message=cfex.getMessage());
+           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 		</cfscript>
 	</cffunction>
@@ -64,7 +64,7 @@
 				local.inputBytes = arguments.purpose.getBytes("UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.getMessage(), e);
-           		throw(type=cfex.getType(), message=cfex.getMessage());
+           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			// Note that keyDerivationKey is going to be some SecretKey like an AES or

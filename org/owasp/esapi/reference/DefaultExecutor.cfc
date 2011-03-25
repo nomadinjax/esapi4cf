@@ -41,26 +41,26 @@
 	            // executable must exist
 	            if (!arguments.executable.exists()) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such executable: " & arguments.executable);
-            		throw(type=cfex.getType(), message=cfex.getMessage());
+            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 
 	            // executable must use canonical path
 	            if ( !arguments.executable.isAbsolute() ) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-absolute path: " & arguments.executable);
-            		throw(type=cfex.getType(), message=cfex.getMessage());
+            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 
 	            // executable must use canonical path
 	            if ( !arguments.executable.getPath() == arguments.executable.getCanonicalPath() ) {
 	            	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-canonical path: " & arguments.executable);
-            		throw(type=cfex.getType(), message=cfex.getMessage());
+            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        	}
 
 	            // exact, absolute, canonical path to executable must be listed in ESAPI configuration
 	            local.approved = instance.ESAPI.securityConfiguration().getAllowedExecutables();
 	            if (!local.approved.contains(arguments.executable.getPath())) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Attempt to invoke executable that is not listed as an approved executable in ESAPI configuration: " & arguments.executable.getPath() & " not listed in " & local.approved );
-            		throw(type=cfex.getType(), message=cfex.getMessage());
+            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 
 	            // escape any special characters in the parameters
@@ -72,7 +72,7 @@
 	            // working directory must exist
 	            if (!arguments.workdir.exists()) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath());
-            		throw(type=cfex.getType(), message=cfex.getMessage());
+            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 
 	            // set the command into the list and create command array
@@ -117,7 +117,7 @@
 	            } catch (Throwable e) {
 	            	local.process.destroy();
 	            	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
-            		throw(type=cfex.getType(), message=cfex.getMessage());
+            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 
 	            local.output = local.outputBuffer.toString();
@@ -139,7 +139,7 @@
 	            return ExecuteResult.init(exitValue, local.output, local.errors);
 	        } catch (java.io.IOException e) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
-           		throw(type=cfex.getType(), message=cfex.getMessage());
+           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
     	</cfscript>
 	</cffunction>

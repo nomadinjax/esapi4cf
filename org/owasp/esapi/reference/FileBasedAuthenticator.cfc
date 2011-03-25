@@ -118,11 +118,11 @@
 	        /* NULL test
 	        if (arguments.accountName == null) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Account creation failed", "Attempt to create user with null accountName");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }*/
 	        if (isObject(getUserByAccountName(arguments.accountName))) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        verifyAccountNameStrength(arguments.accountName);
@@ -130,13 +130,13 @@
 	        /* NULL test
 	        if (arguments.password1 == null) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }*/
 	        verifyPasswordStrength("", arguments.password1);
 
 	        if (!arguments.password1.equals(arguments.password2)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        local.user = createObject("DefaultUser").init(instance.ESAPI, arguments.accountName);
@@ -144,7 +144,7 @@
 	            setHashedPassword(local.user, hashPassword(arguments.password1, arguments.accountName));
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 	        instance.userMap.put(local.user.getAccountId(), local.user);
 	        instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "New user created: " & arguments.accountName);
@@ -203,24 +203,24 @@
 	            local.verifyHash = hashPassword(arguments.currentPassword, local.accountName);
 	            if (!local.currentHash.equals(local.verifyHash)) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Password change failed", "Authentication failed for password change on user: " & local.accountName);
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	            if (arguments.newPassword == "" || arguments.newPassword2 == "" || !arguments.newPassword.equals(arguments.newPassword2)) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & local.accountName);
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	            verifyPasswordStrength(arguments.currentPassword, arguments.newPassword);
 	            arguments.user.setLastPasswordChangeTime(createObject("java", "java.util.Date").init());
 	            local.newHash = hashPassword(arguments.newPassword, local.accountName);
 	            if (arrayFind(getOldPasswordHashes(arguments.user), local.newHash)) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Password change failed", "Password change matches a recent password for user: " & local.accountName);
-					throw(type=cfex.getType(), message=cfex.getMessage());
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	            setHashedPassword(arguments.user, local.newHash);
 	            instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password changed for user: " & local.accountName);
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Password change failed", "Encryption exception changing password for " & local.accountName, ee);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
     	</cfscript>
 	</cffunction>
@@ -429,7 +429,7 @@
 	        local.user = getUserByAccountName(arguments.accountName);
 	        if (!isObject(local.user)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 	        instance.userMap.remove(local.user.getAccountId());
 	        instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Removing user " & local.user.getAccountName());
@@ -452,7 +452,7 @@
 		            }
 		            else {
 		                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Problem saving user", "Skipping save of user " & local.accountName);
-						throw(type=cfex.getType(), message=cfex.getMessage());
+						throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		            }
 		        }
 		        return;
@@ -471,7 +471,7 @@
 	       	catch (java.io.IOException e) {
 	            instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Internal Error", "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 	        finally {
 	            if (isObject(local.writer)) {
@@ -540,11 +540,11 @@
 		<cfscript>
 	        if (arguments.accountName == "") {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account with a null account name");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 	        if (!instance.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.accountName, "AccountName", static.MAX_ACCOUNT_NAME_LENGTH, false)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName);
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
     	</cfscript>
 	</cffunction>
@@ -559,7 +559,7 @@
 
 	        if (isNull(arguments.newPassword)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid password", "New password cannot be null");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        // can't change to a password that contains any 3 character substring of old password
@@ -569,7 +569,7 @@
 	                local.sub = arguments.oldPassword.substring(local.i, local.i + 3);
 	                if (arguments.newPassword.indexOf(local.sub) > -1) {
 	                    cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid password", "New password cannot contain pieces of old password");
-						throw(type=cfex.getType(), message=cfex.getMessage());
+						throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	                }
 	            }
 	        }
@@ -605,7 +605,7 @@
 	        local.strength = arguments.newPassword.length() * local.charsets;
 	        if (local.strength < 16) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid password", "New password is not long and complex enough");
-				throw(type=cfex.getType(), message=cfex.getMessage());
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
     	</cfscript>
 	</cffunction>
