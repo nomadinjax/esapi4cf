@@ -5,7 +5,12 @@
 		<cfargument type="String" name="s" required="true">
 		<cfargument type="any" name="cause" required="false" hint="java.lang.Throwable:">
 		<cfscript>
-			super.init(argumentCollection=arguments);
+			if (structKeyExists(arguments, "cause")) {
+				super.init(arguments.s, arguments.cause);
+			}
+			else {
+				super.init(arguments.s);
+			}
 
 			return this;
 		</cfscript>
