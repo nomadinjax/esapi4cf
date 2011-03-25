@@ -6,9 +6,9 @@
 
 	<cffunction access="public" returntype="ValidationException" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
-		<cfargument type="String" name="userMessage" required="false">
-		<cfargument type="String" name="logMessage" required="false">
-		<cfargument type="any" name="cause" required="false" hint="java.lang.Throwable">
+		<cfargument type="string" name="userMessage" required="false" hint="the message displayed to the user">
+		<cfargument type="string" name="logMessage" required="false" hint="the message logged">
+		<cfargument type="any" name="cause" required="false" hint="the cause">
 		<cfargument type="String" name="context" required="false">
 		<cfscript>
 			super.init(argumentCollection=arguments);

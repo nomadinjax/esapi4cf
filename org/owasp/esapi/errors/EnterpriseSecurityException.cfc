@@ -8,12 +8,11 @@
 
 	<cffunction access="public" returntype="EnterpriseSecurityException" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
-		<cfargument type="string" name="userMessage" required="false">
-		<cfargument type="string" name="logMessage" required="false">
-		<cfargument type="any" name="cause" required="false" hint="java.lang.Throwable">
+		<cfargument type="string" name="userMessage" required="false" hint="the message displayed to the user">
+		<cfargument type="string" name="logMessage" required="false" hint="the message logged">
+		<cfargument type="any" name="cause" required="false" hint="the cause">
 		<cfscript>
 			if (structKeyExists(arguments, "userMessage") && structKeyExists(arguments, "logMessage")) {
-				local.ret = '';
 				if (structKeyExists(arguments, "cause")) {
 					super.init(arguments.userMessage, arguments.cause);
 				}
@@ -37,7 +36,7 @@
 
 	<cffunction access="public" returntype="String" name="getUserMessage" output="false" hint="Returns message meant for display to users. Note that if you are unsure of what set this message, it would probably be a good idea to encode this message before displaying it to the end user.">
 		<cfscript>
-        	return instance.errorObject.getMessage();
+        	return getMessage();
     	</cfscript>
 	</cffunction>
 
