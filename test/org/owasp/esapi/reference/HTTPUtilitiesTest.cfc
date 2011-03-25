@@ -405,6 +405,7 @@
 			local.request.addParameter("username", local.accountName);
 			local.request.addParameter("password", local.password);
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
+			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 			local.instance.login( local.request, local.response);
 
 			local.maxAge = ( 60 * 60 * 24 * 14 );
