@@ -253,7 +253,7 @@
 		<cfargument type="numeric" name="accountId" required="true" hint="the account id">
 		<cfscript>
 			if (arguments.accountId == 0) {
-	            return createObject("component", "AnonymousUser");
+	            return createObject("component", "AnonymousUser").init(instance.ESAPI);
 	        }
 	        loadUsersIfNecessary();
 	        local.u = instance.userMap.get(arguments.accountId);
@@ -266,7 +266,7 @@
 		<cfargument type="String" name="accountName" required="true">
 		<cfscript>
 	        if (arguments.accountName == "") {
-	            return createObject("component", "AnonymousUser");
+	            return createObject("component", "AnonymousUser").init(instance.ESAPI);
 	        }
 	        loadUsersIfNecessary();
 	        for (local.u in instance.userMap) {

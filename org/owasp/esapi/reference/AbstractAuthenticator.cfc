@@ -28,7 +28,7 @@
 	<cffunction access="public" returntype="void" name="clearCurrent" output="false">
 		<cfscript>
 	        // instance.logger.logWarning(Logger.SECURITY, "************Clearing threadlocals. Thread" + Thread.currentThread().getName() );
-	        instance.currentUser.setUser("");
+	        instance.currentUser.set("");
     	</cfscript>
 	</cffunction>
 
@@ -45,7 +45,7 @@
 		<cfscript>
 	        local.user = instance.currentUser.getUser();
 	        if (isNull(local.user) || !isObject(local.user)) {
-	            local.user = createObject("component", "AnonymousUser");
+	            local.user = createObject("component", "AnonymousUser").init(instance.ESAPI);
 	        }
 	        return local.user;
     	</cfscript>
@@ -147,7 +147,7 @@
 	        local.user = getUserFromSession();
 
 	        // else if there's a remember token then use that
-	        if (!isObject(local.user)) {
+	        if (isNull(local.user)) {
 	            local.user = getUserFromRememberToken();
 	        }
 
