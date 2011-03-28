@@ -1,10 +1,22 @@
 <cfcomponent implements="cfesapi.org.owasp.esapi.User" output="false" hint="The ANONYMOUS user is used to represent an unidentified user. Since there is always a real user, the ANONYMOUS user is better than using null to represent this.">
 
 	<cfscript>
+		instance.ESAPI = "";
+
 		instance.csrfToken = "";
     	instance.sessions = [];
 		instance.locale = "";
 	</cfscript>
+
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="init" output="false">
+		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
+		<cfscript>
+			instance.ESAPI = arguments.ESAPI;
+
+			return this;
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="addRole" output="false">
 		<cfargument type="String" name="role" required="true">
