@@ -23,7 +23,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- public java.lang.String getId(); --->
+
+	<cffunction access="public" returntype="String" name="getId" output="false">
+		<cfscript>
+			return instance.session.getId();
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="numeric" name="getLastAccessedTime" output="false">
 		<cfscript>
@@ -82,10 +88,12 @@
 
 	<cffunction access="public" returntype="void" name="invalidate" output="false">
 		<cfscript>
+			structClear(instance.session);
+
 			// causes errors after its called
 			//instance.session.invalidate();
 
-			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
+			/*local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
 			if (local.applicationName != "") {
 				local.jTracker = createObject("java", "coldfusion.runtime.SessionTracker");
 				// TODO: test this more to ensure it is doing what we are expercting
@@ -94,7 +102,7 @@
 				//writedump(instance.session);
 				local.jTracker.cleanUp(instance.session, local.applicationName);
 				//writedump(var=instance.session,abort=true);
-			}
+			}*/
 		</cfscript>
 	</cffunction>
 

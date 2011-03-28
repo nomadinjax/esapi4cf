@@ -4,6 +4,8 @@
 		instance.ESAPI = "";
 		instance.logger = "";
 		instance.request = "";
+
+		instance.allowableContentRoot = "WEB-INF";
 	</cfscript>
 
 	<cffunction access="public" returntype="SecurityWrapperRequest" name="init" output="false" hint="Construct a safe request that overrides the default request methods with safer versions.">
@@ -25,6 +27,20 @@
     	</cfscript>
 	</cffunction>
 
+
+	<cffunction access="public" returntype="any" name="getAttribute" output="false" hint="Same as HttpServletRequest, no security changes required.">
+		<cfargument type="String" name="name" required="true" hint="The attribute name">
+		<cfscript>
+        	return getHttpServletRequest().getAttribute(name);
+        </cfscript>
+	</cffunction>
+
+	<!--- getAttributeNames --->
+	<!--- getAuthType --->
+	<!--- getCharacterEncoding --->
+	<!--- getContentLength --->
+	<!--- getContentType --->
+	<!--- getContextPath --->
 
 	<cffunction access="public" returntype="Array" name="getCookies" output="false" hint="Returns the array of Cookies from the HttpServletRequest after canonicalizing and filtering out any dangerous characters.">
 		<cfscript>
@@ -61,40 +77,7 @@
         </cfscript>
 	</cffunction>
 
-
-	<cffunction access="public" returntype="any" name="getSession" output="false" hint="cfesapi.org.owasp.esapi.HttpSession: Returns a session, creating it if necessary, and sets the HttpOnly flag on the JSESSIONID cookie.">
-		<cfargument type="boolean" name="create" required="false">
-		<cfscript>
-			if (structKeyExists(arguments, 'create')) {
-				local.jsession = getHttpServletRequest().getSession(arguments.create);
-			}
-			else {
-				local.jsession = getHttpServletRequest().getSession();
-			}
-
-			if (isNull(local.jsession)) {
-				return;
-			}
-
-			local.session = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperSession").init(instance.ESAPI, local.jsession);
-
-			// send a new cookie header with HttpOnly on first and second responses
-		    if (instance.ESAPI.securityConfiguration().getForceHttpOnlySession()) {
-		        if (isNull(local.session.getAttribute("HTTP_ONLY"))) {
-					local.session.setAttribute("HTTP_ONLY", "set");
-					local.cookie = new Cookie("JSESSIONID", local.session.getId());
-					local.cookie.setPath( getHttpServletRequest().getContextPath() );
-					local.cookie.setMaxAge(-1); // session cookie
-		            local.response = instance.ESAPI.currentResponse();
-		            if (!isNull(local.response)) {
-		                instance.ESAPI.currentResponse().addCookie(local.cookie);
-		            }
-		        }
-		    }
-	        return local.session;
-        </cfscript>
-	</cffunction>
-
+	<!--- getDateHeader --->
 
 	<cffunction access="public" returntype="String" name="getHeader" output="false" hint="Returns the named header from the HttpServletRequest after canonicalizing and filtering out any dangerous characters.">
 		<cfargument type="String" name="name" required="true">
@@ -110,6 +93,42 @@
 	        }
 	        return local.clean;
         </cfscript>
+	</cffunction>
+
+	<!--- getHeaderNames --->
+	<!--- getHeaders --->
+	<!--- getInputStream --->
+	<!--- getIntHeader --->
+
+	<cffunction access="public" returntype="String" name="getLocalAddr" output="false" hint="A String containing the IP address on which the request was received.">
+		<cfscript>
+        	//return getHttpServletRequest().getLocalAddr();
+        	return getRemoteAddr();
+        </cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="getLocale" output="false" hint="java.util.Locale: The preferred Locale for the client.">
+		<cfscript>
+        	return getHttpServletRequest().getLocale();
+    	</cfscript>
+	</cffunction>
+
+	<!--- getLocales --->
+	<!--- getLocalName --->
+
+	<cffunction access="public" returntype="numeric" name="getLocalPort" output="false" hint="Returns the Internet Protocol (IP) port number of the interface on which the request was received.">
+		<cfscript>
+        	//return getHttpServletRequest().getLocalPort();
+        	return getServerPort();
+        </cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getMethod" output="false" hint="Returns the name of the HTTP method with which this request was made.">
+		<cfscript>
+        	return getHttpServletRequest().getMethod();
+       	</cfscript>
 	</cffunction>
 
 
@@ -162,81 +181,7 @@
         </cfscript>
 	</cffunction>
 
-
-	<cffunction access="public" returntype="String" name="getMethod" output="false" hint="Returns the name of the HTTP method with which this request was made.">
-		<cfscript>
-        	return getHttpServletRequest().getMethod();
-       	</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getRequestURL" output="false" hint="java.lang.StringBuffer: The currect request URL">
-		<cfscript>
-	        local.url = getHttpServletRequest().getRequestURL().toString();
-	        local.clean = "";
-	        try {
-	            local.clean = instance.ESAPI.validator().getValidInput("HTTP URL: " & local.url, local.url, "HTTPURL", 2000, false);
-	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-	            // already logged
-	        }
-	        return createObject("java", "java.lang.StringBuffer").init(local.clean);
-        </cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getLocalAddr" output="false" hint="A String containing the IP address on which the request was received.">
-		<cfscript>
-			// getLocalAddr is not in request - WHY?
-        	//return getHttpServletRequest().getLocalAddr();
-			return getRemoteAddr();
-        </cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getLocalPort" output="false" hint="Returns the Internet Protocol (IP) port number of the interface on which the request was received.">
-		<cfscript>
-			// getLocalPort is not in request - WHY?
-        	//return getHttpServletRequest().getLocalPort();
-        	return getServerPort();
-        </cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getRemoteAddr" output="false" hint="Returns the IP address of the client or last proxy that sent the request.">
-		<cfscript>
-        	return getHttpServletRequest().getRemoteAddr();
-        </cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getRemotePort" output="false" hint="The remote port">
-		<cfscript>
-			// getRemotePort is not in request - WHY?
-        	//return getHttpServletRequest().getRemotePort();
-        	return getServerPort();
-        </cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getServerPort" output="false" hint="Returns the server port (after the : in the host header) from the HttpServletRequest after parsing and checking the range 0-65536.">
-		<cfscript>
-			local.port = getHttpServletRequest().getServerPort();
-			if ( local.port < 0 || local.port > 65536 ) {
-				instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "HTTP server port out of range: " & local.port );
-				local.port = 0;
-			}
-			return local.port;
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getAttribute" output="false" hint="The attribute value">
-		<cfargument type="String" name="name" required="true" hint="The attribute name">
-		<cfscript>
-        	return getHttpServletRequest().getAttribute(name);
-        </cfscript>
-	</cffunction>
-
+	<!--- getParameterNames --->
 
 	<cffunction access="public" returntype="Array" name="getParameterValues" output="false" hint="Returns the array of matching parameter values from the HttpServletRequest after canonicalizing and filtering out any dangerous characters.">
 		<cfargument type="String" name="name" required="true" hint="The parameter name">
@@ -259,6 +204,9 @@
 		</cfscript>
 	</cffunction>
 
+	<!--- getPathInfo --->
+	<!--- getPathTranslated --->
+	<!--- getProtocol --->
 
 	<cffunction access="public" returntype="String" name="getQueryString" output="false" hint="Returns the query string from the HttpServletRequest after canonicalizing and filtering out any dangerous characters.">
 		<cfscript>
@@ -270,6 +218,150 @@
 	            // already logged
 	        }
 	        return local.clean;
+    	</cfscript>
+	</cffunction>
+
+	<!--- getReader --->
+
+	<cffunction access="public" returntype="String" name="getRemoteAddr" output="false" hint="Returns the IP address of the client or last proxy that sent the request.">
+		<cfscript>
+        	return getHttpServletRequest().getRemoteAddr();
+        </cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getRemoteHost" output="false" hint="The remote host">
+		<cfscript>
+       		return getHttpServletRequest().getRemoteHost();
+    	</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getRemotePort" output="false" hint="The remote port">
+		<cfscript>
+        	return getHttpServletRequest().getRemotePort();
+        </cfscript>
+	</cffunction>
+
+	<!--- getRemoteUser --->
+
+	<cffunction access="public" returntype="any" name="getRequestDispatcher" output="false" hint="java.servlet.RequestDispatcher: Checks to make sure the path to forward to is within the WEB-INF directory and then returns the dispatcher. Otherwise returns null.">
+		<cfargument type="String" name="path" required="true" hint="The path to create a request dispatcher for">
+		<cfscript>
+	        if (arguments.path.startsWith(instance.allowableContentRoot)) {
+	            return getHttpServletRequest().getRequestDispatcher(arguments.path);
+	        }
+	        return "";
+    	</cfscript>
+	</cffunction>
+
+	<!--- getRequestedSessionId --->
+
+	<cffunction access="public" returntype="String" name="getRequestURI" output="false" hint="Returns the URI from the HttpServletRequest after canonicalizing and filtering out any dangerous characters.">
+		<cfscript>
+	        local.uri = getHttpServletRequest().getRequestURI();
+	        local.clean = "";
+	        try {
+	            local.clean = instance.ESAPI.validator().getValidInput("HTTP URI: " & local.uri, local.uri, "HTTPURI", 2000, false);
+	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
+	            // already logged
+	        }
+	        return local.clean;
+    	</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="getRequestURL" output="false" hint="java.lang.StringBuffer: The currect request URL">
+		<cfscript>
+	        local.url = getHttpServletRequest().getRequestURL().toString();
+	        local.clean = "";
+	        try {
+	            local.clean = instance.ESAPI.validator().getValidInput("HTTP URL: " & local.url, local.url, "HTTPURL", 2000, false);
+	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
+	            // already logged
+	        }
+	        return createObject("java", "java.lang.StringBuffer").init(local.clean);
+        </cfscript>
+	</cffunction>
+
+	<!--- getScheme --->
+	<!--- getServerName --->
+
+	<cffunction access="public" returntype="numeric" name="getServerPort" output="false" hint="Returns the server port (after the : in the host header) from the HttpServletRequest after parsing and checking the range 0-65536.">
+		<cfscript>
+			local.port = getHttpServletRequest().getServerPort();
+			if ( local.port < 0 || local.port > 65536 ) {
+				instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "HTTP server port out of range: " & local.port );
+				local.port = 0;
+			}
+			return local.port;
+		</cfscript>
+	</cffunction>
+
+	<!--- getServletPath --->
+
+	<cffunction access="public" returntype="any" name="getSession" output="false" hint="cfesapi.org.owasp.esapi.HttpSession: Returns a session, creating it if necessary, and sets the HttpOnly flag on the JSESSIONID cookie.">
+		<cfargument type="boolean" name="create" required="false">
+		<cfscript>
+			if (structKeyExists(arguments, 'create')) {
+				local.jsession = getHttpServletRequest().getSession(arguments.create);
+			}
+			else {
+				local.jsession = getHttpServletRequest().getSession();
+			}
+
+			if (isNull(local.jsession)) {
+				return;
+			}
+
+			local.session = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperSession").init(instance.ESAPI, local.jsession);
+
+			// send a new cookie header with HttpOnly on first and second responses
+		    if (instance.ESAPI.securityConfiguration().getForceHttpOnlySession()) {
+		        if (local.session.getAttribute("HTTP_ONLY") == "") {
+					local.session.setAttribute("HTTP_ONLY", "set");
+					local.cookie = createObject("java", "javax.servlet.http.Cookie").init("JSESSIONID", local.session.getId());
+					local.cookie.setPath( getHttpServletRequest().getContextPath() );
+					local.cookie.setMaxAge(-1); // session cookie
+		            local.response = instance.ESAPI.currentResponse();
+		            if (!isNull(local.response)) {
+		                instance.ESAPI.currentResponse().addCookie(local.cookie);
+		            }
+		        }
+		    }
+	        return local.session;
+        </cfscript>
+	</cffunction>
+
+	<!--- getUserPrincipal --->
+	<!--- isRequestedSessionIdFromCookie --->
+	<!--- isRequestedSessionIdFromURL --->
+	<!--- isRequestedSessionIdValid --->
+	<!--- isSecure --->
+	<!--- isUserInRole --->
+	<!--- removeAttribute --->
+
+	<cffunction access="public" returntype="void" name="setAttribute" output="false">
+		<cfargument type="String" name="name" required="true" hint="The attribute name">
+		<cfargument type="any" name="o" required="true" hint="The attribute value">
+		<cfscript>
+        	getHttpServletRequest().setAttribute(name, o);
+    	</cfscript>
+	</cffunction>
+
+	<!--- setCharacterEncoding --->
+
+	<cffunction access="public" returntype="String" name="getAllowableContentRoot" output="false">
+		<cfscript>
+       		return instance.allowableContentRoot;
+    	</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setAllowableContentRoot" output="false">
+		<cfargument type="String" name="allowableContentRoot" required="true">
+		<cfscript>
+       		instance.allowableContentRoot = arguments.allowableContentRoot.startsWith( "/" ) ? allowableContentRoot : "/" & allowableContentRoot;
     	</cfscript>
 	</cffunction>
 
