@@ -545,7 +545,7 @@
 		    local.cookies = arguments.request.getCookies();
 		    if ( !isNull(local.cookies) ) {
 	            for (local.cooky in local.cookies) {
-	               if (!local.cooky.getName() == "JSESSIONID") {
+	               if (local.cooky.getName() != "JSESSIONID") {
 	                  local.params.append("+").append(local.cooky.getName()).append("=").append(local.cooky.getValue());
 		            }
 				}
