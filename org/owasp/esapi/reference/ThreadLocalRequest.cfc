@@ -1,4 +1,4 @@
-<cfcomponent output="false" hint="Defines the ThreadLocalRequest to store the current request for this thread.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.util.ThreadLocal" output="false" hint="Defines the ThreadLocalRequest to store the current request for this thread.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -16,18 +16,22 @@
 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpServletRequest" name="getRequest" output="false">
 		<cfscript>
-	    	if ( !(structKeyExists(request, "currentRequest") && isInstanceOf(request.currentRequest, "cfesapi.org.owasp.esapi.HttpServletRequest")) ) {
-				this.setRequest( createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init(instance.ESAPI, getPageContext().getRequest()) );
-			}
-			return request.currentRequest;
+			return super.get();
 		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest" name="initialValue" output="false">
+		<cfscript>
+            return createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init(instance.ESAPI, getPageContext().getRequest());
+        </cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="setRequest" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="newRequest" required="true">
 		<cfscript>
-	    	request.currentRequest = arguments.newRequest;
+			super.set(arguments.newRequest);
 	    </cfscript>
 	</cffunction>
 
