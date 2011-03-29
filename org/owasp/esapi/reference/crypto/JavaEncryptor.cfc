@@ -1,8 +1,6 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Encryptor" output="false">
 
 	<cfscript>
-		importClass("javax.crypto.Cipher");
-
 		instance.ESAPI = "";
 
 		instance.initialized = false;
@@ -185,6 +183,8 @@
 					return local.ct.getEncodedIVCipherText();
 				}
 			}
+
+			Cipher = createObject("java", "javax.crypto.Cipher");
 
 	        local.plaintext = arguments.plain.asBytes();
 			local.overwritePlaintext = instance.ESAPI.securityConfiguration().overwritePlainText();
@@ -528,6 +528,8 @@
 		<cfargument type="any" name="key" required="true" hint="javax.crypto.SecretKey">
 		<cfargument type="cfesapi.org.owasp.esapi.crypto.CipherText" name="ciphertext" required="true">
 		<cfscript>
+			Cipher = createObject("java", "javax.crypto.Cipher");
+
 	        local.keySize = 0;
 	        try {
 	            local.decrypter = createObject("java", "javax.crypto.Cipher").getInstance(arguments.ciphertext.getCipherTransformation());
