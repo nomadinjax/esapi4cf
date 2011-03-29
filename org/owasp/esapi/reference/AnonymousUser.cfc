@@ -168,21 +168,21 @@
 
 	<cffunction access="public" returntype="boolean" name="isAnonymous" output="false">
 		<cfscript>
-        	return true;
+        	return yesNoFormat(true);
         </cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isEnabled" output="false">
 		<cfscript>
-	        return false;
+	        return yesNoFormat(false);
         </cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isExpired" output="false">
 		<cfscript>
-	        return false;
+	        return yesNoFormat(false);
         </cfscript>
 	</cffunction>
 
@@ -190,35 +190,35 @@
 	<cffunction access="public" returntype="boolean" name="isInRole" output="false">
 		<cfargument type="String" name="role" required="true">
 		<cfscript>
-	        return false;
+	        return yesNoFormat(false);
         </cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isLocked" output="false">
 		<cfscript>
-			return false;
+			return yesNoFormat(false);
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isLoggedIn" output="false">
 		<cfscript>
-			return false;
+			return yesNoFormat(false);
         </cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isSessionAbsoluteTimeout" output="false">
 		<cfscript>
-			return false;
+			return yesNoFormat(false);
         </cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isSessionTimeout" output="false">
 		<cfscript>
-			return false;
+			return yesNoFormat(false);
         </cfscript>
 	</cffunction>
 

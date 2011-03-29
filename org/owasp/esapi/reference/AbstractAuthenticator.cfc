@@ -147,12 +147,12 @@
 	        local.user = getUserFromSession();
 
 	        // else if there's a remember token then use that
-	        if (isNull(local.user)) {
+	        if (isNull(local.user) || !isInstanceOf(local.user, "cfesapi.org.owasp.esapi.User")) {
 	            local.user = getUserFromRememberToken();
 	        }
 
 	        // else try to verify credentials - throws exception if login fails
-	        if (!isObject(local.user)) {
+	        if (isNull(local.user) || !isInstanceOf(local.user, "cfesapi.org.owasp.esapi.reference.DefaultUser")) {
 	            local.user = loginWithUsernameAndPassword(arguments.request);
 	        }
 

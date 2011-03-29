@@ -270,21 +270,21 @@
 	<cffunction access="public" returntype="boolean" name="isAnonymous" output="false">
 		<cfscript>
 			// User cannot be anonymous, since we have a special User.ANONYMOUS instance for the anonymous user
-			return false;
+			return yesNoFormat(false);
 		</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isEnabled" output="false">
 		<cfscript>
-			return instance.enabled;
+			return yesNoFormat(instance.enabled);
 		</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isExpired" output="false">
 		<cfscript>
-			return getExpirationTime().before( createObject("java", "java.util.Date").init() );
+			return yesNoFormat(getExpirationTime().before( createObject("java", "java.util.Date").init() ));
 
 			// If expiration should happen automatically or based on lastPasswordChangeTime?
 			//		long from = lastPasswordChangeTime.getTime();
@@ -299,21 +299,21 @@
 	<cffunction access="public" returntype="boolean" name="isInRole" output="false">
 		<cfargument type="String" name="role" required="true">
 		<cfscript>
-			return instance.roles.contains(arguments.role.toLowerCase());
+			return yesNoFormat(instance.roles.contains(arguments.role.toLowerCase()));
 		</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isLocked" output="false">
 		<cfscript>
-			return instance.locked;
+			return yesNoFormat(instance.locked);
 		</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isLoggedIn" output="false">
 		<cfscript>
-			return instance.loggedIn;
+			return yesNoFormat(instance.loggedIn);
 		</cfscript>
 	</cffunction>
 
@@ -324,7 +324,7 @@
 			if ( !isObject(local.session) ) return true;
 			local.deadline = createObject("java", "java.util.Date").init( local.session.getCreationTime() + this.ABSOLUTE_TIMEOUT_LENGTH);
 			local.now = createObject("java", "java.util.Date").init();
-			return local.now.after(local.deadline);
+			return yesNoFormat(local.now.after(local.deadline));
 		</cfscript>
 	</cffunction>
 
@@ -335,7 +335,7 @@
 			if ( !isObject(local.session) ) return true;
 			local.deadline = createObject("java", "java.util.Date").init( local.session.getLastAccessedTime() + this.IDLE_TIMEOUT_LENGTH);
 			local.now = createObject("java", "java.util.Date").init();
-			return local.now.after(local.deadline);
+			return yesNoFormat(local.now.after(local.deadline));
 		</cfscript>
 	</cffunction>
 
@@ -542,7 +542,7 @@
 	<cffunction access="public" returntype="boolean" name="verifyPassword" output="false">
 		<cfargument type="String" name="password" required="true">
 		<cfscript>
-			return instance.ESAPI.authenticator().verifyPassword(this, arguments.password);
+			return yesNoFormat(instance.ESAPI.authenticator().verifyPassword(this, arguments.password));
 		</cfscript>
 	</cffunction>
 
