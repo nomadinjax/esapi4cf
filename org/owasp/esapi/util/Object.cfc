@@ -15,38 +15,6 @@
 
 	<!--- private methods --->
 
-	<cffunction access="private" returntype="any" name="importClass" output="false">
-		<cfargument type="String" name="path" required="true">
-		<cfargument type="String" name="name" required="false" default="">
-		<cfscript>
-			if (len(trim(arguments.name))) {
-				local.name = arguments.name;
-			}
-			else {
-				local.name = listLast(arguments.path, ".");
-			}
-
-			variables[local.name] = createObject("java", arguments.path);
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="private" returntype="any" name="importCFC" output="false">
-		<cfargument type="String" name="path" required="true">
-		<cfargument type="String" name="name" required="false" default="">
-		<cfscript>
-			if (len(trim(arguments.name))) {
-				local.name = arguments.name;
-			}
-			else {
-				local.name = listLast(arguments.path, ".");
-			}
-
-			variables[local.name] = createObject("component", arguments.path);
-		</cfscript>
-	</cffunction>
-
-
 	<cffunction access="private" returntype="void" name="assert" output="false">
 		<cfargument type="boolean" name="boolean_expression" required="true">
 		<cfargument type="String" name="string_expression" required="false">
