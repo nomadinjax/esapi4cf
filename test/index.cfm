@@ -1,4 +1,7 @@
-<!--- takes awhile to run all these tests (FileIO w/ users.txt) --->
+<!---
+	takes awhile to run all these tests (due to FileIO w/ users.txt)
+	WARNING: be sure that CFDebug is turned off otherwise the tests take FOREVER!!!
+--->
 <cfsetting requesttimeout="300" />
 <cfscript>
 	testSuite = createObject("component","mxunit.framework.TestSuite").TestSuite();

@@ -1,9 +1,8 @@
 <cfcomponent output="false">
 
 	<cfscript>
-		// NOTE: these both must be set for tests to run properly
-		// CFESAPI itself only requires that sessionManagement be on
-		this.name = "CFESAPI-MXUnit";
+		// CFESAPI only requires that sessionManagement be on
+		this.name = "CFESAPI-MXUnitTest";
 		this.sessionManagement = true;
 
 		// CFESAPI does not use CFID/CFTOKEN
