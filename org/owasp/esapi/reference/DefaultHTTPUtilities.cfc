@@ -111,9 +111,11 @@
 		<cfargument type="String" name="name" required="true">
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
+			StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
+
 	        try {
-	            local.strippedName = createObject("java", "org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.name);
-	            local.strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.value);
+	            local.strippedName = StringUtilities.replaceLinearWhiteSpace(arguments.name);
+	            local.strippedValue = StringUtilities.replaceLinearWhiteSpace(arguments.value);
 	            local.safeName = instance.ESAPI.validator().getValidInput("addHeader", local.strippedName, "HTTPHeaderName", 20, false);
 	            local.safeValue = instance.ESAPI.validator().getValidInput("addHeader", local.strippedValue, "HTTPHeaderValue", 500, false);
 	            arguments.response.addHeader(local.safeName, local.safeValue);
@@ -647,9 +649,11 @@
 		<cfargument type="String" name="name" required="true">
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
+			StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
+
 	        try {
-	            local.strippedName = createObject("java", "org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.name);
-	            local.strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").replaceLinearWhiteSpace(arguments.value);
+	            local.strippedName = StringUtilities.replaceLinearWhiteSpace(arguments.name);
+	            local.strippedValue = StringUtilities.replaceLinearWhiteSpace(arguments.value);
 	            local.safeName = instance.ESAPI.validator().getValidInput("setHeader", local.strippedName, "HTTPHeaderName", 20, false);
 	            local.safeValue = instance.ESAPI.validator().getValidInput("setHeader", local.strippedValue, "HTTPHeaderValue", 500, false);
 	            arguments.response.setHeader(local.safeName, local.safeValue);
