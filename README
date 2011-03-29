@@ -37,3 +37,5 @@ How:
 - Copy the /cfesapi/esapi/configuration/.esapi/ folder to another location and make changes to your copy
 - In your code, call ESAPI.securityConfiguration().setResourceDirectory("your config path")
 - Be sure to update the ESAPI.properties file with the location of your implementation CFC
+- Include the /cfesapi/helpers/ESAPI.cfm in your application.
+- See the /cfesapi/demo/ for example of implementation.
