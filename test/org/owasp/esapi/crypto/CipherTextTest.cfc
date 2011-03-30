@@ -288,22 +288,22 @@
 	        } catch(java.io.IOException ex) {
 	            ex.printStackTrace(System.err);
 	            fail("testJavaSerialization(): Unexpected IOException: " & ex);
-	        } catch(ClassNotFoundException ex) {
+	        } catch(java.lang.ClassNotFoundException ex) {
 	            ex.printStackTrace(System.err);
 	            fail("testJavaSerialization(): Unexpected ClassNotFoundException: " & ex);
-	        } catch (EncryptionException ex) {
+	        } catch (org.owasp.esapi.errors.EncryptionException ex) {
 				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected EncryptionException: " & ex);
-			} catch (IllegalBlockSizeException ex) {
+			} catch (javax.crypto.IllegalBlockSizeException ex) {
 				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected IllegalBlockSizeException: " & ex);
-			} catch (BadPaddingException ex) {
+			} catch (javax.crypto.BadPaddingException ex) {
 				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected BadPaddingException: " & ex);
-			} catch (InvalidKeyException ex) {
+			} catch (java.security.InvalidKeyException ex) {
 				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected InvalidKeyException: " & ex);
-			} catch (InvalidAlgorithmParameterException ex) {
+			} catch (java.security.InvalidAlgorithmParameterException ex) {
 				ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected InvalidAlgorithmParameterException: " & ex);
 			}  finally {
