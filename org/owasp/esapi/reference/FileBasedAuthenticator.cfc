@@ -412,7 +412,7 @@
 		        local.user.setLastLoginTime(createObject("java", "java.util.Date").init(Long.parseLong(local.parts[10])));
 		        local.user.setLastFailedLoginTime(createObject("java", "java.util.Date").init(Long.parseLong(local.parts[11])));
 		        local.user.setExpirationTime(createObject("java", "java.util.Date").init(Long.parseLong(local.parts[12])));
-		        local.user.setFailedLoginCount(createObject("java", "java.lang.Integer").parseInt(local.parts[13]));
+		        local.user.setFailedLoginCount(val(local.parts[13]));
 		        return local.user;
 			}
 			catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
