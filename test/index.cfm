@@ -1,8 +1,4 @@
-<!---
-	takes awhile to run all these tests (due to FileIO w/ users.txt)
-	WARNING: be sure that CFDebug is turned off otherwise the tests take FOREVER!!!
---->
-<cfsetting requesttimeout="300" />
+<!--- WARNING: be sure that CFDebug is turned off otherwise the tests take FOREVER!!! --->
 <cfscript>
 	testSuite = createObject("component","mxunit.framework.TestSuite").TestSuite();
 	testSuite.addAll("cfesapi.test.org.owasp.esapi.crypto.CipherSpecTest");
