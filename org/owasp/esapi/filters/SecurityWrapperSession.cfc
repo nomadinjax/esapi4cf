@@ -37,9 +37,28 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- public javax.servlet.ServletContext getServletContext(); --->
-	<!--- public void setMaxInactiveInterval(int interval); --->
-	<!--- public int getMaxInactiveInterval(); --->
+
+	<cffunction access="public" returntype="any" name="getServletContext" output="false" hint="javax.servlet.ServletContext">
+		<cfscript>
+			return instance.session.getServletContext();
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setMaxInactiveInterval" output="false">
+		<cfargument type="numeric" name="interval" required="true">
+		<cfscript>
+			instance.session.setMaxInactiveInterval(arguments.interval);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getMaxInactiveInterval" output="false">
+		<cfscript>
+			instance.session.getMaxInactiveInterval();
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="any" name="getAttribute" output="false">
 		<cfargument type="String" name="key" required="true">
@@ -84,16 +103,25 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- public void removeAttribute(java.lang.String key); --->
+
+	<cffunction access="public" returntype="void" name="removeAttribute" output="false">
+		<cfargument type="String" name="key" required="true">
+		<cfscript>
+			return instance.session.removeAttribute(arguments.key);
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="invalidate" output="false">
 		<cfscript>
-			structClear(instance.session);
+			// TODO: not sure best way to do this that won't throw a CF error
+
+			//structClear(instance.session);
 
 			// causes errors after its called
 			//instance.session.invalidate();
 
-			/*local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
+			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
 			if (local.applicationName != "") {
 				local.jTracker = createObject("java", "coldfusion.runtime.SessionTracker");
 				// TODO: test this more to ensure it is doing what we are expercting
@@ -102,10 +130,16 @@
 				//writedump(instance.session);
 				local.jTracker.cleanUp(instance.session, local.applicationName);
 				//writedump(var=instance.session,abort=true);
-			}*/
+			}
 		</cfscript>
 	</cffunction>
 
-	<!--- public boolean isNew(); --->
+
+	<cffunction access="public" returntype="boolean" name="isNew" output="false">
+		<cfscript>
+			return instance.session.isNew();
+		</cfscript>
+	</cffunction>
+
 
 </cfcomponent>
