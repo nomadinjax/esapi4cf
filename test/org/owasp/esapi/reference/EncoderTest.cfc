@@ -1,30 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = "";
-
 		static.PREFERRED_ENCODING = "UTF-8";
 	</cfscript>
-
-	<cffunction access="public" returntype="void" name="setUp" output="false">
-		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-
-			structClear(session);
-			structClear(request);
-		</cfscript>
-	</cffunction>
-
 
 	<cffunction access="public" returntype="void" name="testCanonicalize" output="false" hint="Test of canonicalize method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
@@ -196,51 +174,59 @@
 		<cfscript>
 			System.out.println("doubleEncodingCanonicalization");
 			local.instance = instance.ESAPI.encoder();
-
 			// note these examples use the strict=false flag on canonicalize to allow
-	        // full decoding without throwing an IntrusionException. Generally, you
-	        // should use strict mode as allowing double-encoding is an abomination.
-
-	        // double encoding examples
-	        assertEquals( "<", instance.canonicalize("&##x26;lt&##59", false )); //double entity
-	        assertEquals( "\", instance.canonicalize("%255c", false)); //double percent
-	        assertEquals( "%", instance.canonicalize("%2525", false)); //double percent
-
-	        // double encoding with multiple schemes example
-	        assertEquals( "<", instance.canonicalize("%26lt%3b", false)); //first entity, then percent
-	        assertEquals( "&", instance.canonicalize("&##x25;26", false)); //first percent, then entity
-
-	        // nested encoding examples
-	        assertEquals( "<", instance.canonicalize("%253c", false)); //nested encode % with percent
-	        assertEquals( "<", instance.canonicalize("%%33%63", false)); //nested encode both nibbles with percent
-	        assertEquals( "<", instance.canonicalize("%%33c", false)); // nested encode first nibble with percent
-	        assertEquals( "<", instance.canonicalize("%3%63", false));  //nested encode second nibble with percent
-	        assertEquals( "<", instance.canonicalize("&&##108;t;", false)); //nested encode l with entity
-	        assertEquals( "<", instance.canonicalize("%2&##x35;3c", false)); //triple percent, percent, 5 with entity
-
-	        // nested encoding with multiple schemes examples
-	        assertEquals( "<", instance.canonicalize("&%6ct;", false)); // nested encode l with percent
-	        assertEquals( "<", instance.canonicalize("%&##x33;c", false)); //nested encode 3 with entity
-
-	        // multiple encoding tests
-	        assertEquals( "% & <script> <script>", instance.canonicalize( "%25 %2526 %26##X3c;script&##x3e; &##37;3Cscript%25252525253e", false ) );
-	        assertEquals( "< < < < < < <", instance.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B", false ) );
-
-	        // test strict mode with both mixed and multiple encoding
-	        try {
-	            assertEquals( "< < < < < < <", instance.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B" ) );
-	        } catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
-	            // expected
+			// full decoding without throwing an IntrusionException. Generally, you
+			// should use strict mode as allowing double-encoding is an abomination.
+			// double encoding examples
+			assertEquals( "<", instance.canonicalize("&##x26;lt&##59", false ));
+			//double entity
+			assertEquals( "\", instance.canonicalize("%255c", false));
+			//double percent
+			assertEquals( "%", instance.canonicalize("%2525", false));
+			//double percent
+			// double encoding with multiple schemes example
+			assertEquals( "<", instance.canonicalize("%26lt%3b", false));
+			//first entity, then percent
+			assertEquals( "&", instance.canonicalize("&##x25;26", false));
+			//first percent, then entity
+			// nested encoding examples
+			assertEquals( "<", instance.canonicalize("%253c", false));
+			//nested encode % with percent
+			assertEquals( "<", instance.canonicalize("%%33%63", false));
+			//nested encode both nibbles with percent
+			assertEquals( "<", instance.canonicalize("%%33c", false));
+			// nested encode first nibble with percent
+			assertEquals( "<", instance.canonicalize("%3%63", false));
+			//nested encode second nibble with percent
+			assertEquals( "<", instance.canonicalize("&&##108;t;", false));
+			//nested encode l with entity
+			assertEquals( "<", instance.canonicalize("%2&##x35;3c", false));
+			//triple percent, percent, 5 with entity
+			// nested encoding with multiple schemes examples
+			assertEquals( "<", instance.canonicalize("&%6ct;", false));
+			// nested encode l with percent
+			assertEquals( "<", instance.canonicalize("%&##x33;c", false));
+			//nested encode 3 with entity
+			// multiple encoding tests
+			assertEquals( "% & <script> <script>", instance.canonicalize( "%25 %2526 %26##X3c;script&##x3e; &##37;3Cscript%25252525253e", false ) );
+			assertEquals( "< < < < < < <", instance.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B", false ) );
+			// test strict mode with both mixed and multiple encoding
+			try {
+				assertEquals( "< < < < < < <", instance.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B" ) );
+			}
+			catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
+				// expected
+			}
+			try {
+				assertEquals( "<script", instance.canonicalize("%253Cscript" ) );
 	        }
-
-	        try {
-	            assertEquals( "<script", instance.canonicalize("%253Cscript" ) );
-	        } catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
+	        catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
 	            // expected
 	        }
 	        try {
 	            assertEquals( "<script", instance.canonicalize("&##37;3Cscript" ) );
-	        } catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
+	        }
+	        catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
 	            // expected
 	        }
     	</cfscript>
@@ -410,7 +396,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForXMLImmune" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLImmune" output="false">
 		<cfscript>
 	        System.out.println("encodeForXML");
 	        local.instance = instance.ESAPI.encoder();
@@ -419,7 +405,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForXMLSymbol" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLSymbol" output="false">
 		<cfscript>
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.instance.encodeForXML("!@$%()=+{}[]"));
@@ -427,7 +413,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForXMLPound" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLPound" output="false">
 		<cfscript>
 	        System.out.println("encodeForXML");
 	        local.instance = instance.ESAPI.encoder();
@@ -436,7 +422,7 @@
 	</cffunction>
 
 
-   <cffunction access="public" returntype="void" name="testEncodeForXMLAttributeNull" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeNull" output="false">
 		<cfscript>
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals("", local.instance.encodeForXMLAttribute(""));
@@ -444,7 +430,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSpace" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSpace" output="false">
 		<cfscript>
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals(" ", local.instance.encodeForXMLAttribute(" "));
@@ -452,7 +438,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForXMLAttributeScript" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeScript" output="false">
 		<cfscript>
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals("&##x3c;script&##x3e;", local.instance.encodeForXMLAttribute("<script>"));
@@ -460,7 +446,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForXMLAttributeImmune" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeImmune" output="false">
 		<cfscript>
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals(",.-_", local.instance.encodeForXMLAttribute(",.-_"));
@@ -468,7 +454,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSymbol" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSymbol" output="false">
 		<cfscript>
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.instance.encodeForXMLAttribute(" !@$%()=+{}[]"));
@@ -476,7 +462,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForXMLAttributePound" output="false">
+	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributePound" output="false">
 		<cfscript>
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals("&##xa3;", local.instance.encodeForXMLAttribute("\u00A3"));
@@ -484,7 +470,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForURL" output="false" hint="Test of encodeForURL method, of class org.owasp.esapi.Encoder.">
+	<cffunction access="public" returntype="void" name="testEncodeForURL" output="false" hint="Test of encodeForURL method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForURL");
 	        local.instance = instance.ESAPI.encoder();
@@ -494,7 +480,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testDecodeFromURL" output="false" hint="Test of decodeFromURL method, of class org.owasp.esapi.Encoder.">
+	<cffunction access="public" returntype="void" name="testDecodeFromURL" output="false" hint="Test of decodeFromURL method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("decodeFromURL");
 	        local.instance = instance.ESAPI.encoder();
@@ -515,7 +501,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testEncodeForBase64" output="false" hint="Test of encodeForBase64 method, of class org.owasp.esapi.Encoder.">
+	<cffunction access="public" returntype="void" name="testEncodeForBase64" output="false" hint="Test of encodeForBase64 method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 			Arrays = createObject("java", "java.util.Arrays");
 			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
@@ -540,7 +526,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testDecodeFromBase64" output="false" hint="Test of decodeFromBase64 method, of class org.owasp.esapi.Encoder.">
+	<cffunction access="public" returntype="void" name="testDecodeFromBase64" output="false" hint="Test of decodeFromBase64 method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 			Arrays = createObject("java", "java.util.Arrays");
 			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
@@ -573,7 +559,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testWindowsCodec" output="false" hint="Test of WindowsCodec">
+	<cffunction access="public" returntype="void" name="testWindowsCodec" output="false" hint="Test of WindowsCodec">
 		<cfscript>
 			Character = createObject("java", "java.lang.Character");
 			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
@@ -613,7 +599,7 @@
 	</cffunction>
 
 
-    <cffunction access="public" returntype="void" name="testUnixCodec" output="false" hint="Test of UnixCodec">
+	<cffunction access="public" returntype="void" name="testUnixCodec" output="false" hint="Test of UnixCodec">
 		<cfscript>
 			Character = createObject("java", "java.lang.Character");
 			PushbackString = createObject("java", "org.owasp.esapi.codecs.PushbackString");
@@ -717,7 +703,7 @@
 
 
 	<cffunction access="public" returntype="void" name="testConcurrency" output="false">
-        <cfset System.out.println("Encoder Concurrency") />
+		<cfset System.out.println("Encoder Concurrency") />
 		<cfloop index="i" from="1" to="10">
 			<cfthread action="run" name="#i#">
 				<cfscript>

@@ -1,21 +1,11 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
-	<cfscript>
-		instance.ESAPI = "";
-	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
+			super.setUp();
+
 			Throwable = createObject("java", "java.lang.Throwable");
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
 		</cfscript>
 	</cffunction>
 

@@ -12,7 +12,25 @@
 			}
 			catch (Any e) {}
 		}
+
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 	</cfscript>
+
+	<cffunction access="public" returntype="void" name="setUp" output="false">
+		<cfscript>
+			structClear(session);
+			structClear(request);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="tearDown" output="false">
+		<cfscript>
+			structClear(session);
+			structClear(request);
+		</cfscript>
+	</cffunction>
+
 	<!--- private methods --->
 
 	<cffunction access="private" returntype="binary" name="newByte" outuput="false">

@@ -13,29 +13,7 @@
 	<cfscript>
 		static.CLASS = getMetaData(this);
 		static.CLASS_NAME = listLast(static.CLASS.name, ".");
-
-		instance.ESAPI = "";
 	</cfscript>
-
-	<cffunction access="public" returntype="void" name="setUp" output="false">
-		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-
-			structClear(session);
-			structClear(request);
-		</cfscript>
-	</cffunction>
-
 
 	<cffunction access="public" returntype="void" name="testCSRFToken" output="false">
 		<cfscript>

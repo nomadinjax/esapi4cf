@@ -1,8 +1,6 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = "";
-
 		instance.dfltAESCipher = "";
 		instance.dfltECBCipher = "";	// will be "AES/ECB/NoPadding";
 		instance.dfltOtherCipher = "";
@@ -12,10 +10,7 @@
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+			super.setUp();
 
 			// This will throw ConfigurationException if IV type is not set to
 			// 'fixed', which it's not. (We have it set to 'random'.)
@@ -32,16 +27,6 @@
 
 			instance.cipherSpec = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI, cipher=instance.dfltOtherCipher);
 			assertTrue( !isNull(instance.cipherSpec) );
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-
-			structClear(session);
-			structClear(request);
 		</cfscript>
 	</cffunction>
 

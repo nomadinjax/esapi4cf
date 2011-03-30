@@ -1,16 +1,13 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = "";
 		instance.accessController = "";
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			structClear(session);
-			structClear(request);
+			super.setUp();
 
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 			instance.accessController = instance.ESAPI.accessController();
 		</cfscript>
 	</cffunction>
@@ -18,13 +15,12 @@
 
 	<cffunction access="public" returntype="void" name="tearDown" output="false">
 		<cfscript>
-			instance.ESAPI = "";
 			instance.accessController = "";
 
-			structClear(session);
-			structClear(request);
+			super.tearDown();
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testSetup" output="false" hint="This tests the policy file">
 		<cfscript>
@@ -38,5 +34,6 @@
 			assertTrue(local.accessControlRules.containsKey("EchoPolicyParameter"), "Access Control Map Contains EchoPolicyParameter");
 		</cfscript>
 	</cffunction>
+
 
 </cfcomponent>

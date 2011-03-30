@@ -1,22 +1,5 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
-	<cfscript>
-		instance.ESAPI = "";
-	</cfscript>
-
-	<cffunction access="public" returntype="void" name="setUp" output="false">
-		<cfscript>
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-		</cfscript>
-	</cffunction>
-
 
 	<cffunction access="public" returntype="void" name="testGetRequestParameters" output="false">
 		<cfscript>
@@ -122,6 +105,7 @@
 			assertEquals(local.paramValue, local.actualParamValue);
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testGetParameterValuesReturnsCorrectValuesWhenParameterExistsMultipleTimesInRequest" output="false">
 		<cfscript>

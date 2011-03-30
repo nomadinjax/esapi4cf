@@ -1,30 +1,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = "";
+		CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
 	</cfscript>
-
-	<cffunction access="public" returntype="void" name="setUp" output="false">
-		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-			CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-			CryptoHelper = "";
-
-			structClear(session);
-			structClear(request);
-		</cfscript>
-	</cffunction>
-
 
 	<cffunction access="public" returntype="void" name="testGenerateSecretKeySunnyDay" output="false">
 		<cfscript>

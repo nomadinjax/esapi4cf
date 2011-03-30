@@ -1,30 +1,9 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = "";
-
 		instance.unicodeStr = "A\u00ea\u00f1\u00fcC";	// I.e., "AêñüC"
 		instance.altString  = "AêñüC";					// Same as above.
 	</cfscript>
-
-	<cffunction access="public" returntype="void" name="setUp" output="false">
-		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-
-			structClear(session);
-			structClear(request);
-		</cfscript>
-	</cffunction>
 
 	<cffunction access="public" returntype="void" name="testUnicodeString" output="false">
 		<cfscript>
@@ -56,29 +35,31 @@
 	</cffunction>
 
 	<!--- test invalid as CF does not support nulls
-	<cffunction access="public" returntype="void" name="testNullCase" output="false">
+
+		<cffunction access="public" returntype="void" name="testNullCase" output="false">
 		<cfscript>
-		    local.counter = 0;
-		    try {
-	            local.bytes = toBinary("");
-	            local.pt = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.bytes);
-	            assertTrue( !isNull(local.pt) );   // Should never get to here.
-	            fail("testNullCase(): Expected NullPointerException or AssertionError");
-	        } catch (NullPointerException e) {
-	            // Will get this case if assertions are not enabled for PlainText.
-	            // System.err.println("Caught NullPointerException; exception was: " + e);
-	            // e.printStackTrace(System.err);
-	            local.counter++;
-	        } catch (AssertionError e) {
-	            // Will get this case if assertions *are* enabled for PlainText.
-	            // System.err.println("Caught AssertionError; exception was: " + e);
-	            // e.printStackTrace(System.err);
-	            local.counter++;
-	        } finally {
-	            assertTrue( local.counter > 0 );
-	        }
+		local.counter = 0;
+		try {
+		local.bytes = toBinary("");
+		local.pt = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.bytes);
+		assertTrue( !isNull(local.pt) );   // Should never get to here.
+		fail("testNullCase(): Expected NullPointerException or AssertionError");
+		} catch (NullPointerException e) {
+		// Will get this case if assertions are not enabled for PlainText.
+		// System.err.println("Caught NullPointerException; exception was: " + e);
+		// e.printStackTrace(System.err);
+		local.counter++;
+		} catch (AssertionError e) {
+		// Will get this case if assertions *are* enabled for PlainText.
+		// System.err.println("Caught AssertionError; exception was: " + e);
+		// e.printStackTrace(System.err);
+		local.counter++;
+		} finally {
+		assertTrue( local.counter > 0 );
+		}
 		</cfscript>
-	</cffunction> --->
+		</cffunction>
+ --->
 
 	<cffunction access="public" returntype="void" name="testEmptyString" output="false">
 		<cfscript>
@@ -88,6 +69,7 @@
 			assertTrue( !isNull(local.ba) && len(local.ba) == 0 );
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testOverwrite" output="false">
 		<cfscript>

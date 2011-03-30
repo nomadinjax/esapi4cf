@@ -1,27 +1,5 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
-	<cfscript>
-		instance.ESAPI = "";
-	</cfscript>
-
-	<cffunction access="public" returntype="void" name="setUp" output="false">
-		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-
-			structClear(session);
-			structClear(request);
-		</cfscript>
-	</cffunction>
 
 	<cffunction access="public" returntype="void" name="testExecuteWindowsSystemCommand" output="false" hint="Test of executeOSCommand method, of class org.owasp.esapi.Executor">
 		<cfscript>
@@ -111,5 +89,6 @@
 			}
 		</cfscript>
 	</cffunction>
+
 
 </cfcomponent>

@@ -6,29 +6,7 @@
 		--->
 	<cfscript>
 		DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
-
-		instance.ESAPI = "";
 	</cfscript>
-
-	<cffunction access="public" returntype="void" name="setUp" output="false">
-		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-
-			structClear(session);
-			structClear(request);
-		</cfscript>
-	</cffunction>
-
 
 	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.reference.DefaultUser" name="createTestUser" output="false" hint="Creates the test user.">
 		<cfargument type="String" name="password" required="true" hint="the password">

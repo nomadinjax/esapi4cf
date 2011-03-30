@@ -1,8 +1,6 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = "";
-
 	    static.POST_CLEANUP = true;
 
 		instance.cipherSpec = "";
@@ -13,10 +11,7 @@
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+			super.setUp();
 
 			// These two calls have side-effects that cause FindBugs to complain.
 	        createObject("java", "java.io.File").init("ciphertext.ser").delete();
@@ -32,16 +27,13 @@
 
 	<cffunction access="public" returntype="void" name="tearDown" output="false">
 		<cfscript>
-			instance.ESAPI = "";
-
 			if ( static.POST_CLEANUP ) {
 	            // These two calls have side-effects that cause FindBugs to complain.
 		        createObject("java", "java.io.File").init("ciphertext.ser").delete();
 		        createObject("java", "java.io.File").init("ciphertext-portable.ser").delete();
 		    }
 
-			structClear(session);
-			structClear(request);
+			super.tearDown();
 		</cfscript>
 	</cffunction>
 
@@ -56,6 +48,7 @@
 		</cfscript>
 	</cffunction>
 
+
 	<cffunction access="public" returntype="void" name="testCipherTextCipherSpec" output="false">
 		<cfscript>
 			instance.cipherSpec = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI, cipherXform="DESede/OFB8/NoPadding", keySize=112);
@@ -65,6 +58,7 @@
 			assertTrue( local.ct.getKeySize() == instance.cipherSpec.getKeySize() );
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testCipherTextCipherSpecByteArray" output="false">
 		<cfscript>
@@ -98,6 +92,7 @@
 			}
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testDecryptionUsingCipherText" output="false">
 		<cfscript>
@@ -148,6 +143,7 @@
 		</cfscript>
 	</cffunction>
 
+
 	<cffunction access="public" returntype="void" name="testMIC" output="false">
 		<cfscript>
 			Cipher = createObject("java", "javax.crypto.Cipher");
@@ -185,6 +181,7 @@
 			}
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testPortableSerialization" output="false">
 		<cfscript>
@@ -250,6 +247,7 @@
 	        }
 		</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testJavaSerialization" output="false">
 		<cfscript>

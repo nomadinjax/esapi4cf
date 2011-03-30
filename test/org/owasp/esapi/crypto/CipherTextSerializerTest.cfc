@@ -1,18 +1,13 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = "";
-
 		instance.encryptor = "";
     	instance.ivSpec = "";
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+			super.setUp();
 
 			instance.encryptor = createObject("java", "javax.crypto.Cipher").getInstance("AES/CBC/PKCS5Padding");
 	        local.ivBytes = instance.ESAPI.randomizer().getRandomBytes(instance.encryptor.getBlockSize());
@@ -20,15 +15,6 @@
 		</cfscript>
 	</cffunction>
 
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-
-			structClear(session);
-			structClear(request);
-		</cfscript>
-	</cffunction>
 
 	<cffunction access="public" returntype="void" name="testAsSerializedByteArray" output="false">
 		<cfscript>
@@ -55,6 +41,7 @@
 	        }
     	</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testAsCipherText" output="false">
 		<cfscript>

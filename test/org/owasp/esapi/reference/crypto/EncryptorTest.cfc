@@ -1,15 +1,9 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
 
-	<cfscript>
-		instance.ESAPI = "";
-	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+			super.setUp();
 
 			// This is only mechanism to change this for now. Will do this with a soon to be CryptoControls class in next release.
 	        instance.ESAPI.securityConfiguration().setCipherTransformation("AES/CBC/PKCS5Padding");
@@ -17,16 +11,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-		<cfscript>
-			instance.ESAPI = "";
-
-			structClear(session);
-			structClear(request);
-		</cfscript>
-	</cffunction>
-
-    <cffunction access="public" returntype="void" name="testHash" output="false" hint="Test of hash method, of class org.owasp.esapi.Encryptor.">
+	<cffunction access="public" returntype="void" name="testHash" output="false" hint="Test of hash method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 	        System.out.println("testHash()");
 	        local.instance = instance.ESAPI.encryptor();
@@ -39,7 +24,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testEncrypt" output="false" hint="Test of deprecated encrypt method for Strings.">
+
+	<cffunction access="public" returntype="void" name="testEncrypt" output="false" hint="Test of deprecated encrypt method for Strings.">
 		<cfscript>
 	        System.out.println("testEncrypt()");
 	        local.instance = instance.ESAPI.encryptor();
@@ -49,6 +35,7 @@
 	        assertEquals(local.plaintext, local.result);
     	</cfscript>
 	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testDecrypt" output="false" hint="Test of deprecated decrypt method for Strings.">
 		<cfscript>
@@ -67,7 +54,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testEncryptEmptyStrings" output="false" hint="Test of deprecated encrypt methods for empty String.">
+
+	<cffunction access="public" returntype="void" name="testEncryptEmptyStrings" output="false" hint="Test of deprecated encrypt methods for empty String.">
 		<cfscript>
 	        System.out.println("testEncryptEmptyStrings()");
 	        local.instance = instance.ESAPI.encryptor();
@@ -88,24 +76,27 @@
     	</cfscript>
 	</cffunction>
 
-    <!--- NULL test
-	<cffunction access="public" returntype="void" name="testEncryptNull" output="false" hint="Test deprecated encryption / decryption methods for null.">
-		<cfscript>
-	        System.out.println("testEncryptNull()");
-	        local.instance = instance.ESAPI.encryptor();
-	        local.plaintext = "";
-	        try {
-	            local.nullStr = null;
-	            local.instance.encrypt(local.nullStr);
-	            fail("testEncryptNull(): Did not result in expected exception!");
-	        } catch(java.lang.Throwable t) {
-	            // It should be one of these, depending on whether or not assertions are enabled.
-	            assertTrue( isInstanceOf(t, "java.lang.NullPointerException") || isInstanceOf(t, "java.lang.AssertionError"));
-	        }
-    	</cfscript>
-	</cffunction> --->
+	<!--- NULL test
 
-    <cffunction access="public" returntype="void" name="testNewEncryptDecrypt" output="false" hint="Test of new encrypt / decrypt methods added in ESAPI 2.0.">
+		<cffunction access="public" returntype="void" name="testEncryptNull" output="false" hint="Test deprecated encryption / decryption methods for null.">
+		<cfscript>
+		System.out.println("testEncryptNull()");
+		local.instance = instance.ESAPI.encryptor();
+		local.plaintext = "";
+		try {
+		local.nullStr = null;
+		local.instance.encrypt(local.nullStr);
+		fail("testEncryptNull(): Did not result in expected exception!");
+		} catch(java.lang.Throwable t) {
+		// It should be one of these, depending on whether or not assertions are enabled.
+		assertTrue( isInstanceOf(t, "java.lang.NullPointerException") || isInstanceOf(t, "java.lang.AssertionError"));
+		}
+		</cfscript>
+		</cffunction>
+
+		--->
+
+	<cffunction access="public" returntype="void" name="testNewEncryptDecrypt" output="false" hint="Test of new encrypt / decrypt methods added in ESAPI 2.0.">
 		<cfscript>
 	    	System.out.println("testNewEncryptDecrypt()");
 	    	String = createObject("java", "java.lang.String");
@@ -133,7 +124,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="private" returntype="String" name="runNewEncryptDecryptTestCase" output="false" hint="Helper method to test new encryption / decryption.">
+
+	<cffunction access="private" returntype="String" name="runNewEncryptDecryptTestCase" output="false" hint="Helper method to test new encryption / decryption.">
 		<cfargument type="String" name="cipherXform" required="true" hint="Cipher transformation">
 		<cfargument type="numeric" name="keySize" required="true" hint="Size of key, in bits.">
 		<cfargument type="binary" name="plaintextBytes" required="true" hint="Byte array of plaintext.">
@@ -217,6 +209,7 @@
     	</cfscript>
 	</cffunction>
 
+
 	<cffunction access="private" returntype="boolean" name="isPlaintextOverwritten" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.crypto.PlainText" name="plaintext" required="true">
 		<cfscript>
@@ -232,7 +225,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testSign" output="false" hint="Test of sign method, of class org.owasp.esapi.Encryptor.">
+
+	<cffunction access="public" returntype="void" name="testSign" output="false" hint="Test of sign method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 	        System.out.println("testSign()");
 	        local.instance = instance.ESAPI.encryptor();
@@ -244,7 +238,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testVerifySignature" output="false" hint="Test of verifySignature method, of class org.owasp.esapi.Encryptor.">
+
+	<cffunction access="public" returntype="void" name="testVerifySignature" output="false" hint="Test of verifySignature method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 		    System.out.println("testVerifySignature()");
 	        local.instance = instance.ESAPI.encryptor();
@@ -254,7 +249,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testSeal" output="false" hint="Test of seal method, of class org.owasp.esapi.Encryptor.">
+
+	<cffunction access="public" returntype="void" name="testSeal" output="false" hint="Test of seal method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 	        System.out.println("testSeal()");
 	        local.instance = instance.ESAPI.encryptor();
@@ -302,7 +298,8 @@
     	</cfscript>
 	</cffunction>
 
-    <cffunction access="public" returntype="void" name="testVerifySeal" output="false" hint="Test of verifySeal method, of class org.owasp.esapi.Encryptor.">
+
+	<cffunction access="public" returntype="void" name="testVerifySeal" output="false" hint="Test of verifySeal method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 	        local.NSEC = 5;
 	        System.out.println("testVerifySeal()");
@@ -360,6 +357,7 @@
     	</cfscript>
 	</cffunction>
 
+
 	<cffunction access="public" returntype="void" name="testEncryptionSerialization" output="false">
 		<cfscript>
 	        local.secretMsg = "Secret Message";
@@ -373,5 +371,6 @@
 	        assertTrue( local.secretMsg.equals( local.plainText.toString() ) );
     	</cfscript>
 	</cffunction>
+
 
 </cfcomponent>

@@ -3,17 +3,13 @@
 	<cfscript>
 		Logger = createObject("java", "org.owasp.esapi.Logger");
 
-		instance.ESAPI = "";
 		instance.testCount = 0;
 		instance.testLogger = "";
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+			super.setUp();
 
 			local.tmpConfig = createObject("component", "UnitTestSecurityConfiguration").init(instance.ESAPI, instance.ESAPI.securityConfiguration());
 	        local.tmpConfig.setLogImplementation( getMetaData(createObject("component", "cfesapi.org.owasp.esapi.reference.ExampleExtendedLog4JLogFactory")).name);
@@ -30,8 +26,7 @@
 			instance.testLogger = "";
 			instance.ESAPI.override("");
 
-			structClear(session);
-			structClear(request);
+			super.tearDown();
 		</cfscript>
 	</cffunction>
 

@@ -3,16 +3,12 @@
 	<cfscript>
 		Boolean = createObject("java", "java.lang.Boolean");
 
-		instance.ESAPI = "";
 		instance.accessController = "";
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			structClear(session);
-			structClear(request);
-
-			instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+			super.setUp();
 
 			local.accessControlRules = {};
 			local.accessControlRules.put("AlwaysTrue", createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysTrueACR"));
@@ -25,11 +21,9 @@
 
 	<cffunction access="public" returntype="void" name="tearDown" output="false">
 		<cfscript>
-			instance.ESAPI = "";
 			instance.accessController = "";
 
-			structClear(session);
-			structClear(request);
+			super.tearDown();
 		</cfscript>
 	</cffunction>
 
