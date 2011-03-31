@@ -5,7 +5,7 @@
 		//static.EMPTY_STRING_ARRAY = new String[0];
 
 		/* The requestDispatcher */
-		//instance.requestDispatcher = new MockRequestDispatcher();
+		instance.requestDispatcher = createObject("component", "MockRequestDispatcher");
 
 		/* The session. */
 		instance.session = "";
@@ -60,7 +60,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getAuthType --->
+
+	<cffunction access="public" returntype="String" name="getAuthType" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getContextPath" output="false">
 		<cfscript>
@@ -94,7 +100,21 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- addHeader --->
+
+	<cffunction access="public" returntype="void" name="addHeader" output="false" hint="Adds the header.">
+		<cfargument type="String" name="name" required="true" hint="the name">
+		<cfargument type="String" name="value" required="true" hint="the value">
+		<cfscript>
+			local.values = headers.get(arguments.name);
+
+			if(isNull(local.values)) {
+				local.values = [];
+				instance.headers.put(arguments.name, local.values);
+			}
+			local.values.add(arguments.value);
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="setHeader" output="false" hint="Set a header replacing any previous value(s).">
 		<cfargument type="String" name="name" required="true" hint="the header name">
@@ -125,8 +145,21 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- clearCookie --->
-	<!--- clearCookies --->
+
+	<cffunction access="public" returntype="boolean" name="clearCookie" output="false">
+		<cfargument type="String" name="name" required="true">
+		<cfscript>
+			return instance.cookies.remove(arguments.name);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="clearCookies" output="false">
+		<cfscript>
+			instance.cookies.clear();
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="Array" name="getCookies" output="false">
 		<cfscript>
@@ -135,11 +168,58 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getDateHeader --->
-	<!--- getHeader --->
-	<!--- getHeaderNames --->
-	<!--- getHeaders --->
-	<!--- getIntHeader --->
+
+	<cffunction access="public" returntype="numeric" name="getDateHeader" output="false">
+		<cfargument type="String" name="name" required="true">
+		<cfscript>
+			try {
+				local.date = SimpleDateFormat.getDateTimeInstance().parse( getParameter( arguments.name ) );
+				return local.date.getTime(); // TODO needs to be HTTP format
+			} catch( java.text.ParseException e ) {
+				return 0;
+			}
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getHeader" output="false">
+		<cfargument type="String" name="name" required="true">
+		<cfscript>
+			local.values = headers.get(arguments.name);
+
+			if(isNull(local.values))
+				return "";
+			if(local.values.size() == 0)
+				return null;
+			return local.values.get(1);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="Array" name="getHeaderNames" output="false" hint="Enumeration of header names as strings">
+		<cfscript>
+			return listToArray(structKeyList(instance.headers));
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="Array" name="getHeaders" output="false">
+		<cfargument type="String" name="name" required="true">
+		<cfscript>
+			local.v = [];
+			local.v.add( getHeader( arguments.name ) );
+			return local.v;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getIntHeader" output="false">
+		<cfargument type="String" name="name" required="true">
+		<cfscript>
+			return 0;
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getMethod" output="false">
 		<cfscript>
@@ -147,9 +227,28 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- setMethod --->
-	<!--- getPathInfo --->
-	<!--- getPathTranslated --->
+
+	<cffunction access="public" returntype="void" name="setMethod" output="false">
+		<cfargument type="String" name="value" required="true">
+		<cfscript>
+			instance.method = arguments.value;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getPathInfo" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getPathTranslated" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getQueryString" output="false">
 		<cfscript>
@@ -165,7 +264,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getRemoteUser --->
+
+	<cffunction access="public" returntype="String" name="getRemoteUser" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getRequestURI" output="false">
 		<cfscript>
@@ -180,8 +285,20 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getRequestedSessionId --->
-	<!--- getServletPath --->
+
+	<cffunction access="public" returntype="String" name="getRequestedSessionId" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getServletPath" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="any" name="getSession" output="false" hint="cfesapi.org.owasp.esapi.HttpSession">
 		<cfargument type="boolean" name="create" required="false">
@@ -203,11 +320,42 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getUserPrincipal --->
-	<!--- isRequestedSessionIdFromCookie --->
-	<!--- isRequestedSessionIdFromURL --->
-	<!--- isRequestedSessionIdValid --->
-	<!--- isUserInRole --->
+
+	<cffunction access="public" returntype="any" name="getUserPrincipal" output="false" hint="java.security.Principal">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="boolean" name="isRequestedSessionIdFromCookie" output="false">
+		<cfscript>
+			return false;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="boolean" name="isRequestedSessionIdFromURL" output="false">
+		<cfscript>
+			return false;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="boolean" name="isRequestedSessionIdValid" output="false">
+		<cfscript>
+			return false;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="boolean" name="isUserInRole" output="false">
+		<cfargument type="String" name="role" required="true">
+		<cfscript>
+			return false;
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="any" name="getAttribute" output="false">
 		<cfargument type="String" name="name" required="true">
@@ -216,10 +364,34 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getAttributeNames --->
-	<!--- getCharacterEncoding --->
-	<!--- getContentLength --->
-	<!--- getContentType --->
+
+	<cffunction access="public" returntype="Array" name="getAttributeNames" output="false">
+		<cfscript>
+			return listToArray(structKeyList(instance.attrs));
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getContentLength" output="false">
+		<cfscript>
+			return instance.body.length;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getContentType" output="false">
+		<cfscript>
+			return getHeader(static.HDR_CONTENT_TYPE);
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="setContentType" output="false">
 		<cfargument type="String" name="value" required="true">
@@ -228,7 +400,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getInputStream --->
+
+	<cffunction access="public" returntype="any" name="getInputStream" output="false" hint="javax.servlet.ServletInputStream">
+		<cfscript>
+			return new MockServletInputStream(instance.body);
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getLocalAddr" output="false">
 		<cfscript>
@@ -236,7 +414,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getLocalName --->
+
+	<cffunction access="public" returntype="String" name="getLocalName" output="false">
+		<cfscript>
+			return "www.domain.com";
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="numeric" name="getLocalPort" output="false">
 		<cfscript>
@@ -251,7 +435,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getLocales --->
+
+	<cffunction access="public" returntype="Array" name="getLocales" output="false">
+		<cfscript>
+			return [];
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getParameter" output="false">
 		<cfargument type="String" name="name" required="true">
@@ -277,7 +467,13 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getParameterNames --->
+
+	<cffunction access="public" returntype="Array" name="getParameterNames" output="false">
+		<cfscript>
+			return listToArray(structKeyList(instance.parameters));
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="Array" name="getParameterValues" output="false">
 		<cfargument type="String" name="name" required="true">
@@ -291,8 +487,20 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getProtocol --->
-	<!--- getReader --->
+
+	<cffunction access="public" returntype="String" name="getProtocol" output="false">
+		<cfscript>
+			return "HTTP/1.1";
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="getReader" output="false" hint="java.io.BufferedReader">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getRemoteAddr" output="false">
 		<cfscript>
@@ -300,7 +508,14 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- setRemoteAddr --->
+
+	<cffunction access="public" returntype="void" name="setRemoteAddr" output="false">
+		<cfargument type="String" name="remoteHost" required="true">
+		<cfscript>
+			instance.remoteHost = arguments.remoteHost;
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getRemoteHost" output="false">
 		<cfscript>
@@ -308,8 +523,21 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getRemotePort --->
-	<!--- getRequestDispatcher --->
+
+	<cffunction access="public" returntype="numeric" name="getRemotePort" output="false">
+		<cfscript>
+			return 0;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="getRequestDispatcher" output="false" hint="javax.servlet.RequestDispatcher">
+		<cfargument type="String" name="path" required="true">
+		<cfscript>
+			return instance.requestDispatcher;
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="String" name="getScheme" output="false">
 		<cfscript>
@@ -324,20 +552,50 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getServerPort --->
-	<!--- isSecure --->
-	<!--- removeAttribute --->
+
+	<cffunction access="public" returntype="numeric" name="getServerPort" output="false">
+		<cfscript>
+			return 80;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="boolean" name="isSecure" output="false">
+		<cfscript>
+			return instance.scheme.equals( "https" );
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="removeAttribute" output="false">
+		<cfargument type="String" name="name" required="true">
+		<cfscript>
+			instance.attrs.remove(arguments.name);
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="setAttribute" output="false">
 		<cfargument type="String" name="name" required="true">
 		<cfargument type="any" name="o" required="true">
 		<cfscript>
-			instance.attrs.put(arguments.name,arguments.o);
+			instance.attrs.put(arguments.name, arguments.o);
 		</cfscript>
 	</cffunction>
 
-	<!--- setCharacterEncoding --->
-	<!--- setRequestURI --->
+
+	<cffunction access="public" returntype="void" name="setCharacterEncoding" output="false">
+		<cfargument type="String" name="enc" required="true">
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setRequestURI" output="false">
+		<cfargument type="String" name="uri" required="true">
+		<cfscript>
+			instance.uri = arguments.uri;
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="setRequestURL" output="false">
 		<cfargument type="String" name="url" required="true">
@@ -362,7 +620,14 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- setScheme --->
+
+	<cffunction access="public" returntype="void" name="setScheme" output="false">
+		<cfargument type="String" name="scheme" required="true">
+		<cfscript>
+			instance.scheme = arguments.scheme;
+		</cfscript>
+	</cffunction>
+
 	<!--- dump --->
 
 	<cffunction access="public" returntype="boolean" name="isMultipartContent" output="false">

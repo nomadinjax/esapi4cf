@@ -28,7 +28,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="any" name="getAttribute" output="false" hint="Same as HttpServletRequest, no security changes required.">
+	<cffunction access="public" returntype="any" name="getAttribute" output="false" hint="The attribute value">
 		<cfargument type="String" name="name" required="true" hint="The attribute name">
 		<cfscript>
         	return getHttpServletRequest().getAttribute(name);
@@ -244,9 +244,6 @@
 
 	<cffunction access="public" returntype="String" name="getParameter" output="false" hint="Returns the named parameter from the HttpServletRequest after canonicalizing and filtering out any dangerous characters.">
 		<cfargument type="String" name="name" required="true" hint="The parameter name for the request">
-		<cfargument type="boolean" name="allowNull" required="false" default="true" hint="Whether null values are allowed">
-		<cfargument type="numeric" name="maxLength" required="false" default="2000" hint="The maximum length allowed">
-		<cfargument type="String" name="regexName" required="false" default="HTTPParameterValue" hint="The name of the regex mapped from ESAPI.properties">
 		<cfscript>
 	        local.orig = getHttpServletRequest().getParameter(arguments.name);
 
@@ -256,7 +253,7 @@
 
 	        local.clean = "";
 	        try {
-	            local.clean = instance.ESAPI.validator().getValidInput("HTTP parameter name: " & arguments.name, local.orig, arguments.regexName, arguments.maxLength, arguments.allowNull);
+	            local.clean = instance.ESAPI.validator().getValidInput("HTTP parameter name: " & arguments.name, local.orig, "HTTPParameterValue", 2000, true);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            // already logged
 	        }
