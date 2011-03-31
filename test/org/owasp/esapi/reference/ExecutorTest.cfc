@@ -4,7 +4,6 @@
 	<cffunction access="public" returntype="void" name="testExecuteWindowsSystemCommand" output="false" hint="Test of executeOSCommand method, of class org.owasp.esapi.Executor">
 		<cfscript>
 			ioFile = createObject("java", "java.io.File");
-			ArrayList = createObject("java", "java.util.ArrayList");
 			Collections = createObject("java", "java.util.Collections");
 			WindowsCodec = createObject("java", "org.owasp.esapi.codecs.WindowsCodec");
 
@@ -29,63 +28,63 @@
 			local.codec = WindowsCodec.init();
 			System.out.println("executeSystemCommand");
 			local.instance = instance.ESAPI.executor();
-			local.params = ArrayList.init();
+			local.params = [];
 			try {
 				local.params.add("/C");
 				local.params.add("dir");
-				local.result = local.instance.executeSystemCommand(local.cmd, ArrayList.init(local.params) );
+				local.result = local.instance.executeSystemCommand(local.cmd, local.params);
 				System.out.println( "RESULT: " & local.result );
 				assertTrue(local.result.getOutput().length() > 0);
-			} catch (Exception e) {
+			} catch (java.lang.Exception e) {
 				e.printStackTrace();
-				fail();
+				fail("");
 			}
 			try {
 				local.exec2 = ioFile.init( local.cmd.getPath() & ";inject.exe" );
-				local.result = local.instance.executeSystemCommand(local.exec2, ArrayList.init(local.params) );
+				local.result = local.instance.executeSystemCommand(local.exec2, local.params);
 				System.out.println( "RESULT: " & local.result );
-				fail();
-			} catch (Exception e) {
+				fail("");
+			} catch (java.lang.Exception e) {
 				// expected
 			}
 			try {
 				local.exec2 = ioFile.init( local.cmd.getPath() & "\..\cmd.exe" );
-				local.result = local.instance.executeSystemCommand(local.exec2, ArrayList.init(local.params) );
+				local.result = local.instance.executeSystemCommand(local.exec2, local.params);
 				System.out.println( "RESULT: " & local.result );
-				fail();
-			} catch (Exception e) {
+				fail("");
+			} catch (java.lang.Exception e) {
 				// expected
 			}
 			try {
 				local.workdir = ioFile.init( "c:\ridiculous" );
-				local.result = local.instance.executeSystemCommand(local.cmd, ArrayList.init(local.params), local.workdir, local.codec, false, false );
+				local.result = local.instance.executeSystemCommand(local.cmd, local.params, local.workdir, local.codec, false, false );
 				System.out.println( "RESULT: " & local.result );
-				fail();
-			} catch (Exception e) {
+				fail("");
+			} catch (java.lang.Exception e) {
 				// expected
 			}
 			try {
 				local.params.add("&dir");
-				local.result = local.instance.executeSystemCommand(local.cmd, ArrayList.init(local.params) );
+				local.result = local.instance.executeSystemCommand(local.cmd, local.params);
 				System.out.println( "RESULT: " & local.result );
-			} catch (Exception e) {
-				fail();
+			} catch (java.lang.Exception e) {
+				fail("");
 			}
 
 			try {
 				local.params.set( local.params.size()-1, "c:\autoexec.bat" );
-				local.result = local.instance.executeSystemCommand(local.cmd, new ArrayList(local.params) );
+				local.result = local.instance.executeSystemCommand(local.cmd, local.params);
 				System.out.println( "RESULT: " & local.result );
-			} catch (Exception e) {
-				fail();
+			} catch (java.lang.Exception e) {
+				fail("");
 			}
 
 			try {
 				local.params.set( local.params.size()-1, "c:\autoexec.bat c:\config.sys" );
-				local.result = local.instance.executeSystemCommand(local.cmd, new ArrayList(local.params) );
+				local.result = local.instance.executeSystemCommand(local.cmd, local.params);
 				System.out.println( "RESULT: " & local.result );
-			} catch (Exception e) {
-				fail();
+			} catch (java.lang.Exception e) {
+				fail("");
 			}
 		</cfscript>
 	</cffunction>
