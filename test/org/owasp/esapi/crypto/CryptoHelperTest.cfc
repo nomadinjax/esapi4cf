@@ -24,6 +24,7 @@
 		        local.key = CryptoHelper.generateSecretKey("NoSuchAlg", 128);
 		        assertTrue(isNull(local.key)); // Not reached!
 		    } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
+		    	// expected
 	        }
     	</cfscript>
 	</cffunction>
@@ -53,27 +54,43 @@
 	</cffunction>
 
 
+	<!--- NULL TEST
 	<cffunction access="public" returntype="void" name="testCopyByteArraySrcNullPointerException" output="false">
 		<cfscript>
-	        local.ba = newByte(16);
-	        CryptoHelper.copyByteArray(toBinary(toBase64("")), local.ba, len(local.ba));
+			try {
+		        local.ba = newByte(16);
+		        CryptoHelper.copyByteArray(toBinary(toBase64("")), local.ba, len(local.ba));
+		        fail("");
+	        } catch (java.lang.NullPointerException e) {
+	       		// expected
+	       	}
     	</cfscript>
-	</cffunction>
+	</cffunction> --->
 
 
+	<!--- NULL TEST
 	<cffunction access="public" returntype="void" name="testCopyByteArrayDestNullPointerException" output="false">
 		<cfscript>
-	        local.ba = newByte(16);
-	        CryptoHelper.copyByteArray(local.ba, toBinary(toBase64("")), len(local.ba));
+			try {
+		        local.ba = newByte(16);
+		        CryptoHelper.copyByteArray(local.ba, toBinary(toBase64("")), len(local.ba));
+			} catch (java.lang.NullPointerException e) {
+				// expected
+			}
     	</cfscript>
-	</cffunction>
+	</cffunction> --->
 
 
 	<cffunction access="public" returntype="void" name="testCopyByteArrayIndexOutOfBoundsException" output="false">
 		<cfscript>
-	        local.ba8 = newByte(8);
-	        local.ba16 = newByte(16);
-	        CryptoHelper.copyByteArray(local.ba8, local.ba16, len(local.ba16));
+			try {
+		        local.ba8 = newByte(8);
+		        local.ba16 = newByte(16);
+		        CryptoHelper.copyByteArray(local.ba8, local.ba16, len(local.ba16));
+		        fail("");
+			} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+				// expected
+			}
     	</cfscript>
 	</cffunction>
 
