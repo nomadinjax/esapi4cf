@@ -86,7 +86,7 @@
 				local.csIV = local.cipherSpec.getIV();
 				//assertArrayEquals(local.ctIV, local.csIV);
 				assertEquals(charsetEncode(local.ctIV, 'utf-8'), charsetEncode(local.csIV, 'utf-8'));
-			} catch( Exception ex) {
+			} catch( java.lang.Exception ex) {
 				// As far as test coverage goes, we really don't want this to be covered.
 				fail("Caught unexpected exception: " & ex.getClass().getName() & "; exception message was: " & ex.getMessage());
 			}
