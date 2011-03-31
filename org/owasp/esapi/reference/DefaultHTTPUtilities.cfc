@@ -170,8 +170,8 @@
 			// make a copy of the session content
 			local.temp = {};
 			local.e = local.oldSession.getAttributeNames();
-			while (!isNull(local.e) && local.e.hasMoreElements()) {
-				local.name = local.e.nextElement();
+			for (local.i=1; local.i<=arrayLen(local.e); local.i++) {
+				local.name = local.e[local.i];
 				local.value = local.oldSession.getAttribute(local.name);
 				local.temp.put(local.name, local.value);
 			}

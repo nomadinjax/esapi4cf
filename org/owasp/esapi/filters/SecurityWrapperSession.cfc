@@ -17,61 +17,18 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="numeric" name="getCreationTime" output="false">
-		<cfscript>
-			return instance.session.getCreationTime();
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getId" output="false">
-		<cfscript>
-			return instance.session.getId();
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getLastAccessedTime" output="false">
-		<cfscript>
-			return instance.session.getLastAccessedTime();
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getServletContext" output="false" hint="javax.servlet.ServletContext">
-		<cfscript>
-			return instance.session.getServletContext();
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="setMaxInactiveInterval" output="false">
-		<cfargument type="numeric" name="interval" required="true">
-		<cfscript>
-			instance.session.setMaxInactiveInterval(arguments.interval);
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getMaxInactiveInterval" output="false">
-		<cfscript>
-			instance.session.getMaxInactiveInterval();
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getAttribute" output="false">
-		<cfargument type="String" name="key" required="true">
+	<cffunction access="public" returntype="any" name="getAttribute" output="false" hint="Returns the object bound with the specified name in this session, or null if no object is bound under the name.">
+		<cfargument type="String" name="name" required="true">
 		<cfscript>
 			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
 			if ( local.applicationName != "" ) {
-				if (!isNull(instance.session.getAttribute(local.applicationName)) && structKeyExists(instance.session.getAttribute(local.applicationName), arguments.key)) {
-					return instance.session.getAttribute(local.applicationName)[arguments.key];
+				if (!isNull(instance.session.getAttribute(local.applicationName)) && structKeyExists(instance.session.getAttribute(local.applicationName), arguments.name)) {
+					return instance.session.getAttribute(local.applicationName)[arguments.name];
 				}
 			}
 			else {
-				if (structKeyExists(instance.session, arguments.key)) {
-					return instance.session[arguments.key];
+				if (structKeyExists(instance.session, arguments.name)) {
+					return instance.session[arguments.name];
 				}
 			}
 
@@ -80,39 +37,54 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="any" name="getAttributeNames" output="false">
+	<cffunction access="public" returntype="Array" name="getAttributeNames" output="false" hint="Returns an Enumeration of String objects containing the names of all the objects bound to this session.">
 		<cfscript>
-			return instance.session.getAttributeNames();
-		</cfscript>
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="setAttribute" output="false">
-		<cfargument type="String" name="key" required="true">
-		<cfargument type="any" name="object" required="true">
-		<cfscript>
-			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
-			if (local.applicationName != "") {
-				if (!isNull(instance.session.getAttribute(local.applicationName))) {
-					instance.session.getAttribute(local.applicationName)[arguments.key] = arguments.object;
-				}
+			local.an = instance.session.getAttributeNames();
+			local.ret = [];
+			while (!isNull(local.an) && local.an.hasMoreElements()) {
+				arrayAppend(local.ret, local.an.nextElement());
 			}
-			else {
-				instance.session[arguments.key] = arguments.object;
-			}
+			return local.ret;
 		</cfscript>
 	</cffunction>
 
 
-	<cffunction access="public" returntype="void" name="removeAttribute" output="false">
-		<cfargument type="String" name="key" required="true">
+	<cffunction access="public" returntype="numeric" name="getCreationTime" output="false" hint="Returns the time when this session was created, measured in milliseconds since midnight January 1, 1970 GMT.">
 		<cfscript>
-			return instance.session.removeAttribute(arguments.key);
+			return instance.session.getCreationTime();
 		</cfscript>
 	</cffunction>
 
 
-	<cffunction access="public" returntype="void" name="invalidate" output="false">
+	<cffunction access="public" returntype="String" name="getId" output="false" hint="Returns a string containing the unique identifier assigned to this session.">
+		<cfscript>
+			return instance.session.getId();
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getLastAccessedTime" output="false" hint="Returns the last time the client sent a request associated with this session, as the number of milliseconds since midnight January 1, 1970 GMT, and marked by the time the container received the request.">
+		<cfscript>
+			return instance.session.getLastAccessedTime();
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getMaxInactiveInterval" output="false" hint="Returns the maximum time interval, in seconds, that the servlet container will keep this session open between client accesses.">
+		<cfscript>
+			instance.session.getMaxInactiveInterval();
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="getServletContext" output="false" hint="javax.servlet.ServletContext: Returns the ServletContext to which this session belongs.">
+		<cfscript>
+			return instance.session.getServletContext();
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="invalidate" output="false" hint="Invalidates this session then unbinds any objects bound to it.">
 		<cfscript>
 			// TODO: not sure best way to do this that won't throw a CF error
 
@@ -135,9 +107,42 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="boolean" name="isNew" output="false">
+	<cffunction access="public" returntype="boolean" name="isNew" output="false" hint="Returns true if the client does not yet know about the session or if the client chooses not to join the session.">
 		<cfscript>
 			return instance.session.isNew();
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="removeAttribute" output="false" hint="Removes the object bound with the specified name from this session.">
+		<cfargument type="String" name="name" required="true">
+		<cfscript>
+			return instance.session.removeAttribute(arguments.name);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setAttribute" output="false" hint="Binds an object to this session, using the name specified.">
+		<cfargument type="String" name="name" required="true">
+		<cfargument type="any" name="value" required="true">
+		<cfscript>
+			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
+			if (local.applicationName != "") {
+				if (!isNull(instance.session.getAttribute(local.applicationName))) {
+					instance.session.getAttribute(local.applicationName)[arguments.name] = arguments.value;
+				}
+			}
+			else {
+				instance.session[arguments.name] = arguments.value;
+			}
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setMaxInactiveInterval" output="false" hint="Specifies the time, in seconds, between client requests before the servlet container will invalidate this session.">
+		<cfargument type="numeric" name="interval" required="true">
+		<cfscript>
+			instance.session.setMaxInactiveInterval(arguments.interval);
 		</cfscript>
 	</cffunction>
 

@@ -39,17 +39,16 @@
 
 
 	<cffunction access="public" returntype="any" name="getAttribute" output="false">
-		<cfargument type="String" name="string" required="true">
+		<cfargument type="String" name="name" required="true">
 		<cfscript>
-			return instance.attributes.get( arguments.string );
+			return instance.attributes.get( arguments.name );
 		</cfscript>
 	</cffunction>
 
 
-	<cffunction access="public" returntype="any" name="getAttributeNames" output="false" hint="java.util.Enumeration">
+	<cffunction access="public" returntype="Array" name="getAttributeNames" output="false" hint="java.util.Enumeration">
 		<cfscript>
-			local.v = createObject("java", "java.util.Vector").init( instance.attributes.keySet() );
-			return local.v.elements();
+			return listToArray(structKeyList(instance.attributes));
 		</cfscript>
 	</cffunction>
 
@@ -81,8 +80,20 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- getMaxInactiveInterval --->
-	<!--- getServletContext --->
+
+	<cffunction access="public" returntype="numeric" name="getMaxInactiveInterval" output="false">
+		<cfscript>
+			return 0;
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="any" name="getServletContext" output="false">
+		<cfscript>
+			return "";
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="invalidate" output="false">
 		<cfscript>
@@ -90,18 +101,38 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- isNew --->
-	<!--- removeAttribute --->
 
-	<cffunction access="public" returntype="void" name="setAttribute" output="false">
-		<cfargument type="String" name="string" required="true">
-		<cfargument type="any" name="object" required="true">
+	<cffunction access="public" returntype="boolean" name="isNew" output="false">
 		<cfscript>
-			instance.attributes.put(arguments.string, arguments.object);
+			return true;
 		</cfscript>
 	</cffunction>
 
-	<!--- setMaxInactiveInterval --->
+
+	<cffunction access="public" returntype="void" name="removeAttribute" output="false">
+		<cfargument type="String" name="name" required="true">
+		<cfscript>
+			instance.attributes.remove( arguments.name );
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setAttribute" output="false">
+		<cfargument type="String" name="name" required="true">
+		<cfargument type="any" name="value" required="true">
+		<cfscript>
+			instance.attributes.put(arguments.name, arguments.value);
+		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="setMaxInactiveInterval" output="false">
+		<cfargument type="numeric" name="interval" required="true">
+		<cfscript>
+			// stub
+		</cfscript>
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="setAccessedTime" output="false">
 		<cfargument type="numeric" name="time" required="true">
