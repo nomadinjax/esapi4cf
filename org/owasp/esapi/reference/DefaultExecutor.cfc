@@ -80,7 +80,7 @@
 
 	            // Legacy - this is how to implement in Java 1.4
 	            // String[] command = (String[])params.toArray( new String[0] );
-	            // Process process = Runtime.getRuntime().exec(command, new String[0], workdir);
+	            // Process process = Runtime.getRuntime().exec(command, new String[0], arguments.workdir);
 
 	            // The following is host to implement in Java 1.5+
 	            local.pb = createObject("java", "java.lang.ProcessBuilder").init(arguments.params);
@@ -90,9 +90,9 @@
 	            local.pb.redirectErrorStream(arguments.redirectErrorStream);
 
 	            if ( arguments.logParams ) {
-	            	instance.logger.warning(Logger.SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " " & arguments.params & " in " & workdir);
+	            	instance.logger.warning(Logger.SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " " & arguments.params & " in " & arguments.workdir);
 	            } else {
-	            	instance.logger.warning(Logger.SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " [sensitive parameters obscured] in " & workdir);
+	            	instance.logger.warning(Logger.SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " [sensitive parameters obscured] in " & arguments.workdir);
 	            }
 
 	            local.outputBuffer = createObject("java", "java.lang.StringBuilder").init();
