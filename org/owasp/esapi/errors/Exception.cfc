@@ -23,7 +23,8 @@
 			}
 
 			setType();
-			setStackTrace(instance.exception.tagContext);
+			// RAILO ERROR: setStackTrace(instance.exception.tagContext);
+			setStackTrace(instance.exception.getStackTrace());
 
 			return this;
 		</cfscript>
@@ -91,7 +92,8 @@
 			// drop indexes that contain 'cfesapi\org\owasp\esapi\errors'
 			while (arrayLen(local.stackTrace)) {
 				local.item = local.stackTrace[1];
-				if (not findNoCase('cfesapi\org\owasp\esapi\errors', local.item.template)) {
+				// RAILO ERROR: if (not findNoCase('cfesapi\org\owasp\esapi\errors', local.item.template)) {
+				if (not findNoCase('cfesapi\org\owasp\esapi\errors', local.item.getFileName())) {
 					break;
 				}
 				arrayDeleteAt(local.stackTrace, 1);

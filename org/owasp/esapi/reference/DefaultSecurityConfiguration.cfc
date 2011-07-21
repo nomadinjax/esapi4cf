@@ -813,7 +813,9 @@
 		<cfscript>
 	    	local.value = getESAPIProperty( "Validator." & arguments.key, "" );
 	    	// check cache
-	    	local.p = instance.patternCache.get( local.value );
+	    	if (structKeyExists(instance.patternCache, local.value)) {
+	    		local.p = instance.patternCache.get( local.value );
+	    	}
 	    	if ( !isNull(local.p) ) {
 				return local.p;
 	    	}

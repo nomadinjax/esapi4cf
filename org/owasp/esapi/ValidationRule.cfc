@@ -38,10 +38,11 @@
 	</cffunction>
 
 
+	<!--- RAILO ERROR: The name [isValid] is already used by a Build in Function
 	<cffunction access="public" returntype="boolean" name="isValid" output="false" hint="true if the input passes validation">
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
-	</cffunction>
+	</cffunction> --->
 
 
 	<cffunction access="public" returntype="String" name="whitelist" output="false" hint="String the input of all chars contained in the list">

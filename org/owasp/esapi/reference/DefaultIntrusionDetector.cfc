@@ -114,7 +114,9 @@
 			// if there is a threshold, then track this event
 			local.threshold = instance.ESAPI.securityConfiguration().getQuota( arguments.eventName );
 			if ( isObject(local.threshold) ) {
-				local.event = local.eventMap.get( arguments.eventName );
+				if (structKeyExists(local.eventMap, arguments.eventName)) {
+					local.event = local.eventMap.get( arguments.eventName );
+				}
 				if ( isNull(local.event) ) {
 					local.event = createObject("component", "Event").init(instance.ESAPI, arguments.eventName );
 					local.eventMap.put( arguments.eventName, local.event );

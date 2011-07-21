@@ -41,7 +41,9 @@
 	<cffunction access="public" returntype="any" name="getAttribute" output="false">
 		<cfargument type="String" name="name" required="true">
 		<cfscript>
-			return instance.attributes.get( arguments.name );
+			if (structKeyExists(instance.attributes, arguments.name)) {
+				return instance.attributes.get( arguments.name );
+			}
 		</cfscript>
 	</cffunction>
 

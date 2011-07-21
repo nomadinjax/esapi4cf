@@ -94,9 +94,10 @@
 	</cffunction>
 
 
+	<!--- RAILO ERROR: The name [isUserInRole] is already used by a Build in Function
 	<cffunction access="public" returntype="boolean" name="isUserInRole" output="false" hint="Returns true if the ESAPI User associated with this request has the specified role.">
 		<cfargument type="String" name="role" required="true" hint="The role to check">
-	</cffunction>
+	</cffunction> --->
 
 	<!--- javax.servlet.ServletRequest --->
 
@@ -129,8 +130,9 @@
 	</cffunction>
 
 
+	<!--- RAILO ERROR: 	The name [getLocale] is already used by a Build in Function
 	<cffunction access="public" returntype="any" name="getLocale" output="false" hint="java.util.Locale: The preferred Locale for the client.">
-	</cffunction>
+	</cffunction> --->
 
 
 	<cffunction access="public" returntype="Array" name="getLocales" output="false" hint="An Enumeration of preferred Locale objects for the client.">

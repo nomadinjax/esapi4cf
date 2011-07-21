@@ -1,12 +1,14 @@
 <cfinterface hint="The User interface represents an application user or user account. There is quite a lot of information that an application must store for each user in order to enforce security properly. There are also many rules that govern authentication and identity management. A user account can be in one of several states. When first created, a User should be disabled, not expired, and unlocked. To start using the account, an administrator should enable the account. The account can be locked for a number of reasons, most commonly because they have failed login for too many times. Finally, the account can expire after the expiration date has been reached. The User must be enabled, not expired, and unlocked in order to pass authentication.">
 
+	<!--- RAILO ERROR: The name [getLocale] is already used by a Build in Function
 	<cffunction access="public" returntype="any" name="getLocale" output="false" hint="java.util.Locale: the locale">
-	</cffunction>
+	</cffunction> --->
 
 
+	<!--- RAILO ERROR: The name [setLocale] is already used by a Build in Function
 	<cffunction access="public" returntype="void" name="setLocale" output="false">
 		<cfargument type="any" name="locale" required="true" hint="java.util.Locale: the locale to set">
-	</cffunction>
+	</cffunction> --->
 
 
 	<cffunction access="public" returntype="void" name="addRole" output="false" hint="Adds a role to this user's account.">

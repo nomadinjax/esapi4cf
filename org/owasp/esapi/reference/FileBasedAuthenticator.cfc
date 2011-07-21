@@ -303,7 +303,7 @@
 
 	<cffunction access="private" returntype="void" name="loadUsersIfNecessary" output="false" hint="Load users if they haven't been loaded in a while.">
 		<cfscript>
-	        if (instance.userDB == "") {
+	        if (!isObject(instance.userDB)) {
 	            instance.userDB = instance.ESAPI.securityConfiguration().getResourceFile("users.txt");
 	        }
 	        if (isNull(instance.userDB)) {
