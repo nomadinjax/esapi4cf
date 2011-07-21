@@ -20,7 +20,9 @@
 		<cfargument type="String" name="moduleName" required="true">
 		<cfscript>
 	    	// If a logger for this module already exists, we return the same one, otherwise we create a new one.
-	    	local.moduleLogger = instance.loggersMap.get(arguments.moduleName);
+	    	if (structKeyExists(instance.loggersMap, arguments.moduleName)) {
+	    		local.moduleLogger = instance.loggersMap.get(arguments.moduleName);
+	    	}
 
 	    	if (isNull(local.moduleLogger)) {
 	    		local.moduleLogger = createObject("component", "JavaLogger").init(instance.ESAPI, arguments.moduleName);
