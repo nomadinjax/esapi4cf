@@ -192,7 +192,7 @@
 
 			local.success = false;	// Used in 'finally' clause.
 			local.xform = "";
-			local.keySize = len(arguments.key.getEncoded()) * 8;	// Convert to # bits
+			local.keySize = arrayLen(arguments.key.getEncoded()) * 8;	// Convert to # bits
 
 			try {
 				local.xform = instance.ESAPI.securityConfiguration().getCipherTransformation();

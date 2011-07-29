@@ -1,5 +1,4 @@
 <cfinterface>
-	<!--- javax.servlet.http.HttpServletRequest --->
 
 	<cffunction access="public" returntype="String" name="getAuthType" output="false" hint="The authentication type">
 	</cffunction>
@@ -93,12 +92,12 @@
 	<cffunction access="public" returntype="boolean" name="isRequestedSessionIdValid" output="false" hint="Whether the requested session id is valid">
 	</cffunction>
 
-
 	<!--- RAILO ERROR: The name [isUserInRole] is already used by a Build in Function
-	<cffunction access="public" returntype="boolean" name="isUserInRole" output="false" hint="Returns true if the ESAPI User associated with this request has the specified role.">
-		<cfargument type="String" name="role" required="true" hint="The role to check">
-	</cffunction> --->
 
+		<cffunction access="public" returntype="boolean" name="isUserInRole" output="false" hint="Returns true if the ESAPI User associated with this request has the specified role.">
+		<cfargument type="String" name="role" required="true" hint="The role to check">
+		</cffunction>
+ --->
 	<!--- javax.servlet.ServletRequest --->
 
 	<cffunction access="public" returntype="any" name="getAttribute" output="false" hint="The attribute value">
@@ -129,11 +128,11 @@
 	<cffunction access="public" returntype="String" name="getLocalAddr" output="false" hint="A String containing the IP address on which the request was received.">
 	</cffunction>
 
-
 	<!--- RAILO ERROR: 	The name [getLocale] is already used by a Build in Function
-	<cffunction access="public" returntype="any" name="getLocale" output="false" hint="java.util.Locale: The preferred Locale for the client.">
-	</cffunction> --->
 
+		<cffunction access="public" returntype="any" name="getLocale" output="false" hint="java.util.Locale: The preferred Locale for the client.">
+		</cffunction>
+ --->
 
 	<cffunction access="public" returntype="Array" name="getLocales" output="false" hint="An Enumeration of preferred Locale objects for the client.">
 	</cffunction>

@@ -152,7 +152,7 @@
 				} else if ( local.cipherAlg.equals( "DES" ) ) {
 					arguments.keySize = 64;
 				} // Else... use specified keySize.
-				assertTrue( (arguments.keySize / 8) == len(local.skey.getEncoded()) );
+				assertTrue( (arguments.keySize / 8) == arrayLen(local.skey.getEncoded()) );
 	//			System.out.println("testNewEncryptDecrypt(): Skey length (bits) = " + 8 * skey.getEncoded().length);
 
 				// Change to a possibly different cipher. This is kludgey at best. Am thinking about an

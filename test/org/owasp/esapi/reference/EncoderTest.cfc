@@ -239,7 +239,7 @@
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals("", local.instance.encodeForHTML(""));
 	        // test invalid characters are replaced with spaces
-	        assertEquals("a&##xfffd;b&##xfffd;c&##xfffd;d&##xfffd;e&##xfffd;f&##x9;g", local.instance.encodeForHTML("a" & chr(0) & "b" & chr(4) & "c" & chr(128) & "d" & chr(150) & "e" &chr(159) & "f" & chr(9) & "g"));
+	        assertEquals("a&##xfffd;b&##xfffd;c&##xfffd;d&##xfffd;e&##xfffd;f&##x9;g", local.instance.encodeForHTML("a" & chr(1) & "b" & chr(4) & "c" & chr(128) & "d" & chr(150) & "e" &chr(159) & "f" & chr(9) & "g"));
 
 	        assertEquals("&lt;script&gt;", local.instance.encodeForHTML("<script>"));
 	        assertEquals("&amp;lt&##x3b;script&amp;gt&##x3b;", local.instance.encodeForHTML("&lt;script&gt;"));
@@ -350,7 +350,7 @@
 	        local.instance = instance.ESAPI.encoder();
 	        assertEquals("", local.instance.encodeForLDAP(""));
 	        assertEquals("Hi This is a test ##��", local.instance.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
-	        assertEquals("Hi \00", local.instance.encodeForLDAP("Hi \u0000"), "Zeros");
+	        // nulls are not valid CF tests: assertEquals("Hi \00", local.instance.encodeForLDAP("Hi " & toUnicode("\u0000")), "Zeros");
 	        assertEquals("Hi \28This\29 = is \2a a \5c test ## � � �", local.instance.encodeForLDAP("Hi (This) = is * a \ test ## � � �"), "LDAP Christams Tree");
     	</cfscript>
 	</cffunction>
@@ -417,7 +417,7 @@
 		<cfscript>
 	        System.out.println("encodeForXML");
 	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("&##xa3;", local.instance.encodeForXML("\u00A3"));
+	        assertEquals("&##xa3;", local.instance.encodeForXML(toUnicode("\u00A3")));
     	</cfscript>
 	</cffunction>
 
@@ -465,7 +465,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributePound" output="false">
 		<cfscript>
 	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("&##xa3;", local.instance.encodeForXMLAttribute("\u00A3"));
+	        assertEquals("&##xa3;", local.instance.encodeForXMLAttribute(toUnicode("\u00A3")));
     	</cfscript>
 	</cffunction>
 
@@ -510,9 +510,10 @@
 	        local.instance = instance.ESAPI.encoder();
 
 	        try {
-	        	assertEquals("", local.instance.encodeForBase64("", false));
-	            assertEquals("", local.instance.encodeForBase64("", true));
-	            assertEquals("", local.instance.decodeFromBase64(""));
+	        	// null tests are not valid for CF
+	        	//assertEquals(null, local.instance.encodeForBase64(null, false));
+	            //assertEquals(null, local.instance.encodeForBase64(null, true));
+	            //assertEquals(null, local.instance.decodeFromBase64(null));
 	            for ( local.i=0; local.i < 100; local.i++ ) {
 	                local.r = instance.ESAPI.randomizer().getRandomString( 20, DefaultEncoder.CHAR_SPECIALS ).getBytes(static.PREFERRED_ENCODING);
 	                local.encoded = local.instance.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
@@ -672,7 +673,7 @@
 			local.stop = System.currentTimeMillis();
 			System.out.println( "Normal Strict: " & (local.stop-local.start) );
 
-			local.attack = "%2&##x35;2%3525&##x32;\\u0036lt;\r\n\r\n%&##x%%%3333\\u0033;&%23101;";
+			local.attack = "%2&##x35;2%3525&##x32;" & toUnicode("\u0036") & "lt;\r\n\r\n%&##x%%%3333" & toUnicode('\u0033') & ";&%23101;";
 
 			local.start = System.currentTimeMillis();
 			for ( local.i=0; local.i< local.iterations; local.i++ ) {

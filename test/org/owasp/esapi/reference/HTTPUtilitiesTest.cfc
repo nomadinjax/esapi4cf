@@ -147,7 +147,7 @@
 						System.out.println( "  " & local.f.getAbsolutePath() );
 					}
 					assertTrue( local.list.size() > 0 );
-				} catch (ValidationException e) {
+				} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 					fail();
 				}
 
@@ -163,7 +163,7 @@
 						System.out.println( "  " & local.f.getAbsolutePath() );
 					}
 					assertTrue( local.list.size() > 0 );
-				} catch (ValidationException e) {
+				} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 					System.err.println("ERROR: " & e.toString());
 					fail();
 				}
@@ -174,7 +174,7 @@
 				try {
 					instance.ESAPI.httpUtilities().getFileUploads(local.request3, local.home);
 					fail();
-				} catch (ValidationException e) {
+				} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 					// expected
 				}
 			}

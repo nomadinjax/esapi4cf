@@ -1,4 +1,4 @@
-<!--- WARNING: be sure that CFDebug is turned off otherwise the tests take FOREVER!!! --->
+<cfsetting showdebugoutput="false" />
 <cfscript>
 	testSuite = createObject("component","mxunit.framework.TestSuite").TestSuite();
 	testSuite.addAll("cfesapi.test.org.owasp.esapi.crypto.CipherSpecTest");

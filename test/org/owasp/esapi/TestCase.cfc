@@ -43,4 +43,23 @@
 	</cffunction>
 
 
+	<cffunction access="private" returntype="string" name="toUnicode" output="false" description="Convert Unicode in to string characters">
+		<cfargument type="string" name="string" required="true">
+		<cfscript>
+		 	local.ret = "";
+		 	for (local.i=1; local.i <= len(arguments.string); local.i++) {
+		 		local.thisChr = mid(arguments.string, local.i, 6);
+		 		if (left(local.thisChr, 2) == "\u") {
+			 		local.ret = local.ret & chr(inputBaseN(right(local.thisChr, 4), 16));
+			 		local.i = local.i+5;
+		 		}
+				else {
+		 			local.ret = local.ret & left(local.thisChr, 1);
+		 		}
+		 	}
+		 	return local.ret;
+		 </cfscript>
+	</cffunction>
+
+
 </cfcomponent>
