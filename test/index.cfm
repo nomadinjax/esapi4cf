@@ -1,4 +1,4 @@
-<cfsetting showdebugoutput="false" />
+<cfsetting showdebugoutput="false" requesttimeout="180" />
 <cfscript>
 	testSuite = createObject("component","mxunit.framework.TestSuite").TestSuite();
 	testSuite.addAll("cfesapi.test.org.owasp.esapi.crypto.CipherSpecTest");

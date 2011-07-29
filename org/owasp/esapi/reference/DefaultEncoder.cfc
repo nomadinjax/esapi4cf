@@ -322,14 +322,6 @@
 		<cfargument type="any" name="input" required="true" hint="binary">
 		<cfargument type="boolean" name="wrap" required="true">
 		<cfscript>
-			/* not sure we want to use the Base64.cfc - performance?
-			local.Base64 = createObject("component", "cfesapi.org.owasp.esapi.codecs.Base64").init(instance.ESAPI);
-			local.options = 0;
-			if ( !arguments.wrap ) {
-				local.options |= local.Base64.DONT_BREAK_LINES;
-			}
-			return local.Base64.encodeBytes(arguments.input, local.options);
-			*/
 			return toBase64(arguments.input);
 		</cfscript>
 	</cffunction>
@@ -338,10 +330,11 @@
 	<cffunction access="public" returntype="binary" name="decodeFromBase64" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			/* not sure we want to use the Base64.cfc - performance?
-			return createObject("component", "cfesapi.org.owasp.esapi.codecs.Base64").init(instance.ESAPI).decode( arguments.input );
-			*/
-			return toBinary(arguments.input);
+			try {
+				return toBinary(arguments.input);
+			} catch(Expression e) {	// input was not Base64, so make it so
+				return toBinary(toBase64(arguments.input));
+			}
 		</cfscript>
 	</cffunction>
 

@@ -1,7 +1,7 @@
 <cfparam name="form.accountName" type="string" default="" />
 <cfscript>
 	message = "";
-	if (ESAPI().currentRequest().getMethod() EQ "post") {
+	if (ESAPI().currentRequest().getMethod() == "post") {
 		try {
 			newUser = ESAPI().authenticator().createUser(form.accountName, form.password1, form.password2);
 			newUser.enable();
