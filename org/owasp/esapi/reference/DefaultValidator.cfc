@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Validator" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Validator" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -741,7 +741,7 @@
 				    //TODO - changed this to base Exception since we no longer need EncodingException
 			    	//TODO - this is a bit lame: we need to re-think this function.
 				} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-			        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid printable input", "Invalid encoding of printable input, context=" & arguments.context + ", input=" & arguments.input, e, arguments.context);
+			        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid printable input", "Invalid encoding of printable input, context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			    }
 			}
@@ -758,7 +758,11 @@
 				}
 
 				for (local.i = 1; local.i <= arrayLen(arguments.input); local.i++) {
-					if (arguments.input[local.i] <= inputBaseN("20", 16) || arguments.input[local.i] >= inputBaseN("7E", 16) ) {
+					local.input = arguments.input[local.i];
+					if (!isNumeric(local.input)) {
+						local.input = asc(local.input);
+					}
+					if (local.input <= inputBaseN("20", 16) || local.input >= inputBaseN("7E", 16) ) {
 						cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input bytes: context=" & arguments.context, logMessage="Invalid non-ASCII input bytes, context=" & arguments.context & ", input=" & arrayToList(arguments.input, ""), context=arguments.context);
 						throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 					}

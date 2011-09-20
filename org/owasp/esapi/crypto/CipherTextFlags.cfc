@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.enum" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.enum" output="false">
 
 
 </cfcomponent>

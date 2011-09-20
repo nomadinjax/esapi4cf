@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.ThreadLocal" output="false" hint="Defines the ThreadLocalResponse to store the current response for this thread.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.ThreadLocal" output="false" hint="Defines the ThreadLocalResponse to store the current response for this thread.">
 
 	<cfscript>
 		instance.ESAPI = "";

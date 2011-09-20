@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 
 	<cffunction access="public" returntype="void" name="testWhitelistPattern" output="false">
@@ -12,7 +12,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (cfesapi.org.owasp.esapi.errors.ValidationException ve) {
-				assertTrue(len(ve.getMessage()));
+				assertTrue(len(ve.message));
 			}
 			assertEquals("MagnumPI", local.validationRule.getValid("", "MagnumPI"));
 		</cfscript>
@@ -31,7 +31,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (java.lang.IllegalArgumentException ie) {
-				assertTrue(len(ie.getMessage()));
+				assertTrue(len(ie.message));
 			} */
 
 			/* NULL test
@@ -41,7 +41,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (java.lang.IllegalArgumentException ie) {
-				assertTrue(len(ie.getMessage()));
+				assertTrue(len(ie.message));
 			}*/
 
 			//invalid white list patterns throw PatternSyntaxException
@@ -51,7 +51,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (java.lang.IllegalArgumentException ie) {
-				assertTrue(len(ie.getMessage()));
+				assertTrue(len(ie.message));
 			}
 		</cfscript>
 	</cffunction>
@@ -78,7 +78,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (cfesapi.org.owasp.esapi.errors.ValidationException ve) {
-				assertTrue(len(ve.getMessage()));
+				assertTrue(len(ve.message));
 			}
 			assertEquals("beg script end", local.validationRule.getValid("", "beg script end"));
 		</cfscript>
@@ -97,7 +97,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (java.lang.IllegalArgumentException ie) {
-				assertTrue(len(ie.getMessage()));
+				assertTrue(len(ie.message));
 			}*/
 
 			/* NULL test
@@ -107,7 +107,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (java.lang.IllegalArgumentException ie) {
-				assertTrue(len(ie.getMessage()));
+				assertTrue(len(ie.message));
 			}*/
 
 			//invalid black list patterns throw PatternSyntaxException
@@ -117,7 +117,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (java.lang.IllegalArgumentException ie) {
-				assertTrue(len(ie.getMessage()));
+				assertTrue(len(ie.message));
 			}
 		</cfscript>
 	</cffunction>

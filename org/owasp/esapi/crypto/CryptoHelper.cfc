@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Class to provide some convenience methods for encryption, decryption, etc.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false" hint="Class to provide some convenience methods for encryption, decryption, etc.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -63,7 +63,7 @@
 			try {
 				local.inputBytes = arguments.purpose.getBytes("UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.getMessage(), e);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.message, e);
            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
@@ -99,14 +99,14 @@
 	            // and available to generate another MAC from the same key, if
 	            // desired, via new calls to update and doFinal."
 				local.tmpKey = local.mac.doFinal(local.inputBytes);
-				if ( len(local.tmpKey) >= arguments.keySize ) {
+				if ( arrayLen(local.tmpKey) >= arguments.keySize ) {
 					local.len = arguments.keySize;
 				} else {
-					local.len = min(len(local.tmpKey), arguments.keySize - local.totalCopied);
+					local.len = min(arrayLen(local.tmpKey), arguments.keySize - local.totalCopied);
 				}
 				System.arraycopy(local.tmpKey, 0, local.derivedKey, local.destPos, local.len);
 				local.inputBytes = local.tmpKey;
-				local.totalCopied += len(local.tmpKey);
+				local.totalCopied += arrayLen(local.tmpKey);
 				local.destPos += local.len;
 			} while( local.totalCopied < arguments.keySize );
 
@@ -186,7 +186,7 @@
 	<cffunction access="public" returntype="void" name="copyByteArray" output="false" hint="These provide for a bit more type safety when copying bytes around.">
 		<cfargument type="binary" name="src" required="true" hint="the source array.">
 		<cfargument type="binary" name="dest" required="true" hint="the destination array.">
-		<cfargument type="numeric" name="length" required="false" default="#len(arguments.src)#" hint="the number of array elements to be copied.">
+		<cfargument type="numeric" name="length" required="false" default="#arrayLen(arguments.src)#" hint="the number of array elements to be copied.">
 		<cfscript>
 			try {
 				System.arraycopy(arguments.src, 0, arguments.dest, 0, arguments.length);
@@ -209,7 +209,7 @@
 		    if ( isNull(arguments.b1) || isNull(arguments.b2) ) {
 		        return (arguments.b1 == arguments.b2);
 		    }
-		    if ( len(arguments.b1) != len(arguments.b2) ) {
+		    if ( arrayLen(arguments.b1) != arrayLen(arguments.b2) ) {
 		        return false;
 		    }
 
@@ -217,7 +217,7 @@
 		    // Make sure to go through ALL the bytes. We use the fact that if
 		    // you XOR any bit stream with itself the result will be all 0 bits,
 		    // which in turn yields 0 for the result.
-		    for(local.i = 1; local.i <= len(arguments.b1); local.i++) {
+		    for(local.i = 1; local.i <= arrayLen(arguments.b1); local.i++) {
 		        // XOR the 2 current bytes and then OR with the outstanding result.
 		        if (local.result == 0) {
 		        	local.result = (arguments.b1[local.i] XOR arguments.b2[local.i]);

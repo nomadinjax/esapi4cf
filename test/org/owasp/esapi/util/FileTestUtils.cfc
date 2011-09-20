@@ -67,7 +67,7 @@
 	<cffunction access="public" returntype="void" name="deleteRecursively" output="false" hint="Recursively delete a file. If file is a directory, subdirectories and files are also deleted. Care is taken to not traverse symbolic links in this process. A null file or a file that does not exist is considered to already been deleted.">
 		<cfargument type="any" name="file" required="true" hint="java.io.File: The file or directory to be deleted">
 		<cfscript>
-			if(arguments.file == "" || !arguments.file.exists())
+			if(!isObject(arguments.file) || !arguments.file.exists())
 				return;	// already deleted?
 			if(arguments.file.isDirectory()) {
 				local.children = arguments.file.listFiles();

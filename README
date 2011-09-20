@@ -1,41 +1,63 @@
-OWASP Enterprise Security API (ESAPI) for ColdFusion/CFML "unofficial"
-BETA
-
+OWASP ESAPI for ColdFusion/CFML Project
+* This project is still in development *
 Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
-
 License: BSD license
 
-Notes:
-The official version of OWASP ESAPI for ColdFusion/CFML is available here:
-http://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML
-*** But this project was never completed and project is dormant. ***
+* NOTE: As of August 2011 this is now the official CFESAPI project *
 
-Compatibility:
-- Adobe ColdFusion 9.01
-...more to come...
 
-Dependencies:
-- ESAPI.jar (included)
+*** SETUP/USAGE - MORE INFO TO COME ***
 
 Setup:
-1. Create a folder off your webroot as /cfesapi/
-2. Download these files into that folder
-3. Copy /cfesapi/esapi/esapi-2.0_rc10.jar to your cfusion lib folder.
-4. Copy contents of /cfesapi/esapi/libs/ to your cfusion lib folder.
-5. Restart ColdFusion.
+1. The cfesapi folder should sit at the webroot level.
+2. Copy /cfesapi/esapi/esapi-2.0_rc10.jar and selected files from /cfesapi/esapi/libs/ to your lib folder (see compatibility below).
+4. Restart ColdFusion.
 
-MXUnit Tests:
-- You can run the MXUnit tests using: /cfesapi/test/index.cfm (they take a couple minutes)
-- There are currently 252 tests = 3 failures + 5 errors + 244 successes (almost there)
+Tests:
+- You can run the MXUnit tests using: /cfesapi/test/index.cfm
+
+Demo:
+- See the /cfesapi/demo/ for examples of implementation.
 
 Implementation:
 - You can extend any of the default implementations to overwrite the methods you need
  and/or
-- You can create new implementations that implement the interfaces
+- You can create new implementations that implement the provided interfaces
 
 How:
 - Copy the /cfesapi/esapi/configuration/.esapi/ folder to another location and make changes to your copy
 - In your code, call ESAPI.securityConfiguration().setResourceDirectory("your config path")
 - Be sure to update the ESAPI.properties file with the location of your implementation CFC
 - Include the /cfesapi/helpers/ESAPI.cfm in your application.
-- See the /cfesapi/demo/ for example of implementation.
+
+
+*** COMPATIBILITY ***
+
+**************************
+* Adobe ColdFusion 9.0.1 *
+**************************
+MXUnit Test Results
+ - 252 total = 3 failures + 5 errors + 244 successes
+
+Dependencies (place in \WEB-INF\cfusion\lib)
+- ESAPI.jar (not needed if you have HF: http://kb2.adobe.com/cps/907/cpsid_90784.html)
+- antisamy.jar
+- batik-css.jar
+- batik-util.jar
+- commons-configuration.jar
+
+**************************
+* Railo ColdFusion 3.2.3 *
+**************************
+MXUnit Test Results
+- 252 total = 2 failures + 9 errors + 241 successes
+
+Dependencies (place in \WEB-INF\railo\lib)
+- ESAPI.jar
+- antisamy.jar
+- batik-css.jar
+- batik-util.jar
+- commons-beanutils.jar
+- commons-configuration.jar
+- nekohtml.jar
+- xercesImpl.jar

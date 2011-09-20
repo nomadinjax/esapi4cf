@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="The ValidationErrorList class defines a well-formed collection of ValidationExceptions so that groups of validation functions can be called in a non-blocking fashion.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false" hint="The ValidationErrorList class defines a well-formed collection of ValidationExceptions so that groups of validation functions can be called in a non-blocking fashion.">
 
 	<cfscript>
 		instance.errorList = {};
@@ -28,7 +28,9 @@
 		<cfargument type="String" name="context" required="true" hint="unique name for each error">
 		<cfscript>
 			if (isNull(arguments.context)) return "";
-			return instance.errorList.get(arguments.context);
+			if (structKeyExists(instance.errorList, arguments.context)) {
+				return instance.errorList.get(arguments.context);
+			}
 		</cfscript>
 	</cffunction>
 

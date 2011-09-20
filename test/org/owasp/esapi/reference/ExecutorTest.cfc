@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 
 	<cffunction access="public" returntype="void" name="testExecuteWindowsSystemCommand" output="false" hint="Test of executeOSCommand method, of class org.owasp.esapi.Executor">
@@ -27,12 +27,12 @@
 
 			local.codec = WindowsCodec.init();
 			System.out.println("executeSystemCommand");
-			local.instance = instance.ESAPI.executor();
+			local.executor = instance.ESAPI.executor();
 			local.params = [];
 			try {
 				local.params.add("/C");
 				local.params.add("dir");
-				local.result = local.instance.executeSystemCommand(local.cmd, local.params);
+				local.result = local.executor.executeSystemCommand(local.cmd, local.params);
 				System.out.println( "RESULT: " & local.result );
 				assertTrue(local.result.getOutput().length() > 0);
 			} catch (java.lang.Exception e) {
@@ -41,7 +41,7 @@
 			}
 			try {
 				local.exec2 = ioFile.init( local.cmd.getPath() & ";inject.exe" );
-				local.result = local.instance.executeSystemCommand(local.exec2, local.params);
+				local.result = local.executor.executeSystemCommand(local.exec2, local.params);
 				System.out.println( "RESULT: " & local.result );
 				fail("");
 			} catch (java.lang.Exception e) {
@@ -49,7 +49,7 @@
 			}
 			try {
 				local.exec2 = ioFile.init( local.cmd.getPath() & "\..\cmd.exe" );
-				local.result = local.instance.executeSystemCommand(local.exec2, local.params);
+				local.result = local.executor.executeSystemCommand(local.exec2, local.params);
 				System.out.println( "RESULT: " & local.result );
 				fail("");
 			} catch (java.lang.Exception e) {
@@ -57,7 +57,7 @@
 			}
 			try {
 				local.workdir = ioFile.init( "c:\ridiculous" );
-				local.result = local.instance.executeSystemCommand(local.cmd, local.params, local.workdir, local.codec, false, false );
+				local.result = local.executor.executeSystemCommand(local.cmd, local.params, local.workdir, local.codec, false, false );
 				System.out.println( "RESULT: " & local.result );
 				fail("");
 			} catch (java.lang.Exception e) {
@@ -65,7 +65,7 @@
 			}
 			try {
 				local.params.add("&dir");
-				local.result = local.instance.executeSystemCommand(local.cmd, local.params);
+				local.result = local.executor.executeSystemCommand(local.cmd, local.params);
 				System.out.println( "RESULT: " & local.result );
 			} catch (java.lang.Exception e) {
 				fail("");
@@ -73,7 +73,7 @@
 
 			try {
 				local.params.set( local.params.size()-1, "c:\autoexec.bat" );
-				local.result = local.instance.executeSystemCommand(local.cmd, local.params);
+				local.result = local.executor.executeSystemCommand(local.cmd, local.params);
 				System.out.println( "RESULT: " & local.result );
 			} catch (java.lang.Exception e) {
 				fail("");
@@ -81,7 +81,7 @@
 
 			try {
 				local.params.set( local.params.size()-1, "c:\autoexec.bat c:\config.sys" );
-				local.result = local.instance.executeSystemCommand(local.cmd, local.params);
+				local.result = local.executor.executeSystemCommand(local.cmd, local.params);
 				System.out.println( "RESULT: " & local.result );
 			} catch (java.lang.Exception e) {
 				fail("");

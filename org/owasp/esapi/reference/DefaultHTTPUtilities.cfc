@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.HTTPUtilities" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HTTPUtilities" output="false">
 
 	<cfscript>
 		jLogger = createObject("java", "org.owasp.esapi.Logger");
@@ -365,7 +365,7 @@
 			    }
 			}
 
-			if( arguments.destinationDir != ""){
+			if( !isObject(arguments.destinationDir) ){
 				if ( !arguments.destinationDir.exists() ) {
 					if ( !arguments.destinationDir.mkdirs() ) {
 						cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failed", "Could not create final upload directory: " & arguments.destinationDir.getAbsolutePath() );
@@ -384,7 +384,7 @@
 			}
 
 			local.newFiles = [];
-			try {
+			//try {
 				local.session = arguments.request.getSession(false);
 				if (!arguments.request.isMultipartContent()) {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failed", "Not a multipart request");
@@ -393,14 +393,15 @@
 
 				// this factory will store ALL files in the temp directory, regardless of size
 				local.factory = createObject("java", "org.apache.commons.fileupload.disk.DiskFileItemFactory").init(0, local.tempDir);
-				local.upload = createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload").init(local.factory);
+				local.upload = createObject("component", "org.apache.commons.fileupload.servlet.ServletFileUpload").init(local.factory);
 				local.upload.setSizeMax(instance.maxBytes);
 
-				if (local.session != "") {
+				if (isObject(local.session)) {
 					local.progressListener = createObject("component", "ProgressListener").init(instance.ESAPI, local.session);
 					local.upload.setProgressListener(local.progressListener);
 				}
 				// ERROR: parseRequest(javax.servlet.http.HttpServletRequest)
+				writedump(var=local.upload,abort=true);
 				local.items = local.upload.parseRequest(arguments.request);
 	         	for (local.item in local.items) {
 	            	if (!local.item.isFormField() && !isNull(local.item.getName()) && !(local.item.getName() == "")) {
@@ -433,14 +434,14 @@
 						}
 					}
 				}
-			} catch (java.lang.Exception e) {
+			/*} catch (java.lang.Exception e) {
 				if (isInstanceOf(e, "cfesapi.org.owasp.esapi.errors.ValidationUploadException")) {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, e.getUserMessage(), e.detail, e);
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 				}
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failure", "Problem during upload:" & e.getMessage(), e);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException").init(instance.ESAPI, "Upload failure", "Problem during upload:" & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
-			}
+			}*/
 			return Collections.synchronizedList(local.newFiles);
     	</cfscript>
 	</cffunction>
@@ -624,18 +625,18 @@
 			var wrappedResponse = '';
 
 			// wrap if necessary
-			if (isInstanceOf(arguments.request, 'cfesapi.org.owasp.esapi.HttpServletRequest')) {
+			if (isInstanceOf(arguments.request, "cfesapi.org.owasp.esapi.HttpServletRequest")) {
 				wrappedRequest = arguments.request;
 			}
 			else if (isObject(arguments.request)) {
-				wrappedRequest = createObject('component', 'cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest').init(instance.ESAPI, arguments.request);
+				wrappedRequest = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init(instance.ESAPI, arguments.request);
 			}
 
-			if (isInstanceOf(arguments.response, 'cfesapi.org.owasp.esapi.HttpServletResponse')) {
+			if (isInstanceOf(arguments.response, "cfesapi.org.owasp.esapi.HttpServletResponse")) {
 				wrappedResponse = arguments.response;
 			}
 			else if (isObject(arguments.request)) {
-				wrappedResponse = createObject('component', 'cfesapi.org.owasp.esapi.filters.SecurityWrapperResponse').init(instance.ESAPI, arguments.response);
+				wrappedResponse = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperResponse").init(instance.ESAPI, arguments.response);
 			}
 
 	     	instance.currentRequest.setRequest(wrappedRequest);

@@ -29,9 +29,9 @@
 				//instance.delegateMethod = local.delegateClass.getMethod(local.methodName, local.parameterClasses);
 				instance.delegateMethod = local.methodName;
 			} catch (java.lang.SecurityException e) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(e.getMessage() & ' delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" must be public.', e));
+				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(e.message & ' delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" must be public.', e));
 			} catch (java.lang.NoSuchMethodException e) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(e.getMessage() & ' delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" does not exist.', e));
+				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(e.message & ' delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" does not exist.', e));
 			}
 
 			try {
@@ -65,7 +65,7 @@
 		<cfargument type="String" name="className" required="true">
 		<cfargument type="String" name="purpose" required="true">
 		<cfscript>
-			//try {
+			try {
 				if (listFirst(arguments.className, ".") == "cfesapi") {
 			        local.theClass = createObject("component", arguments.className).init(ESAPI=instance.ESAPI);
 				}
@@ -73,9 +73,9 @@
 					local.theClass = createObject("java", arguments.className).init();
 				}
 		        return local.theClass;
-		    /*} catch ( Application ex ) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(ex.getMessage() & " " & arguments.purpose & " Class " & arguments.className & " must be in the classpath", ex));
-		    }*/
+		    } catch ( Application ex ) {
+				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(ex.message & " " & arguments.purpose & " Class " & arguments.className & " must be in the classpath", ex));
+		    }
 		</cfscript>
 	</cffunction>
 

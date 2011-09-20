@@ -1,22 +1,35 @@
-<!--- ESAPI setup --->
+<!---
 
-<cffunction access="private" returntype="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" output="false">
-	<cfif not structKeyExists(application, "ESAPI") OR not isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")>
-		<cflock scope="application" type="exclusive" timeout="1">
-			<cfif not structKeyExists(application, "ESAPI") OR not isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")>
-				<cfset application.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI") />
-			</cfif>
-		</cflock>
-	</cfif>
+Declare ESAPI convenience function for persistence, i.e. ESAPI()
+
+NOTES:
+What about ColdSpring??
+Is using just Application scope sufficient???
+
+--->
+
+<cffunction access="private" returntype="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" output="false" hint="Your one stop shop to access all things ESAPI. This function takes care of instantiating ESAPI the first time and persisting ESAPI for subsequent use.">
 	<cfscript>
+		//if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")) {
+			lock scope="application" type="exclusive" timeout="1" {
+				//if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")) {
+					application.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+				//}
+			}
+		//}
 		return application.ESAPI;
 	</cfscript>
 </cffunction>
 
 <cfscript>
-	// ensure every request sets the HTTP request and response objects
+	/* Configure ESAPI */
+
+	/* ensure every request sets the HTTP request and response objects */
 	ESAPI().httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
+
+	// is there anything we should always configure per request?
 </cfscript>
+
 <!--- ESAPI helper methods --->
 
 <cffunction access="private" returntype="String" name="encodeForBase64" output="false" hint="Base64 encode a string. UTF-8 is used to encode the string and no line wrapping is performed.">

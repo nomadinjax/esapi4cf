@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<cfscript>
 		CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
@@ -12,7 +12,7 @@
 	            assertTrue(128 / 8 == len(local.key.getEncoded()));
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
 	            // OK if not covered in code coverage -- not expected.
-	            fail("Caught unexpected EncryptionException; msg was " & e.getMessage());
+	            fail("Caught unexpected EncryptionException; msg was " & e.message);
 	        }
     	</cfscript>
 	</cffunction>

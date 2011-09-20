@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<!--- TODO: need tests for:
 		getLocale()
@@ -23,11 +23,11 @@
 	<cffunction access="public" returntype="void" name="testAddRole" output="false" hint="Test of testAddRole method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("addRole");
-			local.instance = instance.ESAPI.authenticator();
+			local.authenticator = instance.ESAPI.authenticator();
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = instance.ESAPI.authenticator().generateStrongPassword();
 			local.role = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_LOWERS);
-			local.user = local.instance.createUser(local.accountName, local.password, local.password);
+			local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
 			local.user.addRole(local.role);
 			assertTrue(local.user.isInRole(local.role));
 			assertFalse(local.user.isInRole("ridiculous"));
@@ -38,8 +38,8 @@
 	<cffunction access="public" returntype="void" name="testAddRoles" output="false" hint="Test of addRoles method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("addRoles");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.set = [];
 			local.set.add("rolea");
@@ -55,17 +55,17 @@
 	<cffunction access="public" returntype="void" name="testChangePassword" output="false" hint="Test of changePassword method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("changePassword");
-			local.instance = instance.ESAPI.authenticator();
+			local.authenticator = instance.ESAPI.authenticator();
 			local.oldPassword = "Password12!@";
 			local.user = createTestUser(local.oldPassword);
-			System.out.println("Hash of " & local.oldPassword & " = " & local.instance.getHashedPassword(local.user));
+			System.out.println("Hash of " & local.oldPassword & " = " & local.authenticator.getHashedPassword(local.user));
 			local.password1 = "SomethingElse34##$";
 			local.user.changePassword(local.oldPassword, local.password1, local.password1);
-			System.out.println("Hash of " & local.password1 & " = " & local.instance.getHashedPassword(local.user));
+			System.out.println("Hash of " & local.password1 & " = " & local.authenticator.getHashedPassword(local.user));
 			assertTrue(local.user.verifyPassword(local.password1));
 			local.password2 = "YetAnother56%^";
 			local.user.changePassword(local.password1, local.password2, local.password2);
-			System.out.println("Hash of " & local.password2 & " = " & local.instance.getHashedPassword(local.user));
+			System.out.println("Hash of " & local.password2 & " = " & local.authenticator.getHashedPassword(local.user));
 			try {
 				local.user.changePassword(local.password2, local.password1, local.password1);
 				fail("Shouldn't be able to reuse a password");
@@ -81,8 +81,8 @@
 	<cffunction access="public" returntype="void" name="testDisable" output="false" hint="Test of disable method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("disable");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.user.enable();
 			assertTrue(local.user.isEnabled());
@@ -95,8 +95,8 @@
 	<cffunction access="public" returntype="void" name="testEnable" output="false" hint="Test of enable method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("enable");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.user.enable();
 			assertTrue(local.user.isEnabled());
@@ -159,8 +159,8 @@
 	<cffunction access="public" returntype="void" name="testGetLastFailedLoginTime" output="false" hint="Test get last failed login time.">
 		<cfscript>
 			System.out.println("getLastLoginTime");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			try {
 	    		local.user.loginWithPassword(password="ridiculous");
@@ -183,8 +183,8 @@
 	<cffunction access="public" returntype="void" name="testGetLastLoginTime" output="false" hint="Test get last login time.">
 		<cfscript>
 			System.out.println("getLastLoginTime");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.user.verifyPassword(local.oldPassword);
 			local.llt1 = local.user.getLastLoginTime();
@@ -213,11 +213,11 @@
 	<cffunction access="public" returntype="void" name="testGetRoles" output="false" hint="Test of getRoles method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("getRoles");
-			local.instance = instance.ESAPI.authenticator();
+			local.authenticator = instance.ESAPI.authenticator();
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = instance.ESAPI.authenticator().generateStrongPassword();
 			local.role = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_LOWERS);
-			local.user = local.instance.createUser(local.accountName, local.password, local.password);
+			local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
 			local.user.addRole(local.role);
 			local.roles = local.user.getRoles();
 			assertTrue(local.roles.size() > 0);
@@ -240,10 +240,10 @@
 	<cffunction access="public" returntype="void" name="testGetSessions" output="false">
 		<cfscript>
 	        System.out.println("getSessions");
-	        local.instance = instance.ESAPI.authenticator();
+	        local.authenticator = instance.ESAPI.authenticator();
 	        local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 	        local.password = instance.ESAPI.authenticator().generateStrongPassword();
-	        local.user = local.instance.createUser(local.accountName, local.password, local.password);
+	        local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
 	        local.session1 = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpSession").init();
 	        local.user.addSession( local.session1 );
 	        local.session2 = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpSession").init();
@@ -283,7 +283,7 @@
 			assertEquals(0, local.user.getFailedLoginCount());
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
-			instance.ESAPI.httpUtilities().setCurrentHTTP(request, response);
+			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 			try {
 				local.user.loginWithPassword(password="ridiculous");
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
@@ -352,8 +352,8 @@
 	<cffunction access="public" returntype="void" name="testIsSessionAbsoluteTimeout" output="false" hint="Test of isSessionAbsoluteTimeout method, of class org.owasp.esapi.IntrusionDetector.">
 		<cfscript>
 			System.out.println("isSessionAbsoluteTimeout");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.now = getTickCount();
 			// setup request and response
@@ -376,8 +376,8 @@
 	<cffunction access="public" returntype="void" name="testIsSessionTimeout" output="false" hint="Test of isSessionTimeout method, of class org.owasp.esapi.IntrusionDetector.">
 		<cfscript>
 			System.out.println("isSessionTimeout");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.now = getTickCount();
 			// setup request and response
@@ -400,8 +400,8 @@
 	<cffunction access="public" returntype="void" name="testLock" output="false" hint="Test of lockAccount method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("lock");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.user.lock();
 			assertTrue(local.user.isLocked());
@@ -454,9 +454,9 @@
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			local.session = local.request.getSession();
 			assertFalse(local.session.getInvalidated());
-			local.instance = instance.ESAPI.authenticator();
+			local.authenticator = instance.ESAPI.authenticator();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.user.enable();
 			System.out.println(local.user.getLastLoginTime());
@@ -554,8 +554,8 @@
 	<cffunction access="public" returntype="void" name="testUnlock" output="false" hint="Test of unlockAccount method, of class org.owasp.esapi.User.">
 		<cfscript>
 			System.out.println("unlockAccount");
-			local.instance = instance.ESAPI.authenticator();
-			local.oldPassword = local.instance.generateStrongPassword();
+			local.authenticator = instance.ESAPI.authenticator();
+			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser(local.oldPassword);
 			local.user.lock();
 			assertTrue(local.user.isLocked());

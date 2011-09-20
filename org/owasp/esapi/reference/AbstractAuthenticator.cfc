@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Authenticator" output="false" hint="A partial implementation of the Authenticator interface. This class should not implement any methods that would be meant to modify a User object, since that's probably implementation specific.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Authenticator" output="false" hint="A partial implementation of the Authenticator interface. This class should not implement any methods that would be meant to modify a User object, since that's probably implementation specific.">
 
 	<cfscript>
 		Logger = createObject("java", "org.owasp.esapi.Logger");
@@ -55,7 +55,7 @@
 	<cffunction access="public" returntype="any" name="getUserFromSession" output="false" hint="cfesapi.org.owasp.esapi.User: the user from session or null if no user is found in the session">
 		<cfscript>
 	        local.session = instance.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
-	        if (!isObject(local.session)) return "";
+	        if (isNull(local.session) || !isObject(local.session)) return "";
 	        return instance.ESAPI.httpUtilities().getSessionAttribute(key=this.USER);
     	</cfscript>
 	</cffunction>
@@ -103,6 +103,7 @@
 	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.User" name="loginWithUsernameAndPassword" output="false" hint="Utility method to extract credentials and verify them.">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="true" hint="The current HTTP request">
 		<cfscript>
+			//writedump(var=instance.ESAPI.securityConfiguration().getUsernameParameterName(),abort=true);
 	        local.username = arguments.request.getParameter(instance.ESAPI.securityConfiguration().getUsernameParameterName());
 	        local.password = arguments.request.getParameter(instance.ESAPI.securityConfiguration().getPasswordParameterName());
 

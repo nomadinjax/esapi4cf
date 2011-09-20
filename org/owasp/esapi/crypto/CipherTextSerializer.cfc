@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
 		instance.serialVersionUID = 20100122; // Format: YYYYMMDD
@@ -47,14 +47,14 @@
 	        assert(instance.cipherText_.getBlockSize() < Short.MAX_VALUE, "Block size too large. Max is " & Short.MAX_VALUE);
 	        local.blockSize = instance.cipherText_.getBlockSize();
 	        local.iv = instance.cipherText_.getIV();
-	        assert(len(local.iv) < Short.MAX_VALUE, "IV size too large. Max is " & Short.MAX_VALUE);
-	        local.ivLen = len(local.iv);
+	        assert(arrayLen(local.iv) < Short.MAX_VALUE, "IV size too large. Max is " & Short.MAX_VALUE);
+	        local.ivLen = arrayLen(local.iv);
 	        local.rawCiphertext = instance.cipherText_.getRawCipherText();
-	        local.ciphertextLen = len(local.rawCiphertext);
+	        local.ciphertextLen = arrayLen(local.rawCiphertext);
 	        assert(local.ciphertextLen >= 1, "Raw ciphertext length must be >= 1 byte.");
 	        local.mac = instance.cipherText_.getSeparateMAC();
-	        assert(len(local.mac) < Short.MAX_VALUE, "MAC length too large. Max is " & Short.MAX_VALUE);
-	        local.macLen = len(local.mac);
+	        assert(arrayLen(local.mac) < Short.MAX_VALUE, "MAC length too large. Max is " & Short.MAX_VALUE);
+	        local.macLen = arrayLen(local.mac);
 
 	        local.serializedObj = computeSerialization(local.vers, local.timestamp, local.cipherXform, local.keySize, local.blockSize, local.ivLen, local.iv, local.ciphertextLen, local.rawCiphertext, local.macLen, local.mac );
 
@@ -101,11 +101,11 @@
 	        writeShort(local.baos, arguments.keySize);
 	        writeShort(local.baos, arguments.blockSize);
 	        writeShort(local.baos, arguments.ivLen);
-	        if ( arguments.ivLen > 0 ) local.baos.write(arguments.iv, 0, len(arguments.iv));
+	        if ( arguments.ivLen > 0 ) local.baos.write(arguments.iv, 0, arrayLen(arguments.iv));
 	        writeInt(local.baos, arguments.ciphertextLen);
-	        local.baos.write(arguments.rawCiphertext, 0, len(arguments.rawCiphertext));
+	        local.baos.write(arguments.rawCiphertext, 0, arrayLen(arguments.rawCiphertext));
 	        writeShort(local.baos, arguments.macLen);
-	        if ( arguments.macLen > 0 ) local.baos.write(arguments.mac, 0, len(arguments.mac));
+	        if ( arguments.macLen > 0 ) local.baos.write(arguments.mac, 0, arrayLen(arguments.mac));
 	        return local.baos.toByteArray();
     	</cfscript>
 	</cffunction>
@@ -118,9 +118,9 @@
 	        try {
 	            assert(!isNull(arguments.str) && arguments.str.length() > 0);
 	            local.bytes = arguments.str.getBytes("UTF8");
-	            assert(len(local.bytes) < createObject("java", "java.lang.Short").MAX_VALUE, "writeString: String exceeds max length");
-	            writeShort(arguments.baos, len(local.bytes));
-	            arguments.baos.write(local.bytes, 0, len(local.bytes));
+	            assert(arrayLen(local.bytes) < createObject("java", "java.lang.Short").MAX_VALUE, "writeString: String exceeds max length");
+	            writeShort(arguments.baos, arrayLen(local.bytes));
+	            arguments.baos.write(local.bytes, 0, arrayLen(local.bytes));
 	        } catch (UnsupportedEncodingException e) {
 	            // Should never happen. UTF8 is built into the rt.jar. We don't use native encoding as
 	            // a fall-back because that simply is not guaranteed to be portable across Java
@@ -148,7 +148,7 @@
 		<cfargument type="numeric" name="s" required="true">
 		<cfscript>
 	        local.shortAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromShort(arguments.s);
-	        assert(len(local.shortAsByteArray) == 2);
+	        assert(arrayLen(local.shortAsByteArray) == 2);
 	        baos.write(local.shortAsByteArray, 0, 2);
     	</cfscript>
 	</cffunction>
@@ -191,7 +191,7 @@
 		<cfargument type="numeric" name="l" required="true">
 		<cfscript>
 	        local.longAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromLong(arguments.l);
-	        assert(len(local.longAsByteArray) == 8);
+	        assert(arrayLen(local.longAsByteArray) == 8);
 	        baos.write(local.longAsByteArray, 0, 8);
     	</cfscript>
 	</cffunction>
@@ -246,19 +246,19 @@
 	            local.iv = "";
 	            if ( local.ivLen > 0 ) {
 	                local.iv = newByte(local.ivLen);
-	                local.bais.read(local.iv, 0, len(local.iv));
+	                local.bais.read(local.iv, 0, arrayLen(local.iv));
 	            }
 	            local.ciphertextLen = readInt(local.bais);
 	            debug("convertToCipherText: ciphertextLen = " & local.ciphertextLen);
 	            assert(local.ciphertextLen > 0, "convertToCipherText: Invalid cipher text length");
 	            local.rawCiphertext = newByte(local.ciphertextLen);
-	            local.bais.read(local.rawCiphertext, 0, len(local.rawCiphertext));
+	            local.bais.read(local.rawCiphertext, 0, arrayLen(local.rawCiphertext));
 	            local.macLen = readShort(local.bais);
 	            debug("convertToCipherText: macLen = " & local.macLen);
 	            local.mac = "";
 	            if ( local.macLen > 0 ) {
 	                local.mac = newByte(local.macLen);
-	                local.bais.read(local.mac, 0, len(local.mac));
+	                local.bais.read(local.mac, 0, arrayLen(local.mac));
 	            }
 
 	            local.cipherSpec = createObject("component", "CipherSpec").init(ESAPI=instance.ESAPI, cipherXform=local.cipherXform, keySize=local.keySize);

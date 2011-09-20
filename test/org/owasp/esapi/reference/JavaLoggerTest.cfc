@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<cfscript>
 		Logger = createObject("java", "org.owasp.esapi.Logger");

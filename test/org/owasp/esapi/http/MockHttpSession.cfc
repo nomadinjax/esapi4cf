@@ -1,4 +1,4 @@
-<cfcomponent implements="cfesapi.org.owasp.esapi.HttpSession" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HttpSession" output="false">
 
 	<cfscript>
 		/* The invalidated. */

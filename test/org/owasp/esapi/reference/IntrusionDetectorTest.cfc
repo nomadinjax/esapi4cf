@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 
 	<cffunction access="public" returntype="void" name="testAddException" output="false" hint="Test of addException method, of class org.owasp.esapi.IntrusionDetector.">

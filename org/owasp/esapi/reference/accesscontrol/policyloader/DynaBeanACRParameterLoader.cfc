@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="ACRParameterLoader" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="ACRParameterLoader" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";

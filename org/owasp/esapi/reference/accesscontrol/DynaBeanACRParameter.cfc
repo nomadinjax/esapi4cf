@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.reference.accesscontrol.policyloader.PolicyParameters" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.reference.accesscontrol.policyloader.PolicyParameters" output="false">
 
 	<cfscript>
 		instance.policyProperties = "";

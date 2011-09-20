@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.HttpServletRequest" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HttpServletRequest" output="false">
 
 	<cfscript>
 		static.HDR_CONTENT_TYPE = "Content-Type";
@@ -79,7 +79,9 @@
 		<cfargument type="String" name="name" required="true" hint="the name">
 		<cfargument type="String" name="value" required="true" hint="the value">
 		<cfscript>
-			local.old = instance.parameters.get(arguments.name);
+			if (structKeyExists(instance.parameters, arguments.name)) {
+				local.old = instance.parameters.get(arguments.name);
+			}
 			if ( isNull(local.old) ) {
 				local.old = [];
 			}
@@ -360,7 +362,9 @@
 	<cffunction access="public" returntype="any" name="getAttribute" output="false">
 		<cfargument type="String" name="name" required="true">
 		<cfscript>
-			return instance.attrs.get(arguments.name);
+			if (structKeyExists(instance.attrs, arguments.name)) {
+				return instance.attrs.get(arguments.name);
+			}
 		</cfscript>
 	</cffunction>
 
@@ -446,7 +450,9 @@
 	<cffunction access="public" returntype="String" name="getParameter" output="false">
 		<cfargument type="String" name="name" required="true">
 		<cfscript>
-			local.values = instance.parameters.get(arguments.name);
+			if (structKeyExists(instance.parameters, arguments.name)) {
+				local.values = instance.parameters.get(arguments.name);
+			}
 			if ( isNull(local.values) ) return "";
 			return local.values[1];
 		</cfscript>
@@ -632,7 +638,9 @@
 
 	<cffunction access="public" returntype="boolean" name="isMultipartContent" output="false">
 		<cfscript>
-			local.contentTypes = instance.headers.get(static.HDR_CONTENT_TYPE);
+			if (structKeyExists(instance.headers, static.HDR_CONTENT_TYPE)) {
+				local.contentTypes = instance.headers.get(static.HDR_CONTENT_TYPE);
+			}
 			if (!isNull(local.contentTypes)) {
 				for (local.i=1; local.i<=arrayLen(local.contentTypes); i++) {
 					local.contentType = local.contentTypes[local.i];

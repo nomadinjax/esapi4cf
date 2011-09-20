@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Encoder" output="false" hint="Reference implementation of the Encoder interface. This implementation takes a whitelist approach to encoding, meaning that everything not specifically identified in a list of 'immune' characters is encoded.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Encoder" output="false" hint="Reference implementation of the Encoder interface. This implementation takes a whitelist approach to encoding, meaning that everything not specifically identified in a list of 'immune' characters is encoded.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -73,7 +73,7 @@
 			        local.old = local.working;
 			        local.working = local.codec.decode( local.working );
 			        if ( !local.old.equals( local.working ) ) {
-			            if ( local.codecFound != "" && local.codecFound != local.codec ) {
+			            if ( isObject(local.codecFound) && !local.codecFound.equals(local.codec) ) {
 			                local.mixedCount++;
 			            }
 			            local.codecFound = local.codec;

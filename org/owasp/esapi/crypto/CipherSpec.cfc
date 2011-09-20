@@ -1,12 +1,12 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Specifies all the relevant configuration data needed in constructing and using a javax.crypto.Cipher except for the encryption key.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false" hint="Specifies all the relevant configuration data needed in constructing and using a javax.crypto.Cipher except for the encryption key.">
 
 	<cfscript>
 		instance.ESAPI = "";
 
-		instance.cipher_xform_   = "";
-		instance.keySize_        = ""; // In bits
-		instance.blockSize_      = 16;   // In bytes! I.e., 128 bits!!!
-		instance.iv_             = toBinary("");
+		this.cipher_xform_   = "";
+		this.keySize_        = ""; // In bits
+		this.blockSize_      = 16;   // In bytes! I.e., 128 bits!!!
+		this.iv_             = toBinary("");
 
 		// Cipher transformation component. Format is ALG/MODE/PADDING
 		CipherTransformationComponent = {
@@ -89,7 +89,7 @@
 				}
 			}
 			assert(arrayLen(arguments.cipherXform.split("/")) == 3, "Implementation error setCipherTransformation()");
-			instance.cipher_xform_ = arguments.cipherXform;
+			this.cipher_xform_ = arguments.cipherXform;
 			return this;
 		</cfscript>
 	</cffunction>
@@ -97,7 +97,7 @@
 
 	<cffunction acecss="public" returntype="String" name="getCipherTransformation" output="false" hint="Get the cipher transformation.">
 		<cfscript>
-			return instance.cipher_xform_;
+			return this.cipher_xform_;
 		</cfscript>
 	</cffunction>
 
@@ -106,7 +106,7 @@
 		<cfargument type="numeric" name="keySize" required="true" hint="The key size, in bits. Must be positive integer.">
 		<cfscript>
 			assert(keySize > 0, "keySize must be > 0; keySize=" & keySize);
-			instance.keySize_ = arguments.keySize;
+			this.keySize_ = arguments.keySize;
 			return this;
 		</cfscript>
 	</cffunction>
@@ -114,7 +114,7 @@
 
 	<cffunction access="public" returntype="numeric" name="getKeySize" output="false" hint="Retrieve the key size, in bits.">
 		<cfscript>
-			return instance.keySize_;
+			return this.keySize_;
 		</cfscript>
 	</cffunction>
 
@@ -123,7 +123,7 @@
 		<cfargument type="numeric" name="blockSize" required="true" hint="The block size, in bytes. Must be positive integer.">
 		<cfscript>
 			assert(blockSize > 0, "blockSize must be > 0; blockSize=" & blockSize);
-			instance.blockSize_ = arguments.blockSize;
+			this.blockSize_ = arguments.blockSize;
 			return this;
 		</cfscript>
 	</cffunction>
@@ -131,7 +131,7 @@
 
 	<cffunction access="public" returntype="numeric" name="getBlockSize" output="false" hint="Retrieve the block size, in bytes.">
 		<cfscript>
-			return instance.blockSize_;
+			return this.blockSize_;
 		</cfscript>
 	</cffunction>
 
@@ -159,7 +159,7 @@
 
 	<cffunction access="public" returntype="binary" name="getIV" output="false" hint="Retrieve the initialization vector (IV).">
 		<cfscript>
-			return instance.iv_;
+			return this.iv_;
 		</cfscript>
 	</cffunction>
 
@@ -167,11 +167,11 @@
 	<cffunction access="public" returntype="CipherSpec" name="setIV" output="false" hint="Set the initialization vector (IV).">
 		<cfargument type="binary" name="iv" required="true" hint="The byte array to set as the IV. A copy of the IV is saved. This parameter is ignored if the cipher mode does not require an IV.">
 		<cfscript>
-		assert(requiresIV() && (!isNull(arguments.iv) && len(arguments.iv) != 0), "Required IV cannot be null or 0 length");
+		assert(requiresIV() && (!isNull(arguments.iv) && arrayLen(arguments.iv) != 0), "Required IV cannot be null or 0 length");
 		// Don't store a reference, but make a copy!
 		if ( !isNull(arguments.iv) ) {	// Allow null IV for ECB mode.
-			instance.iv_ = newByte( len(arguments.iv) );
-			CryptoHelper.copyByteArray(arguments.iv, instance.iv_);
+			this.iv_ = newByte( arrayLen(arguments.iv) );
+			CryptoHelper.copyByteArray(arguments.iv, this.iv_);
 		}
 		return this;
 		</cfscript>
@@ -201,7 +201,7 @@
 			local.iv = getIV();
 			local.ivLen = "";
 			if ( !isNull(local.iv) ) {
-				local.ivLen = "" & len(local.iv);	// Convert length to a string
+				local.ivLen = "" & arrayLen(local.iv);	// Convert length to a string
 			} else {
 				local.ivLen = "[No IV present (not set or not required)]";
 			}
@@ -210,9 +210,35 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- equals --->
+	<cffunction access="public" returntype="boolean" name="equals" output="false">
+		<cfargument type="any" name="other" required="true">
+		<cfscript>
+	        local.result = false;
+	        if ( isNull(arguments.other) )
+	            return false;
+	        if ( isInstanceOf(arguments.other, "cfesapi.org.owasp.esapi.crypto.CipherSpec")) {
+	            local.that = arguments.other;
+	            NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
+	            local.result = (local.that.canEqual(this) &&
+	                      NullSafe.equals(this.cipher_xform_, local.that.cipher_xform_) &&
+	                      this.keySize_ == local.that.keySize_ &&
+	                      this.blockSize_ == local.that.blockSize_ &&
+	                        // Comparison safe from timing attacks.
+	                      CryptoHelper.arrayCompare(this.iv_, local.that.iv_) );
+	        }
+	        return local.result;
+		</cfscript>
+	</cffunction>
+	
 	<!--- hashCode --->
-	<!--- canEqual --->
+		
+	<cffunction access="package" returntype="boolean" name="canEqual" output="false">
+		<cfargument type="any" name="other" required="true">
+		<cfscript>
+       		return isInstanceOf(arguments.other, "cfesapi.org.owasp.esapi.crypto.CipherSpec");
+		</cfscript>
+	</cffunction>	
+		
 
 	<cffunction access="private" returntype="String" name="getFromCipherXform" output="false" hint="Split the current cipher transformation and return the requested part. ">
 		<cfargument type="cfesapi.org.owasp.esapi.crypto.CipherTransformationComponent" name="component" required="true" hint="The component of the cipher transformation to return.">

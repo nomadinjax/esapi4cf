@@ -25,21 +25,21 @@
 			catch( cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e ) {
 				ESAPI().authenticator().logout();
 				//local.request.setAttribute("message", "Authentication failed");
-				local.request.setAttribute("message", e.message);
+				local.request.setAttribute("message", e.message & " - " & e.detail);
 				include "../login.cfm";
 				return;
 			}
 			catch( cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e ) {
 				ESAPI().authenticator().logout();
 				//local.request.setAttribute("message", "Authentication failed");
-				local.request.setAttribute("message", e.message);
+				local.request.setAttribute("message", e.message & " - " & e.detail);
 				include "../login.cfm";
 				return;
 			}
 			catch ( cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
 				ESAPI().authenticator().logout();
 				//local.request.setAttribute("message", "Authentication failed");
-				local.request.setAttribute("message", e.message);
+				local.request.setAttribute("message", e.message & " - " & e.detail);
 				include "../login.cfm";
 				return;
 			}

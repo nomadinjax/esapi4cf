@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 
 	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration" name="createWithProperty" output="false">
@@ -171,7 +171,7 @@
 				fail("Expected Exception not thrown");
 			}
 			catch (cfesapi.org.owasp.esapi.errors.ConfigurationException ce) {
-				assertTrue(len(ce.getMessage()));
+				assertTrue(len(ce.message));
 			}
 
 			local.salt = "53081";
@@ -296,7 +296,7 @@
 				fail();
 			}
 			catch (cfesapi.org.owasp.esapi.errors.ConfigurationException ce) {
-				assertTrue(len(ce.getMessage()));
+				assertTrue(len(ce.message));
 			}
 
 			local.properties = createObject("java", "java.util.Properties").init();
@@ -313,14 +313,14 @@
 				fail();
 			}
 			catch (cfesapi.org.owasp.esapi.errors.ConfigurationException ce) {
-				assertTrue(len(ce.getMessage()));
+				assertTrue(len(ce.message));
 			}
 			try {
 				local.secConf.getFixedIV();
 				fail();
 			}
 			catch (cfesapi.org.owasp.esapi.errors.ConfigurationException ce) {
-				assertTrue(len(ce.getMessage()));
+				assertTrue(len(ce.message));
 			}
 		</cfscript>
 	</cffunction>

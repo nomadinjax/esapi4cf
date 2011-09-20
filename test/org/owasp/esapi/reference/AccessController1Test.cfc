@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<cfscript>
 		DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
@@ -15,7 +15,7 @@
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForURL" output="false" hint="Test of isAuthorizedForURL method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
 			System.out.println("isAuthorizedForURL");
-			local.instance = instance.ESAPI.accessController();
+			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
@@ -24,17 +24,17 @@
 			local.user1.setRoles(["user"]);
 
 			local.auth.setCurrentUser( user=local.user1 );
-			assertFalse(local.instance.isAuthorizedForURL("/nobody"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/admin"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/user"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/all"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/none"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/none/test.gif"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/none/test.exe"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/none/test.png"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/moderator"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/profile"));
-			assertFalse(local.instance.isAuthorizedForURL("/upload"));
+			assertFalse(local.accessController.isAuthorizedForURL("/nobody"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/admin"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/user"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/all"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/none"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/none/test.gif"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/none/test.exe"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/none/test.png"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/moderator"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/profile"));
+			assertFalse(local.accessController.isAuthorizedForURL("/upload"));
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
@@ -42,15 +42,15 @@
 			local.user2.setRoles(["admin"]);
 
 			local.auth.setCurrentUser( user=local.user2 );
-			assertFalse(local.instance.isAuthorizedForURL("/nobody"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/admin"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/user"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/all"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/none"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/none/test.png"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/moderator"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/profile"));
-			assertFalse(local.instance.isAuthorizedForURL("/upload"));
+			assertFalse(local.accessController.isAuthorizedForURL("/nobody"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/admin"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/user"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/all"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/none"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/none/test.png"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/moderator"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/profile"));
+			assertFalse(local.accessController.isAuthorizedForURL("/upload"));
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
@@ -58,23 +58,23 @@
 			local.user3.setRoles(["user","admin"]);
 
 			local.auth.setCurrentUser( user=local.user3 );
-			assertFalse(local.instance.isAuthorizedForURL("/nobody"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/admin"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/user"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/all"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/none"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/none/test.png"));
-			assertFalse(local.instance.isAuthorizedForURL("/test/moderator"));
-			assertTrue(local.instance.isAuthorizedForURL("/test/profile"));
-			assertFalse(local.instance.isAuthorizedForURL("/upload"));
+			assertFalse(local.accessController.isAuthorizedForURL("/nobody"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/admin"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/user"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/all"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/none"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/none/test.png"));
+			assertFalse(local.accessController.isAuthorizedForURL("/test/moderator"));
+			assertTrue(local.accessController.isAuthorizedForURL("/test/profile"));
+			assertFalse(local.accessController.isAuthorizedForURL("/upload"));
 
 			try {
-				local.instance.assertAuthorizedForURL("/test/admin");
+				local.accessController.assertAuthorizedForURL("/test/admin");
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				fail();
 			}
 			try {
-				local.instance.assertAuthorizedForURL( "/nobody" );
+				local.accessController.assertAuthorizedForURL( "/nobody" );
 				fail();
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				// expected
@@ -86,7 +86,7 @@
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForFunction" output="false" hint="Test of isAuthorizedForFunction method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
 			System.out.println("isAuthorizedForFunction");
-			local.instance = instance.ESAPI.accessController();
+			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
@@ -95,12 +95,12 @@
 			local.user1.setRoles(["user"]);
 
 			local.auth.setCurrentUser( user=local.user1 );
-			assertTrue(local.instance.isAuthorizedForFunction("/FunctionA"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionAdeny"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionB"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionBdeny"));
-			assertTrue(local.instance.isAuthorizedForFunction("/FunctionC"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionCdeny"));
+			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionA"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionAdeny"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionB"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionBdeny"));
+			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionC"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionCdeny"));
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
@@ -108,12 +108,12 @@
 			local.user2.setRoles(["admin"]);
 
 			local.auth.setCurrentUser( user=local.user2 );
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionA"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionAdeny"));
-			assertTrue(local.instance.isAuthorizedForFunction("/FunctionB"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionBdeny"));
-			assertTrue(local.instance.isAuthorizedForFunction("/FunctionD"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionDdeny"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionA"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionAdeny"));
+			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionB"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionBdeny"));
+			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionD"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionDdeny"));
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
@@ -121,21 +121,21 @@
 			local.user3.setRoles(["user","admin"]);
 
 			local.auth.setCurrentUser( user=local.user3 );
-			assertTrue(local.instance.isAuthorizedForFunction("/FunctionA"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionAdeny"));
-			assertTrue(local.instance.isAuthorizedForFunction("/FunctionB"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionBdeny"));
-			assertTrue(local.instance.isAuthorizedForFunction("/FunctionC"));
-			assertFalse(local.instance.isAuthorizedForFunction("/FunctionCdeny"));
+			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionA"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionAdeny"));
+			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionB"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionBdeny"));
+			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionC"));
+			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionCdeny"));
 
 			try {
-				local.instance.assertAuthorizedForFunction("/FunctionA");
+				local.accessController.assertAuthorizedForFunction("/FunctionA");
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				fail("");
 			}
 
 			try {
-				local.instance.assertAuthorizedForFunction( "/FunctionDdeny" );
+				local.accessController.assertAuthorizedForFunction( "/FunctionDdeny" );
 				fail("");
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				// expected
@@ -147,7 +147,7 @@
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForData" output="false" hint="Test of isAuthorizedForData method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
 			System.out.println("isAuthorizedForData");
-			local.instance = instance.ESAPI.accessController();
+			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
 			local.adminR = "";
@@ -180,17 +180,17 @@
 			local.user1.setRoles(["user"]);
 
 			local.auth.setCurrentUser( user=local.user1 );
-			assertTrue(local.instance.isAuthorizedForData("read", local.userRW));
-			assertFalse(local.instance.isAuthorizedForData("read", local.undefined));
-			assertFalse(local.instance.isAuthorizedForData("write", local.undefined));
-			assertFalse(local.instance.isAuthorizedForData("read", local.userW));
-			assertFalse(local.instance.isAuthorizedForData("read", local.adminRW));
-			assertTrue(local.instance.isAuthorizedForData("write", local.userRW));
-			assertTrue(local.instance.isAuthorizedForData("write", local.userW));
-			assertFalse(local.instance.isAuthorizedForData("write", local.anyR));
-			assertTrue(local.instance.isAuthorizedForData("read", local.anyR));
-			assertTrue(local.instance.isAuthorizedForData("read", local.userAdminR));
-			assertTrue(local.instance.isAuthorizedForData("write", local.userAdminRW));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.userRW));
+			assertFalse(local.accessController.isAuthorizedForData("read", local.undefined));
+			assertFalse(local.accessController.isAuthorizedForData("write", local.undefined));
+			assertFalse(local.accessController.isAuthorizedForData("read", local.userW));
+			assertFalse(local.accessController.isAuthorizedForData("read", local.adminRW));
+			assertTrue(local.accessController.isAuthorizedForData("write", local.userRW));
+			assertTrue(local.accessController.isAuthorizedForData("write", local.userW));
+			assertFalse(local.accessController.isAuthorizedForData("write", local.anyR));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.anyR));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.userAdminR));
+			assertTrue(local.accessController.isAuthorizedForData("write", local.userAdminRW));
 
 			//test Admin
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
@@ -199,15 +199,15 @@
 			local.user2.setRoles(["admin"]);
 
 			local.auth.setCurrentUser( user=local.user2 );
-			assertTrue(local.instance.isAuthorizedForData("read", local.adminRW));
-			assertFalse(local.instance.isAuthorizedForData("read", local.undefined));
-			assertFalse(local.instance.isAuthorizedForData("write", local.undefined));
-			assertFalse(local.instance.isAuthorizedForData("read", local.userRW));
-			assertTrue(local.instance.isAuthorizedForData("write", local.adminRW));
-			assertFalse(local.instance.isAuthorizedForData("write", local.anyR));
-			assertTrue(local.instance.isAuthorizedForData("read", local.anyR));
-			assertTrue(local.instance.isAuthorizedForData("read", local.userAdminR));
-			assertTrue(local.instance.isAuthorizedForData("write", local.userAdminRW));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.adminRW));
+			assertFalse(local.accessController.isAuthorizedForData("read", local.undefined));
+			assertFalse(local.accessController.isAuthorizedForData("write", local.undefined));
+			assertFalse(local.accessController.isAuthorizedForData("read", local.userRW));
+			assertTrue(local.accessController.isAuthorizedForData("write", local.adminRW));
+			assertFalse(local.accessController.isAuthorizedForData("write", local.anyR));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.anyR));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.userAdminR));
+			assertTrue(local.accessController.isAuthorizedForData("write", local.userAdminRW));
 
 			//test User/Admin
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
@@ -216,24 +216,24 @@
 			local.user3.setRoles(["user","admin"]);
 
 			local.auth.setCurrentUser( user=local.user3 );
-			assertTrue(local.instance.isAuthorizedForData("read", local.userRW));
-			assertFalse(local.instance.isAuthorizedForData("read", local.undefined));
-			assertFalse(local.instance.isAuthorizedForData("write", local.undefined));
-			assertFalse(local.instance.isAuthorizedForData("read", local.userW));
-			assertTrue(local.instance.isAuthorizedForData("read", local.adminR));
-			assertTrue(local.instance.isAuthorizedForData("write", local.userRW));
-			assertTrue(local.instance.isAuthorizedForData("write", local.userW));
-			assertFalse(local.instance.isAuthorizedForData("write", local.anyR));
-			assertTrue(local.instance.isAuthorizedForData("read", local.anyR));
-			assertTrue(local.instance.isAuthorizedForData("read", local.userAdminR));
-			assertTrue(local.instance.isAuthorizedForData("write", local.userAdminRW));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.userRW));
+			assertFalse(local.accessController.isAuthorizedForData("read", local.undefined));
+			assertFalse(local.accessController.isAuthorizedForData("write", local.undefined));
+			assertFalse(local.accessController.isAuthorizedForData("read", local.userW));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.adminR));
+			assertTrue(local.accessController.isAuthorizedForData("write", local.userRW));
+			assertTrue(local.accessController.isAuthorizedForData("write", local.userW));
+			assertFalse(local.accessController.isAuthorizedForData("write", local.anyR));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.anyR));
+			assertTrue(local.accessController.isAuthorizedForData("read", local.userAdminR));
+			assertTrue(local.accessController.isAuthorizedForData("write", local.userAdminRW));
 			try {
-				local.instance.assertAuthorizedForData("read", local.userRW);
+				local.accessController.assertAuthorizedForData("read", local.userRW);
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				fail();
 			}
 			try {
-				local.instance.assertAuthorizedForData( "write", local.adminR );
+				local.accessController.assertAuthorizedForData( "write", local.adminR );
 				fail();
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				// expected
@@ -245,7 +245,7 @@
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForFile" output="false" hint="Test of isAuthorizedForFile method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
 			System.out.println("isAuthorizedForFile");
-			local.instance = instance.ESAPI.accessController();
+			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
@@ -254,10 +254,10 @@
 			local.user1.setRoles(["user"]);
 
 			local.auth.setCurrentUser( user=local.user1 );
-			assertTrue(local.instance.isAuthorizedForFile("/Dir/File1"));
-			assertFalse(local.instance.isAuthorizedForFile("/Dir/File2"));
-			assertTrue(local.instance.isAuthorizedForFile("/Dir/File3"));
-			assertFalse(local.instance.isAuthorizedForFile("/Dir/ridiculous"));
+			assertTrue(local.accessController.isAuthorizedForFile("/Dir/File1"));
+			assertFalse(local.accessController.isAuthorizedForFile("/Dir/File2"));
+			assertTrue(local.accessController.isAuthorizedForFile("/Dir/File3"));
+			assertFalse(local.accessController.isAuthorizedForFile("/Dir/ridiculous"));
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
@@ -265,10 +265,10 @@
 			local.user2.setRoles(["admin"]);
 
 			local.auth.setCurrentUser( user=local.user2 );
-			assertFalse(local.instance.isAuthorizedForFile("/Dir/File1"));
-			assertTrue(local.instance.isAuthorizedForFile("/Dir/File2"));
-			assertTrue(local.instance.isAuthorizedForFile("/Dir/File4"));
-			assertFalse(local.instance.isAuthorizedForFile("/Dir/ridiculous"));
+			assertFalse(local.accessController.isAuthorizedForFile("/Dir/File1"));
+			assertTrue(local.accessController.isAuthorizedForFile("/Dir/File2"));
+			assertTrue(local.accessController.isAuthorizedForFile("/Dir/File4"));
+			assertFalse(local.accessController.isAuthorizedForFile("/Dir/ridiculous"));
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
@@ -276,18 +276,18 @@
 			local.user3.setRoles(["user","admin"]);
 
 			local.auth.setCurrentUser( user=local.user3 );
-			assertTrue(local.instance.isAuthorizedForFile("/Dir/File1"));
-			assertTrue(local.instance.isAuthorizedForFile("/Dir/File2"));
-			assertFalse(local.instance.isAuthorizedForFile("/Dir/File5"));
-			assertFalse(local.instance.isAuthorizedForFile("/Dir/ridiculous"));
+			assertTrue(local.accessController.isAuthorizedForFile("/Dir/File1"));
+			assertTrue(local.accessController.isAuthorizedForFile("/Dir/File2"));
+			assertFalse(local.accessController.isAuthorizedForFile("/Dir/File5"));
+			assertFalse(local.accessController.isAuthorizedForFile("/Dir/ridiculous"));
 
 			try {
-				local.instance.assertAuthorizedForFile("/Dir/File1");
+				local.accessController.assertAuthorizedForFile("/Dir/File1");
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				fail();
 			}
 			try {
-				local.instance.assertAuthorizedForFile( "/Dir/File6" );
+				local.accessController.assertAuthorizedForFile( "/Dir/File6" );
 				fail();
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				// expected
@@ -299,7 +299,7 @@
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForService" output="false" hint="Test of isAuthorizedForService method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
 			System.out.println("isAuthorizedForService");
-			local.instance = instance.ESAPI.accessController();
+			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
@@ -308,10 +308,10 @@
 			local.user1.setRoles(["user"]);
 
 			local.auth.setCurrentUser( user=local.user1 );
-			assertTrue(local.instance.isAuthorizedForService("/services/ServiceA"));
-			assertFalse(local.instance.isAuthorizedForService("/services/ServiceB"));
-			assertTrue(local.instance.isAuthorizedForService("/services/ServiceC"));
-			assertFalse(local.instance.isAuthorizedForService("/test/ridiculous"));
+			assertTrue(local.accessController.isAuthorizedForService("/services/ServiceA"));
+			assertFalse(local.accessController.isAuthorizedForService("/services/ServiceB"));
+			assertTrue(local.accessController.isAuthorizedForService("/services/ServiceC"));
+			assertFalse(local.accessController.isAuthorizedForService("/test/ridiculous"));
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
@@ -319,10 +319,10 @@
 			local.user2.setRoles(["admin"]);
 
 			local.auth.setCurrentUser( user=local.user2 );
-			assertFalse(local.instance.isAuthorizedForService("/services/ServiceA"));
-			assertTrue(local.instance.isAuthorizedForService("/services/ServiceB"));
-			assertFalse(local.instance.isAuthorizedForService("/services/ServiceF"));
-			assertFalse(local.instance.isAuthorizedForService("/test/ridiculous"));
+			assertFalse(local.accessController.isAuthorizedForService("/services/ServiceA"));
+			assertTrue(local.accessController.isAuthorizedForService("/services/ServiceB"));
+			assertFalse(local.accessController.isAuthorizedForService("/services/ServiceF"));
+			assertFalse(local.accessController.isAuthorizedForService("/test/ridiculous"));
 
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
@@ -330,18 +330,18 @@
 			local.user3.setRoles(["user","admin"]);
 
 			local.auth.setCurrentUser( user=local.user3 );
-			assertTrue(local.instance.isAuthorizedForService("/services/ServiceA"));
-			assertTrue(local.instance.isAuthorizedForService("/services/ServiceB"));
-			assertFalse(local.instance.isAuthorizedForService("/services/ServiceE"));
-			assertFalse(local.instance.isAuthorizedForService("/test/ridiculous"));
+			assertTrue(local.accessController.isAuthorizedForService("/services/ServiceA"));
+			assertTrue(local.accessController.isAuthorizedForService("/services/ServiceB"));
+			assertFalse(local.accessController.isAuthorizedForService("/services/ServiceE"));
+			assertFalse(local.accessController.isAuthorizedForService("/test/ridiculous"));
 
 			try {
-				local.instance.assertAuthorizedForService("/services/ServiceD");
+				local.accessController.assertAuthorizedForService("/services/ServiceD");
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				fail();
 			}
 			try {
-				local.instance.assertAuthorizedForService( "/test/ridiculous" );
+				local.accessController.assertAuthorizedForService( "/test/ridiculous" );
 				fail();
 			} catch ( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				// expected

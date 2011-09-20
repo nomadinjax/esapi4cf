@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
@@ -14,12 +14,12 @@
 	<cffunction access="public" returntype="void" name="testHash" output="false" hint="Test of hash method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 	        System.out.println("testHash()");
-	        local.instance = instance.ESAPI.encryptor();
-	        local.hash1 = local.instance.hash("test1", "salt");
-	        local.hash2 = local.instance.hash("test2", "salt");
+	        local.encryptor = instance.ESAPI.encryptor();
+	        local.hash1 = local.encryptor.hash("test1", "salt");
+	        local.hash2 = local.encryptor.hash("test2", "salt");
 	        assertFalse(local.hash1.equals(local.hash2));
-	        local.hash3 = local.instance.hash("test", "salt1");
-	        local.hash4 = local.instance.hash("test", "salt2");
+	        local.hash3 = local.encryptor.hash("test", "salt1");
+	        local.hash4 = local.encryptor.hash("test", "salt2");
 	        assertFalse(local.hash3.equals(local.hash4));
     	</cfscript>
 	</cffunction>
@@ -28,10 +28,10 @@
 	<cffunction access="public" returntype="void" name="testEncrypt" output="false" hint="Test of deprecated encrypt method for Strings.">
 		<cfscript>
 	        System.out.println("testEncrypt()");
-	        local.instance = instance.ESAPI.encryptor();
+	        local.encryptor = instance.ESAPI.encryptor();
 	        local.plaintext = "test123456";	// Not multiple of block cipher size
-	        local.ciphertext = local.instance.encrypt(plain=local.plaintext);
-	    	local.result = local.instance.decrypt(ciphertext=local.ciphertext);
+	        local.ciphertext = local.encryptor.encrypt(plain=local.plaintext);
+	    	local.result = local.encryptor.decrypt(ciphertext=local.ciphertext);
 	        assertEquals(local.plaintext, local.result);
     	</cfscript>
 	</cffunction>
@@ -40,15 +40,15 @@
 	<cffunction access="public" returntype="void" name="testDecrypt" output="false" hint="Test of deprecated decrypt method for Strings.">
 		<cfscript>
 	        System.out.println("testDecrypt()");
-	        local.instance = instance.ESAPI.encryptor();
+	        local.encryptor = instance.ESAPI.encryptor();
 	        try {
 	            local.plaintext = "test123";
-	            local.ciphertext = local.instance.encrypt(plain=local.plaintext);
+	            local.ciphertext = local.encryptor.encrypt(plain=local.plaintext);
 	            assertFalse(local.plaintext.equals(local.ciphertext));
-	        	local.result = local.instance.decrypt(ciphertext=local.ciphertext);
+	        	local.result = local.encryptor.decrypt(ciphertext=local.ciphertext);
 	        	assertEquals(local.plaintext, local.result);
 	        }
-	        catch( EncryptionException e ) {
+	        catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
 	        	fail();
 	        }
     	</cfscript>
@@ -58,21 +58,21 @@
 	<cffunction access="public" returntype="void" name="testEncryptEmptyStrings" output="false" hint="Test of deprecated encrypt methods for empty String.">
 		<cfscript>
 	        System.out.println("testEncryptEmptyStrings()");
-	        local.instance = instance.ESAPI.encryptor();
+	        local.encryptor = instance.ESAPI.encryptor();
 	        local.plaintext = "";
-	        try {
+	        //try {
 	            // System.out.println("Deprecated encryption methods");
-	            local.ciphertext = local.instance.encrypt(plain=local.plaintext);
-	            local.result = local.instance.decrypt(ciphertext=local.ciphertext);
+	            local.ciphertext = local.encryptor.encrypt(plain=local.plaintext);
+	            local.result = local.encryptor.decrypt(ciphertext=local.ciphertext);
 	            assertTrue( local.result == "" );
 
 	            // System.out.println("New encryption methods");
-	            local.ct = local.instance.encrypt(plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.plaintext));
-	            local.pt = local.instance.decrypt(ciphertext=local.ct);
+	            local.ct = local.encryptor.encrypt(plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.plaintext));
+	            local.pt = local.encryptor.decrypt(ciphertext=local.ct);
 	            assertTrue( local.pt.toString() == "" );
-	        } catch(java.lang.Exception e) {
+	        /*} catch(java.lang.Exception e) {
 	            fail("testEncryptEmptyStrings() -- Caught exception: " & e);
-	        }
+	        }*/
     	</cfscript>
 	</cffunction>
 
@@ -81,11 +81,11 @@
 		<cffunction access="public" returntype="void" name="testEncryptNull" output="false" hint="Test deprecated encryption / decryption methods for null.">
 		<cfscript>
 		System.out.println("testEncryptNull()");
-		local.instance = instance.ESAPI.encryptor();
+		local.encryptor = instance.ESAPI.encryptor();
 		local.plaintext = "";
 		try {
 		local.nullStr = null;
-		local.instance.encrypt(local.nullStr);
+		local.encryptor.encrypt(local.nullStr);
 		fail("testEncryptNull(): Did not result in expected exception!");
 		} catch(java.lang.Throwable t) {
 		// It should be one of these, depending on whether or not assertions are enabled.
@@ -137,7 +137,7 @@
 	    	    return "";
 	    	}
 
-	    	try {
+	    	//try {
 	    		// Generate an appropriate random secret key
 				local.skey = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").generateSecretKey(arguments.cipherXform, arguments.keySize);
 				assertTrue( local.skey.getAlgorithm() == arguments.cipherXform.split("/")[1] );
@@ -164,12 +164,12 @@
 		    	}
 
 		    	// Get an Encryptor instance with the specified, possibly new, cipher transformation.
-		    	local.instance = instance.ESAPI.encryptor();
+		    	local.encryptor = instance.ESAPI.encryptor();
 		    	local.plaintext = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, arguments.plaintextBytes);
 		    	local.origPlainText = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init( instance.ESAPI, local.plaintext.toString() ); // Make _copy_ of original for comparison.
 
 		    	// Do the encryption with the new encrypt() method and get back the CipherText.
-		    	local.ciphertext = local.instance.encrypt(local.skey, local.plaintext);	// The new encrypt() method.
+		    	local.ciphertext = local.encryptor.encrypt(local.skey, local.plaintext);	// The new encrypt() method.
 		    	System.out.println("DEBUG: Encrypt(): CipherText object is -- " & local.ciphertext.toString());
 		    	assertTrue( !isNull(local.ciphertext) );
 	//	    	System.out.println("DEBUG: After encryption: base64-encoded IV+ciphertext: " + local.ciphertext.getEncodedIVCipherText());
@@ -185,7 +185,7 @@
 				}
 
 		    	// Take the resulting ciphertext and decrypt w/ new decryption method.
-		    	local.decryptedPlaintext  = local.instance.decrypt(local.skey, local.ciphertext);		// The new decrypt() method.
+		    	local.decryptedPlaintext  = local.encryptor.decrypt(local.skey, local.ciphertext);		// The new decrypt() method.
 
 		    	// Make sure we got back the same thing we started with.
 		    	System.out.println("\tOriginal plaintext: " & local.origPlainText.toString());
@@ -199,12 +199,12 @@
 		    	assertTrue( local.defaultCipherXform.equals( local.oldCipherXform ) );
 
 		    	return local.ciphertext.getEncodedIVCipherText();
-			} catch (java.lang.Exception e) {
+			/*} catch (java.lang.Exception e) {
 				// OK if not counted toward code coverage.
 				System.out.println("testNewEncryptDecrypt(): Caught unexpected exception: " & e.getClass().getName());
 				e.printStackTrace(System.out);
 				fail("Caught unexpected exception; msg was: " & e);
-			}
+			}*/
 			return "";
     	</cfscript>
 	</cffunction>
@@ -229,12 +229,12 @@
 	<cffunction access="public" returntype="void" name="testSign" output="false" hint="Test of sign method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 	        System.out.println("testSign()");
-	        local.instance = instance.ESAPI.encryptor();
+	        local.encryptor = instance.ESAPI.encryptor();
 	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
-	        local.signature = local.instance.sign(local.plaintext);
-	        assertTrue( local.instance.verifySignature( local.signature, local.plaintext ) );
-	        assertFalse( local.instance.verifySignature( local.signature, "ridiculous" ) );
-	        assertFalse( local.instance.verifySignature( "ridiculous", local.plaintext ) );
+	        local.signature = local.encryptor.sign(local.plaintext);
+	        assertTrue( local.encryptor.verifySignature( local.signature, local.plaintext ) );
+	        assertFalse( local.encryptor.verifySignature( local.signature, "ridiculous" ) );
+	        assertFalse( local.encryptor.verifySignature( "ridiculous", local.plaintext ) );
     	</cfscript>
 	</cffunction>
 
@@ -242,10 +242,10 @@
 	<cffunction access="public" returntype="void" name="testVerifySignature" output="false" hint="Test of verifySignature method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 		    System.out.println("testVerifySignature()");
-	        local.instance = instance.ESAPI.encryptor();
+	        local.encryptor = instance.ESAPI.encryptor();
 	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
-	        local.signature = local.instance.sign(local.plaintext);
-	        assertTrue( local.instance.verifySignature( local.signature, local.plaintext ) );
+	        local.signature = local.encryptor.sign(local.plaintext);
+	        assertTrue( local.encryptor.verifySignature( local.signature, local.plaintext ) );
     	</cfscript>
 	</cffunction>
 
@@ -253,24 +253,24 @@
 	<cffunction access="public" returntype="void" name="testSeal" output="false" hint="Test of seal method, of class org.owasp.esapi.Encryptor.">
 		<cfscript>
 	        System.out.println("testSeal()");
-	        local.instance = instance.ESAPI.encryptor();
+	        local.encryptor = instance.ESAPI.encryptor();
 	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
-	        local.seal = local.instance.seal( local.plaintext, createObject("java", "java.lang.Long").init(local.instance.getTimeStamp() + 1000*60).longValue() );
-	        local.instance.verifySeal( local.seal );
+	        local.seal = local.encryptor.seal( local.plaintext, createObject("java", "java.lang.Long").init(local.encryptor.getTimeStamp() + 1000*60).longValue() );
+	        local.encryptor.verifySeal( local.seal );
 
 	        local.progressMark = 1;
 	        local.caughtExpectedEx = false;
 	        try {
-	            local.seal = local.instance.seal("", createObject("java", "java.lang.Long").init(local.instance.getTimeStamp() + 1000*60).longValue());
+	            local.seal = local.encryptor.seal("", createObject("java", "java.lang.Long").init(local.encryptor.getTimeStamp() + 1000*60).longValue());
 	            local.progressMark++;
-	            local.instance.verifySeal(local.seal);
+	            local.encryptor.verifySeal(local.seal);
 	            local.progressMark++;
 	        } catch(java.lang.Exception e) {
 	            fail("Failed empty string test: " & e & "; progress mark = " & local.progressMark);
 	        }
 	        /* NULL test
 	        try {
-	            local.seal = local.instance.seal(null, createObject("java", "java.lang.Long").init(local.instance.getTimeStamp() + 1000*60).longValue());
+	            local.seal = local.encryptor.seal(null, createObject("java", "java.lang.Long").init(local.encryptor.getTimeStamp() + 1000*60).longValue());
 	            fail("Did not throw expected IllegalArgumentException");
 	        } catch(java.lang.IllegalArgumentException e) {
 	            local.caughtExpectedEx = true;
@@ -280,17 +280,17 @@
 	        assertTrue(local.caughtExpectedEx);*/
 
 	        try {
-	            local.seal = local.instance.seal("test", 0);
+	            local.seal = local.encryptor.seal("test", 0);
 	            local.progressMark++;
-	            // local.instance.verifySeal(local.seal);
+	            // local.encryptor.verifySeal(local.seal);
 	            local.progressMark++;
 	        } catch(java.lang.Exception e) {
 	            fail("Fail test with 0 timestamp: " & e & "; progress mark = " & local.progressMark);
 	        }
 	        try {
-	            local.seal = local.instance.seal("test", -1);
+	            local.seal = local.encryptor.seal("test", -1);
 	            local.progressMark++;
-	            // local.instance.verifySeal(local.seal);
+	            // local.encryptor.verifySeal(local.seal);
 	            local.progressMark++;
 	        } catch(java.lang.Exception e) {
 	            fail("Fail test with -1 timestamp: " & e & "; progress mark = " & local.progressMark);
@@ -303,11 +303,11 @@
 		<cfscript>
 	        local.NSEC = 5;
 	        System.out.println("testVerifySeal()");
-	        local.instance = instance.ESAPI.encryptor();
+	        local.encryptor = instance.ESAPI.encryptor();
 	        local.plaintext = "ridiculous:with:delimiters";    // Should now work w/ : (issue #28)
-	        local.seal = local.instance.seal( local.plaintext, local.instance.getRelativeTimeStamp( 1000 * local.NSEC ) );
+	        local.seal = local.encryptor.seal( local.plaintext, local.encryptor.getRelativeTimeStamp( 1000 * local.NSEC ) );
 	        try {
-	        	assertTrue( local.instance.verifySeal( local.seal ) );
+	        	assertTrue( local.encryptor.verifySeal( local.seal ) );
 	        } catch ( Exception e ) {
 	        	fail();
 	        }
@@ -326,19 +326,19 @@
 	            //
 	            // All these should return false and log a warning with an Exception stack
 	            // trace caused by an EncryptionException indicating "Invalid seal".
-	        	assertFalse( local.instance.verifySeal( local.plaintext ) );
+	        	assertFalse( local.encryptor.verifySeal( local.plaintext ) );
 	        	local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.plaintext) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.encryptor.verifySeal( local.encryptor.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.plaintext) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, 100 & ":" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.encryptor.verifySeal( local.encryptor.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, 100 & ":" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.encryptor.verifySeal( local.encryptor.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.encryptor.verifySeal( local.encryptor.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext & ":badsig")  ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.encryptor.verifySeal( local.encryptor.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext & ":badsig")  ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
-	            assertFalse( local.instance.verifySeal( local.instance.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext & ":" & local.instance.sign( Long.MAX_VALUE & ":random:" & local.plaintext) ) ).getBase64EncodedRawCipherText() ) );
+	            assertFalse( local.encryptor.verifySeal( local.encryptor.encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, Long.MAX_VALUE & ":random:" & local.plaintext & ":" & local.encryptor.sign( Long.MAX_VALUE & ":random:" & local.plaintext) ) ).getBase64EncodedRawCipherText() ) );
 	            local.progressMark++;
 	        } catch ( Exception e ) {
 	        	// fail("Failed invalid seal test # " + progressMark + " to verify seal.");
@@ -350,7 +350,7 @@
 	        try {
 	            sleep(1000 * (local.NSEC + 1) );
 	            // Seal now past expiration date.
-	            assertFalse( local.instance.verifySeal( local.seal ) );
+	            assertFalse( local.encryptor.verifySeal( local.seal ) );
 	        } catch ( Exception e ) {
 	            fail("Failed expired seal test. Seal should be expired.");
 	        }

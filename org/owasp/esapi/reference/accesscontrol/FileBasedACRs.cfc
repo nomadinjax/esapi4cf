@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
 		Logger = createObject("java", "org.owasp.esapi.Logger");
@@ -152,16 +152,22 @@
 			}
 
 			// Check for exact match - ignore any ending slash
-			local.rule = arguments.map.get(local.part);
+			if (structKeyExists(arguments.map, local.part)) {
+				local.rule = arguments.map.get(local.part);
+			}
 
 			// Check for ending with /*
 			if (isNull(local.rule)) {
-				local.rule = arguments.map.get(local.part & "/*");/* this comment fixes IDE syntax error */
+				if (structKeyExists(arguments.map, local.part & "/*")) {
+					local.rule = arguments.map.get(local.part & "/*");/* this comment fixes IDE syntax error */
+				}
 			}
 
 			// Check for matching extension rule *.ext
 			if (isNull(local.rule)) {
-				local.rule = arguments.map.get("*." & local.extension);
+				if (structKeyExists(arguments.map, "*." & local.extension)) {
+					local.rule = arguments.map.get("*." & local.extension);
+				}
 			}
 
 			// if rule found and user's roles match rules' roles, return the rule
@@ -195,7 +201,9 @@
 		<cfargument type="String" name="action" required="true" hint="the action the User has asked to perform">
 		<cfscript>
 			// Check for exact match - ignore any ending slash
-			local.rule = arguments.map.get(arguments.clazz.getClass().getName());
+			if (structKeyExists(arguments.map, arguments.clazz.getClass().getName())) {
+				local.rule = arguments.map.get(arguments.clazz.getClass().getName());
+			}
 			if( ( !isNull(local.rule) ) && ( overlapClass(local.rule.actions, arguments.action) ) && ( overlap(local.rule.roles, arguments.roles) )){
 				return local.rule;
 			}

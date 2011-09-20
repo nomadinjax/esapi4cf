@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
 		instance.serialVersionUID = 20100122; // Format: YYYYMMDD
@@ -6,10 +6,10 @@
 		instance.ESAPI = "";
 		instance.logger = "";
 
-	    instance.cipherSpec_     = "";
-	    instance.raw_ciphertext_ = "";
-	    instance.separate_mac_   = "";
-	    instance.encryption_timestamp_ = 0;
+	    this.cipherSpec_     = [];
+	    this.raw_ciphertext_ = [];
+	    this.separate_mac_   = [];
+	    this.encryption_timestamp_ = 0;
 
 	    // All the various pieces that can be set, either directly or indirectly via CipherSpec.
 		CipherTextFlags = {
@@ -43,7 +43,7 @@
 		];
 
 	    // How much we've collected so far. We start out with having collected nothing.
-	    instance.progress = [];
+	    this.progress = [];
     </cfscript>
 
 	<cffunction access="public" returntype="CipherText" name="init" output="false">
@@ -57,7 +57,7 @@
 			CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
 
 			if (structKeyExists(arguments, "cipherSpec")) {
-				instance.cipherSpec_ = arguments.cipherSpec;
+				this.cipherSpec_ = arguments.cipherSpec;
 				if (structKeyExists(arguments, "cipherText")) {
 		        	setCiphertext(arguments.cipherText);
 				}
@@ -67,7 +67,7 @@
 		        }
 			}
 			else {
-		        instance.cipherSpec_ = createObject("component", "CipherSpec").init(instance.ESAPI); // Uses default for everything but IV.
+		        this.cipherSpec_ = createObject("component", "CipherSpec").init(instance.ESAPI); // Uses default for everything but IV.
 		        receivedMany(instance.fromCipherSpec);
 			}
 
@@ -87,42 +87,42 @@
 
 	<cffunction access="public" returntype="String" name="getCipherTransformation" output="false" hint="Obtain the String representing the cipher transformation used to encrypt the plaintext. The cipher transformation represents the cipher algorithm, the cipher mode, and the padding scheme used to do the encryption. An example would be 'AES/CBC/PKCS5Padding'.">
 		<cfscript>
-        	return instance.cipherSpec_.getCipherTransformation();
+        	return this.cipherSpec_.getCipherTransformation();
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getCipherAlgorithm" output="false" hint="Obtain the name of the cipher algorithm used for encrypting the plaintext.">
 		<cfscript>
-        	return instance.cipherSpec_.getCipherAlgorithm();
+        	return this.cipherSpec_.getCipherAlgorithm();
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getKeySize" output="false" hint="Retrieve the key size used with the cipher algorithm that was used to encrypt data to produce this ciphertext.">
 		<cfscript>
-        	return instance.cipherSpec_.getKeySize();
+        	return this.cipherSpec_.getKeySize();
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getBlockSize" output="false" hint="Retrieve the block size (in bytes!) of the cipher used for encryption. (Note: If an IV is used, this will also be the IV length.)">
 		<cfscript>
-        	return instance.cipherSpec_.getBlockSize();
+        	return this.cipherSpec_.getBlockSize();
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getCipherMode" output="false" hint="Get the name of the cipher mode used to encrypt some plaintext.">
 		<cfscript>
-        	return instance.cipherSpec_.getCipherMode();
+        	return this.cipherSpec_.getCipherMode();
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getPaddingScheme" output="false" hint="Get the name of the padding scheme used to encrypt some plaintext.">
 		<cfscript>
-        	return instance.cipherSpec_.getPaddingScheme();
+        	return this.cipherSpec_.getPaddingScheme();
     	</cfscript>
 	</cffunction>
 
@@ -130,7 +130,7 @@
 	<cffunction access="public" returntype="binary" name="getIV" required="true" hint="Return the initialization vector (IV) used to encrypt the plaintext if applicable.">
 		<cfscript>
 	        if ( isCollected(CipherTextFlags.INITVECTOR) ) {
-	            return instance.cipherSpec_.getIV();
+	            return this.cipherSpec_.getIV();
 	        } else {
 	            instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "IV not set yet; unable to retrieve; returning null");
 	            return toBinary("");
@@ -141,7 +141,7 @@
 
 	<cffunction access="public" returntype="boolean" name="requiresIV" output="false" hint="Return true if the cipher mode used requires an IV. Usually this will be true unless ECB mode (which should be avoided whenever possible) is used.">
 		<cfscript>
-        	return instance.cipherSpec_.requiresIV();
+        	return this.cipherSpec_.requiresIV();
     	</cfscript>
 	</cffunction>
 
@@ -149,8 +149,8 @@
 	<cffunction access="public" returntype="binary" name="getRawCipherText" output="false" hint="Get the raw ciphertext byte array resulting from encrypting some plaintext.">
 		<cfscript>
 		    if ( isCollected(CipherTextFlags.CIPHERTEXT) ) {
-		        local.copy = newByte( len(instance.raw_ciphertext_) );
-		        System.arraycopy(instance.raw_ciphertext_, 0, local.copy, 0, len(instance.raw_ciphertext_));
+		        local.copy = newByte( arrayLen(this.raw_ciphertext_) );
+		        System.arraycopy(this.raw_ciphertext_, 0, local.copy, 0, arrayLen(this.raw_ciphertext_));
 		        return local.copy;
 		    } else {
 		        instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Raw ciphertext not set yet; unable to retrieve; returning null");
@@ -161,8 +161,8 @@
 
 	<cffunction access="public" returntype="numeric" name="getRawCipherTextByteLength" output="false" hint="Get number of bytes in raw ciphertext. Zero is returned if ciphertext has not yet been stored.">
 		<cfscript>
-		    if ( len(instance.raw_ciphertext_) ) {
-		        return len(instance.raw_ciphertext_);
+		    if ( arrayLen(this.raw_ciphertext_) ) {
+		        return arrayLen(this.raw_ciphertext_);
 		    } else {
 		        return 0;
 		    }
@@ -182,9 +182,9 @@
 		        // First concatenate IV + raw ciphertext
 		        local.iv = getIV();
 		        local.raw = getRawCipherText();
-		        local.ivPlusCipherText = newByte( len(local.iv) + len(local.raw) );
-		        System.arraycopy(local.iv, 0, local.ivPlusCipherText, 0, len(local.iv));
-		        System.arraycopy(local.raw, 0, local.ivPlusCipherText, len(local.iv), len(local.raw));
+		        local.ivPlusCipherText = newByte( arrayLen(local.iv) + arrayLen(local.raw) );
+		        System.arraycopy(local.iv, 0, local.ivPlusCipherText, 0, arrayLen(local.iv));
+		        System.arraycopy(local.raw, 0, local.ivPlusCipherText, arrayLen(local.iv), arrayLen(local.raw));
 		        // Then return the base64 encoded result
 		        return instance.ESAPI.encoder().encodeForBase64(local.ivPlusCipherText, false);
 		    } else {
@@ -213,8 +213,8 @@
 		<cfargument type="binary" name="macValue" required="true">
 		<cfscript>
 		    if ( !macComputed() ) {
-		        instance.separate_mac_ = newByte( len(arguments.macValue) );
-		        CryptoHelper.copyByteArray(arguments.macValue, instance.separate_mac_);
+		        this.separate_mac_ = newByte( arrayLen(arguments.macValue) );
+		        CryptoHelper.copyByteArray(arguments.macValue, this.separate_mac_);
 		        assert(macComputed());
 		    }
 		</cfscript>
@@ -230,9 +230,9 @@
 		        // Calculate MAC from HMAC-SHA1(nonce, IV + plaintext) and
 		        // compare to stored value (separate_mac_). If same, then return true,
 		        // else return false.
-		        local.mac = computeMAC(authKey);
-		        assert(len(local.mac) == len(instance.separate_mac_), "MACs are of different lengths. Should both be the same.");
-		        return CryptoHelper.arrayCompare(local.mac, instance.separate_mac_); // Safe compare!!!
+		        local.mac = computeMAC(arguments.authKey);
+		        assert(arrayLen(local.mac) == arrayLen(this.separate_mac_), "MACs are of different lengths. Should both be the same.");
+		        return CryptoHelper.arrayCompare(local.mac, this.separate_mac_); // Safe compare!!!
 		    } else if ( ! local.usesMAC ) {           // Doesn't use MAC
 		        return true;
 		    } else {                            // Uses MAC but it has not been computed / stored.
@@ -272,15 +272,15 @@
 		<cfargument type="binary" name="ciphertext" required="true" hint="The raw ciphertext.">
 		<cfscript>
 	        if ( ! macComputed() ) {
-	            if ( isNull(arguments.ciphertext) || len(arguments.ciphertext) == 0 ) {
+	            if ( isNull(arguments.ciphertext) || arrayLen(arguments.ciphertext) == 0 ) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption faled; no ciphertext", "Ciphertext may not be null or 0 length!");
 	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	            if ( isCollected(CipherTextFlags.CIPHERTEXT) ) {
 	                instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Raw ciphertext was already set; resetting.");
 	            }
-	            instance.raw_ciphertext_ = newByte( len(arguments.ciphertext) );
-	            CryptoHelper.copyByteArray(arguments.ciphertext, instance.raw_ciphertext_);
+	            this.raw_ciphertext_ = newByte( arrayLen(arguments.ciphertext) );
+	            CryptoHelper.copyByteArray(arguments.ciphertext, this.raw_ciphertext_);
 	            received(CipherTextFlags.CIPHERTEXT);
 	            setEncryptionTimestampCurrent();
 	        } else {
@@ -304,20 +304,20 @@
 	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Raw ciphertext was already set; resetting.");
 	        }
 	        if ( ! macComputed() ) {
-	            if ( isNull(arguments.ciphertext) || len(arguments.ciphertext) == 0 ) {
+	            if ( isNull(arguments.ciphertext) || arrayLen(arguments.ciphertext) == 0 ) {
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption faled; no ciphertext", "Ciphertext may not be null or 0 length!");
 	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
-	            if ( isNull(arguments.iv) || len(arguments.iv) == 0 ) {
+	            if ( isNull(arguments.iv) || arrayLen(arguments.iv) == 0 ) {
 	                if ( requiresIV() ) {
 	                    cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failed -- mandatory IV missing", "Cipher mode " & getCipherMode() & " has null or empty IV");
 		           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	                }
-	            } else if ( len(arguments.iv) != getBlockSize() ) {
+	            } else if ( arrayLen(arguments.iv) != getBlockSize() ) {
                     cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failed -- bad parameters passed to encrypt", "IV length does not match cipher block size of " & getBlockSize());
 	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
-	            instance.cipherSpec_.setIV(arguments.iv);
+	            this.cipherSpec_.setIV(arguments.iv);
 	            received(CipherTextFlags.INITVECTOR);
 	            setCiphertext( arguments.ciphertext );
 	        } else {
@@ -332,7 +332,7 @@
 
 	<cffunction access="public" returntype="numeric" name="getEncryptionTimestamp" output="false" hint="Get stored timestamp representing when data was encrypted.">
 		<cfscript>
-        	return instance.encryption_timestamp_;
+        	return this.encryption_timestamp_;
     	</cfscript>
 	</cffunction>
 
@@ -344,10 +344,10 @@
 	        // otherwise it gets reset to the current time. But when it's restored
 	        // from a serialized CipherText object, we want to keep the original
 	        // encryption timestamp.
-	        if ( instance.encryption_timestamp_ != 0 ) {
+	        if ( this.encryption_timestamp_ != 0 ) {
 	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "Attempt to reset non-zero CipherText encryption timestamp to current time!");
 	        }
-	        instance.encryption_timestamp_ = getTickCount();
+	        this.encryption_timestamp_ = getTickCount();
     	</cfscript>
 	</cffunction>
 
@@ -356,10 +356,10 @@
 		<cfargument type="numeric" name="timestamp" required="true" hint="The time in milliseconds since epoch time (midnight, January 1, 1970 GMT).">
 		<cfscript>
 	        assert(arguments.timestamp > 0, "Timestamp must be greater than zero.");
-	        if ( instance.encryption_timestamp_ == 0 ) {     // Only set it if it's not yet been set.
+	        if ( this.encryption_timestamp_ == 0 ) {     // Only set it if it's not yet been set.
 	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "Attempt to reset non-zero CipherText encryption timestamp to " & createObject("java", "java.util.Date").init( javaCast("long", arguments.timestamp) ) + "!");
 	        }
-	        instance.encryption_timestamp_ = arguments.timestamp;
+	        this.encryption_timestamp_ = arguments.timestamp;
     	</cfscript>
 	</cffunction>
 
@@ -373,11 +373,11 @@
 
 	<cffunction access="public" returntype="binary" name="getSeparateMAC" output="false" hint="Return the separately calculated Message Authentication Code (MAC) that is computed via the computeAndStoreMAC(SecretKey authKey) method.">
 		<cfscript>
-	        if ( !len(instance.separate_mac_) ) {
+	        if ( !arrayLen(this.separate_mac_) ) {
 	            return toBinary("");
 	        }
-	        local.copy = newByte( len(instance.separate_mac_) );
-	        System.arraycopy(instance.separate_mac_, 0, local.copy, 0, len(instance.separate_mac_));
+	        local.copy = newByte( arrayLen(this.separate_mac_) );
+	        System.arraycopy(this.separate_mac_, 0, local.copy, 0, arrayLen(this.separate_mac_));
 	        return local.copy;
     	</cfscript>
 	</cffunction>
@@ -388,11 +388,11 @@
 	        local.creationTime = (( getEncryptionTimestamp() == 0) ? "No timestamp available" : createObject("java", "java.util.Date").init( javaCast("long", getEncryptionTimestamp()) ).toString());
 	        local.n = getRawCipherTextByteLength();
 	        local.rawCipherText = (( local.n > 0 ) ? "present (" & local.n & " bytes)" : "absent");
-	        local.mac = (( len(instance.separate_mac_) ) ? "present" : "absent");
+	        local.mac = (( arrayLen(this.separate_mac_) ) ? "present" : "absent");
 	        local.sb.append("Creation time: ").append(local.creationTime);
 	        local.sb.append(", raw ciphertext is ").append(local.rawCipherText);
 	        local.sb.append(", MAC is ").append(local.mac).append("; ");
-	        local.sb.append( instance.cipherSpec_.toString() );
+	        local.sb.append( this.cipherSpec_.toString() );
 	        return local.sb.toString();
     	</cfscript>
 	</cffunction>
@@ -401,12 +401,6 @@
 		<cfargument type="any" name="other" required="true">
 		<cfscript>
 	        local.result = false;
-	        local.otherStr = arguments.other;
-	        if ( isCustomFunction(local.otherStr.toString) ) {
-	       		local.otherStr = local.otherStr.toString();
-	        }
-	        if ( this.toString() == local.otherStr )
-	            return true;
 	        if ( isNull(arguments.other) )
 	            return false;
 	        if ( isInstanceOf(arguments.other, "cfesapi.org.owasp.esapi.crypto.CipherText")) {
@@ -432,13 +426,20 @@
 	</cffunction>
 
 	<!--- hashCode --->
-	<!--- canEqual --->
+		
+	<cffunction access="package" returntype="boolean" name="canEqual" output="false">
+		<cfargument type="any" name="other" required="true">
+		<cfscript>
+        	return isInstanceOf(arguments.other, "cfesapi.org.owasp.esapi.crypto.CipherText");
+       	</cfscript>
+    </cffunction>
+
 
 	<cffunction access="private" returntype="binary" name="computeMAC" output="false" hint="Compute a MAC, but do not store it. May set the nonce value as a side-effect.  The MAC is calculated as: HMAC-SHA1(nonce, IV + plaintext)">
 		<cfargument type="any" name="authKey" required="true" hint="javax.crypto.SecretKey: The ciphertext value for which the MAC is computed.">
 		<cfscript>
-	        assert(!isNull(instance.raw_ciphertext_) && len(instance.raw_ciphertext_) != 0, "Raw ciphertext may not be null or empty.");
-	        assert(!isNull(arguments.authKey) && len(arguments.authKey.getEncoded()) != 0, "Authenticity secret key may not be null or zero length.");
+	        assert(!isNull(this.raw_ciphertext_) && arrayLen(this.raw_ciphertext_) != 0, "Raw ciphertext may not be null or empty.");
+	        assert(!isNull(arguments.authKey) && arrayLen(arguments.authKey.getEncoded()) != 0, "Authenticity secret key may not be null or zero length.");
 	        try {
 	            local.sk = createObject("java", "javax.crypto.spec.SecretKeySpec").init(arguments.authKey.getEncoded(), "HmacSHA1");
 	            local.mac = createObject("java", "javax.crypto.Mac").getInstance("HmacSHA1");
@@ -461,12 +462,12 @@
 
 	<cffunction access="private" returntype="boolean" name="macComputed" output="false" hint="Return true if the MAC has already been computed (i.e., not null).">
 		<cfscript>
-        	return len(instance.separate_mac_) ? true : false;
+        	return arrayLen(this.separate_mac_) ? true : false;
     	</cfscript>
 	</cffunction>
 
 
-	<cffunction access="private" returntype="boolean" name="collectedAll" output="false" hint="Return true if we've collected all the required pieces; otherwise false.">
+	<cffunction access="package" returntype="boolean" name="collectedAll" output="false" hint="Return true if we've collected all the required pieces; otherwise false.">
 		<cfscript>
 	        local.ctFlags = "";
 	        if ( requiresIV() ) {
@@ -477,7 +478,7 @@
 	            //local.ctFlags = EnumSet.complementOf(local.initVector);
 	            local.ctFlags = [CipherTextFlags.INITVECTOR];
 	        }
-	        local.result = instance.progress.containsAll(local.ctFlags);
+	        local.result = this.progress.containsAll(local.ctFlags);
 	        return local.result;
     	</cfscript>
 	</cffunction>
@@ -486,7 +487,7 @@
 	<cffunction access="private" returntype="boolean" name="isCollected" output="false" hint="Check if we've collected a specific flag type.">
 		<cfargument type="cfesapi.org.owasp.esapi.crypto.CipherTextFlags" name="flag" required="true" hint="The flag type; e.g., CipherTextFlags.INITVECTOR, etc.">
 		<cfscript>
-        	return yesNoFormat(arrayFind(instance.progress, arguments.flag));
+        	return yesNoFormat(arrayFind(this.progress, arguments.flag));
     	</cfscript>
 	</cffunction>
 
@@ -494,7 +495,7 @@
 	<cffunction access="private" returntype="void" name="received" output="false" hint="Add the flag to the set of what we've already collected.">
 		<cfargument type="cfesapi.org.owasp.esapi.crypto.CipherTextFlags" name="flag" required="true" hint="The flag type to be added; e.g., CipherTextFlags.INITVECTOR.">
 		<cfscript>
-        	instance.progress.add(arguments.flag);
+        	this.progress.add(arguments.flag);
     	</cfscript>
 	</cffunction>
 

@@ -68,7 +68,7 @@
 				return local.canonical;
 			}
 			catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-				throw(message=e.getMessage(), type=e.getType());
+				throw(message=e.message, type=e.type);
 			}
 		</cfscript>
 	</cffunction>

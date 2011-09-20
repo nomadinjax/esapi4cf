@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<cfscript>
 		instance.unicodeStr = "A\u00ea\u00f1\u00fcC";	// I.e., "AêñüC"
@@ -82,7 +82,7 @@
 				assertTrue( Arrays.equals(local.origBytes, local.pt.asBytes()) );
 				assertTrue( local.pt.hashCode() == instance.unicodeStr.hashCode() );
 
-				local.origLen = len(local.origBytes);
+				local.origLen = arrayLen(local.origBytes);
 
 				local.pt.overwrite();
 		        local.overwrittenBytes = local.pt.asBytes();
@@ -90,7 +90,7 @@
 				assertFalse( Arrays.equals( local.origBytes, local.overwrittenBytes ) );
 
 				// Ensure that ALL the bytes overwritten with '*'.
-				local.afterLen = len(local.overwrittenBytes);
+				local.afterLen = arrayLen(local.overwrittenBytes);
 				assertTrue( local.origLen == local.afterLen );
 				local.sum = 0;
 				for( local.i = 1; local.i <= local.afterLen; local.i++ ) {

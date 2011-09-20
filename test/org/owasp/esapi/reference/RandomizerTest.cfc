@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<!--- TODO: need tests for:
 		getRandomBoolean()
@@ -13,9 +13,9 @@
 			DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
 
 	        local.length = 20;
-	        local.instance = instance.ESAPI.randomizer();
+	        local.randomizer = instance.ESAPI.randomizer();
 	        for ( local.i = 0; local.i < 100; local.i++ ) {
-	            local.result = local.instance.getRandomString(local.length, DefaultEncoder.CHAR_ALPHANUMERICS );
+	            local.result = local.randomizer.getRandomString(local.length, DefaultEncoder.CHAR_ALPHANUMERICS );
 	            for ( local.j=0;local.j<local.result.length();local.j++ ) {
 	            	if ( !createObject("java", "org.owasp.esapi.codecs.Codec").containsCharacter( local.result.charAt(local.j), DefaultEncoder.CHAR_ALPHANUMERICS) ) {
 	            		fail();
@@ -32,11 +32,11 @@
 	        System.out.println("getRandomInteger");
 	        local.min = -20;
 	        local.max = 100;
-	        local.instance = instance.ESAPI.randomizer();
+	        local.randomizer = instance.ESAPI.randomizer();
 	        local.minResult = ( local.max - local.min ) / 2;
 	        local.maxResult = ( local.max - local.min ) / 2;
 	        for ( local.i = 0; local.i < 100; local.i++ ) {
-	            local.result = local.instance.getRandomInteger(local.min, local.max);
+	            local.result = local.randomizer.getRandomInteger(local.min, local.max);
 	            if ( local.result < local.minResult ) local.minResult = local.result;
 	            if ( local.result > local.maxResult ) local.maxResult = local.result;
 	        }
@@ -51,11 +51,11 @@
 	        Float = createObject("java", "java.lang.Float");
 	        local.min = Float.init("-20.5234F").floatValue();
 	        local.max = Float.init("100.12124F").floatValue();
-	        local.instance = instance.ESAPI.randomizer();
+	        local.randomizer = instance.ESAPI.randomizer();
 	        local.minResult = ( local.max - local.min ) / 2;
 	        local.maxResult = ( local.max - local.min ) / 2;
 	        for ( local.i = 0; local.i < 100; local.i++ ) {
-	            local.result = local.instance.getRandomReal(local.min, local.max);
+	            local.result = local.randomizer.getRandomReal(local.min, local.max);
 	            if ( local.result < local.minResult ) local.minResult = local.result;
 	            if ( local.result > local.maxResult ) local.maxResult = local.result;
 	        }
@@ -67,10 +67,10 @@
 	<cffunction access="public" returntype="void" name="testGetRandomGUID" output="false" hint="Test of getRandomGUID method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
 	        System.out.println("getRandomGUID");
-	        local.instance = instance.ESAPI.randomizer();
+	        local.randomizer = instance.ESAPI.randomizer();
 	        local.list = [];
 	        for ( local.i = 0; local.i < 100; local.i++ ) {
-	            local.guid = local.instance.getRandomGUID();
+	            local.guid = local.randomizer.getRandomGUID();
 	            if ( local.list.contains( local.guid ) ) fail();
 	            local.list.add( local.guid );
 	        }

@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<cfscript>
 	    static.POST_CLEANUP = true;
@@ -53,7 +53,7 @@
 		<cfscript>
 			instance.cipherSpec = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI, cipherXform="DESede/OFB8/NoPadding", keySize=112);
 			local.ct = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI, instance.cipherSpec );
-			assertTrue( !len(local.ct.getRawCipherText()) );
+			assertTrue( !arrayLen(local.ct.getRawCipherText()) );
 			assertTrue( local.ct.getCipherAlgorithm() == "DESede" );
 			assertTrue( local.ct.getKeySize() == instance.cipherSpec.getKeySize() );
 		</cfscript>
@@ -103,7 +103,7 @@
 				local.cipherSpec = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI, cipher=instance.encryptor, keySize=128);
 				local.cipherSpec.setIV(instance.ivSpec.getIV());
 				assertTrue( !isNull(local.cipherSpec.getIV()) );
-				assertTrue( len(local.cipherSpec.getIV()) > 0 );
+				assertTrue( arrayLen(local.cipherSpec.getIV()) > 0 );
 				local.key = CryptoHelper.generateSecretKey(local.cipherSpec.getCipherAlgorithm(), 128);
 				instance.encryptor.init(Cipher.ENCRYPT_MODE, local.key, instance.ivSpec);
 				local.ctraw = instance.encryptor.doFinal(createObject("java", "java.lang.String").init("Hello").getBytes("UTF8"));
@@ -117,15 +117,15 @@
 				instance.decryptor.init(Cipher.DECRYPT_MODE, local.key, createObject("java", "javax.crypto.spec.IvParameterSpec").init(local.ct.getIV()));
 				local.ptraw = instance.decryptor.doFinal(instance.ESAPI.encoder().decodeFromBase64(local.b64ctraw));
 				assertTrue( !isNull(local.ptraw) );
-				assertTrue( len(local.ptraw) > 0 );
+				assertTrue( arrayLen(local.ptraw) > 0 );
 				local.plaintext = createObject("java", "java.lang.String").init( local.ptraw, "UTF-8");
 				assertTrue( local.plaintext.equals("Hello") );
 				//assertArrayEquals( local.ct.getRawCipherText(), local.ctraw );
 				assertEquals( charsetEncode(local.ct.getRawCipherText(), 'utf-8'), charsetEncode(local.ctraw, 'utf-8') );
 
 				local.ivAndRaw = instance.ESAPI.encoder().decodeFromBase64( local.ct.getEncodedIVCipherText() );
-				assertTrue( len(local.ivAndRaw) > len(local.ctraw) );
-				assertTrue( local.ct.getBlockSize() == ( len(local.ivAndRaw) - len(local.ctraw) ) );
+				assertTrue( arrayLen(local.ivAndRaw) > arrayLen(local.ctraw) );
+				assertTrue( local.ct.getBlockSize() == ( arrayLen(local.ivAndRaw) - arrayLen(local.ctraw) ) );
 			} catch( Exception ex) {
 			    // Note: FindBugs reports a false positive here...
 			    //    REC_CATCH_EXCEPTION: Exception is caught when Exception is not thrown
@@ -156,23 +156,23 @@
 				instance.encryptor.init(Cipher.ENCRYPT_MODE, local.key, instance.ivSpec);
 				local.ctraw = instance.encryptor.doFinal(createObject("java", "java.lang.String").init("Hello").getBytes("UTF8"));
 				local.ct = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(ESAPI=instance.ESAPI, cipherSpec=local.cipherSpec, cipherText=local.ctraw);
-				assertTrue( !isNull(local.ct.getIV()) && len(local.ct.getIV()) > 0 );
-				local.authKey = CryptoHelper.computeDerivedKey(local.key, len(local.key.getEncoded()) * 8, "authenticity");
+				assertTrue( !isNull(local.ct.getIV()) && arrayLen(local.ct.getIV()) > 0 );
+				local.authKey = CryptoHelper.computeDerivedKey(local.key, arrayLen(local.key.getEncoded()) * 8, "authenticity");
 				local.ct.computeAndStoreMAC( local.authKey );
 				try {
 					local.ct.setIVandCiphertext(instance.ivSpec.getIV(), local.ctraw);	// Expected to log & throw.
 				} catch( cfesapi.org.owasp.esapi.errors.EncryptionException ex ) {
-					assertTrue( len(ex.getMessage()) );
+					assertTrue( len(ex.message) );
 				}
 				try {
 					local.ct.setCiphertext(local.ctraw);	// Expected to log and throw message about
 												// not being able to store raw ciphertext.
 				} catch( cfesapi.org.owasp.esapi.errors.EncryptionException ex ) {
-					assertTrue( len(ex.getMessage()) );
+					assertTrue( len(ex.message) );
 				}
 				instance.decryptor.init(Cipher.DECRYPT_MODE, local.key, createObject("java", "javax.crypto.spec.IvParameterSpec").init( local.ct.getIV() ) );
 				local.ptraw = instance.decryptor.doFinal( local.ct.getRawCipherText() );
-				assertTrue( !isNull(local.ptraw) && len(local.ptraw) > 0 );
+				assertTrue( !isNull(local.ptraw) && arrayLen(local.ptraw) > 0 );
 				local.ct.validateMAC( local.authKey );
 			} catch( Exception ex) {
 				// As far as test coverage goes, we really don't want this to be covered.
@@ -205,7 +205,7 @@
 		        instance.encryptor.init(Cipher.ENCRYPT_MODE, local.key, instance.ivSpec);
 		        local.raw = instance.encryptor.doFinal(createObject("java", "java.lang.String").init("This is my secret message!!!").getBytes("UTF8"));
 		        local.ciphertext = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(ESAPI=instance.ESAPI, cipherSpec=local.cipherSpec, cipherText=local.raw);
-		        local.authKey = CryptoHelper.computeDerivedKey(local.key, len(local.key.getEncoded()) * 8, "authenticity");
+		        local.authKey = CryptoHelper.computeDerivedKey(local.key, arrayLen(local.key.getEncoded()) * 8, "authenticity");
 		        local.ciphertext.computeAndStoreMAC( local.authKey );
 	//          System.err.println("Original ciphertext being serialized: " & ciphertext);
 		        local.serializedBytes = local.ciphertext.asPortableSerializedByteArray();
@@ -286,25 +286,25 @@
 	            assertEquals(local.ciphertext.getBase64EncodedRawCipherText(), local.restoredCipherText.getBase64EncodedRawCipherText(), "3: Serialized restored CipherText differs from saved CipherText");
 
 	        } catch(java.io.IOException ex) {
-	            ex.printStackTrace(System.err);
+	            // RAILO error: ex.printStackTrace(System.err);
 	            fail("testJavaSerialization(): Unexpected IOException: " & ex);
 	        } catch(java.lang.ClassNotFoundException ex) {
-	            ex.printStackTrace(System.err);
+	            // RAILO error: ex.printStackTrace(System.err);
 	            fail("testJavaSerialization(): Unexpected ClassNotFoundException: " & ex);
 	        } catch (org.owasp.esapi.errors.EncryptionException ex) {
-				ex.printStackTrace(System.err);
+				// RAILO error: ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected EncryptionException: " & ex);
 			} catch (javax.crypto.IllegalBlockSizeException ex) {
-				ex.printStackTrace(System.err);
+				// RAILO error: ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected IllegalBlockSizeException: " & ex);
 			} catch (javax.crypto.BadPaddingException ex) {
-				ex.printStackTrace(System.err);
+				// RAILO error: ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected BadPaddingException: " & ex);
 			} catch (java.security.InvalidKeyException ex) {
-				ex.printStackTrace(System.err);
+				// RAILO error: ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected InvalidKeyException: " & ex);
 			} catch (java.security.InvalidAlgorithmParameterException ex) {
-				ex.printStackTrace(System.err);
+				// RAILO error: ex.printStackTrace(System.err);
 				fail("testJavaSerialization(): Unexpected InvalidAlgorithmParameterException: " & ex);
 			}  finally {
 			    // FindBugs complains that we are ignoring this return value. We really don't care.

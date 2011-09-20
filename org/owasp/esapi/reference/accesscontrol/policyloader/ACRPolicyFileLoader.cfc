@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
 		Logger = createObject("java", "org.owasp.esapi.Logger");
@@ -64,7 +64,7 @@
 					" Rule number: " & local.currentRule &
 					" Probably: Rule.name: " & local.ruleName &
 					" Probably: Rule.class: " & local.ruleClass &
-					" " & e.getMessage(), "", e);
+					" " & e.message, "", e);
            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 			return local.policyDTO;

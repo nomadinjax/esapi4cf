@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.User" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.User" output="false">
 
 	<cfscript>
 		Logger = createObject("java", "org.owasp.esapi.Logger");
@@ -410,7 +410,7 @@
 			instance.ESAPI.httpUtilities().killCookie( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME );
 
 			local.session = instance.ESAPI.currentRequest().getSession(false);
-			if (isObject(local.session)) {
+			if (structKeyExists(local, "session") && isObject(local.session)) {
 	            removeSession(local.session);
 				local.session.invalidate();
 			}

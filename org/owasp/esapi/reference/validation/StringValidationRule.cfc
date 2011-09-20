@@ -230,7 +230,7 @@
 				checkBlacklist(arguments.context, local.data, arguments.input);
 			}
 			catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-				throw(type=e.getType(), message=e.getMessage());
+				throw(type=e.type, message=e.message);
 			}
 
 			// validation passed

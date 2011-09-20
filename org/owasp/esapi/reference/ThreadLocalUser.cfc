@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.ThreadLocal" output="false" hint="The currentUser ThreadLocal variable is used to make the currentUser available to any call in any part of an application.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.ThreadLocal" output="false" hint="The currentUser ThreadLocal variable is used to make the currentUser available to any call in any part of an application.">
 
 	<cfscript>
 		instance.ESAPI = '';
@@ -14,14 +14,14 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="User" name="initialValue" output="false">
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="initialValue" output="false">
 		<cfscript>
             return createObject("component", "AnonymousUser").init(instance.ESAPI);
         </cfscript>
 	</cffunction>
 
 
-	<cffunction access="public" returntype="any" name="getUser" output="false" hint="cfesapi.org.owasp.esapi.User">
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="getUser" output="false">
 		<cfscript>
 			return super.get();
         </cfscript>

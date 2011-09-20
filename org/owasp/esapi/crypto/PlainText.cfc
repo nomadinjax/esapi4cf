@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -18,7 +18,8 @@
 				// Must allow 0 length arrays though, to represent empty strings.
 				assert(!isNull(arguments.str), "Byte array representing plaintext cannot be null.");
 				// Make copy so mutable byte array str can't change PlainText.
-				instance.rawBytes = duplicate(arguments.str);
+				instance.rawBytes = newByte( arrayLen(arguments.str) );
+				System.arraycopy(arguments.str, 0, instance.rawBytes, 0, arrayLen(arguments.str));
 			}
 			else if (isSimpleValue(arguments.str)) {
 				try {

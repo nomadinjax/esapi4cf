@@ -1,7 +1,7 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
-		instance.exception = "";
+		instance.exception = {};
 		instance.stackTrace = [];
 		instance.type = "";
 	</cfscript>
@@ -12,14 +12,23 @@
 		<cfscript>
 			if (structKeyExists(arguments, "message")) {
 				if (structKeyExists(arguments, "cause")) {
-					instance.exception = createObject('java', 'java.lang.Exception').init(arguments.message, arguments.cause);
+					// ADOBE CF exceptions extend java.lang.Exception
+					if (isInstanceOf(arguments.cause, "java.lang.Throwable")) {
+						local.cause = arguments.cause;
+					}
+					// RAILO CF exceptions do not extend java.lang.Exception
+					// ? is there a better way ? I hope so...
+					else if (isStruct(arguments.cause)) {
+						local.cause = createObject("java", "java.lang.Throwable").init(arguments.cause.message);
+					}
+					instance.exception = createObject("java", "java.lang.Exception").init(arguments.message, local.cause);
 				}
 				else {
-					instance.exception = createObject('java', 'java.lang.Exception').init(arguments.message);
+					instance.exception = createObject("java", "java.lang.Exception").init(arguments.message);
 				}
 			}
 			else {
-				instance.exception = createObject('java', 'java.lang.Exception').init();
+				instance.exception = createObject("java", "java.lang.Exception").init();
 			}
 
 			setType();
@@ -89,11 +98,11 @@
 
 			local.stackTrace = duplicate(arguments.stackTrace);
 
-			// drop indexes that contain 'cfesapi\org\owasp\esapi\errors'
+			// drop indexes that contain "cfesapi\org\owasp\esapi\errors"
 			while (arrayLen(local.stackTrace)) {
 				local.item = local.stackTrace[1];
-				// RAILO ERROR: if (not findNoCase('cfesapi\org\owasp\esapi\errors', local.item.template)) {
-				if (not findNoCase('cfesapi\org\owasp\esapi\errors', local.item.getFileName())) {
+				// RAILO ERROR: if (not findNoCase("cfesapi\org\owasp\esapi\errors", local.item.template)) {
+				if (not findNoCase("cfesapi\org\owasp\esapi\errors", local.item.getFileName())) {
 					break;
 				}
 				arrayDeleteAt(local.stackTrace, 1);
@@ -107,6 +116,7 @@
 	<cffunction access="private" returntype="void" name="setType" output="false">
 		<cfscript>
 			instance.type = getMetaData().name;
+			// full path is missing when cfesapi is virtual directory
 			if (listLen(instance.type, ".") EQ 1) {
 				instance.type = "cfesapi.org.owasp.esapi.errors." & instance.type;
 			}

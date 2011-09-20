@@ -1,15 +1,13 @@
 <!---
 /*
- * OWASP Enterprise Security API (ESAPI) for ColdFusion/CFML "unofficial"
- *
+ * OWASP ESAPI for ColdFusion/CFML Project
  * Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
- *
  * License: BSD license
  *
  * @author Damon Miller
  */
 --->
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="ESAPI locator class is provided to make it easy to gain access to the current ESAPI classes in use. Use the set methods to override the reference implementations with instances of any custom ESAPI implementations.">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false" hint="ESAPI locator class is provided to make it easy to gain access to the current ESAPI classes in use. Use the set methods to override the reference implementations with instances of any custom ESAPI implementations.">
 
 	<cfscript>
 		instance.overrideConfig = "";

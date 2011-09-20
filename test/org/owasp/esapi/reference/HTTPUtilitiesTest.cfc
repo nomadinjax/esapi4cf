@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<!--- TODO: need tests for:
 		clearCurrent()
@@ -38,10 +38,10 @@
 
 	<cffunction access="public" returntype="void" name="testAddCSRFToken" output="false" hint="Test of addCSRFToken method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
-			local.instance = instance.ESAPI.authenticator();
+			local.authenticator = instance.ESAPI.authenticator();
 			local.username = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			local.user = local.instance.createUser(local.username, "addCSRFToken", "addCSRFToken");
-			local.instance.setCurrentUser( user=local.user );
+			local.user = local.authenticator.createUser(local.username, "addCSRFToken", "addCSRFToken");
+			local.authenticator.setCurrentUser( user=local.user );
 
 			System.out.println("addCSRFToken");
 			local.csrf1 = instance.ESAPI.httpUtilities().addCSRFToken("/test1");
@@ -249,22 +249,22 @@
 	<cffunction access="public" returntype="void" name="testSetCookie" output="false" hint="Test of setCookie method, of class org.owasp.esapi.HTTPUtilities.">
 		<cfscript>
 			System.out.println("setCookie");
-			local.instance = instance.ESAPI.httpUtilities();
+			local.httpUtilities = instance.ESAPI.httpUtilities();
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			assertTrue(local.response.getHeaderNames().isEmpty());
 
-			local.instance.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "test1", "test1" ) );
+			local.httpUtilities.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "test1", "test1" ) );
 			assertTrue(local.response.getHeaderNames().size() == 1);
 
-			local.instance.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "test2", "test2" ) );
+			local.httpUtilities.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "test2", "test2" ) );
 			assertTrue(local.response.getHeaderNames().size() == 2);
 
 			// test illegal name
-			local.instance.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "tes<t3", "test3" ) );
+			local.httpUtilities.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "tes<t3", "test3" ) );
 			assertTrue(local.response.getHeaderNames().size() == 2);
 
 			// test illegal value
-			local.instance.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "test3", "tes<t3" ) );
+			local.httpUtilities.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "test3", "tes<t3" ) );
 			assertTrue(local.response.getHeaderNames().size() == 2);
 		</cfscript>
 	</cffunction>
@@ -374,17 +374,17 @@
 	<cffunction access="public" returntype="void" name="testSetRememberToken" output="false">
 		<cfscript>
 			System.out.println("setRememberToken");
-			local.instance = instance.ESAPI.authenticator();
+			local.authenticator = instance.ESAPI.authenticator();
 			local.accountName = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			local.password = local.instance.generateStrongPassword();
-			local.user = local.instance.createUser(local.accountName, local.password, local.password);
+			local.password = local.authenticator.generateStrongPassword();
+			local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
 			local.user.enable();
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
 			local.request.addParameter("username", local.accountName);
 			local.request.addParameter("password", local.password);
 			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
-			local.instance.login( local.request, local.response);
+			local.authenticator.login( local.request, local.response);
 
 			local.maxAge = ( 60 * 60 * 24 * 14 );
 			instance.ESAPI.httpUtilities().setRememberToken( local.request, local.response, local.password, local.maxAge, "domain", "/" );

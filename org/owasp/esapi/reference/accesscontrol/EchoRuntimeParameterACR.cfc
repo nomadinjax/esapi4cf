@@ -19,7 +19,7 @@
 			try {
 				return arguments.runtimeParameter.booleanValue();
 			}
-			catch (Object e) {
+			catch (Expression e) {
 				return false;
 			}
 		</cfscript>

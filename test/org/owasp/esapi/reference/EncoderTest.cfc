@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
 
 	<cfscript>
 		static.PREFERRED_ENCODING = "UTF-8";
@@ -11,160 +11,160 @@
 	        local.list = [];
 	        local.list.add( "HTMLEntityCodec" );
 		    local.list.add( "PercentCodec" );
-			local.local.instance = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( instance.ESAPI, local.list );
+			local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( instance.ESAPI, local.list );
 
 			// Test null paths
-			assertEquals( "", local.instance.canonicalize(""));
-			assertEquals( "", local.instance.canonicalize("", true));
-			assertEquals( "", local.instance.canonicalize("", false));
+			assertEquals( "", local.encoder.canonicalize(""));
+			assertEquals( "", local.encoder.canonicalize("", true));
+			assertEquals( "", local.encoder.canonicalize("", false));
 
 			// test exception paths
-			assertEquals( "%", local.instance.canonicalize("%25", true));
-			assertEquals( "%", local.instance.canonicalize("%25", false));
+			assertEquals( "%", local.encoder.canonicalize("%25", true));
+			assertEquals( "%", local.encoder.canonicalize("%25", false));
 
-	        assertEquals( "%", local.instance.canonicalize("%25"));
-	        assertEquals( "%F", local.instance.canonicalize("%25F"));
-	        assertEquals( "<", local.instance.canonicalize("%3c"));
-	        assertEquals( "<", local.instance.canonicalize("%3C"));
-	        assertEquals( "%X1", local.instance.canonicalize("%X1"));
+	        assertEquals( "%", local.encoder.canonicalize("%25"));
+	        assertEquals( "%F", local.encoder.canonicalize("%25F"));
+	        assertEquals( "<", local.encoder.canonicalize("%3c"));
+	        assertEquals( "<", local.encoder.canonicalize("%3C"));
+	        assertEquals( "%X1", local.encoder.canonicalize("%X1"));
 
-	        assertEquals( "<", local.instance.canonicalize("&lt"));
-	        assertEquals( "<", local.instance.canonicalize("&LT"));
-	        assertEquals( "<", local.instance.canonicalize("&lt;"));
-	        assertEquals( "<", local.instance.canonicalize("&LT;"));
+	        assertEquals( "<", local.encoder.canonicalize("&lt"));
+	        assertEquals( "<", local.encoder.canonicalize("&LT"));
+	        assertEquals( "<", local.encoder.canonicalize("&lt;"));
+	        assertEquals( "<", local.encoder.canonicalize("&LT;"));
 
-	        assertEquals( "%", local.instance.canonicalize("&##37;"));
-	        assertEquals( "%", local.instance.canonicalize("&##37"));
-	        assertEquals( "%b", local.instance.canonicalize("&##37b"));
+	        assertEquals( "%", local.encoder.canonicalize("&##37;"));
+	        assertEquals( "%", local.encoder.canonicalize("&##37"));
+	        assertEquals( "%b", local.encoder.canonicalize("&##37b"));
 
-	        assertEquals( "<", local.instance.canonicalize("&##x3c"));
-	        assertEquals( "<", local.instance.canonicalize("&##x3c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x3C"));
-	        assertEquals( "<", local.instance.canonicalize("&##X3c"));
-	        assertEquals( "<", local.instance.canonicalize("&##X3C"));
-	        assertEquals( "<", local.instance.canonicalize("&##X3C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x3c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x3c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x3C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X3c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X3C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X3C;"));
 
 	        // percent encoding
-	        assertEquals( "<", local.instance.canonicalize("%3c"));
-	        assertEquals( "<", local.instance.canonicalize("%3C"));
+	        assertEquals( "<", local.encoder.canonicalize("%3c"));
+	        assertEquals( "<", local.encoder.canonicalize("%3C"));
 
 	        // html entity encoding
-	        assertEquals( "<", local.instance.canonicalize("&##60"));
-	        assertEquals( "<", local.instance.canonicalize("&##060"));
-	        assertEquals( "<", local.instance.canonicalize("&##0060"));
-	        assertEquals( "<", local.instance.canonicalize("&##00060"));
-	        assertEquals( "<", local.instance.canonicalize("&##000060"));
-	        assertEquals( "<", local.instance.canonicalize("&##0000060"));
-	        assertEquals( "<", local.instance.canonicalize("&##60;"));
-	        assertEquals( "<", local.instance.canonicalize("&##060;"));
-	        assertEquals( "<", local.instance.canonicalize("&##0060;"));
-	        assertEquals( "<", local.instance.canonicalize("&##00060;"));
-	        assertEquals( "<", local.instance.canonicalize("&##000060;"));
-	        assertEquals( "<", local.instance.canonicalize("&##0000060;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x3c"));
-	        assertEquals( "<", local.instance.canonicalize("&##x03c"));
-	        assertEquals( "<", local.instance.canonicalize("&##x003c"));
-	        assertEquals( "<", local.instance.canonicalize("&##x0003c"));
-	        assertEquals( "<", local.instance.canonicalize("&##x00003c"));
-	        assertEquals( "<", local.instance.canonicalize("&##x000003c"));
-	        assertEquals( "<", local.instance.canonicalize("&##x3c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x03c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x003c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x0003c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x00003c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x000003c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X3c"));
-	        assertEquals( "<", local.instance.canonicalize("&##X03c"));
-	        assertEquals( "<", local.instance.canonicalize("&##X003c"));
-	        assertEquals( "<", local.instance.canonicalize("&##X0003c"));
-	        assertEquals( "<", local.instance.canonicalize("&##X00003c"));
-	        assertEquals( "<", local.instance.canonicalize("&##X000003c"));
-	        assertEquals( "<", local.instance.canonicalize("&##X3c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X03c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X003c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X0003c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X00003c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X000003c;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x3C"));
-	        assertEquals( "<", local.instance.canonicalize("&##x03C"));
-	        assertEquals( "<", local.instance.canonicalize("&##x003C"));
-	        assertEquals( "<", local.instance.canonicalize("&##x0003C"));
-	        assertEquals( "<", local.instance.canonicalize("&##x00003C"));
-	        assertEquals( "<", local.instance.canonicalize("&##x000003C"));
-	        assertEquals( "<", local.instance.canonicalize("&##x3C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x03C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x003C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x0003C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x00003C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##x000003C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X3C"));
-	        assertEquals( "<", local.instance.canonicalize("&##X03C"));
-	        assertEquals( "<", local.instance.canonicalize("&##X003C"));
-	        assertEquals( "<", local.instance.canonicalize("&##X0003C"));
-	        assertEquals( "<", local.instance.canonicalize("&##X00003C"));
-	        assertEquals( "<", local.instance.canonicalize("&##X000003C"));
-	        assertEquals( "<", local.instance.canonicalize("&##X3C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X03C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X003C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X0003C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X00003C;"));
-	        assertEquals( "<", local.instance.canonicalize("&##X000003C;"));
-	        assertEquals( "<", local.instance.canonicalize("&lt"));
-	        assertEquals( "<", local.instance.canonicalize("&lT"));
-	        assertEquals( "<", local.instance.canonicalize("&Lt"));
-	        assertEquals( "<", local.instance.canonicalize("&LT"));
-	        assertEquals( "<", local.instance.canonicalize("&lt;"));
-	        assertEquals( "<", local.instance.canonicalize("&lT;"));
-	        assertEquals( "<", local.instance.canonicalize("&Lt;"));
-	        assertEquals( "<", local.instance.canonicalize("&LT;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##60"));
+	        assertEquals( "<", local.encoder.canonicalize("&##060"));
+	        assertEquals( "<", local.encoder.canonicalize("&##0060"));
+	        assertEquals( "<", local.encoder.canonicalize("&##00060"));
+	        assertEquals( "<", local.encoder.canonicalize("&##000060"));
+	        assertEquals( "<", local.encoder.canonicalize("&##0000060"));
+	        assertEquals( "<", local.encoder.canonicalize("&##60;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##060;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##0060;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##00060;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##000060;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##0000060;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x3c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x03c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x003c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x0003c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x00003c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x000003c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x3c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x03c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x003c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x0003c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x00003c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x000003c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X3c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X03c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X003c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X0003c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X00003c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X000003c"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X3c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X03c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X003c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X0003c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X00003c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X000003c;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x3C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x03C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x003C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x0003C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x00003C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x000003C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x3C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x03C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x003C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x0003C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x00003C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##x000003C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X3C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X03C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X003C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X0003C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X00003C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X000003C"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X3C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X03C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X003C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X0003C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X00003C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&##X000003C;"));
+	        assertEquals( "<", local.encoder.canonicalize("&lt"));
+	        assertEquals( "<", local.encoder.canonicalize("&lT"));
+	        assertEquals( "<", local.encoder.canonicalize("&Lt"));
+	        assertEquals( "<", local.encoder.canonicalize("&LT"));
+	        assertEquals( "<", local.encoder.canonicalize("&lt;"));
+	        assertEquals( "<", local.encoder.canonicalize("&lT;"));
+	        assertEquals( "<", local.encoder.canonicalize("&Lt;"));
+	        assertEquals( "<", local.encoder.canonicalize("&LT;"));
 
-	        assertEquals( '<script>alert("hello");</script>', local.instance.canonicalize("%3Cscript%3Ealert%28%22hello%22%29%3B%3C%2Fscript%3E") );
-	        assertEquals( '<script>alert("hello");</script>', local.instance.canonicalize("%3Cscript&##x3E;alert%28%22hello&##34%29%3B%3C%2Fscript%3E", false) );
+	        assertEquals( '<script>alert("hello");</script>', local.encoder.canonicalize("%3Cscript%3Ealert%28%22hello%22%29%3B%3C%2Fscript%3E") );
+	        assertEquals( '<script>alert("hello");</script>', local.encoder.canonicalize("%3Cscript&##x3E;alert%28%22hello&##34%29%3B%3C%2Fscript%3E", false) );
 
 /*
 	        // javascript escape syntax
 	        local.js = [];
 	        local.js.add( "JavaScriptCodec" );
-	        local.instance = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( ESAPI, local.js );
+	        local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( ESAPI, local.js );
 	        System.out.println( "JavaScript Decoding" );
 
-	        assertEquals( "\0", local.instance.canonicalize("\0"));
-	        assertEquals( "\b", local.instance.canonicalize("\b"));
-	        assertEquals( "\t", local.instance.canonicalize("\\t"));
-	        assertEquals( "\n", local.instance.canonicalize("\\n"));
-	        assertEquals( ""+(char)0x0b, local.instance.canonicalize("\\v"));
-	        assertEquals( "\f", local.instance.canonicalize("\\f"));
-	        assertEquals( "\r", local.instance.canonicalize("\\r"));
-	        assertEquals( "\'", local.instance.canonicalize("\\'"));
-	        assertEquals( "\"", local.instance.canonicalize("\\\""));
-	        assertEquals( "\\", local.instance.canonicalize("\\\\"));
-	        assertEquals( "<", local.instance.canonicalize("\\<"));
+	        assertEquals( "\0", local.encoder.canonicalize("\0"));
+	        assertEquals( "\b", local.encoder.canonicalize("\b"));
+	        assertEquals( "\t", local.encoder.canonicalize("\\t"));
+	        assertEquals( "\n", local.encoder.canonicalize("\\n"));
+	        assertEquals( ""+(char)0x0b, local.encoder.canonicalize("\\v"));
+	        assertEquals( "\f", local.encoder.canonicalize("\\f"));
+	        assertEquals( "\r", local.encoder.canonicalize("\\r"));
+	        assertEquals( "\'", local.encoder.canonicalize("\\'"));
+	        assertEquals( "\"", local.encoder.canonicalize("\\\""));
+	        assertEquals( "\\", local.encoder.canonicalize("\\\\"));
+	        assertEquals( "<", local.encoder.canonicalize("\\<"));
 
-	        assertEquals( "<", local.instance.canonicalize("\\u003c"));
-	        assertEquals( "<", local.instance.canonicalize("\\U003c"));
-	        assertEquals( "<", local.instance.canonicalize("\\u003C"));
-	        assertEquals( "<", local.instance.canonicalize("\\U003C"));
-	        assertEquals( "<", local.instance.canonicalize("\\x3c"));
-	        assertEquals( "<", local.instance.canonicalize("\\X3c"));
-	        assertEquals( "<", local.instance.canonicalize("\\x3C"));
-	        assertEquals( "<", local.instance.canonicalize("\\X3C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\u003c"));
+	        assertEquals( "<", local.encoder.canonicalize("\\U003c"));
+	        assertEquals( "<", local.encoder.canonicalize("\\u003C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\U003C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\x3c"));
+	        assertEquals( "<", local.encoder.canonicalize("\\X3c"));
+	        assertEquals( "<", local.encoder.canonicalize("\\x3C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\X3C"));
 
 	        // css escape syntax
 	        // be careful because some codecs see \0 as null byte
 	        local.css = [];
 	        local.css.add( "CSSCodec" );
-	        local.instance = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( ESAPI, local.css );
+	        local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( ESAPI, local.css );
 	        System.out.println( "CSS Decoding" );
-	        assertEquals( "<", local.instance.canonicalize("\\3c"));  // add strings to prevent null byte
-	        assertEquals( "<", local.instance.canonicalize("\\03c"));
-	        assertEquals( "<", local.instance.canonicalize("\\003c"));
-	        assertEquals( "<", local.instance.canonicalize("\\0003c"));
-	        assertEquals( "<", local.instance.canonicalize("\\00003c"));
-	        assertEquals( "<", local.instance.canonicalize("\\3C"));
-	        assertEquals( "<", local.instance.canonicalize("\\03C"));
-	        assertEquals( "<", local.instance.canonicalize("\\003C"));
-	        assertEquals( "<", local.instance.canonicalize("\\0003C"));
-	        assertEquals( "<", local.instance.canonicalize("\\00003C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\3c"));  // add strings to prevent null byte
+	        assertEquals( "<", local.encoder.canonicalize("\\03c"));
+	        assertEquals( "<", local.encoder.canonicalize("\\003c"));
+	        assertEquals( "<", local.encoder.canonicalize("\\0003c"));
+	        assertEquals( "<", local.encoder.canonicalize("\\00003c"));
+	        assertEquals( "<", local.encoder.canonicalize("\\3C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\03C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\003C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\0003C"));
+	        assertEquals( "<", local.encoder.canonicalize("\\00003C"));
 	        */
 		</cfscript>
 	</cffunction>
@@ -173,58 +173,58 @@
 	<cffunction access="public" returntype="void" name="testDoubleEncodingCanonicalization" output="false" hint="Test of canonicalize method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 			System.out.println("doubleEncodingCanonicalization");
-			local.instance = instance.ESAPI.encoder();
+			local.encoder = instance.ESAPI.encoder();
 			// note these examples use the strict=false flag on canonicalize to allow
 			// full decoding without throwing an IntrusionException. Generally, you
 			// should use strict mode as allowing double-encoding is an abomination.
 			// double encoding examples
-			assertEquals( "<", instance.canonicalize("&##x26;lt&##59", false ));
+			assertEquals( "<", local.encoder.canonicalize("&##x26;lt&##59", false ));
 			//double entity
-			assertEquals( "\", instance.canonicalize("%255c", false));
+			assertEquals( "\", local.encoder.canonicalize("%255c", false));
 			//double percent
-			assertEquals( "%", instance.canonicalize("%2525", false));
+			assertEquals( "%", local.encoder.canonicalize("%2525", false));
 			//double percent
 			// double encoding with multiple schemes example
-			assertEquals( "<", instance.canonicalize("%26lt%3b", false));
+			assertEquals( "<", local.encoder.canonicalize("%26lt%3b", false));
 			//first entity, then percent
-			assertEquals( "&", instance.canonicalize("&##x25;26", false));
+			assertEquals( "&", local.encoder.canonicalize("&##x25;26", false));
 			//first percent, then entity
 			// nested encoding examples
-			assertEquals( "<", instance.canonicalize("%253c", false));
+			assertEquals( "<", local.encoder.canonicalize("%253c", false));
 			//nested encode % with percent
-			assertEquals( "<", instance.canonicalize("%%33%63", false));
+			assertEquals( "<", local.encoder.canonicalize("%%33%63", false));
 			//nested encode both nibbles with percent
-			assertEquals( "<", instance.canonicalize("%%33c", false));
+			assertEquals( "<", local.encoder.canonicalize("%%33c", false));
 			// nested encode first nibble with percent
-			assertEquals( "<", instance.canonicalize("%3%63", false));
+			assertEquals( "<", local.encoder.canonicalize("%3%63", false));
 			//nested encode second nibble with percent
-			assertEquals( "<", instance.canonicalize("&&##108;t;", false));
+			assertEquals( "<", local.encoder.canonicalize("&&##108;t;", false));
 			//nested encode l with entity
-			assertEquals( "<", instance.canonicalize("%2&##x35;3c", false));
+			assertEquals( "<", local.encoder.canonicalize("%2&##x35;3c", false));
 			//triple percent, percent, 5 with entity
 			// nested encoding with multiple schemes examples
-			assertEquals( "<", instance.canonicalize("&%6ct;", false));
+			assertEquals( "<", local.encoder.canonicalize("&%6ct;", false));
 			// nested encode l with percent
-			assertEquals( "<", instance.canonicalize("%&##x33;c", false));
+			assertEquals( "<", local.encoder.canonicalize("%&##x33;c", false));
 			//nested encode 3 with entity
 			// multiple encoding tests
-			assertEquals( "% & <script> <script>", instance.canonicalize( "%25 %2526 %26##X3c;script&##x3e; &##37;3Cscript%25252525253e", false ) );
-			assertEquals( "< < < < < < <", instance.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B", false ) );
+			assertEquals( "% & <script> <script>", local.encoder.canonicalize( "%25 %2526 %26##X3c;script&##x3e; &##37;3Cscript%25252525253e", false ) );
+			assertEquals( "< < < < < < <", local.encoder.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B", false ) );
 			// test strict mode with both mixed and multiple encoding
 			try {
-				assertEquals( "< < < < < < <", instance.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B" ) );
+				assertEquals( "< < < < < < <", local.encoder.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B" ) );
 			}
 			catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
 				// expected
 			}
 			try {
-				assertEquals( "<script", instance.canonicalize("%253Cscript" ) );
+				assertEquals( "<script", local.encoder.canonicalize("%253Cscript" ) );
 	        }
 	        catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
 	            // expected
 	        }
 	        try {
-	            assertEquals( "<script", instance.canonicalize("&##37;3Cscript" ) );
+	            assertEquals( "<script", local.encoder.canonicalize("&##37;3Cscript" ) );
 	        }
 	        catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
 	            // expected
@@ -236,18 +236,18 @@
 	<cffunction access="public" returntype="void" name="testEncodeForHTML" output="false" hint="Test of encodeForHTML method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForHTML");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForHTML(""));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForHTML(""));
 	        // test invalid characters are replaced with spaces
-	        assertEquals("a&##xfffd;b&##xfffd;c&##xfffd;d&##xfffd;e&##xfffd;f&##x9;g", local.instance.encodeForHTML("a" & chr(1) & "b" & chr(4) & "c" & chr(128) & "d" & chr(150) & "e" &chr(159) & "f" & chr(9) & "g"));
+	        assertEquals("a&##xfffd;b&##xfffd;c&##xfffd;d&##xfffd;e&##xfffd;f&##x9;g", local.encoder.encodeForHTML("a" & chr(1) & "b" & chr(4) & "c" & chr(128) & "d" & chr(150) & "e" &chr(159) & "f" & chr(9) & "g"));
 
-	        assertEquals("&lt;script&gt;", local.instance.encodeForHTML("<script>"));
-	        assertEquals("&amp;lt&##x3b;script&amp;gt&##x3b;", local.instance.encodeForHTML("&lt;script&gt;"));
-	        assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.instance.encodeForHTML("!@$%()=+{}[]"));
-	        assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.instance.encodeForHTML(local.instance.canonicalize("&##33;&##64;&##36;&##37;&##40;&##41;&##61;&##43;&##123;&##125;&##91;&##93;") ) );
-	        assertEquals(",.-_ ", local.instance.encodeForHTML(",.-_ "));
-	        assertEquals("dir&amp;", local.instance.encodeForHTML("dir&"));
-	        assertEquals("one&amp;two", local.instance.encodeForHTML("one&two"));
+	        assertEquals("&lt;script&gt;", local.encoder.encodeForHTML("<script>"));
+	        assertEquals("&amp;lt&##x3b;script&amp;gt&##x3b;", local.encoder.encodeForHTML("&lt;script&gt;"));
+	        assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.encoder.encodeForHTML("!@$%()=+{}[]"));
+	        assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.encoder.encodeForHTML(local.encoder.canonicalize("&##33;&##64;&##36;&##37;&##40;&##41;&##61;&##43;&##123;&##125;&##91;&##93;") ) );
+	        assertEquals(",.-_ ", local.encoder.encodeForHTML(",.-_ "));
+	        assertEquals("dir&amp;", local.encoder.encodeForHTML("dir&"));
+	        assertEquals("one&amp;two", local.encoder.encodeForHTML("one&two"));
 	        assertEquals("" & chr(12345) & chr(65533) & chr(1244), "" & chr(12345) & chr(65533) & chr(1244) );
     	</cfscript>
 	</cffunction>
@@ -256,11 +256,11 @@
 	<cffunction access="public" returntype="void" name="testEncodeForHTMLAttribute" output="false" hint="Test of encodeForHTMLAttribute method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForHTMLAttribute");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForHTMLAttribute(""));
-	        assertEquals("&lt;script&gt;", local.instance.encodeForHTMLAttribute("<script>"));
-	        assertEquals(",.-_", local.instance.encodeForHTMLAttribute(",.-_"));
-	        assertEquals("&##x20;&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.instance.encodeForHTMLAttribute(" !@$%()=+{}[]"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForHTMLAttribute(""));
+	        assertEquals("&lt;script&gt;", local.encoder.encodeForHTMLAttribute("<script>"));
+	        assertEquals(",.-_", local.encoder.encodeForHTMLAttribute(",.-_"));
+	        assertEquals("&##x20;&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.encoder.encodeForHTMLAttribute(" !@$%()=+{}[]"));
     	</cfscript>
 	</cffunction>
 
@@ -268,10 +268,10 @@
 	<cffunction access="public" returntype="void" name="testEncodeForCSS" output="false">
 		<cfscript>
 	        System.out.println("encodeForCSS");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForCSS(""));
-	        assertEquals("\3c script\3e ", local.instance.encodeForCSS("<script>"));
-	        assertEquals("\21 \40 \24 \25 \28 \29 \3d \2b \7b \7d \5b \5d ", local.instance.encodeForCSS("!@$%()=+{}[]"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForCSS(""));
+	        assertEquals("\3c script\3e ", local.encoder.encodeForCSS("<script>"));
+	        assertEquals("\21 \40 \24 \25 \28 \29 \3d \2b \7b \7d \5b \5d ", local.encoder.encodeForCSS("!@$%()=+{}[]"));
     	</cfscript>
 	</cffunction>
 
@@ -279,21 +279,21 @@
 	<cffunction access="public" returntype="void" name="testEncodeForJavascript" output="false" hint="Test of encodeForJavaScript method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForJavascript");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForJavaScript(""));
-	        assertEquals("\x3Cscript\x3E", local.instance.encodeForJavaScript("<script>"));
-	        assertEquals(",.\x2D_\x20", local.instance.encodeForJavaScript(",.-_ "));
-	        assertEquals("\x21\x40\x24\x25\x28\x29\x3D\x2B\x7B\x7D\x5B\x5D", local.instance.encodeForJavaScript("!@$%()=+{}[]"));
-	        // assertEquals( "\0", local.instance.encodeForJavaScript("\0"));
-	        // assertEquals( "\b", local.instance.encodeForJavaScript("\b"));
-	        // assertEquals( "\t", local.instance.encodeForJavaScript("\t"));
-	        // assertEquals( "\n", local.instance.encodeForJavaScript("\n"));
-	        // assertEquals( "\v", local.instance.encodeForJavaScript("" + (char)0x0b));
-	        // assertEquals( "\f", local.instance.encodeForJavaScript("\f"));
-	        // assertEquals( "\r", local.instance.encodeForJavaScript("\r"));
-	        // assertEquals( "\'", local.instance.encodeForJavaScript("\'"));
-	        // assertEquals( '\"', local.instance.encodeForJavaScript('\"'));
-	        // assertEquals( "\\", local.instance.encodeForJavaScript("\\"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForJavaScript(""));
+	        assertEquals("\x3Cscript\x3E", local.encoder.encodeForJavaScript("<script>"));
+	        assertEquals(",.\x2D_\x20", local.encoder.encodeForJavaScript(",.-_ "));
+	        assertEquals("\x21\x40\x24\x25\x28\x29\x3D\x2B\x7B\x7D\x5B\x5D", local.encoder.encodeForJavaScript("!@$%()=+{}[]"));
+	        // assertEquals( "\0", local.encoder.encodeForJavaScript("\0"));
+	        // assertEquals( "\b", local.encoder.encodeForJavaScript("\b"));
+	        // assertEquals( "\t", local.encoder.encodeForJavaScript("\t"));
+	        // assertEquals( "\n", local.encoder.encodeForJavaScript("\n"));
+	        // assertEquals( "\v", local.encoder.encodeForJavaScript("" + (char)0x0b));
+	        // assertEquals( "\f", local.encoder.encodeForJavaScript("\f"));
+	        // assertEquals( "\r", local.encoder.encodeForJavaScript("\r"));
+	        // assertEquals( "\'", local.encoder.encodeForJavaScript("\'"));
+	        // assertEquals( '\"', local.encoder.encodeForJavaScript('\"'));
+	        // assertEquals( "\\", local.encoder.encodeForJavaScript("\\"));
     	</cfscript>
 	</cffunction>
 
@@ -301,13 +301,13 @@
 	<cffunction access="public" returntype="void" name="testEncodeForVBScript" output="false">
 		<cfscript>
 	        System.out.println("encodeForVBScript");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForVBScript(""));
-	        assertEquals( 'chrw(60)&"script"&chrw(62)', local.instance.encodeForVBScript("<script>"));
-	        assertEquals( 'x"&chrw(32)&chrw(33)&chrw(64)&chrw(36)&chrw(37)&chrw(40)&chrw(41)&chrw(61)&chrw(43)&chrw(123)&chrw(125)&chrw(91)&chrw(93)', local.instance.encodeForVBScript("x !@$%()=+{}[]"));
-	        assertEquals( 'alert"&chrw(40)&chrw(39)&"ESAPI"&chrw(32)&"test"&chrw(33)&chrw(39)&chrw(41)', local.instance.encodeForVBScript("alert('ESAPI test!')" ));
-	        assertEquals( 'jeff.williams"&chrw(64)&"aspectsecurity.com', local.instance.encodeForVBScript("jeff.williams@aspectsecurity.com"));
-	        assertEquals( 'test"&chrw(32)&chrw(60)&chrw(62)&chrw(32)&"test', local.instance.encodeForVBScript("test <> test" ));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForVBScript(""));
+	        assertEquals( 'chrw(60)&"script"&chrw(62)', local.encoder.encodeForVBScript("<script>"));
+	        assertEquals( 'x"&chrw(32)&chrw(33)&chrw(64)&chrw(36)&chrw(37)&chrw(40)&chrw(41)&chrw(61)&chrw(43)&chrw(123)&chrw(125)&chrw(91)&chrw(93)', local.encoder.encodeForVBScript("x !@$%()=+{}[]"));
+	        assertEquals( 'alert"&chrw(40)&chrw(39)&"ESAPI"&chrw(32)&"test"&chrw(33)&chrw(39)&chrw(41)', local.encoder.encodeForVBScript("alert('ESAPI test!')" ));
+	        assertEquals( 'jeff.williams"&chrw(64)&"aspectsecurity.com', local.encoder.encodeForVBScript("jeff.williams@aspectsecurity.com"));
+	        assertEquals( 'test"&chrw(32)&chrw(60)&chrw(62)&chrw(32)&"test', local.encoder.encodeForVBScript("test <> test" ));
     	</cfscript>
 	</cffunction>
 
@@ -315,9 +315,9 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXPath" output="false" hint="Test of encodeForXPath method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForXPath");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForXPath(""));
-	        assertEquals("&##x27;or 1&##x3d;1", local.instance.encodeForXPath("'or 1=1"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForXPath(""));
+	        assertEquals("&##x27;or 1&##x3d;1", local.encoder.encodeForXPath("'or 1=1"));
     	</cfscript>
 	</cffunction>
 
@@ -325,21 +325,21 @@
 	<cffunction access="public" returntype="void" name="testEncodeForSQL" output="false" hint="Test of encodeForSQL method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForSQL");
-	        local.instance = instance.ESAPI.encoder();
+	        local.encoder = instance.ESAPI.encoder();
 			MySQLCodec = createObject("java", "org.owasp.esapi.codecs.MySQLCodec");
 			OracleCodec = createObject("java", "org.owasp.esapi.codecs.OracleCodec");
 
 	        local.mySQL1 = MySQLCodec.init( MySQLCodec.ANSI_MODE );
-	        assertEquals("", local.instance.encodeForSQL(local.mySQL1, ""), "ANSI_MODE");
-	        assertEquals("Jeff'' or ''1''=''1", local.instance.encodeForSQL(local.mySQL1, "Jeff' or '1'='1"), "ANSI_MODE");
+	        assertEquals("", local.encoder.encodeForSQL(local.mySQL1, ""), "ANSI_MODE");
+	        assertEquals("Jeff'' or ''1''=''1", local.encoder.encodeForSQL(local.mySQL1, "Jeff' or '1'='1"), "ANSI_MODE");
 
 	        local.mySQL2 = MySQLCodec.init( MySQLCodec.MYSQL_MODE );
-	        assertEquals("", local.instance.encodeForSQL(local.mySQL2, ""), "MYSQL_MODE");
-	        assertEquals("Jeff\' or \'1\'\=\'1", local.instance.encodeForSQL(local.mySQL2, "Jeff' or '1'='1"), "MYSQL_MODE");
+	        assertEquals("", local.encoder.encodeForSQL(local.mySQL2, ""), "MYSQL_MODE");
+	        assertEquals("Jeff\' or \'1\'\=\'1", local.encoder.encodeForSQL(local.mySQL2, "Jeff' or '1'='1"), "MYSQL_MODE");
 
 	        local.oracle = OracleCodec.init();
-	        assertEquals("", local.instance.encodeForSQL(local.oracle, ""), "Oracle");
-	        assertEquals("Jeff'' or ''1''=''1", local.instance.encodeForSQL(local.oracle, "Jeff' or '1'='1"), "Oracle");
+	        assertEquals("", local.encoder.encodeForSQL(local.oracle, ""), "Oracle");
+	        assertEquals("Jeff'' or ''1''=''1", local.encoder.encodeForSQL(local.oracle, "Jeff' or '1'='1"), "Oracle");
     	</cfscript>
 	</cffunction>
 
@@ -347,11 +347,11 @@
 	<cffunction access="public" returntype="void" name="testEncodeForLDAP" output="false" hint="Test of encodeForLDAP method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForLDAP");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForLDAP(""));
-	        assertEquals("Hi This is a test ##��", local.instance.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
-	        // nulls are not valid CF tests: assertEquals("Hi \00", local.instance.encodeForLDAP("Hi " & toUnicode("\u0000")), "Zeros");
-	        assertEquals("Hi \28This\29 = is \2a a \5c test ## � � �", local.instance.encodeForLDAP("Hi (This) = is * a \ test ## � � �"), "LDAP Christams Tree");
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForLDAP(""));
+	        assertEquals("Hi This is a test ##��", local.encoder.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
+	        // nulls are not valid CF tests: assertEquals("Hi \00", local.encoder.encodeForLDAP("Hi " & toUnicode("\u0000")), "Zeros");
+	        assertEquals("Hi \28This\29 = is \2a a \5c test ## � � �", local.encoder.encodeForLDAP("Hi (This) = is * a \ test ## � � �"), "LDAP Christams Tree");
     	</cfscript>
 	</cffunction>
 
@@ -359,39 +359,39 @@
 	<cffunction access="public" returntype="void" name="testEncodeForDN" output="false" hint="Test of encodeForLDAP method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForDN");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForDN(""));
-	        assertEquals("Hello�", local.instance.encodeForDN("Hello�"), "No special characters to escape");
-	        assertEquals("\## Hello�", local.instance.encodeForDN("## Hello�"), "leading ##");
-	        assertEquals("\ Hello�", local.instance.encodeForDN(" Hello�"), "leading space");
-	        assertEquals("Hello�\ ", local.instance.encodeForDN("Hello� "), "trailing space");
-	        assertEquals("Hello\<\>", local.instance.encodeForDN("Hello<>"), "less than greater than");
-	        assertEquals("\  \ ", local.instance.encodeForDN("   "), "only 3 spaces");
-	        assertEquals('\ Hello\\ \+ \, \"World\" \;\ ', local.instance.encodeForDN(' Hello\ + , "World" ; '), "Christmas Tree DN");
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForDN(""));
+	        assertEquals("Hello�", local.encoder.encodeForDN("Hello�"), "No special characters to escape");
+	        assertEquals("\## Hello�", local.encoder.encodeForDN("## Hello�"), "leading ##");
+	        assertEquals("\ Hello�", local.encoder.encodeForDN(" Hello�"), "leading space");
+	        assertEquals("Hello�\ ", local.encoder.encodeForDN("Hello� "), "trailing space");
+	        assertEquals("Hello\<\>", local.encoder.encodeForDN("Hello<>"), "less than greater than");
+	        assertEquals("\  \ ", local.encoder.encodeForDN("   "), "only 3 spaces");
+	        assertEquals('\ Hello\\ \+ \, \"World\" \;\ ', local.encoder.encodeForDN(' Hello\ + , "World" ; '), "Christmas Tree DN");
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLNull" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForXML(""));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForXML(""));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLSpace" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals(" ", local.instance.encodeForXML(" "));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals(" ", local.encoder.encodeForXML(" "));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLScript" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("&##x3c;script&##x3e;", local.instance.encodeForXML("<script>"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("&##x3c;script&##x3e;", local.encoder.encodeForXML("<script>"));
     	</cfscript>
 	</cffunction>
 
@@ -399,16 +399,16 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLImmune" output="false">
 		<cfscript>
 	        System.out.println("encodeForXML");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals(",.-_", local.instance.encodeForXML(",.-_"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals(",.-_", local.encoder.encodeForXML(",.-_"));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLSymbol" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.instance.encodeForXML("!@$%()=+{}[]"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.encoder.encodeForXML("!@$%()=+{}[]"));
     	</cfscript>
 	</cffunction>
 
@@ -416,56 +416,56 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLPound" output="false">
 		<cfscript>
 	        System.out.println("encodeForXML");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("&##xa3;", local.instance.encodeForXML(toUnicode("\u00A3")));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("&##xa3;", local.encoder.encodeForXML(toUnicode("\u00A3")));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeNull" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForXMLAttribute(""));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForXMLAttribute(""));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSpace" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals(" ", local.instance.encodeForXMLAttribute(" "));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals(" ", local.encoder.encodeForXMLAttribute(" "));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeScript" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("&##x3c;script&##x3e;", local.instance.encodeForXMLAttribute("<script>"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("&##x3c;script&##x3e;", local.encoder.encodeForXMLAttribute("<script>"));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeImmune" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals(",.-_", local.instance.encodeForXMLAttribute(",.-_"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals(",.-_", local.encoder.encodeForXMLAttribute(",.-_"));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSymbol" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.instance.encodeForXMLAttribute(" !@$%()=+{}[]"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.encoder.encodeForXMLAttribute(" !@$%()=+{}[]"));
     	</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributePound" output="false">
 		<cfscript>
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("&##xa3;", local.instance.encodeForXMLAttribute(toUnicode("\u00A3")));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("&##xa3;", local.encoder.encodeForXMLAttribute(toUnicode("\u00A3")));
     	</cfscript>
 	</cffunction>
 
@@ -473,9 +473,9 @@
 	<cffunction access="public" returntype="void" name="testEncodeForURL" output="false" hint="Test of encodeForURL method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("encodeForURL");
-	        local.instance = instance.ESAPI.encoder();
-	        assertEquals("", local.instance.encodeForURL(""));
-	        assertEquals("%3Cscript%3E", local.instance.encodeForURL("<script>"));
+	        local.encoder = instance.ESAPI.encoder();
+	        assertEquals("", local.encoder.encodeForURL(""));
+	        assertEquals("%3Cscript%3E", local.encoder.encodeForURL("<script>"));
     	</cfscript>
 	</cffunction>
 
@@ -483,16 +483,16 @@
 	<cffunction access="public" returntype="void" name="testDecodeFromURL" output="false" hint="Test of decodeFromURL method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
 	        System.out.println("decodeFromURL");
-	        local.instance = instance.ESAPI.encoder();
+	        local.encoder = instance.ESAPI.encoder();
 	        try {
-	        	assertEquals("", local.instance.decodeFromURL(""));
-	            assertEquals("<script>", local.instance.decodeFromURL("%3Cscript%3E"));
-	            assertEquals("     ", local.instance.decodeFromURL("+++++") );
+	        	assertEquals("", local.encoder.decodeFromURL(""));
+	            assertEquals("<script>", local.encoder.decodeFromURL("%3Cscript%3E"));
+	            assertEquals("     ", local.encoder.decodeFromURL("+++++") );
 	        } catch ( cfesapi.org.owasp.esapi.errors.EncodingException e ) {
 	            fail();
 	        }
 	        try {
-	        	local.instance.decodeFromURL( "%3xridiculous" );
+	        	local.encoder.decodeFromURL( "%3xridiculous" );
 	        	fail();
 	        } catch( cfesapi.org.owasp.esapi.errors.EncodingException e ) {
 	        	// expected
@@ -507,17 +507,17 @@
 			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 
 	        System.out.println("encodeForBase64");
-	        local.instance = instance.ESAPI.encoder();
+	        local.encoder = instance.ESAPI.encoder();
 
 	        try {
 	        	// null tests are not valid for CF
-	        	//assertEquals(null, local.instance.encodeForBase64(null, false));
-	            //assertEquals(null, local.instance.encodeForBase64(null, true));
-	            //assertEquals(null, local.instance.decodeFromBase64(null));
+	        	//assertEquals(null, local.encoder.encodeForBase64(null, false));
+	            //assertEquals(null, local.encoder.encodeForBase64(null, true));
+	            //assertEquals(null, local.encoder.decodeFromBase64(null));
 	            for ( local.i=0; local.i < 100; local.i++ ) {
 	                local.r = instance.ESAPI.randomizer().getRandomString( 20, DefaultEncoder.CHAR_SPECIALS ).getBytes(static.PREFERRED_ENCODING);
-	                local.encoded = local.instance.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
-	                local.decoded = local.instance.decodeFromBase64( local.encoded );
+	                local.encoded = local.encoder.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
+	                local.decoded = local.encoder.decodeFromBase64( local.encoded );
 	                assertEquals( charsetEncode(local.r, 'utf-8'), charsetEncode(local.decoded, 'utf-8') );
 	            }
 	        } catch ( java.io.IOException e ) {
@@ -533,12 +533,12 @@
 			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 
 			System.out.println("decodeFromBase64");
-			local.instance = instance.ESAPI.encoder();
+			local.encoder = instance.ESAPI.encoder();
 			for ( local.i=0; local.i < 100; local.i++ ) {
 			    try {
 			        local.r = instance.ESAPI.randomizer().getRandomString( 20, DefaultEncoder.CHAR_SPECIALS ).getBytes(static.PREFERRED_ENCODING);
-			        local.encoded = local.instance.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
-			        local.decoded = local.instance.decodeFromBase64( local.encoded );
+			        local.encoded = local.encoder.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
+			        local.decoded = local.encoder.decodeFromBase64( local.encoded );
 			        assertTrue( Arrays.equals( local.r, local.decoded ) );
 			    } catch ( java.io.IOException e ) {
 			        fail();
@@ -547,8 +547,8 @@
 			for ( local.i=0; local.i < 100; local.i++ ) {
 			    try {
 			        local.r = instance.ESAPI.randomizer().getRandomString( 20, DefaultEncoder.CHAR_SPECIALS ).getBytes(static.PREFERRED_ENCODING);
-			        local.encoded = instance.ESAPI.randomizer().getRandomString(1, DefaultEncoder.CHAR_ALPHANUMERICS) & local.instance.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
-			     	local.decoded = local.instance.decodeFromBase64( local.encoded );
+			        local.encoded = instance.ESAPI.randomizer().getRandomString(1, DefaultEncoder.CHAR_ALPHANUMERICS) & local.encoder.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
+			     	local.decoded = local.encoder.decodeFromBase64( local.encoded );
 			    	assertFalse( Arrays.equals(local.r, local.decoded) );
 			    } catch( java.io.UnsupportedEncodingException ex) {
 			    	fail();
@@ -567,11 +567,11 @@
 			PushbackString = createObject("java", "org.owasp.esapi.codecs.PushbackString");
 
 	        System.out.println("WindowsCodec");
-	        local.instance = instance.ESAPI.encoder();
+	        local.encoder = instance.ESAPI.encoder();
 
 	        local.win = createObject("java", "org.owasp.esapi.codecs.WindowsCodec").init();
 	        local.immune = Character.toChars(0);
-	        assertEquals("", local.instance.encodeForOS(local.win, ""));
+	        assertEquals("", local.encoder.encodeForOS(local.win, ""));
 
 	        local.npbs = PushbackString.init("n");
 	        //assertEquals("", local.win.decodeCharacter(local.npbs));
@@ -592,9 +592,9 @@
 	        assertEquals(local.orig, local.win.decode(local.orig));
 
 			// TODO: Check that these are acceptable for Windows
-	        assertEquals("c^:^\jeff", local.instance.encodeForOS(local.win, "c:\jeff"));
+	        assertEquals("c^:^\jeff", local.encoder.encodeForOS(local.win, "c:\jeff"));
 	        assertEquals("c^:^\jeff", local.win.encode(local.immune, "c:\jeff"));
-	        assertEquals("dir^ ^&^ foo", local.instance.encodeForOS(local.win, "dir & foo"));
+	        assertEquals("dir^ ^&^ foo", local.encoder.encodeForOS(local.win, "dir & foo"));
 	        assertEquals("dir^ ^&^ foo", local.win.encode(local.immune, "dir & foo"));
 		</cfscript>
 	</cffunction>
@@ -606,11 +606,11 @@
 			PushbackString = createObject("java", "org.owasp.esapi.codecs.PushbackString");
 
 	        System.out.println("UnixCodec");
-	        local.instance = instance.ESAPI.encoder();
+	        local.encoder = instance.ESAPI.encoder();
 
 	        local.unix = createObject("java", "org.owasp.esapi.codecs.UnixCodec").init();
 	        local.immune = Character.toChars(0);
-	        assertEquals("", local.instance.encodeForOS(local.unix, ""));
+	        assertEquals("", local.encoder.encodeForOS(local.unix, ""));
 
 	        local.npbs = PushbackString.init("n");
 	        //assertEquals("", local.unix.decodeCharacter(local.npbs));
@@ -631,15 +631,15 @@
 	        assertEquals(local.orig, local.unix.decode(local.orig));
 
 	     	// TODO: Check that these are acceptable for Unix hosts
-	        assertEquals("c\:\\jeff", local.instance.encodeForOS(local.unix, "c:\jeff"));
+	        assertEquals("c\:\\jeff", local.encoder.encodeForOS(local.unix, "c:\jeff"));
 	        assertEquals("c\:\\jeff", local.unix.encode(local.immune, "c:\jeff"));
-	        assertEquals("dir\ \&\ foo", local.instance.encodeForOS(local.unix, "dir & foo"));
+	        assertEquals("dir\ \&\ foo", local.encoder.encodeForOS(local.unix, "dir & foo"));
 	        assertEquals("dir\ \&\ foo", local.unix.encode(local.immune, "dir & foo"));
 
 	        // Unix paths (that must be encoded safely)
 	        // TODO: Check that these are acceptable for Unix
-	        assertEquals("\/etc\/hosts", local.instance.encodeForOS(local.unix, "/etc/hosts"));
-	        assertEquals("\/etc\/hosts\;\ ls\ -l", local.instance.encodeForOS(local.unix, "/etc/hosts; ls -l"));
+	        assertEquals("\/etc\/hosts", local.encoder.encodeForOS(local.unix, "/etc/hosts"));
+	        assertEquals("\/etc\/hosts\;\ ls\ -l", local.encoder.encodeForOS(local.unix, "/etc/hosts; ls -l"));
     	</cfscript>
 	</cffunction>
 

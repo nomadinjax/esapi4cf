@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Executor" output="false" hint="Reference implementation of the Executor interface. This implementation is very restrictive. Commands must exactly equal the canonical path to an executable on the system. ">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Executor" output="false" hint="Reference implementation of the Executor interface. This implementation is very restrictive. Commands must exactly equal the canonical path to an executable on the system. ">
 
 	<cfscript>
 		Logger = createObject("java", "org.owasp.esapi.Logger");
@@ -64,8 +64,8 @@
 	            }
 
 	            // escape any special characters in the parameters
-	            for ( local.i = 0; local.i < arguments.params.size(); local.i++ ) {
-	            	local.param = arguments.params.get(local.i);
+	            for ( local.i = 1; local.i <= arguments.params.size(); local.i++ ) {
+	            	local.param = arguments.params[local.i];
 	            	arguments.params.set( local.i, instance.ESAPI.encoder().encodeForOS(arguments.codec, local.param));
 	            }
 
@@ -116,7 +116,7 @@
 	            	local.process.waitFor();
 	            } catch (Throwable e) {
 	            	local.process.destroy();
-	            	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
+	            	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.message, e);
             		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 
@@ -138,7 +138,7 @@
 	            instance.logger.warning(Logger.SECURITY_SUCCESS, "System command complete");
 	            return ExecuteResult.init(exitValue, local.output, local.errors);
 	        } catch (java.io.IOException e) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.message, e);
            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
     	</cfscript>

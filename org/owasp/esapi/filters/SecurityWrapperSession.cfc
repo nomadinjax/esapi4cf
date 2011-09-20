@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.HttpSession" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HttpSession" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -91,8 +91,9 @@
 			//structClear(instance.session);
 
 			// causes errors after its called
-			//instance.session.invalidate();
+			instance.session.invalidate();
 
+			/* not Railo compatible
 			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
 			if (local.applicationName != "") {
 				local.jTracker = createObject("java", "coldfusion.runtime.SessionTracker");
@@ -102,7 +103,7 @@
 				//writedump(instance.session);
 				local.jTracker.cleanUp(instance.session, local.applicationName);
 				//writedump(var=instance.session,abort=true);
-			}
+			}*/
 		</cfscript>
 	</cffunction>
 

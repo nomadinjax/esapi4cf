@@ -102,7 +102,8 @@
 		<cfscript>
 	        local.hashes = getAllHashedPasswords(arguments.user, false);
 	        if (local.hashes.size() > 1) {
-	            return duplicate(local.hashes.subList(1, local.hashes.size() - 1));
+	            //return duplicate(local.hashes.subList(1, local.hashes.size() - 1));
+	            return duplicate(listToArray(listRest(arrayToList(local.hashes))));
 	        }
 	        return [];
     	</cfscript>
@@ -416,7 +417,7 @@
 		        return local.user;
 			}
 			catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
-				throw(message=e.getMessage(), type=e.getType());
+				throw(message=e.message, type=e.type);
 			}
     	</cfscript>
 	</cffunction>

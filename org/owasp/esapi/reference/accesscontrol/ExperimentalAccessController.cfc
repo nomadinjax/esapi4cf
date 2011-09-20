@@ -32,7 +32,9 @@
 		<cfargument type="any" name="runtimeParameter" required="true">
 		<cfscript>
 			try {
-				local.rule = instance.ruleMap.get(arguments.key);
+				if (structKeyExists(instance.ruleMap, arguments.key)) {
+					local.rule = instance.ruleMap.get(arguments.key);
+				}
 				if(isNull(local.rule)) {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access Denied", "AccessControlRule was not found for key: " & arguments.key);
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
@@ -62,7 +64,9 @@
 		<cfscript>
 			local.isAuthorized = false;
 			try {
-				local.rule = instance.ruleMap.get(arguments.key);
+				if (structKeyExists(instance.ruleMap, arguments.key)) {
+					local.rule = instance.ruleMap.get(arguments.key);
+				}
 				if(isNull(local.rule)) {
 					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access Denied", "AccessControlRule was not found for key: " & arguments.key);
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());

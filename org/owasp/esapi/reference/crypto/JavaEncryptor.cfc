@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.Encryptor" output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Encryptor" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -48,13 +48,13 @@
 			if (isNull(local.salt)) {
 				throw(message="Can't obtain master salt, Encryptor.MasterSalt");
 			}
-	        if (!len(local.salt) >= 16) {
+	        if (!arrayLen(local.salt) >= 16) {
 	       		throw(message="Encryptor.MasterSalt must be at least 16 bytes. Length is: " & local.salt.length & " bytes.");
 	        }
 	        if (isNull(local.skey)) {
 	        	throw(message="Can't obtain master key, Encryptor.MasterKey");
 	        }
-	        if (!len(local.skey) >= 7) {
+	        if (!arrayLen(local.skey) >= 7) {
 	        	throw(message="Encryptor.MasterKey must be at least 7 bytes. Length is: " & local.skey.length & " bytes.");
 	        }
 
@@ -302,7 +302,6 @@
 				 } else {
 				     local.encKey = CryptoHelper.computeDerivedKey( arguments.key, local.keySize, "encryption");	// Recommended by David A. Wagner
 				 }
-
 				 if ( local.cipherSpec.requiresIV() ) {
 					 local.ivType = instance.ESAPI.securityConfiguration().getIVType();
 					 local.ivSpec = "";
@@ -352,25 +351,25 @@
 				 local.success = true;	// W00t!!!
 				 return local.ciphertext;
 			} catch (java.security.InvalidKeyException ike) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure: Invalid key exception.", "Requested key size: " & local.keySize & "bits greater than 128 bits. Must install unlimited strength crypto extension from Sun: " & ike.getMessage(), ike);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure: Invalid key exception.", "Requested key size: " & local.keySize & "bits greater than 128 bits. Must install unlimited strength crypto extension from Sun: " & ike.message, ike);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			} catch (cfesapi.org.owasp.esapi.errors.ConfigurationException cex) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure: Configuration error. Details in log.", "Key size mismatch or unsupported IV method. Check encryption key size vs. ESAPI.EncryptionKeyLength or Encryptor.ChooseIVMethod property.", cex);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			} catch (java.security.InvalidAlgorithmParameterException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (invalid IV)", "Encryption problem: Invalid IV spec: " & e.getMessage(), e);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (invalid IV)", "Encryption problem: Invalid IV spec: " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			} catch (javax.crypto.IllegalBlockSizeException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (no padding used; invalid input size)", "Encryption problem: Invalid input size without padding (" & local.xform & "). " & e.getMessage(), e);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (no padding used; invalid input size)", "Encryption problem: Invalid input size without padding (" & local.xform & "). " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			} catch (javax.crypto.BadPaddingException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure", "[Note: Should NEVER happen in encryption mode.] Encryption problem: " & e.getMessage(), e);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure", "[Note: Should NEVER happen in encryption mode.] Encryption problem: " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			} catch (java.security.NoSuchAlgorithmException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (unavailable cipher requested)", "Encryption problem: specified algorithm in cipher xform " & local.xform & " not available: " & e.getMessage(), e);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (unavailable cipher requested)", "Encryption problem: specified algorithm in cipher xform " & local.xform & " not available: " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			} catch (javax.crypto.NoSuchPaddingException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (unavailable padding scheme requested)", "Encryption problem: specified padding scheme in cipher xform " & local.xform & " not available: " & e.getMessage(), e);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (unavailable padding scheme requested)", "Encryption problem: specified padding scheme in cipher xform " & local.xform & " not available: " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			} finally {
 				// Don't overwrite anything in the case of exceptions because they may wish to retry.
@@ -403,7 +402,7 @@
 						local.blockSize = local.ct.getBlockSize();	// Size in bytes.
 						local.iv = newByte( local.blockSize );
 						CryptoHelper.copyByteArray(local.ivPlusRawCipherText, local.iv, local.blockSize);	// Copy the first blockSize bytes into iv array
-						local.cipherTextSize = len(local.ivPlusRawCipherText) - local.blockSize;
+						local.cipherTextSize = arrayLen(local.ivPlusRawCipherText) - local.blockSize;
 						local.rawCipherText = newByte( local.cipherTextSize );
 						System.arraycopy(local.ivPlusRawCipherText, local.blockSize, local.rawCipherText, 0, local.cipherTextSize);
 						local.ct.setIVandCiphertext(local.iv, local.rawCipherText);
@@ -482,10 +481,10 @@
 		            break;
 		        default:
 		            local.logMsg = "Programming error: unexpected progress mark == " & local.progressMark;
-		        break;
+		        	break;
 		        }
 		        instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, local.logMsg);
-		        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, ex); // Re-throw
+		        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(ESAPI=instance.ESAPI, cause=ex); // Re-throw
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		    }
 		    finally {
@@ -533,7 +532,7 @@
 	        local.keySize = 0;
 	        try {
 	            local.decrypter = createObject("java", "javax.crypto.Cipher").getInstance(arguments.ciphertext.getCipherTransformation());
-	            local.keySize = len(arguments.key.getEncoded()) * 8;  // Convert to # bits
+	            local.keySize = arrayLen(arguments.key.getEncoded()) * 8;  // Convert to # bits
 
 	            // Using cipher mode that supports *both* confidentiality *and* authenticity? If so, then
 	            // use the specified SecretKey as-is rather than computing a derived key from it. We also
@@ -558,19 +557,19 @@
 	            return createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.output);
 
 	        } catch (java.security.InvalidKeyException ike) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, DECRYPTION_FAILED, "Must install JCE Unlimited Strength Jurisdiction Policy Files from Sun", ike);
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Must install JCE Unlimited Strength Jurisdiction Policy Files from Sun", ike);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        } catch (java.security.NoSuchAlgorithmException e) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, DECRYPTION_FAILED, "Invalid algorithm for available JCE providers - " & arguments.ciphertext.getCipherTransformation() & ": " & e.getMessage(), e);
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Invalid algorithm for available JCE providers - " & arguments.ciphertext.getCipherTransformation() & ": " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        } catch (javax.crypto.NoSuchPaddingException e) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, DECRYPTION_FAILED, "Invalid padding scheme (" & arguments.ciphertext.getPaddingScheme() & ") for cipher transformation " & arguments.ciphertext.getCipherTransformation() & ": " & e.getMessage(), e);
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Invalid padding scheme (" & arguments.ciphertext.getPaddingScheme() & ") for cipher transformation " & arguments.ciphertext.getCipherTransformation() & ": " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        } catch (java.security.InvalidAlgorithmParameterException e) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, DECRYPTION_FAILED, "Decryption problem: " & e.getMessage(), e);
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Decryption problem: " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        } catch (javax.crypto.IllegalBlockSizeException e) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, DECRYPTION_FAILED, "Decryption problem: " & e.getMessage(), e);
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Decryption problem: " & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        } catch (javax.crypto.BadPaddingException e) {
 	            //DISCUSS: This needs fixed. Already validated MAC in CryptoHelper.isCipherTextMACvalid() above.
@@ -582,15 +581,15 @@
 	            try {
 	                local.authKey = CryptoHelper.computeDerivedKey( arguments.key, local.keySize, "authenticity");
 	            } catch (java.lang.Exception e1) {
-	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, DECRYPTION_FAILED, "Decryption problem -- failed to compute derived key for authenticity: " & e1.getMessage(), e1);
+	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Decryption problem -- failed to compute derived key for authenticity: " & e1.message, e1);
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	            local.success = arguments.ciphertext.validateMAC( local.authKey );
 	            if ( local.success ) {
-	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, DECRYPTION_FAILED, "Decryption problem: " & e.getMessage(), e);
+	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Decryption problem: " & e.message, e);
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            } else {
-	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, DECRYPTION_FAILED, "Decryption problem: WARNING: Adversary may have tampered with CipherText object orCipherText object mangled in transit: " & e.getMessage(), e);
+	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, static.DECRYPTION_FAILED, "Decryption problem: WARNING: Adversary may have tampered with CipherText object orCipherText object mangled in transit: " & e.message, e);
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	        }
@@ -628,12 +627,12 @@
 				local.signer.initVerify(instance.publicKey);
 				local.signer.update(arguments.data.getBytes(instance.encoding));
 				return local.signer.verify(local.bytes);
-			} catch (java.lang.Exception e) {
+			}
+			catch (java.lang.Exception e) {
 			    // NOTE: EncryptionException constructed *only* for side-effect of causing logging.
 			    // FindBugs complains about this and since it examines byte-code, there's no way to
 			    // shut it up.
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Invalid signature", "Problem verifying signature: " & e.getMessage(), e);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Invalid signature", "Problem verifying signature: " & e.message, e);
 				return false;
 			}
 		</cfscript>
@@ -704,9 +703,9 @@
 				}
 				return createObject("java", "java.lang.String").init(instance.ESAPI.encoder().decodeFromBase64(local.b64data), "UTF-8");
 			} catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
-				throw(message=e.getMessage(), type=e.getType());
+				throw(message=e.message, type=e.type);
 			} catch (java.lang.Exception e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Invalid seal", "Invalid seal:" & e.getMessage(), e);
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Invalid seal", "Invalid seal:" & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 		</cfscript>

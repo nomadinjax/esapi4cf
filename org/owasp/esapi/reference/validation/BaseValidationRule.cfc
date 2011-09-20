@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" implements="cfesapi.org.owasp.esapi.ValidationRule" output="false" hint="Abstract Class">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.ValidationRule" output="false" hint="Abstract Class">
 
 	<cfscript>
 		instance.ESAPI = "";
