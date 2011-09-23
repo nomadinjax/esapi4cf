@@ -9,7 +9,7 @@
 	        try {
 	            local.key = CryptoHelper.generateSecretKey("AES", 128);
 	            assertTrue(local.key.getAlgorithm() == "AES");
-	            assertTrue(128 / 8 == len(local.key.getEncoded()));
+	            assertTrue(128 / 8 == arrayLen(local.key.getEncoded()));
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
 	            // OK if not covered in code coverage -- not expected.
 	            fail("Caught unexpected EncryptionException; msg was " & e.message);
@@ -33,9 +33,9 @@
 	<cffunction access="public" returntype="void" name="testOverwriteByteArrayByte" output="false">
 		<cfscript>
 	        local.secret = createObject("java", "java.lang.String").init("secret password").getBytes();
-	        local.len = len(local.secret);
+	        local.len = arrayLen(local.secret);
 	        CryptoHelper.overwrite(local.secret, 'x');
-	        assertTrue(len(local.secret) == local.len); // Length unchanged
+	        assertTrue(arrayLen(local.secret) == local.len); // Length unchanged
 	        assertTrue(checkByteArray(local.secret, 'x')); // Filled with 'x'
     	</cfscript>
 	</cffunction>
@@ -44,9 +44,9 @@
 	<cffunction access="public" returntype="void" name="testCopyByteArraySunnyDay" output="false">
 		<cfscript>
 	        local.src = newByte(20);
-	        fillByteArray(local.src, 'A');
+	        local.src = fillByteArray(local.src, 'A');
 	        local.dest = newByte(20);
-	        fillByteArray(local.dest, 'B');
+	        local.dest = fillByteArray(local.dest, 'B');
 	        CryptoHelper.copyByteArray(local.src, local.dest);
 	        assertTrue(checkByteArray(local.src, 'A')); // Still filled with 'A'
 	        assertTrue(checkByteArray(local.dest, 'A')); // Now filled with 'B'
@@ -59,7 +59,7 @@
 		<cfscript>
 			try {
 		        local.ba = newByte(16);
-		        CryptoHelper.copyByteArray(toBinary(toBase64("")), local.ba, len(local.ba));
+		        CryptoHelper.copyByteArray(toBinary(toBase64("")), local.ba, arrayLen(local.ba));
 		        fail("");
 	        } catch (java.lang.NullPointerException e) {
 	       		// expected
@@ -73,7 +73,7 @@
 		<cfscript>
 			try {
 		        local.ba = newByte(16);
-		        CryptoHelper.copyByteArray(local.ba, toBinary(toBase64("")), len(local.ba));
+		        CryptoHelper.copyByteArray(local.ba, toBinary(toBase64("")), arrayLen(local.ba));
 			} catch (java.lang.NullPointerException e) {
 				// expected
 			}
@@ -86,7 +86,7 @@
 			try {
 		        local.ba8 = newByte(8);
 		        local.ba16 = newByte(16);
-		        CryptoHelper.copyByteArray(local.ba8, local.ba16, len(local.ba16));
+		        CryptoHelper.copyByteArray(local.ba8, local.ba16, arrayLen(local.ba16));
 		        fail("");
 			} catch (java.lang.ArrayIndexOutOfBoundsException e) {
 				// expected
@@ -173,14 +173,26 @@
 	</cffunction>
 
 
-	<cffunction access="private" returntype="void" name="fillByteArray" output="false">
+	<cffunction access="private" returntype="binary" name="fillByteArray" output="false">
 		<cfargument type="binary" name="ba" required="true">
 		<cfargument type="String" name="b" required="true">
 		<cfscript>
-	        for (local.i = 1; local.i <= len(arguments.ba); local.i++) {
-	        	// TODO: CF does not allow us to modify the binary object - need workaround
-	            arguments.ba[local.i] = asc(arguments.b);
+			/*
+			 * Adobe CF does not allow you to change the value of an index within a ByteArray.
+			 * Railo CF does allow this:
+			 *
+			 * local.b = asc(arguments.b);
+			 * for (local.i = 1; local.i <= arrayLen(arguments.ba); local.i++) {
+	         * 		arguments.ba[local.i] = local.b;
+	         * }
+	         * 
+	         * The below is to work around Adobe CF's shortcoming... not sure if this is on Adobe's radar.
+			 */
+			local.ba = [];
+	        for (local.i = 1; local.i <= arrayLen(arguments.ba); local.i++) {
+	        	local.ba[local.i] = arguments.b;
 	        }
+	        return arrayToList(local.ba, "").getBytes();
     	</cfscript>
 	</cffunction>
 
@@ -189,7 +201,7 @@
 		<cfargument type="binary" name="ba" required="true">
 		<cfargument type="String" name="b" required="true">
 		<cfscript>
-	        for (local.i = 1; local.i <= len(arguments.ba); local.i++) {
+	        for (local.i = 1; local.i <= arrayLen(arguments.ba); local.i++) {
 	            if (arguments.ba[local.i] != asc(arguments.b)) {
 	                return false;
 	            }
