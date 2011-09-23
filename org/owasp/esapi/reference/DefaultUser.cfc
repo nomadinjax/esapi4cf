@@ -414,6 +414,8 @@
 	            removeSession(local.session);
 				local.session.invalidate();
 			}
+			// FIXME
+			// I do not believe destroying the JSESSIONID cookie is currently working
 			instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), "JSESSIONID");
 			instance.loggedIn = false;
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Logout successful" );
