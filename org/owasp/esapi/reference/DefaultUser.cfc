@@ -525,7 +525,7 @@
 
 	<cffunction access="public" returntype="String" name="toString" output="false">
 		<cfscript>
-			return "USER:" & instance.accountName;
+			return "USER:" & getAccountName();
 		</cfscript>
 	</cffunction>
 

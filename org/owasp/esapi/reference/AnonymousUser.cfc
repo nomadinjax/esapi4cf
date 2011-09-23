@@ -291,6 +291,13 @@
     		throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
         </cfscript>
 	</cffunction>
+	
+	
+	<cffunction access="public" returntype="String" name="toString" output="false">
+		<cfscript>
+			return "USER:" & getAccountName();
+		</cfscript>
+	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="unlock" output="false">
