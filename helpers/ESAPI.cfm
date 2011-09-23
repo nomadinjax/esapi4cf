@@ -10,13 +10,13 @@ Is using just Application scope sufficient???
 
 <cffunction access="private" returntype="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" output="false" hint="Your one stop shop to access all things ESAPI. This function takes care of instantiating ESAPI the first time and persisting ESAPI for subsequent use.">
 	<cfscript>
-		//if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")) {
+		if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")) {
 			lock scope="application" type="exclusive" timeout="1" {
-				//if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")) {
+				if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")) {
 					application.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-				//}
+				}
 			}
-		//}
+		}
 		return application.ESAPI;
 	</cfscript>
 </cffunction>
