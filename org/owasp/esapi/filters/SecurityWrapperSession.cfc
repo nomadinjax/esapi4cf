@@ -114,7 +114,10 @@
 			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
 			// this technique will not harm session state for other CF applications
 			if ( local.applicationName != "" ) {
-				structClear(instance.session[local.applicationName]);
+				// Railo sessions are empty unless you have explicitly set session vars so check for it first
+				if (structKeyExists(instance.session, local.applicationName)) {
+					structClear(instance.session[local.applicationName]);
+				}
 			}
 			else {
 				structClear(instance.session);
