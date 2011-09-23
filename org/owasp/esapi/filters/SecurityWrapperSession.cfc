@@ -86,24 +86,39 @@
 
 	<cffunction access="public" returntype="void" name="invalidate" output="false" hint="Invalidates this session then unbinds any objects bound to it.">
 		<cfscript>
-			// TODO: not sure best way to do this that won't throw a CF error
-
-			//structClear(instance.session);
-
-			// causes errors after its called
-			instance.session.invalidate();
-
-			/* not Railo compatible
+			/*
+			* Discussion:
+			* The way CF sessions function is they use the J2EE sessions which contain a struct.  The keys of that struct
+			* are the CF application names which contain the session variables that we commonly refer to via the CF session scope.
+			* This means that we cannot use the below for multiple reasons:
+			* 
+			* 	instance.session.invalidate();
+			* 
+			* 1) You cannot destroy the session and create a session on the same request, as creating a new session involves sending session cookies
+			* 	back. http://livedocs.adobe.com/coldfusion/8/htmldocs/help.html?content=sharedVars_17.html
+			* 2) The instance.session references the J2EE session which contains all of your CF applications. Invalidating instance.session would
+			* 	kill all CF application sessions, not just the one you are actively using CFESAPI within.
+			* 3) Currently when you do call invalidate(), any references to the session scope after this call within the same request result in a
+			* 	"Invalid session" error being thrown.
+			* 
+			* What are the alternatives?
+			* 	http://stackoverflow.com/questions/3686116/invalidate-session-how-to-use-correctly
+			* 	http://www.bennadel.com/blog/1847-Explicitly-Ending-A-ColdFusion-Session.htm
+			* 
+			* Possibilities?
+			* 	structClear(instance.session[local.applicationName]);
+			* 	instance.session[local.applicationName].setMaxInterval(javaCast("long", 1)); -- throws CF exception 'setMaxInterval' undefined
+			* 
+			* Are there any better (or more secure) ways to handle this???
+			*/
 			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();
-			if (local.applicationName != "") {
-				local.jTracker = createObject("java", "coldfusion.runtime.SessionTracker");
-				// TODO: test this more to ensure it is doing what we are expercting
-				// doesn't help that Adobe has no docs on their Java CF classes
-
-				//writedump(instance.session);
-				local.jTracker.cleanUp(instance.session, local.applicationName);
-				//writedump(var=instance.session,abort=true);
-			}*/
+			// this technique will not harm session state for other CF applications
+			if ( local.applicationName != "" ) {
+				structClear(instance.session[local.applicationName]);
+			}
+			else {
+				structClear(instance.session);
+			}
 		</cfscript>
 	</cffunction>
 
