@@ -118,7 +118,7 @@
 	<cffunction access="public" returntype="String" name="encodeForHTML" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_HTML, arguments.input);
+		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_HTML, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -126,7 +126,7 @@
 	<cffunction access="public" returntype="String" name="decodeForHTML" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().decode(arguments.input);
+			return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().decode(javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -134,7 +134,7 @@
 	<cffunction access="public" returntype="String" name="encodeForHTMLAttribute" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_HTMLATTR, arguments.input);
+		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_HTMLATTR, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -142,7 +142,7 @@
 	<cffunction access="public" returntype="String" name="encodeForCSS" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.CSSCodec").init().encode( static.IMMUNE_CSS, arguments.input);
+	    	return createObject("java", "org.owasp.esapi.codecs.CSSCodec").init().encode( static.IMMUNE_CSS, javaCast("string", arguments.input));
 	    </cfscript>
 	</cffunction>
 
@@ -150,7 +150,7 @@
 	<cffunction access="public" returntype="String" name="encodeForJavaScript" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.JavaScriptCodec").init().encode(static.IMMUNE_JAVASCRIPT, arguments.input);
+	    	return createObject("java", "org.owasp.esapi.codecs.JavaScriptCodec").init().encode(static.IMMUNE_JAVASCRIPT, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -158,7 +158,7 @@
 	<cffunction access="public" returntype="String" name="encodeForVBScript" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return createObject("java", "org.owasp.esapi.codecs.VBScriptCodec").init().encode(static.IMMUNE_VBSCRIPT, arguments.input);
+			return createObject("java", "org.owasp.esapi.codecs.VBScriptCodec").init().encode(static.IMMUNE_VBSCRIPT, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -167,7 +167,7 @@
 		<cfargument type="any" name="codec" required="true" hint="org.owasp.esapi.codecs.Codec">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return arguments.codec.encode(static.IMMUNE_SQL, arguments.input);
+		    return arguments.codec.encode(static.IMMUNE_SQL, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -176,7 +176,7 @@
 		<cfargument type="any" name="codec" required="true" hint="org.owasp.esapi.codecs.Codec">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return arguments.codec.encode( static.IMMUNE_OS, arguments.input);
+		    return arguments.codec.encode( static.IMMUNE_OS, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -186,8 +186,8 @@
 		<cfscript>
 			// TODO: replace with LDAP codec
 		    local.sb = createObject("java", "java.lang.StringBuilder").init();
-			for (local.i = 0; local.i < input.length(); local.i++) {
-				local.c = input.charAt(local.i);
+			for (local.i = 0; local.i < arguments.input.length(); local.i++) {
+				local.c = arguments.input.charAt(local.i);
 				switch (local.c) {
 				case '\':
 					local.sb.append("\5c");
@@ -264,7 +264,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXPath" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_XPATH, arguments.input);
+	    	return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_XPATH, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -272,7 +272,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXML" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( static.IMMUNE_XML, arguments.input);
+	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( static.IMMUNE_XML, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -280,7 +280,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXMLAttribute" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( static.IMMUNE_XMLATTR, arguments.input);
+	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( static.IMMUNE_XMLATTR, javaCast("string", arguments.input));
 		</cfscript>
 	</cffunction>
 
@@ -289,7 +289,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 	    	try {
-				return createObject("java", "java.net.URLEncoder").encode(arguments.input, instance.ESAPI.securityConfiguration().getCharacterEncoding());
+				return createObject("java", "java.net.URLEncoder").encode(javaCast("string", arguments.input), instance.ESAPI.securityConfiguration().getCharacterEncoding());
 			} catch (java.io.UnsupportedEncodingException ex) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Encoding failure", "Character encoding not supported", ex);
            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
@@ -306,7 +306,7 @@
 		<cfscript>
 	    	local.canonical = canonicalize(arguments.input);
 			try {
-				return createObject("java", "java.net.URLDecoder").decode(local.canonical, instance.ESAPI.securityConfiguration().getCharacterEncoding());
+				return createObject("java", "java.net.URLDecoder").decode(javaCast("string", local.canonical), instance.ESAPI.securityConfiguration().getCharacterEncoding());
 			} catch (java.io.UnsupportedEncodingException ex) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Decoding failed", "Character encoding not supported", ex);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
