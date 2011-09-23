@@ -97,14 +97,16 @@
 		<cfargument type="String" name="value" required="true">
 		<cfargument type="numeric" name="maxAge" required="true">
 		<cfargument type="String" name="domain" required="true">
-		<cfargument type="String" name="path" reqired="true">
+		<cfargument type="String" name="path" required="true">
 		<cfargument type="boolean" name="secure" required="true">
 		<cfscript>
 	        // create the special cookie header instead of creating a Java cookie
 	        // Set-Cookie:<name>=<value>[; <name>=<value>][; expires=<date>][;
-	        // domain=<domain_name>][; path=<some_path>][; secure][;HttpOnly
+	        // domain=<domain_name>][; path=<some_path>][; secure][;HttpOnly]
 	        local.header = arguments.name & "=" & arguments.value;
-	        local.header &= "; Max-Age=" & arguments.maxAge;
+	        if (arguments.maxAge > -1) {
+	        	local.header &= "; Max-Age=" & arguments.maxAge;
+	        }
 	        if (arguments.domain != "") {
 	            local.header &= "; Domain=" & arguments.domain;
 	        }
@@ -134,6 +136,12 @@
 	            local.strippedValue = StringUtilities.stripControls(arguments.value);
 	            local.safeName = instance.ESAPI.validator().getValidInput("addHeader", local.strippedName, "HTTPHeaderName", 20, false);
 	            local.safeValue = instance.ESAPI.validator().getValidInput("addHeader", local.strippedValue, "HTTPHeaderValue", instance.ESAPI.securityConfiguration().getMaxHttpHeaderSize(), false);
+	            /*
+	             * FIXME
+	             * We are using setHeader() here instead of addHeader()
+	             * Shouldn't setHeader() overwrite a header of the same name?
+	             * It does not appear to be doing that. It is appending headers of the same name.
+	             */
 	            getHttpServletResponse().setHeader(local.safeName, local.safeValue);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            instance.logger.warning(Logger.SECURITY_FAILURE, "Attempt to add invalid header denied", e);
