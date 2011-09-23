@@ -1,4 +1,5 @@
 OWASP ESAPI for ColdFusion/CFML Project
+https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML
 * This project is still in development *
 Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
 License: BSD license
@@ -25,11 +26,12 @@ Implementation:
 - You can create new implementations that implement the provided interfaces
 
 How:
-- Copy the /cfesapi/esapi/configuration/.esapi/ folder to another location and make changes to your copy
-- In your code, call ESAPI.securityConfiguration().setResourceDirectory("your config path")
-- Be sure to update the ESAPI.properties file with the location of your implementation CFC
-- Include the /cfesapi/helpers/ESAPI.cfm in your application.
+- Copy the /cfesapi/esapi/configuration/.esapi/ folder to a location within your CF application and make changes to your copy
+  - Be sure to update the ESAPI.properties file with the location of your implementation CFCs
+- Include the /cfesapi/helpers/ESAPI.cfm in your application (preferably in Application.cfc#onRequest)
+- Immediately following the above include, call ESAPI().securityConfiguration().setResourceDirectory("your config path that you copied")
 
+-- need more detail on setup --
 
 *** COMPATIBILITY ***
 
@@ -50,7 +52,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 252 total = 1 failures + 10 errors + 241 successes
+- 252 total = 2 failures + 9 errors + 241 successes
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar
