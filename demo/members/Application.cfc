@@ -4,6 +4,10 @@
 	<cffunction access="public" returntype="void" name="onRequest" output="true">
 		<cfargument type="String" name="targetPage" required="true">
 		<cfscript>
+			// this allows us to reinit ESAPI in case we make changes - for dev purposes
+			if (structKeyExists(url, "reinit") && url.reinit == "ESAPI") {
+				application["ESAPI"] = "";
+			}
 			include "/cfesapi/helpers/ESAPI.cfm";
 
 			// set up response with content type
@@ -12,10 +16,6 @@
             // set no-cache headers on every response
             // only do this if the entire site should not be cached otherwise you should do this strategically in your controller or actions
 			ESAPI().httpUtilities().setNoCacheHeaders();
-
-			if (!structKeyExists(session, "logger")) {
-				session.logger = ESAPI().getLogger("CFESAPI-Demo");
-			}
 
 			local.request = ESAPI().currentRequest();
 
@@ -45,6 +45,10 @@
 			}
 			catch ( cfesapi.org.owasp.esapi.errors.AuthenticationHostException e) {
 				// ignore host changes
+			}
+
+			if (!structKeyExists(session, "logger")) {
+				session.logger = ESAPI().getLogger("CFESAPI-Demo");
 			}
 
 			// log this request, obfuscating any parameter named password

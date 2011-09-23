@@ -21,6 +21,10 @@
 	<cffunction access="public" returntype="void" name="onRequest" output="true">
 		<cfargument type="String" name="targetPage" required="true">
 		<cfscript>
+			// this allows us to reinit ESAPI in case we make changes - for dev purposes
+			if (structKeyExists(url, "reinit") && url.reinit == "ESAPI") {
+				application["ESAPI"] = "";
+			}
 			include "/cfesapi/helpers/ESAPI.cfm";
 
 			// set up response with content type
