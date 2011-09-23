@@ -24,6 +24,7 @@
 </head>
 <body>
 	<p>This allows you to create a username/password that will be saved to users.txt and can be used to test the ESAPIFilter.cfm login page.</p>
+	<h3>Although this utility has created your user, you will need to <em>edit the users.txt file and enable this user.</em></h3>
 	<p>NOTES:</p>
 	<ul>
 		<li>The user created is only good for this CF session.</li>
