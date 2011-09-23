@@ -532,10 +532,29 @@
 
 			// send a new cookie header with HttpOnly on first and second responses
 		    if (instance.ESAPI.securityConfiguration().getForceHttpOnlySession()) {
+		        /*
+		         * FIXME
+		         * Upon the initial request that sets the JSESSIONID by the CF engine, the below code will get executed.
+		         * The problem is, both the cookie we set below and the cookie set by the CF engine are sent in the response.
+		         * The CF engine cookie seems to always be the one picked up by the browser.
+		         * Subsequent requests will not run this code because of the conditional around the HTTP_ONLY session attribute.
+		         * If you comment out the conditional, the correct cookie is sent on subsequent requests.
+		         *
+		         * ISSUES
+		         * 1) The code in its current state will never set the HttpOnly state of the JSESSIONID cookie.
+		         * 2) Removing the conditional allows the HttpOnly to be set on subsequent requests, but what about our initial request?
+		         * 3) Removing the conditional also causes the same cookie to be set multiple times per request depending on how many
+		         *		times this method is called. This bloats our response headers.
+		         *
+		         * Thoughts???
+		         */
 		        if (local.session.getAttribute("HTTP_ONLY") == "") {
 					local.session.setAttribute("HTTP_ONLY", "set");
 					local.cookie = createObject("java", "javax.servlet.http.Cookie").init("JSESSIONID", local.session.getId());
-					local.cookie.setPath( getHttpServletRequest().getContextPath() );
+					// FIXME
+					// in case getContextPath() returns blank, we want to force the / for the root 
+					// we should be checking for a blank path and forcing / within the actual cookie code so validation is global
+					local.cookie.setPath( len(getHttpServletRequest().getContextPath()) ? getHttpServletRequest().getContextPath() : "/" );
 					local.cookie.setMaxAge(-1); // session cookie
 		            local.response = instance.ESAPI.currentResponse();
 		            if (!isNull(local.response)) {
