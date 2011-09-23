@@ -21,5 +21,6 @@
 		<button type="submit">Login</button>
 	</form>
 	<p><a href="/cfesapi/demo/createUser.cfm">Create user</a></p>
+	<p><a href="/cfesapi/demo/index.cfm">Back to Anonymous User page</a></p>
 </body>
 </html>
