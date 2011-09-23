@@ -13,28 +13,28 @@
 	<p>This is an example of a page accessed by an DefaultUser</p>
 	<cfoutput>
 		<ul>
-			<li>AccountId: #currentUser.getAccountId()#</li>
-			<li>AccountName: #currentUser.getAccountName()#</li>
-			<li>CSRFToken: #currentUser.getCSRFToken()#</li>
-			<li>ExpirationTime: #currentUser.getExpirationTime()#</li>
-			<li>FailedLoginCount: #currentUser.getFailedLoginCount()#</li>
-			<li>LastFailedLoginTime: #currentUser.getLastFailedLoginTime()#</li>
-			<li>LastHostAddress: #currentUser.getLastHostAddress()#</li>
-			<li>LastLoginTime: #currentUser.getLastLoginTime()#</li>
-			<li>LastPasswordChangeTime: #currentUser.getLastPasswordChangeTime()#</li>
-			<li>Roles: #arrayToList(currentUser.getRoles())#</li>
-			<li>ScreenName: #currentUser.getScreenName()#</li>
-			<li>isAnonymous: #currentUser.isAnonymous()#</li>
-			<li>isEnabled: #currentUser.isEnabled()#</li>
-			<li>isExpired: #currentUser.isExpired()#</li>
-			<li>isInRole(user): #currentUser.isInRole("user")#</li>
-			<li>isInRole(admin): #currentUser.isInRole("admin")#</li>
-			<li>isLocked: #currentUser.isLocked()#</li>
-			<li>isLoggedIn: #currentUser.isLoggedIn()#</li>
-			<li>isSessionAbsoluteTimeout: #currentUser.isSessionAbsoluteTimeout()#</li>
-			<li>isSessionTimeout: #currentUser.isSessionTimeout()#</li>
-			<li>toString: #currentUser.toString()#</li>
-			<li>Locale: #currentUser.getLocale()#</li>
+			<li>AccountId: #encodeForHTML(currentUser.getAccountId())#</li>
+			<li>AccountName: #encodeForHTML(currentUser.getAccountName())#</li>
+			<li>CSRFToken: #encodeForHTML(currentUser.getCSRFToken())#</li>
+			<li>ExpirationTime: #encodeForHTML(currentUser.getExpirationTime())#</li>
+			<li>FailedLoginCount: #encodeForHTML(currentUser.getFailedLoginCount())#</li>
+			<li>LastFailedLoginTime: #encodeForHTML(currentUser.getLastFailedLoginTime())#</li>
+			<li>LastHostAddress: #encodeForHTML(currentUser.getLastHostAddress())#</li>
+			<li>LastLoginTime: #encodeForHTML(currentUser.getLastLoginTime())#</li>
+			<li>LastPasswordChangeTime: #encodeForHTML(currentUser.getLastPasswordChangeTime())#</li>
+			<li>Roles: #encodeForHTML(arrayToList(currentUser.getRoles()))#</li>
+			<li>ScreenName: #encodeForHTML(currentUser.getScreenName())#</li>
+			<li>isAnonymous: #encodeForHTML(currentUser.isAnonymous())#</li>
+			<li>isEnabled: #encodeForHTML(currentUser.isEnabled())#</li>
+			<li>isExpired: #encodeForHTML(currentUser.isExpired())#</li>
+			<li>isInRole(user): #encodeForHTML(currentUser.isInRole("user"))#</li>
+			<li>isInRole(admin): #encodeForHTML(currentUser.isInRole("admin"))#</li>
+			<li>isLocked: #encodeForHTML(currentUser.isLocked())#</li>
+			<li>isLoggedIn: #encodeForHTML(currentUser.isLoggedIn())#</li>
+			<li>isSessionAbsoluteTimeout: #encodeForHTML(currentUser.isSessionAbsoluteTimeout())#</li>
+			<li>isSessionTimeout: #encodeForHTML(currentUser.isSessionTimeout())#</li>
+			<li>toString: #encodeForHTML(currentUser.toString())#</li>
+			<li>Locale: #encodeForHTML(currentUser.getLocale())#</li>
 		</ul>
 	</cfoutput>
 
