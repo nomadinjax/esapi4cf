@@ -37,9 +37,9 @@ How:
 * Adobe ColdFusion 9.0.1 *
 **************************
 MXUnit Test Results
- - 252 total = 3 failures + 5 errors + 244 successes
+ - 252 total = 3 failures + 4 errors + 245 successes
 
-Dependencies (place in \WEB-INF\cfusion\lib)
+Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 - ESAPI.jar (not needed if you have HF: http://kb2.adobe.com/cps/907/cpsid_90784.html)
 - antisamy.jar
 - batik-css.jar
@@ -50,9 +50,9 @@ Dependencies (place in \WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 252 total = 2 failures + 9 errors + 241 successes
+- 252 total = 1 failures + 10 errors + 241 successes
 
-Dependencies (place in \WEB-INF\railo\lib)
+Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar
 - antisamy.jar
 - batik-css.jar
