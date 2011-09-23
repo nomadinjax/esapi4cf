@@ -81,7 +81,7 @@
 
 
 	<cffunction access="public" returntype="void" name="verifyPasswordStrength" output="false" hint="Ensures that the password meets site-specific complexity requirements, like length or number of character sets. This method takes the old password so that the algorithm can analyze the new password to see if it is too similar to the old password. Note that this has to be invoked when the user has entered the old password, as the list of old credentials stored by ESAPI is all hashed.">
-		<cfargument type="String" name="oldPassword" required="true" hint="the old password">
+		<cfargument type="String" name="oldPassword" required="false" hint="the old password">
 		<cfargument type="String" name="newPassword" required="true" hint="the new password">
 	</cffunction>
 

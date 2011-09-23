@@ -133,7 +133,7 @@
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password");
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }*/
-	        verifyPasswordStrength("", arguments.password1);
+	        verifyPasswordStrength(newPassword=arguments.password1);
 
 	        if (!arguments.password1.equals(arguments.password2)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match");
@@ -385,7 +385,7 @@
 		        local.user.accountId = local.accountId;
 
 		        local.password = local.parts[3];
-	       		verifyPasswordStrength("", local.password);
+	       		verifyPasswordStrength(newPassword=local.password);
 		        setHashedPassword(local.user, local.password);
 
 		        local.roles = local.parts[4].toLowerCase().split(" *, *");
@@ -552,7 +552,7 @@
 
 
 	<cffunction access="public" returntype="void" name="verifyPasswordStrength" output="false" hint="This implementation checks: - for any 3 character substrings of the old password - for use of a length character sets &gt; 16 (where character sets are upper, lower, digit, and special">
-		<cfargument type="String" name="oldPassword" required="true">
+		<cfargument type="String" name="oldPassword" required="false">
 		<cfargument type="String" name="newPassword" required="true">
 		<cfscript>
 			Arrays = createObject("java", "java.util.Arrays");
@@ -564,7 +564,7 @@
 	        }
 
 	        // can't change to a password that contains any 3 character substring of old password
-	        if (len(arguments.oldPassword)) {
+	        if (structKeyExists(arguments, "oldPassword")) {
 	            local.length = arguments.oldPassword.length();
 	            for (local.i = 0; local.i < local.length - 2; local.i++) {
 	                local.sub = arguments.oldPassword.substring(local.i, local.i + 3);
