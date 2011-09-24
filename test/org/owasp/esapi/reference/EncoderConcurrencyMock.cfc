@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false" hint="A simple class that calls the Encoder to test thread safety">
+<cfcomponent extends="cfesapi.test.TestCase" output="false" hint="A simple class that calls the Encoder to test thread safety">
 
 	<cfscript>
     	instance.num = 0;

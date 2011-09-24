@@ -1,15 +1,14 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
 		Boolean = createObject("java", "java.lang.Boolean");
 
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 		instance.accessController = "";
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			super.setUp();
-
 			local.accessControlRules = {};
 			local.accessControlRules.put("AlwaysTrue", createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysTrueACR"));
 			local.accessControlRules.put("AlwaysFalse", createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysFalseACR"));
@@ -22,8 +21,6 @@
 	<cffunction access="public" returntype="void" name="tearDown" output="false">
 		<cfscript>
 			instance.accessController = "";
-
-			super.tearDown();
 		</cfscript>
 	</cffunction>
 

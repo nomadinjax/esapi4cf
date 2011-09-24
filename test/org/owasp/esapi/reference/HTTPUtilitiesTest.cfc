@@ -1,19 +1,29 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
-	<!--- TODO: need tests for:
-		clearCurrent()
-		decryptHiddenField()
-		decryptQueryString()
-		encryptHiddenField()
-		encryptQueryString()
-		sendForward()
-		setContentType()
-		setHeader()
-		--->
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
 		static.CLASS = getMetaData(this);
 		static.CLASS_NAME = listLast(static.CLASS.name, ".");
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 	</cfscript>
+ 
+	<cffunction access="public" returntype="void" name="setUp" output="false">
+		<cfscript>
+			structClear(request);
+			structClear(session);
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="tearDown" output="false">
+		<cfscript>
+			structClear(request);
+			structClear(session);
+		</cfscript> 
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testCSRFToken" output="false">
 		<cfscript>
@@ -32,7 +42,7 @@
 			}
 			local.request.addParameter( createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultHTTPUtilities").CSRF_TOKEN_NAME, local.token );
 			instance.ESAPI.httpUtilities().verifyCSRFToken(local.request);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -51,7 +61,7 @@
 			local.csrf2 = instance.ESAPI.httpUtilities().addCSRFToken("/test1?one=two");
 			System.out.println( "CSRF2:" & local.csrf2);
 			assertTrue(local.csrf2.indexOf("&") > -1);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -95,7 +105,7 @@
 			} catch( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
 				fail("");
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -114,7 +124,7 @@
 			local.id2 = local.session.getId();
 			assertTrue(!local.id1.equals(local.id2));
 			assertEquals("one", local.session.getAttribute("one"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -181,7 +191,7 @@
 			finally {
 				createObject("component", "cfesapi.test.org.owasp.esapi.util.FileTestUtils").deleteRecursively(local.home);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -198,7 +208,7 @@
 			local.request.setCookies(local.list);
 			instance.ESAPI.httpUtilities().killAllCookies(local.request, local.response);
 			assertTrue(local.response.getCookies().size() == 3);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -216,7 +226,7 @@
 			local.request.setCookies(local.list);
 			instance.ESAPI.httpUtilities().killCookie( local.request, local.response, "test1" );
 			assertTrue(local.response.getCookies().size() == 1);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -242,7 +252,7 @@
 			} catch (java.io.IOException e) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -266,7 +276,7 @@
 			// test illegal value
 			local.httpUtilities.addCookie( local.response, createObject("java", "javax.servlet.http.Cookie").init( "test3", "tes<t3" ) );
 			assertTrue(local.response.getHeaderNames().size() == 2);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -302,7 +312,7 @@
 			} catch( EncryptionException e ) {
 				fail();
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -326,7 +336,7 @@
 			} catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
 				fail();
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -349,7 +359,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.EncryptionException expected) {
 				//expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -367,7 +377,7 @@
 			instance.ESAPI.httpUtilities().setNoCacheHeaders( local.response );
 			assertTrue(local.response.containsHeader("Cache-Control"));
 			assertTrue(local.response.containsHeader("Expires"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -391,7 +401,7 @@
 			// Can't test this because we're using safeSetCookie, which sets a header, not a real cookie!
 			// String value = response.getCookie( Authenticator.REMEMBER_TOKEN_COOKIE_NAME ).getValue();
 			// assertEquals( local.user.getRememberToken(), value );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -409,7 +419,7 @@
 
 			local.test2 = instance.ESAPI.httpUtilities().getSessionAttribute( local.session, "testAttribute" );
 			assertEquals( local.test2, createObject("java", "java.lang.Float").init(43).floatValue() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -426,7 +436,7 @@
 
 			local.test2 = instance.ESAPI.httpUtilities().getRequestAttribute( local.request, "testAttribute" );
 			assertEquals( local.test2, createObject("java", "java.lang.Float").init(43).floatValue() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

@@ -1,8 +1,26 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		
 		static.PREFERRED_ENCODING = "UTF-8";
 	</cfscript>
+ 
+	<cffunction access="public" returntype="void" name="setUp" output="false">
+		<cfscript>
+			structClear(request);
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="tearDown" output="false">
+		<cfscript>
+			structClear(request);
+		</cfscript> 
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testAddRule" output="false">
 		<cfscript>
@@ -10,7 +28,7 @@
 			local.rule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "ridiculous");
 			local.validator.addRule(local.rule);
 			assertEquals(local.rule, local.validator.getRule("ridiculous"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -21,7 +39,7 @@
 			local.validator.addRule(local.rule);
 			assertEquals(local.rule, local.validator.getRule("rule"));
 			assertFalse(local.rule.toString() == local.validator.getRule("ridiculous").toString());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -44,7 +62,7 @@
 			assertEquals(1, local.errors.size());
 			local.validator.getValidCreditCard("cctest8", "4417 1234 5678 9112", false, local.errors);
 			assertEquals(2, local.errors.size());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -63,7 +81,7 @@
 			// TODO: This test case fails due to an apparent bug in SimpleDateFormat
 			local.validator.getValidDate("test", "June 32, 2008", DateFormat.getDateInstance(), false, local.errors);
 			// assertEquals( 2, local.errors.size() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -81,7 +99,7 @@
 			assertEquals(1, local.errors.size());
 			local.validator.getValidDirectoryPath("dirtest3", "ridicul%00ous", local.parent, false, local.errors);
 			assertEquals(2, local.errors.size());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -104,7 +122,7 @@
 			assertEquals(3, local.errors.size());
 			local.validator.getValidDouble("dtest6", "" & (Double.MAX_VALUE & .00001), 0, 20, true, local.errors);
 			assertEquals(4, local.errors.size());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -124,7 +142,7 @@
 			assertEquals(0, local.errors.size());
 			local.validator.getValidFileContent("test", local.bytes, 4, true, local.errors);
 			assertEquals(1, local.errors.size());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -135,7 +153,7 @@
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			local.testName = "aspe%20ct.jar";
 			assertEquals(local.testName, local.validator.getValidFileName("test", local.testName, instance.ESAPI.securityConfiguration().getAllowedFileExtensions(), false, local.errors), "Percent encoding is not changed");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -145,7 +163,7 @@
 			local.validator = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.validator.getValidInput(String, String, String, int, boolean, ValidationErrorList)
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -155,7 +173,7 @@
 			local.validator = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.validator.getValidInteger(String, String, int, int, boolean, ValidationErrorList)
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -165,7 +183,7 @@
 			local.validator = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.validator.getValidListItem(String, String, List, ValidationErrorList)
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -175,7 +193,7 @@
 			local.validator = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.validator.getValidNumber(String, String, long, long, boolean, ValidationErrorList)
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -185,7 +203,7 @@
 			local.validator = instance.ESAPI.validator();
 			local.errors = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
 			// local.validator.getValidRedirectLocation(String, String, boolean, ValidationErrorList)
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -222,7 +240,7 @@
 			// assertFalse(local.validator.isValidSafeHTML("test", "\" onload=\"alert(document.cookie)\" "));
 			// String result4 = local.validator.getValidSafeHTML("test", test4);
 			// assertEquals("", result4);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -237,7 +255,7 @@
 			assertFalse(local.validator.isValidFileName(context="test", input="", allowNull=false), "Files must have an extension");
 			assertFalse(local.validator.isValidFileName(context="test.invalidExtension", input="", allowNull=false), "Files must have a valid extension");
 			assertFalse(local.validator.isValidFileName(context="test", input="", allowNull=false), "Filennames cannot be the empty string");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -251,7 +269,7 @@
 			assertTrue(local.validator.isValidDate("datetest1", "September 11, 2001", local.format, true));
 			assertFalse(local.validator.isValidDate("datetest2", "", local.format, false));
 			assertFalse(local.validator.isValidDate("datetest3", "", local.format, false));
-   		</cfscript>
+   		</cfscript> 
 	</cffunction>
 
 
@@ -310,14 +328,14 @@
 				assertFalse(local.validator.isValidDirectoryPath("test", "/etc/ridiculous", local.parent, false));
 				assertFalse(local.validator.isValidDirectoryPath("test", "/tmp/../etc", local.parent, false));
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testIsValidDouble" output="false">
 		<cfscript>
 			// isValidDouble(String, String, double, double, boolean)
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -333,7 +351,7 @@
 			}
 			local.validator = instance.ESAPI.validator();
 			assertTrue(local.validator.isValidFileContent("test", local.content, 100, false));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -344,7 +362,7 @@
 			assertTrue(local.validator.isValidFileName(context="test", input="aspect.jar", allowNull=false), "Simple valid filename with a valid extension");
 			assertTrue(local.validator.isValidFileName(context="test", input="!@##$%^&{}[]()_+-=,.~'` abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.jar", allowNull=false), "All valid filename characters are accepted");
 			assertTrue(local.validator.isValidFileName(context="test", input="aspe%20ct.jar", allowNull=false), "Legal filenames that decode to legal filenames are accepted");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -375,14 +393,14 @@
 			   fail(static.PREFERRED_ENCODING & " not a supported encoding?!?!!!");
 			}
 			assertFalse(local.validator.isValidFileUpload("test", local.filepath, local.filename, local.parent, local.content, 100, false));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testIsValidHTTPRequestParameterSet" output="false">
 		<cfscript>
 			//		isValidHTTPRequestParameterSet(String, Set, Set)
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -410,7 +428,7 @@
 
 			assertTrue(local.validator.isValidInput("test", "", "Email", 100, true));
 			assertFalse(local.validator.isValidInput("test", "", "Email", 100, false));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -447,7 +465,7 @@
 			assertFalse(local.validator.isValidInteger("test", "+NaN", 10, 10000, false));
 			assertFalse(local.validator.isValidInteger("test", "1e-6", -999999999, 999999999, false));
 			assertFalse(local.validator.isValidInteger("test", "-1e-6", -999999999, 999999999, false));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -460,7 +478,7 @@
 			local.list.add("two");
 			assertTrue(local.validator.isValidListItem("test", "one", local.list));
 			assertFalse(local.validator.isValidListItem("test", "three", local.list));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -497,7 +515,7 @@
 			assertFalse(local.validator.isValidNumber("test", "+NaN", 10, 10000, false));
 			assertTrue(local.validator.isValidNumber("test", "1e-6", -999999999, 999999999, false));
 			assertTrue(local.validator.isValidNumber("test", "-1e-6", -999999999, 999999999, false));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -526,7 +544,7 @@
 			assertTrue(local.validator.isValidHTTPRequestParameterSet("HTTPParameters", local.request, local.requiredNames, local.optionalNames));
 			local.request.removeParameter("p1");
 			assertFalse(local.validator.isValidHTTPRequestParameterSet("HTTPParameters", local.request, local.requiredNames, local.optionalNames));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -539,14 +557,14 @@
 			local.chars = [inputBaseN("60", 16), inputBaseN("FF", 16), inputBaseN("10", 16), inputBaseN("25", 16)];
 			assertFalse(local.validator.isValidPrintable("name", local.chars, 100, false));
 			assertFalse(local.validator.isValidPrintable("name", [inputBaseN("08", 16)], 100, false));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testIsValidRedirectLocation" output="false">
 		<cfscript>
 			//		isValidRedirectLocation(String, String, boolean)
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -566,7 +584,7 @@
 			// TODO: waiting for a way to validate text headed for an attribute for scripts
 			// This would be nice to catch, but just looks like text to AntiSamy
 			// assertFalse(local.validator.isValidSafeHTML("test", "\" onload=\"alert(document.cookie)\" "));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -628,7 +646,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 			   fail();
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -641,7 +659,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 			   fail(e.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

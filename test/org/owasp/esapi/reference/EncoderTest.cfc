@@ -1,8 +1,31 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		
 		static.PREFERRED_ENCODING = "UTF-8";
 	</cfscript>
+	
+	<cffunction access="private" returntype="string" name="toUnicode" output="false" description="Convert Unicode in to string characters">
+		<cfargument type="string" name="string" required="true">
+		<cfscript>
+		 	local.ret = "";
+		 	for (local.i=1; local.i <= len(arguments.string); local.i++) {
+		 		local.thisChr = mid(arguments.string, local.i, 6);
+		 		if (left(local.thisChr, 2) == "\u") {
+			 		local.ret = local.ret & chr(inputBaseN(right(local.thisChr, 4), 16));
+			 		local.i = local.i+5;
+		 		}
+				else {
+		 			local.ret = local.ret & left(local.thisChr, 1);
+		 		}
+		 	}
+		 	return local.ret;
+		 </cfscript>
+	</cffunction>
+	
 
 	<cffunction access="public" returntype="void" name="testCanonicalize" output="false" hint="Test of canonicalize method, of class org.owasp.esapi.Encoder.">
 		<cfscript>

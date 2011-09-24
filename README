@@ -15,7 +15,8 @@ Setup:
 4. Restart ColdFusion.
 
 Tests:
-- You can run the MXUnit tests using: /cfesapi/test/index.cfm
+- You can run the MXUnit tests using: /cfesapi/test/TestSuite.cfm
+- TODO Rid ourselves of the TestCase - move methods into tests that need them
 
 Demo:
 - See the /cfesapi/demo/ for examples of implementation.
@@ -26,8 +27,9 @@ Implementation:
 - You can create new implementations that implement the provided interfaces
 
 How:
-- Copy the /cfesapi/esapi/configuration/.esapi/ folder to a location within your CF application and make changes to your copy
-  - Be sure to update the ESAPI.properties file with the location of your implementation CFCs
+- Copy the /cfesapi/esapi/configuration/.esapi/ folder to a location within your CF application and make changes to your ESAPI.properties config file
+  - VERY IMPORTANT - change the Encryptor.MasterKey and Encryptor.MasterSalt values for your own security
+  - Be sure to update the ESAPI.component paths with the location of your implementation CFCs
 - Include the /cfesapi/helpers/ESAPI.cfm in your application (preferably in Application.cfc#onRequest)
 - Immediately following the above include, call ESAPI().securityConfiguration().setResourceDirectory("your config path that you copied")
 
@@ -39,7 +41,7 @@ How:
 * Adobe ColdFusion 9.0.1 *
 **************************
 MXUnit Test Results
- - 252 total = 3 failures + 4 errors + 245 successes
+ - 252 total = 2 failures + 5 errors + 245 successes
 
 Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 - ESAPI.jar (not needed if you have HF: http://kb2.adobe.com/cps/907/cpsid_90784.html)
@@ -52,7 +54,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 252 total = 2 failures + 9 errors + 241 successes
+- 252 total = 2 failures + 10 errors + 240 successes
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar

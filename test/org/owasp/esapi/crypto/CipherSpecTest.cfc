@@ -1,17 +1,16 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 		instance.dfltAESCipher = "";
 		instance.dfltECBCipher = "";	// will be "AES/ECB/NoPadding";
 		instance.dfltOtherCipher = "";
 		instance.cipherSpec = "";
 		instance.myIV = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			super.setUp();
-
 			// This will throw ConfigurationException if IV type is not set to
 			// 'fixed', which it's not. (We have it set to 'random'.)
 			// myIV = Hex.decode( ESAPI.securityConfiguration().getFixedIV() );
@@ -27,7 +26,7 @@
 
 			instance.cipherSpec = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI, cipher=instance.dfltOtherCipher);
 			assertTrue( !isNull(instance.cipherSpec) );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -52,7 +51,7 @@
 			    local.caughtException = true;
 			}
 	        assertTrue( local.caughtException && instance.cipherSpec == "" );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -69,7 +68,7 @@
 	    	assertTrue( instance.cipherSpec.getCipherMode() == "ECB" );
 	    	assertTrue( instance.cipherSpec.getPaddingScheme() == "NoPadding" );
 	    	// System.out.println("testCipherSpecInt(): " & instance.cipherSpec);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -80,7 +79,7 @@
 			instance.cipherSpec = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI, iv=instance.myIV);
 			assertTrue( instance.cipherSpec.getKeySize() == instance.ESAPI.securityConfiguration().getEncryptionKeyLength() );
 			assertTrue( instance.cipherSpec.getCipherTransformation() == instance.ESAPI.securityConfiguration().getCipherTransformation() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -92,7 +91,7 @@
 
 			instance.cipherSpec = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI, cipher=instance.dfltOtherCipher);
 			assertTrue( instance.cipherSpec.getCipherMode() == "OFB8" );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -109,28 +108,28 @@
 			} catch (java.lang.AssertionError e) {
 				assertTrue(true);	// Doesn't work w/ @Test(expected=AssertionError.class)
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testGetCipherTransformation" output="false">
 		<cfscript>
 			assertTrue( createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI).getCipherTransformation() == "AES/CBC/PKCS5Padding" );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testSetKeySize" output="false">
 		<cfscript>
 			assertTrue( createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI).setKeySize(56).getKeySize() == 56 );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testGetKeySize" output="false">
 		<cfscript>
 			assertTrue( createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI).getKeySize() == instance.ESAPI.securityConfiguration().getEncryptionKeyLength() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -147,35 +146,42 @@
 				assertTrue(true);	// Doesn't work w/ @Test(expected=AssertionError.class)
 			}
 			assertTrue( instance.cipherSpec.setBlockSize(4).getBlockSize() == 4 );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testGetBlockSize" output="false">
 		<cfscript>
 			assertTrue( instance.cipherSpec.getBlockSize() == 8 );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testGetCipherAlgorithm" output="false">
 		<cfscript>
 			assertTrue( instance.cipherSpec.getCipherAlgorithm() == "Blowfish" );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testGetCipherMode" output="false">
 		<cfscript>
 			assertTrue( instance.cipherSpec.getCipherMode() == "OFB8" );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testGetPaddingScheme" output="false">
 		<cfscript>
 			assertTrue( instance.cipherSpec.getPaddingScheme() == "PKCS5Padding" );
-		</cfscript>
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testGetIV" output="false">
+		<cfscript>
+			// TODO: testGetIV
+		</cfscript> 
 	</cffunction>
 
 
@@ -197,7 +203,7 @@
 			} catch ( java.lang.AssertionError e) {
 				assertTrue(true);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -208,12 +214,49 @@
 			assertTrue( instance.cipherSpec.getCipherMode() == "ECB" );
 			assertTrue( instance.cipherSpec.requiresIV() == false );
 			assertTrue( createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(ESAPI=instance.ESAPI, cipher=instance.dfltOtherCipher).requiresIV() );
-		</cfscript>
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testToString" output="false">
+		<cfscript>
+			// TODO: toString
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testEquals" output="false">
+		<cfscript>
+			// TODO: equals
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testHashCode" output="false">
+		<cfscript>
+			// TODO: hashCode
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testCanEqual" output="false">
+		<cfscript>
+			// TODO: canEqual
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testGetFromCipherXform" output="false">
+		<cfscript>
+			// TODO: testGetFromCipherXform
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testSerialization" output="false">
 		<cfscript>
+			System = createObject("java", "java.lang.System");
+			
 	        local.filename = "cipherspec.ser";
 	        local.serializedFile = createObject("java", "java.io.File").init(local.filename);
 	        local.success = false;
@@ -265,7 +308,7 @@
 	                }
 	            }
 	        }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

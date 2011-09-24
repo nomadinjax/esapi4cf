@@ -1,12 +1,38 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
-	<!--- TODO: need tests for:
-		getLocale()
-		setLocale()
-		--->
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
+		// delete the users.txt file as running all these tests just once creates tons of users
+		// the more users, the longer the tests take
+		filePath = expandPath("/cfesapi/esapi/configuration/.esapi/users.txt");
+		if (fileExists(filePath)) {
+			try {
+				fileDelete(filePath);
+			}
+			catch (Any e) {}
+		}
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+
 		DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 	</cfscript>
+ 
+	<cffunction access="public" returntype="void" name="setUp" output="false">
+		<cfscript>
+			structClear(request);
+			structClear(session);
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="tearDown" output="false">
+		<cfscript>
+			structClear(request);
+			structClear(session);
+		</cfscript> 
+	</cffunction>
+
 
 	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.reference.DefaultUser" name="createTestUser" output="false" hint="Creates the test user.">
 		<cfargument type="String" name="password" required="true" hint="the password">
@@ -16,7 +42,7 @@
 			System.out.println("Creating user " & local.username & " for " & local.e.getStackTrace()[1].getMethodName());
 			local.user = instance.ESAPI.authenticator().createUser(local.username, arguments.password, arguments.password);
 			return local.user;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -31,7 +57,7 @@
 			local.user.addRole(local.role);
 			assertTrue(local.user.isInRole(local.role));
 			assertFalse(local.user.isInRole("ridiculous"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -48,7 +74,7 @@
 			assertTrue(local.user.isInRole("rolea"));
 			assertTrue(local.user.isInRole("roleb"));
 			assertFalse(local.user.isInRole("ridiculous"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -74,7 +100,7 @@
 			}
 			assertTrue(local.user.verifyPassword(local.password2));
 			assertFalse(local.user.verifyPassword("badpass"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -88,7 +114,7 @@
 			assertTrue(local.user.isEnabled());
 			local.user.disable();
 			assertFalse(local.user.isEnabled());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -102,7 +128,7 @@
 			assertTrue(local.user.isEnabled());
 			local.user.disable();
 			assertFalse(local.user.isEnabled());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -140,7 +166,7 @@
 	    	}
 			System.out.println("FAILED: " & local.user.getFailedLoginCount());
 			assertTrue(local.user.isLocked());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -152,7 +178,7 @@
 			local.user.setAccountName(local.accountName);
 			assertEquals(local.accountName.toLowerCase(), local.user.getAccountName());
 			assertFalse("ridiculous" == local.user.getAccountName());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -176,7 +202,7 @@
 	    	}
 			local.llt2 = local.user.getLastFailedLoginTime();
 			assertTrue(local.llt1.before(local.llt2));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -192,7 +218,7 @@
 			local.user.verifyPassword(local.oldPassword);
 			local.llt2 = local.user.getLastLoginTime();
 			assertTrue(local.llt1.before(local.llt2));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -206,7 +232,7 @@
 			local.user.changePassword("getLastPasswordChangeTime", local.newPassword, local.newPassword);
 			local.t2 = local.user.getLastPasswordChangeTime();
 			assertTrue(local.t2.after(local.t1));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -221,7 +247,7 @@
 			local.user.addRole(local.role);
 			local.roles = local.user.getRoles();
 			assertTrue(local.roles.size() > 0);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -233,7 +259,7 @@
 			local.user.setScreenName(local.screenName);
 			assertEquals(local.screenName, local.user.getScreenName());
 			assertFalse("ridiculous" == local.user.getScreenName());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -257,21 +283,21 @@
 	            System.out.println( ">>>" & local.s.getId() );
 	        }
 	        assertTrue(local.sessions.size() == 3);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testAddSession" output="false">
 		<cfscript>
 	    	// TODO
-	    </cfscript>
+	    </cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testRemoveSession" output="false">
 		<cfscript>
 	    	// TODO
-	    </cfscript>
+	    </cfscript> 
 	</cffunction>
 
 
@@ -308,7 +334,7 @@
 				// expected
 			}
 			assertTrue(local.user.isLocked());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -320,7 +346,7 @@
 			assertFalse(local.user.isEnabled());
 			local.user.enable();
 			assertTrue(local.user.isEnabled());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -333,7 +359,7 @@
 			local.user.addRole(local.role);
 			assertTrue(local.user.isInRole(local.role));
 			assertFalse(local.user.isInRole("Ridiculous"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -345,7 +371,7 @@
 			assertTrue(local.user.isLocked());
 			local.user.unlock();
 			assertFalse(local.user.isLocked());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -369,7 +395,7 @@
 			// set session creation -1 hour (default is 2 hour timeout)
 			local.session.setCreationTime( local.now - (1000 * 60 * 60 * 1) );
 			assertFalse(local.user.isSessionAbsoluteTimeout());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -393,7 +419,7 @@
 			// set creation -1 hour (default is 20 min timeout)
 			local.session.setAccessedTime( local.now - 1000 * 60 * 10 );
 			assertFalse(local.user.isSessionTimeout());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -407,7 +433,7 @@
 			assertTrue(local.user.isLocked());
 			local.user.unlock();
 			assertFalse(local.user.isLocked());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -443,7 +469,7 @@
 			assertTrue(local.user.isLocked());
 			local.user.unlock();
 			assertTrue(local.user.getFailedLoginCount() == 0 );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -468,7 +494,7 @@
 			local.user.logout();
 			assertFalse(local.user.isLoggedIn());
 			assertTrue(local.session.getInvalidated());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -481,7 +507,7 @@
 			assertTrue(local.user.isInRole(local.role));
 			local.user.removeRole(local.role);
 			assertFalse(local.user.isInRole(local.role));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -492,7 +518,7 @@
 	        local.token1 = local.user.resetCSRFToken();
 	        local.token2 = local.user.resetCSRFToken();
 	        assertFalse( local.token1.equals( local.token2 ) );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -504,7 +530,7 @@
 			local.user.setAccountName(local.accountName);
 			assertEquals(local.accountName.toLowerCase(), local.user.getAccountName());
 			assertFalse("ridiculous" == local.user.getAccountName());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -517,7 +543,7 @@
 			local.user = createTestUser(local.password);
 			local.user.setExpirationTime(local.longAgo);
 			assertTrue( local.user.isExpired() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -535,7 +561,7 @@
 			assertTrue(local.user.isInRole("rolea"));
 			assertTrue(local.user.isInRole("roleb"));
 			assertFalse(local.user.isInRole("ridiculous"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -547,7 +573,7 @@
 			local.user.setScreenName(local.screenName);
 			assertEquals(local.screenName, local.user.getScreenName());
 			assertFalse("ridiculous" == local.user.getScreenName());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -561,7 +587,7 @@
 			assertTrue(local.user.isLocked());
 			local.user.unlock();
 			assertFalse(local.user.isLocked());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

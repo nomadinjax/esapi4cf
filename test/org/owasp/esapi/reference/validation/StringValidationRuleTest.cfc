@@ -1,5 +1,8 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
+	<cfscript>
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testWhitelistPattern" output="false">
 		<cfscript>

@@ -1,7 +1,10 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
 		DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testMatchRule" output="false">

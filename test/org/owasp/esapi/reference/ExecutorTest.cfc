@@ -1,6 +1,11 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
-
+	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+	</cfscript>
+ 
 	<cffunction access="public" returntype="void" name="testExecuteWindowsSystemCommand" output="false" hint="Test of executeOSCommand method, of class org.owasp.esapi.Executor">
 		<cfscript>
 			ioFile = createObject("java", "java.io.File");
@@ -86,7 +91,7 @@
 			} catch (java.lang.Exception e) {
 				fail("");
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

@@ -1,17 +1,20 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
-
+	<cfscript>
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+	</cfscript>
+ 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			super.setUp();
-
 			Throwable = createObject("java", "java.lang.Throwable");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testExceptions" output="false" hint="Test of update method, of class org.owasp.esapi.AccessReferenceMap.">
 		<cfscript>
+			System = createObject("java", "java.lang.System");
+			
 	        System.out.println("exceptions");
 	        local.e = "";
 	        local.e = createObject("component", "cfesapi.org.owasp.esapi.errors.EnterpriseSecurityException").init(instance.ESAPI);
@@ -78,7 +81,7 @@
 	        local.ex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI,"m1","m2", Throwable.init());
 	        assertEquals( local.ex.getUserMessage(), "m1" );
 	        assertEquals( local.ex.getLogMessage(), "m2" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

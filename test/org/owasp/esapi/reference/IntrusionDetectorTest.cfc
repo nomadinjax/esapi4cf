@@ -1,4 +1,23 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
+
+	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+	</cfscript>
+ 
+	<cffunction access="public" returntype="void" name="setUp" output="false">
+		<cfscript>
+			structClear(request);
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="tearDown" output="false">
+		<cfscript>
+			structClear(request);
+		</cfscript> 
+	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testAddException" output="false" hint="Test of addException method, of class org.owasp.esapi.IntrusionDetector.">
@@ -22,7 +41,7 @@
 	            createObject("component", "cfesapi.org.owasp.esapi.errors.IntegrityException").init( instance.ESAPI, "IntegrityException " & i, "IntegrityException " & i );
 			}
 	        assertFalse( local.user.isLoggedIn() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -43,7 +62,7 @@
 	            instance.ESAPI.intrusionDetector().addEvent("test", "test message");
 	        }
 	        assertFalse( local.user.isEnabled() );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

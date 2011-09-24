@@ -1,16 +1,18 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
 		Logger = createObject("java", "org.owasp.esapi.Logger");
 
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 		instance.testCount = 0;
 		instance.testLogger = "";
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			super.setUp();
-
+			structClear(request);
+			
 			local.tmpConfig = createObject("component", "UnitTestSecurityConfiguration").init(instance.ESAPI, instance.ESAPI.securityConfiguration());
 	        tmpConfig.setLogImplementation( getMetaData(createObject("component", "cfesapi.org.owasp.esapi.reference.JavaLogFactory")).name );
 	        instance.ESAPI.override(local.tmpConfig);
@@ -25,8 +27,8 @@
 		<cfscript>
 			instance.testLogger = "";
 			instance.ESAPI.override("");
-
-			super.tearDown();
+			
+			structClear(request);
 		</cfscript>
 	</cffunction>
 

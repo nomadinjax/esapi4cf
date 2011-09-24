@@ -1,5 +1,8 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
+	<cfscript>
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+	</cfscript>
 
 	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration" name="createWithProperty" output="false">
 		<cfargument type="String" name="key" required="true">

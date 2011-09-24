@@ -230,7 +230,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<!--- hashCode --->
+	<!--- TODO: hashCode --->
 		
 	<cffunction access="package" returntype="boolean" name="canEqual" output="false">
 		<cfargument type="any" name="other" required="true">

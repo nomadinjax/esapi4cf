@@ -1,10 +1,13 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
+	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			super.setUp();
-
 			// This is only mechanism to change this for now. Will do this with a soon to be CryptoControls class in next release.
 	        instance.ESAPI.securityConfiguration().setCipherTransformation("AES/CBC/PKCS5Padding");
 		</cfscript>

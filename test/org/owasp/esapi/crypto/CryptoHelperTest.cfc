@@ -1,6 +1,8 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		
 		CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
 	</cfscript>
 

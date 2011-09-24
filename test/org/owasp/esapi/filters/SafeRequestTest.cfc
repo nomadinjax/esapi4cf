@@ -1,8 +1,27 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
+
+	<cfscript>
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+	</cfscript>
+ 
+	<cffunction access="public" returntype="void" name="setUp" output="false">
+		<cfscript>
+			structClear(request);
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="tearDown" output="false">
+		<cfscript>
+			structClear(request);
+		</cfscript> 
+	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testGetRequestParameters" output="false">
 		<cfscript>
+			System = createObject("java", "java.lang.System");
+			
 			System.out.println( "getRequestParameters");
 			local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest");
 			local.request.addParameter( "one","1" );
@@ -16,7 +35,7 @@
 				local.out &= local.params[i];
 			}
 			assertEquals( "134", local.out );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -27,7 +46,7 @@
 			local.req.setQueryString("");
 			local.wrappedReq = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init( instance.ESAPI, local.req);
 			assertIsEmpty(local.wrappedReq.getQueryString());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -38,7 +57,7 @@
 			local.req.setQueryString("a=b");
 			local.wrappedReq = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init( instance.ESAPI, local.req);
 			assertEquals("a=b",local.wrappedReq.getQueryString());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -49,7 +68,7 @@
 			local.req.setQueryString("a=\u0000");
 			local.wrappedReq = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init( instance.ESAPI, local.req);
 			assertEquals("",local.wrappedReq.getQueryString());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -60,7 +79,7 @@
 			local.req.setQueryString("a=%62");
 			local.wrappedReq = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init( instance.ESAPI, local.req);
 			assertEquals("a=b",local.wrappedReq.getQueryString());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -71,7 +90,7 @@
 			local.req.setQueryString("a=%00");
 			local.wrappedReq = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init( instance.ESAPI, local.req);
 			assertEquals("",local.wrappedReq.getQueryString());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!---  Test to ensure null-value contract defined by ServletRequest.getParameterNames(String) is met. --->
@@ -86,7 +105,7 @@
 
 			local.safeRequest = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init( instance.ESAPI, local.request);
 			assertIsEmptyArray(local.safeRequest.getParameterValues(local.paramName), "Expecting null value to be returned for non-existent parameter.");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -103,7 +122,7 @@
 			local.safeRequest = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init( instance.ESAPI, local.request);
 			local.actualParamValue = local.safeRequest.getParameterValues(local.paramName)[1];
 			assertEquals(local.paramValue, local.actualParamValue);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -124,7 +143,7 @@
 			local.actualParamValues = local.safeRequest.getParameterValues(local.paramName);
 			assertEquals(local.paramValue_0, local.actualParamValues[1]);
 			assertEquals(local.paramValue_1, local.actualParamValues[2]);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

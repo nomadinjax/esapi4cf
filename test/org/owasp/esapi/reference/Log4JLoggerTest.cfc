@@ -1,15 +1,18 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
 		Logger = createObject("java", "org.owasp.esapi.Logger");
 
 		instance.testCount = 0;
 		instance.testLogger = "";
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			super.setUp();
+			structClear(request);
 
 			local.tmpConfig = createObject("component", "UnitTestSecurityConfiguration").init(instance.ESAPI, instance.ESAPI.securityConfiguration());
 	        local.tmpConfig.setLogImplementation( getMetaData(createObject("component", "cfesapi.org.owasp.esapi.reference.ExampleExtendedLog4JLogFactory")).name);
@@ -17,7 +20,7 @@
 	    	// This ensures a clean logger between tests
 	    	instance.testLogger = instance.ESAPI.getLogger( "test ExampleExtendedLog4JLogFactory: " & instance.testCount++ );
 	    	System.out.println("Test ExampleExtendedLog4JLogFactory logger: " & instance.testLogger.toString());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -26,8 +29,8 @@
 			instance.testLogger = "";
 			instance.ESAPI.override("");
 
-			super.tearDown();
-		</cfscript>
+			structClear(request);
+		</cfscript> 
 	</cffunction>
 
 
@@ -45,7 +48,7 @@
 			local.request.addParameter("two","two2");
 			local.request.addParameter("password","jwilliams");
 			instance.ESAPI.httpUtilities().logHTTPRequest( local.request, local.logger, local.ignore );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -140,7 +143,7 @@
 	       	assertTrue(newLogger.isInfoEnabled());
 	       	assertFalse(newLogger.isDebugEnabled());
 	       	assertFalse(newLogger.isTraceEnabled());
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -151,7 +154,7 @@
 	        instance.testLogger.info(Logger.SECURITY_SUCCESS, "test message", "" );
 	        instance.testLogger.info(Logger.SECURITY_SUCCESS, "%3escript%3f test message", "" );
 	        instance.testLogger.info(Logger.SECURITY_SUCCESS, "<script> test message", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -160,7 +163,7 @@
 	        System.out.println("trace");
 	        instance.testLogger.trace(Logger.SECURITY_SUCCESS, "test message trace" );
 	        instance.testLogger.trace(Logger.SECURITY_SUCCESS, "test message trace", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -169,7 +172,7 @@
 	        System.out.println("debug");
 	        instance.testLogger.debug(Logger.SECURITY_SUCCESS, "test message debug" );
 	        instance.testLogger.debug(Logger.SECURITY_SUCCESS, "test message debug", "" );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -178,7 +181,7 @@
 	        System.out.println("error");
 	        instance.testLogger.error(Logger.SECURITY_SUCCESS, "test message error" );
 	        instance.testLogger.error(Logger.SECURITY_SUCCESS, "test message error", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -187,7 +190,7 @@
 	        System.out.println("warning");
 	        instance.testLogger.warning(Logger.SECURITY_SUCCESS, "test message warning" );
 	        instance.testLogger.warning(Logger.SECURITY_SUCCESS, "test message warning", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -196,7 +199,7 @@
 	        System.out.println("fatal");
 	        instance.testLogger.fatal(Logger.SECURITY_SUCCESS, "test message fatal" );
 	        instance.testLogger.fatal(Logger.SECURITY_SUCCESS, "test message fatal", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

@@ -1,8 +1,36 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
+		// delete the users.txt file as running all these tests just once creates tons of users
+		// the more users, the longer the tests take
+		filePath = expandPath("/cfesapi/esapi/configuration/.esapi/users.txt");
+		if (fileExists(filePath)) {
+			try {
+				fileDelete(filePath);
+			}
+			catch (Any e) {}
+		}
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		
 		DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
 	</cfscript>
+ 
+	<cffunction access="public" returntype="void" name="setUp" output="false">
+		<cfscript>
+			structClear(request);
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="tearDown" output="false">
+		<cfscript>
+			structClear(request);
+		</cfscript> 
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="testCreateUser" output="false" hint="Test of createAccount method, of class org.owasp.esapi.Authenticator.">
 		<cfscript>
@@ -42,7 +70,7 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 	            // success
 	        }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -66,7 +94,7 @@
 			} catch( cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e ) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -117,7 +145,7 @@
 	        while (tg.activeCount() > 0 ) {
 	            Thread.sleep(100);
 	        }*/
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -130,7 +158,7 @@
 			local.authenticator.createUser(local.accountName, local.password, local.password);
 			assertTrue(isObject(local.authenticator.getUserByAccountName( local.accountName )));
 			assertFalse(isObject(local.authenticator.getUserByAccountName( instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS) )));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -149,11 +177,11 @@
 
 			System.out.println("getUserFromRememberToken - expecting failure");
 			local.request.setCookie( instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, "ridiculous" );
-			//try {
+			try {
 				local.authenticator.getUserFromRememberToken( local.request, local.response );  // wrong cookie will fail
-			//} catch( AuthenticationException e ) {
+			} catch( cfesapi.org.owasp.esapi.errors.AuthenticationException e ) {
 				// expected
-			//}
+			}
 
 			System.out.println("getUserFromRememberToken - expecting success");
 		    local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
@@ -164,7 +192,7 @@
 	        local.user.logout();  // logout the current user so we can log them in with the remember cookie
 			local.test2 = local.authenticator.getUserFromRememberToken( local.request, local.response );
 			assertSame( local.user, local.test2 );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -185,7 +213,7 @@
 			local.authenticator.login( local.request, local.response);
 			local.test = local.authenticator.getUserFromSession();
 			assertEquals( local.user, local.test );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -205,7 +233,7 @@
 			for(local.i=1;local.i<=arrayLen(local.testnames);local.i++) {
 				assertTrue(local.names.contains(local.testnames[local.i].toLowerCase()));
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -218,7 +246,7 @@
 			local.result1 = local.authenticator.hashPassword(local.password, local.username);
 			local.result2 = local.authenticator.hashPassword(local.password, local.username);
 			assertTrue(local.result1.equals(local.result2));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -237,7 +265,7 @@
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.test = local.authenticator.login( local.request, local.response);
 			assertTrue( local.test.isLoggedIn() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -251,7 +279,7 @@
 			assertTrue( local.authenticator.exists(local.accountName));
 			local.authenticator.removeUser(local.accountName);
 			assertFalse( local.authenticator.exists(local.accountName));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -266,7 +294,7 @@
 			assertTrue( isObject(local.authenticator.getUserByAccountName(local.accountName)) );
 			local.authenticator.removeUser(local.accountName);
 			assertFalse( isObject(local.authenticator.getUserByAccountName(local.accountName)) );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -306,7 +334,7 @@
 			for ( int i = 0; i<10; i++ ) {
 				new Thread( echo ).start();
 			}*/
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -346,7 +374,7 @@
 			} catch( cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e ) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -413,7 +441,7 @@
 
 	        // chrisisbeef - Issue 65 - http://code.google.com/p/owasp-esapi-java/issues/detail?id=65
 	        local.authenticator.verifyPasswordStrength("password", "b!gbr0ther");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -427,7 +455,7 @@
 			assertTrue(local.authenticator.exists(local.accountName));
 			local.authenticator.removeUser(local.accountName);
 			assertFalse(local.authenticator.exists(local.accountName));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

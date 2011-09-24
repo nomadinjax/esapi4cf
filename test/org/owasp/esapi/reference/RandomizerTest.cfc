@@ -1,12 +1,11 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
-	<!--- TODO: need tests for:
-		getRandomBoolean()
-		getRandomLong()
-		getRandomFilename()
-		getRandomBytes()
-		--->
-
+	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+	</cfscript>
+ 
 	<cffunction access="public" returntype="void" name="testGetRandomString" output="false" hint="Test of getRandomString method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
 	        System.out.println("getRandomString");
@@ -23,7 +22,7 @@
 	            }
 	            assertEquals(local.length, local.result.length());
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -41,7 +40,7 @@
 	            if ( local.result > local.maxResult ) local.maxResult = local.result;
 	        }
 	        assertEquals(true, (local.minResult >= local.min && local.maxResult < local.max) );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -60,7 +59,7 @@
 	            if ( local.result > local.maxResult ) local.maxResult = local.result;
 	        }
 	        assertEquals(true, (local.minResult >= local.min && local.maxResult < local.max));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -74,7 +73,7 @@
 	            if ( local.list.contains( local.guid ) ) fail();
 	            local.list.add( local.guid );
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

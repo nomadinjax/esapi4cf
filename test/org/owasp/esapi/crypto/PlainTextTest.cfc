@@ -1,12 +1,15 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 		instance.unicodeStr = "A\u00ea\u00f1\u00fcC";	// I.e., "AêñüC"
 		instance.altString  = "AêñüC";					// Same as above.
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testUnicodeString" output="false">
 		<cfscript>
+			System = createObject("java", "java.lang.System");
+			
 		    // These 2 strings are *meant* to be equal. If they are not, please
 		    // do *NOT* change the test. It's a Windows thing. Sorry. Change your
 		    // OS instead. ;-)

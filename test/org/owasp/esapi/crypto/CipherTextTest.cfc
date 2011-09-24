@@ -1,18 +1,27 @@
-<cfcomponent extends="cfesapi.test.mxunit.framework.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
 	    static.POST_CLEANUP = true;
 
+		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 		instance.cipherSpec = "";
 	    instance.encryptor = "";
 	    instance.decryptor = "";
 	    instance.ivSpec = "";
 	</cfscript>
+ 
+	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
+		<cfargument type="numeric" name="len" required="true">
+		<cfscript>
+			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder.setLength(arguments.len);
+			return StringBuilder.toString().getBytes();
+		</cfscript> 
+	</cffunction>
+
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-			super.setUp();
-
 			// These two calls have side-effects that cause FindBugs to complain.
 	        createObject("java", "java.io.File").init("ciphertext.ser").delete();
 	        createObject("java", "java.io.File").init("ciphertext-portable.ser").delete();
@@ -21,7 +30,7 @@
 	        instance.decryptor = createObject("java", "javax.crypto.Cipher").getInstance("AES/CBC/PKCS5Padding");
 	        local.ivBytes = instance.ESAPI.randomizer().getRandomBytes(instance.encryptor.getBlockSize());
 	        instance.ivSpec = createObject("java", "javax.crypto.spec.IvParameterSpec").init(local.ivBytes);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -32,9 +41,7 @@
 		        createObject("java", "java.io.File").init("ciphertext.ser").delete();
 		        createObject("java", "java.io.File").init("ciphertext-portable.ser").delete();
 		    }
-
-			super.tearDown();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -45,7 +52,7 @@
 			instance.cipherSpec = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherSpec").init(instance.ESAPI);
 			assertTrue( local.ct.getCipherTransformation() == instance.cipherSpec.getCipherTransformation() );
 			assertTrue( local.ct.getBlockSize() == instance.cipherSpec.getBlockSize() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -56,7 +63,7 @@
 			assertTrue( !arrayLen(local.ct.getRawCipherText()) );
 			assertTrue( local.ct.getCipherAlgorithm() == "DESede" );
 			assertTrue( local.ct.getKeySize() == instance.cipherSpec.getKeySize() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -90,12 +97,13 @@
 				// As far as test coverage goes, we really don't want this to be covered.
 				fail("Caught unexpected exception: " & ex.getClass().getName() & "; exception message was: " & ex.getMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testDecryptionUsingCipherText" output="false">
 		<cfscript>
+			System = createObject("java", "java.lang.System");
 			Cipher = createObject("java", "javax.crypto.Cipher");
 			CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
 
@@ -140,7 +148,7 @@
 				ex.printStackTrace(System.err);
 				fail("Caught unexpected exception: " & ex.getClass().getName() & "; exception message was: " & ex.getMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -179,7 +187,7 @@
 				ex.printStackTrace(System.err);
 				fail("Caught unexpected exception: " & ex.getClass().getName() & "; exception message was: " & ex.getMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -245,7 +253,7 @@
 	            // FindBugs complains that we are ignoring this return value. We really don't care.
 	            local.serializedFile.delete();
 	        }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -310,7 +318,7 @@
 			    // FindBugs complains that we are ignoring this return value. We really don't care.
 	            local.serializedFile.delete();
 	        }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
