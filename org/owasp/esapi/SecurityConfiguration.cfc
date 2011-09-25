@@ -41,6 +41,10 @@
 	</cffunction>
 
 
+	<cffunction access="public" returntype="boolean" name="getLenientDatesAccepted" output="false" hint="Determines whether ESAPI will accept 'lenient' dates when attempt to parse dates. Controlled by ESAPI property Validator.AcceptLenientDates, which defaults to false if unset.">
+	</cffunction>
+
+
 	<cffunction access="public" returntype="String" name="getExecutorImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI OS Execution implementation.">
 	</cffunction>
 
@@ -139,7 +143,15 @@
 	</cffunction>
 
 
+	<cffunction access="public" returntype="String" name="getKDFPseudoRandomFunction" output="false" hint="Retrieve the Pseudo Random Function (PRF) used by the ESAPI Key Derivation Function (KDF).">
+	</cffunction>
+
+
 	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false" hint="Gets the character encoding scheme supported by this application. This is used to set the character encoding scheme on requests and responses when setCharacterEncoding() is called on SafeRequests and SafeResponses. This scheme is also used for encoding/decoding URLs and any other place where the current encoding scheme needs to be known. Note: This does not get the configured response content type. That is accessed by calling getResponseContentType().">
+	</cffunction>
+
+
+	<cffunction access="public" returntype="boolean" name="getAllowMixedEncoding" output="false" hint="Return true if mixed encoding is allowed">
 	</cffunction>
 
 
@@ -216,6 +228,10 @@
 
 
 	<cffunction access="public" returntype="String" name="getResponseContentType" output="false" hint="Gets the content type for responses used when setSafeContentType() is called. Note: This does not get the configured character encoding scheme. That is accessed by calling getCharacterEncoding().">
+	</cffunction>
+
+
+	<cffunction access="public" returntype="String" name="getHttpSessionIdName" output="false" hint="This method returns the configured name of the session identifier, likely 'JSESSIONID' though this can be overridden.">
 	</cffunction>
 
 

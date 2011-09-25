@@ -3,7 +3,7 @@
 	<cfscript>
 		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 	</cfscript>
-
+ 
 	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration" name="createWithProperty" output="false">
 		<cfargument type="String" name="key" required="true">
 		<cfargument type="String" name="val" required="true">
@@ -11,7 +11,7 @@
 			local.properties = createObject("java", "java.util.Properties").init();
 			local.properties.setProperty(arguments.key, javaCast("string", arguments.val));
 			return createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, local.properties);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -20,7 +20,7 @@
 			local.expected = "ESAPI_UnitTests";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").APPLICATION_NAME, local.expected);
 			assertEquals(local.expected, local.secConf.getApplicationName());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -33,7 +33,7 @@
 			local.expected = "TestLogger";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").LOG_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getLogImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -46,7 +46,7 @@
 			local.expected = "TestAuthentication";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").AUTHENTICATION_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getAuthenticationImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -59,7 +59,7 @@
 			local.expected = "TestEncoder";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").ENCODER_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getEncoderImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -72,7 +72,7 @@
 			local.expected = "TestAccessControl";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").ACCESS_CONTROL_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getAccessControlImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -85,7 +85,7 @@
 			local.expected = "TestEncryption";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").ENCRYPTION_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getEncryptionImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -98,7 +98,7 @@
 			local.expected = "TestIntrusionDetection";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").INTRUSION_DETECTION_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getIntrusionDetectionImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -111,7 +111,7 @@
 			local.expected = "TestRandomizer";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").RANDOMIZER_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getRandomizerImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -124,7 +124,7 @@
 			local.expected = "TestExecutor";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").EXECUTOR_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getExecutorImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -137,7 +137,7 @@
 			local.expected = "TestHTTPUtilities";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").HTTP_UTILITIES_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getHTTPUtilitiesImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -150,19 +150,33 @@
 			local.expected = "TestValidation";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").VALIDATOR_IMPLEMENTATION, local.expected);
 			assertEquals(local.expected, local.secConf.getValidationImplementation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testGetEncryptionKeyLength" output="false">
 		<cfscript>
+			// test the default
 			local.secConf = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, createObject("java", "java.util.Properties").init());
 			assertEquals(128, local.secConf.getEncryptionKeyLength());
 
 			local.expected = 256;
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").KEY_LENGTH, local.expected);
 			assertEquals(local.expected, local.secConf.getEncryptionKeyLength());
-		</cfscript>
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testGetKDFPseudoRandomFunction" output="false">
+		<cfscript>
+			// test the default
+			local.secConf = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, createObject("java", "java.util.Properties").init());
+			assertEquals("HmacSHA256", local.secConf.getKDFPseudoRandomFunction());
+			
+			local.expected = "HmacSHA1";
+			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").KDF_PRF_ALG, local.expected);
+			assertEquals(local.expected, local.secConf.getKDFPseudoRandomFunction());
+		</cfscript> 
 	</cffunction>
 
 
@@ -183,7 +197,7 @@
 			local.properties.setProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").MASTER_SALT, local.property);
 			local.secConf = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, local.properties);
 			assertEquals(local.salt, createObject("java", "java.lang.String").init(local.secConf.getMasterSalt()));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -208,7 +222,7 @@
 			//this seems less than optimal, maybe each value should have a trim() done to it
 			//at least we know that this behavior exists, the property should'nt have spaces between values
 			assertEquals(" /bin/cvs", local.allowedExecutables[3]);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -224,7 +238,7 @@
 			local.allowedFileExtensions = local.secConf.getAllowedFileExtensions();
 			assertEquals(4, arrayLen(local.allowedFileExtensions));
 			assertEquals(".html", local.allowedFileExtensions[3]);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -237,7 +251,7 @@
 			local.expected = (1024 * 1000);
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").MAX_UPLOAD_FILE_BYTES, local.expected);
 			assertEquals(local.expected, local.secConf.getAllowedFileUploadSize());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -254,7 +268,7 @@
 			local.secConf = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").init(instance.ESAPI, local.properties);
 			assertEquals("j_password", local.secConf.getPasswordParameterName());
 			assertEquals("j_username", local.secConf.getUsernameParameterName());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -266,7 +280,7 @@
 
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").ENCRYPTION_ALGORITHM, "3DES");
 			assertEquals("3DES", local.secConf.getEncryptionAlgorithm());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -286,7 +300,7 @@
 
 			local.secConf.setCipherTransformation("");//sets it back to default
 			assertEquals("Blowfish/CFB/ISO10126Padding", local.secConf.getCipherTransformation());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -325,7 +339,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.ConfigurationException ce) {
 				assertTrue(len(ce.message));
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -342,7 +356,7 @@
 
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").ALLOW_MULTIPLE_ENCODING, "no");
 			assertFalse(local.secConf.getAllowMultipleEncoding());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -354,7 +368,7 @@
 			local.property = "org.owasp.esapi.codecs.TestCodec1,org.owasp.esapi.codecs.TestCodec2";
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").CANONICALIZATION_CODECS, local.property);
 			assertTrue(arrayFind(local.secConf.getDefaultCanonicalizationCodecs(), "org.owasp.esapi.codecs.TestCodec1"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -371,7 +385,7 @@
 
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").DISABLE_INTRUSION_DETECTION, "false");
 			assertFalse(local.secConf.getDisableIntrusionDetection());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -399,7 +413,7 @@
 
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").LOG_LEVEL, "ERROR");
 			assertEquals(Logger.ERROR, local.secConf.getLogLevel());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -410,7 +424,7 @@
 
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").LOG_FILE_NAME, "log.txt");
 			assertEquals("log.txt", local.secConf.getLogFileName());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -422,7 +436,7 @@
 			local.maxLogSize = (1024 * 1000);
 			local.secConf = createWithProperty(createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration").MAX_LOG_FILE_SIZE, local.maxLogSize);
 			assertEquals(local.maxLogSize, local.secConf.getMaxLogFileSize());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
