@@ -11,12 +11,21 @@ License: BSD license
 
 Setup:
 1. The cfesapi folder should sit at the webroot level.
-2. Copy /cfesapi/esapi/esapi-2.0_rc10.jar and selected files from /cfesapi/esapi/libs/ to your lib folder (see compatibility below).
-4. Restart ColdFusion.
+2. Copy /cfesapi/esapi/esapi-2.0.1.jar and selected files from /cfesapi/esapi/libs/ to your lib folder (see compatibility below).
+3. Restart ColdFusion.
+NOTE: there are folders included with CFESAPI that you will want to exclude from your production environment
 
 Tests:
 - You can run the MXUnit tests using: /cfesapi/test/TestSuite.cfm
 - TODO Rid ourselves of the TestCase - move methods into tests that need them
+
+How:
+- Copy the /cfesapi/esapi/configuration/.esapi/ folder to a location within your CF application and make changes to your ESAPI.properties config file
+***** IMPORTANT: Do NOT forget to replace Encryptor.MasterKey and Encryptor.MasterSalt with your own values! ***** 
+- Run /cfesapi/org/owasp/esapi/reference/crypto/JavaEncryptor.cfm to calculate these values
+- Be sure to update the ESAPI.component paths with the location of your implementation CFCs
+- Include the /cfesapi/helpers/ESAPI.cfm in your application (preferably in Application.cfc#onRequest)
+- Immediately following the above include, call ESAPI().securityConfiguration().setResourceDirectory("your config path that you copied")
 
 Demo:
 - See the /cfesapi/demo/ for examples of implementation.
@@ -25,13 +34,6 @@ Implementation:
 - You can extend any of the default implementations to overwrite the methods you need
  and/or
 - You can create new implementations that implement the provided interfaces
-
-How:
-- Copy the /cfesapi/esapi/configuration/.esapi/ folder to a location within your CF application and make changes to your ESAPI.properties config file
-  - VERY IMPORTANT - change the Encryptor.MasterKey and Encryptor.MasterSalt values for your own security
-  - Be sure to update the ESAPI.component paths with the location of your implementation CFCs
-- Include the /cfesapi/helpers/ESAPI.cfm in your application (preferably in Application.cfc#onRequest)
-- Immediately following the above include, call ESAPI().securityConfiguration().setResourceDirectory("your config path that you copied")
 
 -- need more detail on setup --
 
