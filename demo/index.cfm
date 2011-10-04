@@ -1,24 +1,36 @@
-<cfscript>
-	currentUser = ESAPI().authenticator().getCurrentUser();
-</cfscript>
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<title>CFESAPI Demo</title>
-</head>
-<body>
-	<p>This is an example of a page accessed by an AnonymousUser</p>
-	<cfoutput>
+	<head>
+		<meta charset="utf-8" />
+		<title>
+			CFESAPI Demos
+		</title>
+	</head>
+	<body>
+		<h1>
+			CFESAPI Demo List
+		</h1>
+		<p>Pick from the demo's below:</p>
 		<ul>
-			<li>AccountId: #encodeForHTML(currentUser.getAccountId())#</li>
-			<li>AccountName: #encodeForHTML(currentUser.getAccountName())#</li>
-			<li>isAnonymous: #encodeForHTML(currentUser.isAnonymous())#</li>
-			<li>isEnabled: #encodeForHTML(currentUser.isEnabled())#</li>
-			<li>isLoggedIn: #encodeForHTML(currentUser.isLoggedIn())#</li>
-			<li>Locale: #encodeForHTML(currentUser.getLocale())#</li>
+			<li><a href="fba/index.cfm">FileBasedAuthenticator Demo</a></li>
+			<li>Database/DAO Demo - coming soon!</li>
 		</ul>
-	</cfoutput>
-	<p><a href="/cfesapi/demo/members/index.cfm">Login</a></p>
-</body>
+	</body>
 </html>
