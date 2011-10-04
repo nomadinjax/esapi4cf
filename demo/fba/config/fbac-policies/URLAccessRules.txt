@@ -1,0 +1,6 @@
+# URL Access Rules
+#
+
+/                         | any        | deny  | default deny
+/cfesapi/demo/fba/members | admin,user | allow |
+/cfesapi/demo/fba/admin   | admin      | allow |
