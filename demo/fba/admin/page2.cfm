@@ -35,11 +35,8 @@
 			This is page 2 of the admin only area 
 		</p>
 		<p>
-			If you are seeing the authenticated user data below, than the logged in user is being persisted. 
-		</p>
-		<p>
 			<a href="index.cfm">
-				Back to Members Home 
+				Back to Admin Home 
 			</a>
 		</p>
 	</body>

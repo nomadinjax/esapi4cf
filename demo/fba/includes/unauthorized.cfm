@@ -15,9 +15,6 @@
 	* @created 2011
 	*/
 	--->
-<cfscript>
-	currentUser = ESAPI().authenticator().getCurrentUser();
-</cfscript> 
 <!doctype html>
 <html lang="en">
 	<head>
@@ -40,11 +37,6 @@
 		</cfoutput>
 		<p>
 			You do not have permission to view this page 
-		</p>
-		<p>
-			<a href="/cfesapi/demo/fba/index.cfm">
-				Home 
-			</a>
 		</p>
 	</body>
 </html>

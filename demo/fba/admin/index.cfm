@@ -32,9 +32,6 @@
 			Congratulations!!! If you are seeing this page than you have successfully used CFESAPI to login as a user with the admin role. 
 		</p>
 		<p>
-			This is an example of a page accessed by an DefaultUser 
-		</p>
-		<p>
 			<a href="page2.cfm">
 				Member Only Page 2 - Test Persistence of User 
 			</a>

@@ -19,12 +19,15 @@
 
 	<cfscript>
 		// CFESAPI only requires that sessionManagement be on
-		this.name = "CFESAPI-Demo";
+		this.name = "CFESAPI-FBADemoCFApplication";
 		this.sessionManagement = true;
 
 		// CFESAPI does not use CFID/CFTOKEN
 		this.clientManagement = false;
 		this.setClientCookies = false;
+		
+		// CFESAPI config settings
+		instance.ESAPIconfig = "/cfesapi/demo/fba/config/";
 	</cfscript>
  
 	<cffunction access="public" returntype="boolean" name="onRequestStart" output="false">
@@ -52,7 +55,7 @@
 	<cffunction access="public" returntype="void" name="onRequestEnd" output="false">
 		<cfargument type="String" name="targetPage" required="true">
 		<cfscript>
-			ESAPI().clearCurrent();
+			tearDownESAPI();
 		</cfscript> 
 	</cffunction>
 
@@ -64,20 +67,29 @@
 				application["ESAPI"] = "";
 			}
 			
-			// initialize ESAPI
+			// initialize ESAPI and load encoder UDFs
 			include "/cfesapi/helpers/ESAPI.cfm";
-			ESAPI().securityConfiguration().setResourceDirectory("/cfesapi/demo/fba/config/");
 			
-			if (!structKeyExists(application, "logger")) {
-				application["logger"] = ESAPI().getLogger("CFESAPI-FBADemo");
+			// define the ESAPI config location - condition so that this does not reload config on each request
+			if (instance.ESAPIconfig != ESAPI().securityConfiguration().getResourceDirectory()) {
+				ESAPI().securityConfiguration().setResourceDirectory(instance.ESAPIconfig);
 			}
-
-			// set up response with content type
-			ESAPI().httpUtilities().setContentType();
+			
+			// setup ESAPI logger with CF app name
+			if (!structKeyExists(application, "logger")) {
+				application["logger"] = ESAPI().getLogger(application.applicationName);
+			}
 
             // set no-cache headers on every response
             // only do this if the entire site should not be cached otherwise you should do this strategically in your controller or actions
 			ESAPI().httpUtilities().setNoCacheHeaders();
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="private" returntype="void" name="tearDownESAPI" output="false">
+		<cfscript>
+			ESAPI().clearCurrent();
 		</cfscript> 
 	</cffunction>
 

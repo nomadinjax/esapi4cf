@@ -47,12 +47,12 @@
 			</li>
 			<li>
 				<!--- this is intentional - profile at root displays Anonymous, profile in members for authenticated users --->
-				<cfif currentUser.isLoggedIn()>
-					<a href="/cfesapi/demo/fba/members/myProfile.cfm">
-						My Profile 
+				<cfif currentUser.isAnonymous()>
+					<a href="/cfesapi/demo/fba/myProfile.cfm">
+						About Me
 					</a>
 				<cfelse>
-					<a href="/cfesapi/demo/fba/myProfile.cfm">
+					<a href="/cfesapi/demo/fba/members/myProfile.cfm">
 						My Profile 
 					</a>
 				</cfif>

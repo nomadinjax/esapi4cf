@@ -27,16 +27,22 @@
 	<body>
 		<cfinclude template="/cfesapi/demo/fba/includes/header.cfm" />
 		<h2>
-			Login
+			Login 
 		</h2>
 		<cfoutput>
 			<p>
 				<strong>
-					#encodeForHTML(ESAPI().currentRequest().getAttribute("message"))# 
+					<!--- this stops us from seeing an error the first time we load the login form --->
+					<cfif structKeyExists(form, "loginform") AND form.loginform EQ 1>
+						#encodeForHTML(ESAPI().currentRequest().getAttribute("message"))# 
+					<cfelse>
+						The page you are attempting to access requires you to login first.
+					</cfif>
 				</strong>
 			</p>
 			<!--- submit the login form to itself so we are directed to the original destination --->
 			<form method="post" action="#encodeForHTMLAttribute(ESAPI().currentRequest().getPathInfo())#">
+				<input type="hidden" name="loginform" value="1" />
 				<label for="username">
 					Username 
 				</label>
