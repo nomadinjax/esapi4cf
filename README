@@ -45,7 +45,7 @@ MXUnit Test Results
  - 289 total = 9 failures + 22 errors + 258 successes
 
 Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
-- ESAPI.jar (not needed if you have HF: http://kb2.adobe.com/cps/907/cpsid_90784.html)
+- ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
 - antisamy.jar
 - batik-css.jar
 - batik-util.jar
