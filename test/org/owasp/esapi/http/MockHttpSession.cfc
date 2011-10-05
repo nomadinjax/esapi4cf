@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HttpSession" output="false">
 
 	<cfscript>
@@ -21,7 +38,7 @@
 		/* The attributes. */
 		instance.attributes = {};
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="MockHttpSession" name="init" output="false" hint="Instantiates a new test http session.">
 		<cfargument type="numeric" name="creationTime" required="false" hint="the creation time">
 		<cfargument type="numeric" name="accessedTime" required="false" hint="the accessed time">
@@ -34,7 +51,7 @@
 			}
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -44,70 +61,70 @@
 			if (structKeyExists(instance.attributes, arguments.name)) {
 				return instance.attributes.get( arguments.name );
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="Array" name="getAttributeNames" output="false" hint="java.util.Enumeration">
 		<cfscript>
 			return listToArray(structKeyList(instance.attributes));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getCreationTime" output="false">
 		<cfscript>
 			return instance.creationTime;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getId" output="false">
 		<cfscript>
 			return ""&instance.sessionid;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="getInvalidated" output="false" hint="Gets the invalidated.">
 		<cfscript>
 			return instance.invalidated;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getLastAccessedTime" output="false">
 		<cfscript>
 			return instance.accessedTime;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getMaxInactiveInterval" output="false">
 		<cfscript>
 			return 0;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="any" name="getServletContext" output="false">
 		<cfscript>
 			return "";
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="invalidate" output="false">
 		<cfscript>
 			instance.invalidated = true;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isNew" output="false">
 		<cfscript>
 			return true;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -115,7 +132,7 @@
 		<cfargument type="String" name="name" required="true">
 		<cfscript>
 			instance.attributes.remove( arguments.name );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -124,7 +141,7 @@
 		<cfargument type="any" name="value" required="true">
 		<cfscript>
 			instance.attributes.put(arguments.name, arguments.value);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -132,7 +149,7 @@
 		<cfargument type="numeric" name="interval" required="true">
 		<cfscript>
 			// stub
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -140,7 +157,7 @@
 		<cfargument type="numeric" name="time" required="true">
 		<cfscript>
 			instance.accessedTime = arguments.time;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -148,7 +165,7 @@
 		<cfargument type="numeric" name="time" required="true">
 		<cfscript>
 			instance.creationTime = arguments.time;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

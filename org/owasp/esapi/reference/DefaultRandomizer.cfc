@@ -1,10 +1,27 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Randomizer" output="false">
 
 	<cfscript>
 		/* The sr. */
     	instance.secureRandom = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Randomizer" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
@@ -20,7 +37,7 @@
 	        }
 
 	        return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -35,14 +52,14 @@
 	        }
 	        local.nonce = local.sb.toString();
 	        return local.nonce;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="getRandomBoolean" output="false">
 		<cfscript>
         	return instance.secureRandom.nextBoolean();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -51,14 +68,14 @@
 		<cfargument type="numeric" name="max" required="true">
 		<cfscript>
         	return instance.secureRandom.nextInt(max - min) + min;
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getRandomLong" output="false">
 		<cfscript>
         	return instance.secureRandom.nextLong();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -68,7 +85,7 @@
 		<cfscript>
 	        local.factor = arguments.max - arguments.min;
 	        return instance.secureRandom.nextFloat() * local.factor + arguments.min;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -78,14 +95,14 @@
 	        local.fn = getRandomString(12, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & "." & arguments.extension;
 	        instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated new random filename: " & local.fn );
 	        return local.fn;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getRandomGUID" output="false">
 		<cfscript>
     		return createObject("java", "java.util.UUID").randomUUID().toString();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -95,7 +112,7 @@
 	    	local.result = newByte( arguments.n );
 	    	instance.secureRandom.nextBytes(local.result);
 	    	return local.result;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

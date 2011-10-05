@@ -1,10 +1,27 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HttpSession" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
 		instance.session = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="SecurityWrapperSession" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="any" name="session" required="true">
@@ -13,7 +30,7 @@
 			instance.session = arguments.session;
 
     		return this;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -33,7 +50,7 @@
 			}
 
 			return "";
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -45,42 +62,42 @@
 				arrayAppend(local.ret, local.an.nextElement());
 			}
 			return local.ret;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getCreationTime" output="false" hint="Returns the time when this session was created, measured in milliseconds since midnight January 1, 1970 GMT.">
 		<cfscript>
 			return instance.session.getCreationTime();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getId" output="false" hint="Returns a string containing the unique identifier assigned to this session.">
 		<cfscript>
 			return instance.session.getId();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getLastAccessedTime" output="false" hint="Returns the last time the client sent a request associated with this session, as the number of milliseconds since midnight January 1, 1970 GMT, and marked by the time the container received the request.">
 		<cfscript>
 			return instance.session.getLastAccessedTime();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getMaxInactiveInterval" output="false" hint="Returns the maximum time interval, in seconds, that the servlet container will keep this session open between client accesses.">
 		<cfscript>
 			instance.session.getMaxInactiveInterval();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="any" name="getServletContext" output="false" hint="javax.servlet.ServletContext: Returns the ServletContext to which this session belongs.">
 		<cfscript>
 			return instance.session.getServletContext();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -122,14 +139,14 @@
 			else {
 				structClear(instance.session);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isNew" output="false" hint="Returns true if the client does not yet know about the session or if the client chooses not to join the session.">
 		<cfscript>
 			return instance.session.isNew();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -137,7 +154,7 @@
 		<cfargument type="String" name="name" required="true">
 		<cfscript>
 			return instance.session.removeAttribute(arguments.name);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -154,7 +171,7 @@
 			else {
 				instance.session[arguments.name] = arguments.value;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -162,7 +179,7 @@
 		<cfargument type="numeric" name="interval" required="true">
 		<cfscript>
 			instance.session.setMaxInactiveInterval(arguments.interval);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

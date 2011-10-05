@@ -1,16 +1,33 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false" hint="A simple class that calls the Encoder to test thread safety">
 
 	<cfscript>
     	instance.num = 0;
     </cfscript>
-
+ 
 	<cffunction access="public" returntype="EncoderConcurrencyMock" name="init" output="false">
 		<cfargument type="numeric" name="num" required="true">
 		<cfscript>
    			instance.num = arguments.num;
 
    			return this;
-   		</cfscript>
+   		</cfscript> 
 	</cffunction>
 
 
@@ -27,7 +44,7 @@
 				}
 				assertTrue( local.result.equals ( javaScriptEncode( local.nonce ) ) );
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -36,7 +53,7 @@
 		<cfscript>
 			local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init(instance.ESAPI);
 			return local.encoder.encodeForJavaScript(arguments.str);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

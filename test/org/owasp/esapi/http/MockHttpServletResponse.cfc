@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HttpServletResponse" output="false">
 
 	<cfscript>
@@ -17,11 +34,11 @@
 
 		//instance.contentType = "text/html; charset=ISO-8895-1";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="MockHttpServletResponse" name="init" output="false">
 		<cfscript>
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- getBody --->
@@ -30,14 +47,14 @@
 		<cfargument type="any" name="cookie" required="true" hint="javax.servlet.http.Cookie">
 		<cfscript>
 			instance.cookies.add(arguments.cookie);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="Array" name="getCookies" output="false" hint="Gets the cookies.">
 		<cfscript>
 			return duplicate(instance.cookies);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- getCookie --->
@@ -49,7 +66,7 @@
 		<cfscript>
 			instance.headerNames.add(arguments.name);
 			instance.headerValues.add(arguments.value);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- addIntHeader --->
@@ -58,7 +75,7 @@
 		<cfargument type="String" name="name" required="true">
 		<cfscript>
 			return instance.headerNames.contains(arguments.name);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -70,14 +87,14 @@
 				return instance.headerValues.get(local.index);
 			}
 			return "";
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="Array" name="getHeaderNames" output="false" hint="Gets the header names.">
 		<cfscript>
 			return instance.headerNames;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- encodeRedirectURL --->
@@ -89,7 +106,7 @@
 		<cfscript>
 			instance.status = createObject("java", "javax.servlet.http.HttpServletResponse").SC_MOVED_PERMANENTLY;
 			instance.body = createObject("java", "java.lang.StringBuffer").init( "Redirect to " & arguments.location );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -99,7 +116,7 @@
 		<cfscript>
 			instance.headerNames.add(arguments.name);
 			instance.headerValues.add("" & arguments.date);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -109,7 +126,7 @@
 		<cfscript>
 			instance.headerNames.add(arguments.name);
 			instance.headerValues.add(arguments.value);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- setIntHeader --->
@@ -121,7 +138,7 @@
 	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false">
 		<cfscript>
 			return "UTF-8";
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- getContentType --->

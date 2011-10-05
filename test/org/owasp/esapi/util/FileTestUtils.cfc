@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent output="false">
 
 	<cfscript>
@@ -8,7 +25,7 @@
 		secRand = createObject("java", "java.security.SecureRandom").init();
 		instance.rand = createObject("java", "java.util.Random").init(secRand.nextLong());
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="String" name="toHexString" output="false" hint="Convert a long to it's hex representation. Unlike Long##toHexString(long) this always returns 16 digits.">
 		<cfargument type="numeric" name="l" required="true" hint="The long to convert.">
 		<cfscript>
@@ -22,7 +39,7 @@
 				local.sb.insert(0,'0');
 			}
 			return local.sb.toString();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -46,7 +63,7 @@
 				throw(object=createObject("java", "java.io.IOException").init("Unable to create temporary directory " & local.dir));
 			}
 			return local.dir.getCanonicalFile();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- isChildSubDirectory --->
@@ -60,7 +77,7 @@
 		if(!arguments.file.delete()) {
 			throw(object=createObject("java", "java.io.IOException").init("Unable to delete file " & arguments.file.getAbsolutePath()));
 		}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -82,7 +99,7 @@
 
 			// finally
 			delete(arguments.file);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

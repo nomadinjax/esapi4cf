@@ -1,31 +1,18 @@
 <!---
 	/**
-	* The reference {@code SecurityConfiguration} manages all the settings used by the ESAPI in a single place. In this reference
-	* implementation, resources can be put in several locations, which are searched in the following order:
-	* <p>
-	* 1) Inside a directory set with a call to SecurityConfiguration.setResourceDirectory( "C:\temp\resources" ).
-	* <p>
-	* 2) Inside the System.getProperty( "org.owasp.esapi.resources" ) directory.
-	* You can set this on the java command line
-	* as follows (for example):
-	* <pre>
-	* 		java -Dorg.owasp.esapi.resources="C:\temp\resources"
-	* </pre>
-	* You may have to add this to the start-up script that starts your web server. For example, for Tomcat,
-	* in the "catalina" script that starts Tomcat, you can set the JAVA_OPTS variable to the {@code -D} string above.
-	* <p>
-	* 3) Inside the System.getProperty( "user.home" ) + "/.esapi" directory
-	* <p>
-	* 4) The first ".esapi" directory on the classpath
-	* <p>
-	* Once the Configuration is initialized with a resource directory, you can edit it to set things like master
-	* keys and passwords, logging locations, error thresholds, and allowed file extensions.
-	* <p>
-	* WARNING: Do not forget to update ESAPI.properties to change the master key and other security critical settings.
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
 	*
-	* @author Jeff Williams (jeff.williams .at. aspectsecurity.com) <a href="http://www.aspectsecurity.com">Aspect Security</a>
-	* @author Jim Manico (jim .at. manico.net) <a href="http://www.manico.net">Manico.net</a>
-	* @author Kevin Wall (kevin.w.wall .at. gmail.com)
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
 	*/
 	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.SecurityConfiguration" output="false">
@@ -285,7 +272,7 @@
 	<cffunction access="public" returntype="void" name="setResourceDirectory" output="false">
 		<cfargument type="String" name="dir" required="true">
 		<cfscript>
-	    	instance.resourceDirectory = dir;
+	    	instance.resourceDirectory = arguments.dir;
 	        logSpecial( "Reset resource directory to: " & arguments.dir, "" );
 
 	        // reload configuration if necessary

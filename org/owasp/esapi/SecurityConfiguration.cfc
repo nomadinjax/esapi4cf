@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfinterface hint="The SecurityConfiguration interface stores all configuration information that directs the behavior of the ESAPI implementation. Protection of this configuration information is critical to the secure operation of the application using the ESAPI. You should use operating system access controls to limit access to wherever the configuration information is stored. Please note that adding another layer of encryption does not make the attackers job much more difficult. Somewhere there must be a master 'secret' that is stored unencrypted on the application platform (unless you are willing to prompt for some passphrase when you application starts or insert a USB thumb drive or an HSM card, etc., in which case this master 'secret' it would only be in memory). Creating another layer of indirection provides additional obfuscation, but doesn't provide any real additional security. It's up to the reference implementation to decide whether this file should be encrypted or not. The ESAPI reference implementation (DefaultSecurityConfiguration.java) does NOT encrypt its properties file.">
 
 	<cffunction access="public" returntype="String" name="getApplicationName" output="false" hint="Gets the application name, used for logging">

@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.User" output="false">
 
 	<cfscript>
@@ -70,7 +87,7 @@
 
 	    static.MAX_ROLE_LENGTH = 250;
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="accountName" required="true">
@@ -93,7 +110,7 @@
 			}
 
 	        return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -108,7 +125,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Add role failed", "Attempt to add invalid role " & local.roleName & " to " & getAccountName() );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -118,7 +135,7 @@
 	        for (local.i=1; local.i<=arrayLen(arguments.newRoles); local.i++) {
 	            this.addRole(arguments.newRoles[local.i]);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -128,7 +145,7 @@
 		<cfargument type="String" name="newPassword2" required="true">
 		<cfscript>
 			instance.ESAPI.authenticator().changePassword(this, arguments.oldPassword, arguments.newPassword1, arguments.newPassword2);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -136,7 +153,7 @@
 		<cfscript>
 			instance.enabled = false;
 			instance.logger.info( Logger.SECURITY_SUCCESS, "Account disabled: " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -144,42 +161,42 @@
 		<cfscript>
 			instance.enabled = true;
 			instance.logger.info( Logger.SECURITY_SUCCESS, "Account enabled: " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getAccountId" output="false">
 		<cfscript>
         	return duplicate(instance.accountId);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getAccountName" output="false">
 		<cfscript>
 			return duplicate(instance.accountName);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getCSRFToken" output="false">
 		<cfscript>
 			return duplicate(instance.csrfToken);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="any" name="getExpirationTime" output="false" hint="Date">
 		<cfscript>
 			return instance.expirationTime.clone();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getFailedLoginCount" output="false">
 		<cfscript>
 			return duplicate(instance.failedLoginCount);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -187,14 +204,14 @@
 		<cfargument type="numeric" name="count" required="true">
 		<cfscript>
 			instance.failedLoginCount = arguments.count;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="any" name="getLastFailedLoginTime" output="false" hint="Date">
 		<cfscript>
 			return instance.lastFailedLoginTime.clone();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -204,21 +221,21 @@
 			return "unknown";
 		}
         return duplicate(instance.lastHostAddress);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="any" name="getLastLoginTime" output="false" hint="Date">
 		<cfscript>
 			return instance.lastLoginTime.clone();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="any" name="getLastPasswordChangeTime" output="false" hint="Date">
 		<cfscript>
 			return instance.lastPasswordChangeTime.clone();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- getName --->
@@ -226,14 +243,14 @@
 	<cffunction access="public" returntype="Array" name="getRoles" output="false">
 		<cfscript>
 			return duplicate(instance.roles);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getScreenName" output="false">
 		<cfscript>
 			return duplicate(instance.screenName);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -241,7 +258,7 @@
 		<cfargument type="cfesapi.org.owasp.esapi.HttpSession" name="s" required="true">
 		<cfscript>
         	instance.sessions.add( arguments.s );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -249,21 +266,21 @@
 		<cfargument type="cfesapi.org.owasp.esapi.HttpSession" name="s" required="true">
 		<cfscript>
 			instance.sessions.remove( arguments.s );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="Array" name="getSessions" output="false">
 		<cfscript>
 	    	return duplicate(instance.sessions);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="incrementFailedLoginCount" output="false">
 		<cfscript>
 			instance.failedLoginCount++;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -271,14 +288,14 @@
 		<cfscript>
 			// User cannot be anonymous, since we have a special User.ANONYMOUS instance for the anonymous user
 			return yesNoFormat(false);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isEnabled" output="false">
 		<cfscript>
 			return yesNoFormat(instance.enabled);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -292,7 +309,7 @@
 			//		double difference = to - from;
 			//		long days = Math.round((difference / (1000 * 60 * 60 * 24)));
 			//		return days > 60;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -300,21 +317,21 @@
 		<cfargument type="String" name="role" required="true">
 		<cfscript>
 			return yesNoFormat(instance.roles.contains(arguments.role.toLowerCase()));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isLocked" output="false">
 		<cfscript>
 			return yesNoFormat(instance.locked);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isLoggedIn" output="false">
 		<cfscript>
 			return yesNoFormat(instance.loggedIn);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -325,7 +342,7 @@
 			local.deadline = createObject("java", "java.util.Date").init( local.session.getCreationTime() + this.ABSOLUTE_TIMEOUT_LENGTH);
 			local.now = createObject("java", "java.util.Date").init();
 			return yesNoFormat(local.now.after(local.deadline));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -336,7 +353,7 @@
 			local.deadline = createObject("java", "java.util.Date").init( local.session.getLastAccessedTime() + this.IDLE_TIMEOUT_LENGTH);
 			local.now = createObject("java", "java.util.Date").init();
 			return yesNoFormat(local.now.after(local.deadline));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -344,7 +361,7 @@
 		<cfscript>
 			instance.locked = true;
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Account locked: " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -401,7 +418,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException").init(instance.ESAPI, "Login failed", "Incorrect password provided for " & getAccountName() );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -416,11 +433,11 @@
 			}
 			// FIXME
 			// I do not believe destroying the JSESSIONID cookie is currently working
-			instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), "JSESSIONID");
+			instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), instance.ESAPI.securityConfiguration().getHttpSessionIdName());
 			instance.loggedIn = false;
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Logout successful" );
 			instance.ESAPI.authenticator().setCurrentUser( createObject("component", "cfesapi.org.owasp.esapi.reference.AnonymousUser") );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -429,7 +446,7 @@
 		<cfscript>
 			instance.roles.remove(arguments.role.toLowerCase());
 			instance.logger.trace(Logger.SECURITY_SUCCESS, "Role " & role & " removed from " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -439,7 +456,7 @@
 			// user.csrfToken = instance.ESAPI.encryptor().encrypt( address + ":" + ESAPI.encryptor().getTimeStamp();
 			instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			return instance.csrfToken;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- setAccountId --->
@@ -453,7 +470,7 @@
 				local.old = "[nothing]";
 			}
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Account name changed from " & local.old & " to " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -462,7 +479,7 @@
 		<cfscript>
 			instance.expirationTime = createObject("java", "java.util.Date").init( javaCast("long", arguments.expirationTime.getTime()) );
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Account expiration time set to " & instance.expirationTime & " for " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -471,20 +488,21 @@
 		<cfscript>
 			instance.lastFailedLoginTime = arguments.lastFailedLoginTime;
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Set last failed login time to " & instance.lastFailedLoginTime & " for " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="setLastHostAddress" output="false">
 		<cfargument type="String" name="remoteHost" required="true">
 		<cfscript>
+			// TODO: investigate this - seems buggy
 			if ( instance.lastHostAddress != "" && !instance.lastHostAddress.equals(arguments.remoteHost)) {
 	        	// returning remote address not remote hostname to prevent DNS lookup
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationHostException").init(instance.ESAPI, "Host change", "User session just jumped from " & instance.lastHostAddress & " to " & arguments.remoteHost );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 			instance.lastHostAddress = arguments.remoteHost;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -493,7 +511,7 @@
 		<cfscript>
 			instance.lastLoginTime = arguments.lastLoginTime;
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Set last successful login time to " & instance.lastLoginTime & " for " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -502,7 +520,7 @@
 		<cfscript>
 			instance.lastPasswordChangeTime = arguments.lastPasswordChangeTime;
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Set last password change time to " & instance.lastPasswordChangeTime & " for " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -512,7 +530,7 @@
 			instance.roles = [];
 			this.addRoles(arguments.roles);
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Adding roles " & arrayToList(arguments.roles) & " to " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -521,14 +539,14 @@
 		<cfscript>
 			instance.screenName = arguments.screenName;
 			instance.logger.info(Logger.SECURITY_SUCCESS, "ScreenName changed to " & arguments.screenName & " for " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="toString" output="false">
 		<cfscript>
 			return "USER:" & getAccountName();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -537,7 +555,7 @@
 			instance.locked = false;
 			instance.failedLoginCount = 0;
 			instance.logger.info( Logger.SECURITY_SUCCESS, "Account unlocked: " & getAccountName() );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -545,7 +563,7 @@
 		<cfargument type="String" name="password" required="true">
 		<cfscript>
 			return yesNoFormat(instance.ESAPI.authenticator().verifyPassword(this, arguments.password));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- clone --->
@@ -553,7 +571,7 @@
 	<cffunction access="public" returntype="any" name="getLocale" output="false" hint="java.util.Locale">
 		<cfscript>
 			return instance.locale;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -561,7 +579,7 @@
 		<cfargument type="any" name="locale" required="true" hint="java.util.Locale: the locale to set">
 		<cfscript>
 			instance.locale = arguments.locale;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -569,7 +587,7 @@
 		<cfscript>
 			// do not wrap with duplicate(); needs to be modifiable
     		return instance.eventMap;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

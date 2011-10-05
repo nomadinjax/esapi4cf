@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HttpServletResponse" output="false">
 
 	<cfscript>
@@ -10,7 +27,7 @@
 		// modes are "log", "skip", "sanitize", "throw"
 	    instance.mode = "log";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="SecurityWrapperResponse" name="init" output="false" hint="Construct a safe response that overrides the default response methods with safer versions.">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="any" name="response" required="true">
@@ -25,14 +42,14 @@
 			}
 
     		return this;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="private" returntype="any" name="getHttpServletResponse" output="false" hint="javax.servlet.http.HttpServletResponse">
 		<cfscript>
     		return instance.response;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -88,7 +105,7 @@
 	        // throw an exception if necessary or add original cookie header
 	        cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.IntrusionException').init(instance.ESAPI, "Security error", "Attempt to add unsafe data to cookie (throw mode)");
        		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -120,7 +137,7 @@
 				local.header &= "; HttpOnly";
 	        }
 	        return local.header;
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 	<!--- addDateHeader --->
@@ -146,9 +163,10 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            instance.logger.warning(Logger.SECURITY_FAILURE, "Attempt to add invalid header denied", e);
 	        }
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
+	<!--- TODO - add the missing method below --->
 	<!--- addIntHeader --->
 	<!--- containsHeader --->
 	<!--- encodeRedirectURL --->
@@ -173,7 +191,7 @@
 		<cfargument type="String" name="type" required="true">
 		<cfscript>
         	getHttpServletResponse().setContentType(arguments.type);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -187,7 +205,7 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            instance.logger.warning(Logger.SECURITY_FAILURE, "Attempt to set invalid date header name denied", e);
 	        }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -204,7 +222,7 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            instance.logger.warning(Logger.SECURITY_FAILURE, "Attempt to set invalid header denied", e);
 	        }
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 	<!--- setIntHeader --->
