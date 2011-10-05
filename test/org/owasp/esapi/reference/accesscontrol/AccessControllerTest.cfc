@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
@@ -6,7 +23,7 @@
 		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 		instance.accessController = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
 			local.accessControlRules = {};
@@ -14,14 +31,14 @@
 			local.accessControlRules.put("AlwaysFalse", createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysFalseACR"));
 			local.accessControlRules.put("EchoRuntimeParameter", createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.EchoRuntimeParameterACR"));
 			instance.accessController = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.ExperimentalAccessController").init(instance.ESAPI, local.accessControlRules);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="tearDown" output="false">
 		<cfscript>
 			instance.accessController = "";
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -37,7 +54,7 @@
 			assertEquals(instance.accessController.isAuthorized("EchoRuntimeParameter", Boolean.FALSE), false, "EchoRuntimeParameter: False");
 			assertEquals(instance.accessController.isAuthorized("EchoRuntimeParameter", "This is not a boolean"), false, "EchoRuntimeParameter: ClassCastException");
 			assertEquals(instance.accessController.isAuthorized("EchoRuntimeParameter", ""), false, "EchoRuntimeParameter: null Runtime Parameter");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -50,7 +67,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -63,7 +80,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -75,7 +92,7 @@
 				//Should not throw an exception
 				fail("");
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -87,7 +104,7 @@
 			} catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -99,7 +116,7 @@
 				//Should not throw an exception
 				fail("");
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -111,7 +128,7 @@
 			} catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -123,7 +140,7 @@
 			} catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -135,7 +152,7 @@
 			} catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -167,7 +184,7 @@
 			local.policyParameter.set("parameterClasses", []);
 			local.delegatingACR.setPolicyParameters(local.policyParameter);
 			assertFalse(local.delegatingACR.isAuthorized({runtimeParameter={}}));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

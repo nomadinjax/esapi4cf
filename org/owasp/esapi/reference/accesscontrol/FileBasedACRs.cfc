@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
@@ -26,7 +43,7 @@
 		/* The logger. */
 		instance.logger = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="FileBasedACRs" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
@@ -34,7 +51,7 @@
 			instance.logger = instance.ESAPI.getLogger("FileBasedACRs");
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -45,7 +62,7 @@
 				instance.urlMap = loadRules("URLAccessRules.txt");
 			}
 			return matchRule(instance.urlMap, arguments.url);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -56,7 +73,7 @@
 				instance.functionMap = loadRules("FunctionAccessRules.txt");
 			}
 			return matchRule(instance.functionMap, arguments.functionName);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -68,7 +85,7 @@
 				instance.dataMap = loadDataRules("DataAccessRules.txt");
 	    	}
 	    	return matchClassRule(instance.dataMap, arguments.data, arguments.action);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -79,7 +96,7 @@
 				instance.fileMap = loadRules("FileAccessRules.txt");
 			}
 			return matchRule(instance.fileMap, arguments.filepath.replaceAll("\\\\","/"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -90,7 +107,7 @@
 				instance.serviceMap = loadRules("ServiceAccessRules.txt");
 			}
 			return matchRule(instance.serviceMap, arguments.serviceName);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -104,7 +121,7 @@
 			// search for the first rule that matches the path and rules
 			local.rule = searchForRule(arguments.map, local.roles, arguments.path);
 			return local.rule.allow;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -119,7 +136,7 @@
 			// search for the first rule that matches the path and rules
 			local.rule = searchForClassRule(arguments.map, local.roles, arguments.clazz, arguments.action);
 			return !isNull(local.rule);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -190,7 +207,7 @@
 			}
 
 			return searchForRule(arguments.map, arguments.roles, local.part);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -208,7 +225,7 @@
 				return local.rule;
 			}
 			return;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -226,7 +243,7 @@
 				}
 			}
 			return false;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -238,7 +255,7 @@
 				return true;
 			}
 			return false;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -256,7 +273,7 @@
 				}
 			}
 			return local.ret;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -304,7 +321,7 @@
 				}
 			}
 			return local.map;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -354,7 +371,7 @@
 				}
 			}
 			return local.map;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- commaSplit --->

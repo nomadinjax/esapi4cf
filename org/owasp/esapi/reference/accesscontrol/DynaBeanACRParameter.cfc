@@ -1,15 +1,32 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.reference.accesscontrol.policyloader.PolicyParameters" output="false">
 
 	<cfscript>
 		instance.policyProperties = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="DynaBeanACRParameter" name="init" output="false">
 		<cfscript>
 			instance.policyProperties = createObject("java", "org.apache.commons.beanutils.LazyDynaMap").init();
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -17,7 +34,7 @@
 		<cfargument type="String" name="key" required="true">
 		<cfscript>
 			return instance.policyProperties.get(arguments.key);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- getBoolean --->
@@ -41,7 +58,7 @@
 			}
 
 			return get(arguments.key);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -49,7 +66,7 @@
 		<cfargument type="String" name="key" required="true">
 		<cfscript>
 			return get(arguments.key);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- getObject --->
@@ -59,7 +76,7 @@
 		<cfargument type="any" name="value" required="true">
 		<cfscript>
 			instance.policyProperties.set(arguments.key, arguments.value);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -68,14 +85,14 @@
 		<cfargument type="any" name="value" required="true">
 		<cfscript>
 			set(arguments.key, arguments.value);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="lock" output="false" hint="This makes the map itself read only, but the mutability of objects that this map contains is not affected. Specifically, properties cannot be added or removed and the reference cannot be changed to a different object, but this does not change whether the values that the object contains can be changed. ">
 		<cfscript>
 			instance.policyProperties.setRestricted(true);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -94,7 +111,7 @@
 				}
 			}
 			return local.sb.toString();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

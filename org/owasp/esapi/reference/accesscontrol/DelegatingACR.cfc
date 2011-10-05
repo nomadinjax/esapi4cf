@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="BaseACR" output="false">
 
 	<cfscript>
@@ -5,13 +22,13 @@
 		instance.delegateMethod = "";
 		instance.delegateInstance = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" retunrntype="DelegatingACR" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
 			instance.ESAPI = arguments.ESAPI;
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -41,7 +58,7 @@
 			} catch (java.lang.IllegalAccessException ex) {
 				createObject("java", "java.lang.IllegalArgumentException").init(' Delegate class "' & local.delegateClassName & '" must must have a zero-argument constructor, because method delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" is not static.', ex);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -57,7 +74,7 @@
 				local.classes.add(getClassName(local.className, "parameter"));
 			}
 			return local.classes;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -76,7 +93,7 @@
 		    } catch ( Application ex ) {
 				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(ex.message & " " & arguments.purpose & " Class " & arguments.className & " must be in the classpath", ex));
 		    }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -85,7 +102,7 @@
 		<cfscript>
 			//return instance.delegateMethod.invoke(instance.delegateInstance, arguments.runtimeParameter).booleanValue();
 			return evaluate("instance.delegateInstance.#instance.delegateMethod#(argumentCollection=arguments.runtimeParameter)");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

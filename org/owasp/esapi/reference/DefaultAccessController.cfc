@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.AccessController" output="false">
 
 	<cfscript>
@@ -6,7 +23,7 @@
 
 		instance.ruleMap = {};
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.AccessController" name="init">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
@@ -18,7 +35,7 @@
 			instance.ruleMap = local.policyDTO.getAccessControlRules();
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -47,7 +64,7 @@
 				}
 				return false; //fail closed
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -74,7 +91,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access Denied", "Access Denied for key: " & arguments.key & " runtimeParameter: " & arguments.runtimeParameter.toString());
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- /*** Below this line has been deprecated as of ESAPI 1.6 ***/ --->
@@ -84,7 +101,7 @@
 		<cfargument type="any" name="data" required="true">
 		<cfscript>
 			this.assertAuthorized("AC 1.0 Data", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -92,7 +109,7 @@
 		<cfargument type="String" name="filepath" required="true">
 		<cfscript>
 			this.assertAuthorized("AC 1.0 File", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -100,7 +117,7 @@
 		<cfargument type="String" name="functionName" required="true">
 		<cfscript>
 			this.assertAuthorized("AC 1.0 Function", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -108,7 +125,7 @@
 		<cfargument type="String" name="serviceName" required="true">
 		<cfscript>
 			this.assertAuthorized("AC 1.0 Service", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -116,7 +133,7 @@
 		<cfargument type="String" name="url" required="true">
 		<cfscript>
 			this.assertAuthorized("AC 1.0 URL", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -125,7 +142,7 @@
 		<cfargument type="any" name="data" required="true">
 		<cfscript>
 			return this.isAuthorized("AC 1.0 Data", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -133,7 +150,7 @@
 		<cfargument type="String" name="filepath" required="true">
 		<cfscript>
 			return this.isAuthorized("AC 1.0 File", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -141,7 +158,7 @@
 		<cfargument type="String" name="functionName" required="true">
 		<cfscript>
 			return this.isAuthorized("AC 1.0 Function", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -149,7 +166,7 @@
 		<cfargument type="String" name="serviceName" required="true">
 		<cfscript>
 			return this.isAuthorized("AC 1.0 Service", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -157,7 +174,7 @@
 		<cfargument type="String" name="url" required="true">
 		<cfscript>
 			return this.isAuthorized("AC 1.0 URL", arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
