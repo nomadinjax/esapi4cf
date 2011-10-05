@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
@@ -5,7 +22,7 @@
 		instance.stackTrace = [];
 		instance.type = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="Exception" name="init" output="false">
 		<cfargument type="string" name="message" required="false">
 		<cfargument type="any" name="cause" required="false" hint="the cause">
@@ -36,28 +53,28 @@
 			setStackTrace(instance.exception.getStackTrace());
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="any" name="getCause" output="false" hint="Returns the cause of this throwable or null if the cause is nonexistent or unknown.">
 		<cfscript>
 			return instance.exception.getCause();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getLocalizedMessage" output="false" hint="Creates a localized description of this throwable.">
 		<cfscript>
 			return instance.exception.getLocalizedMessage();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getMessage" output="false" hint="Returns the detail message string of this throwable.">
 		<cfscript>
 			return instance.exception.getMessage();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -65,14 +82,14 @@
 		<cfscript>
 			//return instance.exception.getStackTrace();
 			return instance.stackTrace;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="string" name="getType" output="false">
 		<cfscript>
 			return instance.type;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -80,14 +97,14 @@
 		<cfargument type="any" name="cause" required="true" hint="the cause (which is saved for later retrieval by the getCause() method).">
 		<cfscript>
 			return instance.exception.initCause(arguments.cause);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="printStackTrace" output="false" hint="Prints this throwable and its backtrace to the standard error stream.">
 		<cfscript>
 			return instance.exception.printStackTrace();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -109,7 +126,7 @@
 			}
 			// 1st index should now be the actual caller object
 			instance.stackTrace = local.stackTrace;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -120,14 +137,14 @@
 			if (listLen(instance.type, ".") EQ 1) {
 				instance.type = "cfesapi.org.owasp.esapi.errors." & instance.type;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="toString" output="false" hint="Returns a short description of this throwable.">
 		<cfscript>
 			return instance.exception.toString();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
