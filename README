@@ -1,10 +1,9 @@
+OWASP Enterprise Security API (ESAPI)
 OWASP ESAPI for ColdFusion/CFML Project
-https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML
-* This project is still in development *
 Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
+= The current release of this project *is not* suitable for production use =
 License: BSD license
-
-* NOTE: As of August 2011 this is now the official CFESAPI project *
+https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML
 
 
 *** SETUP/USAGE - MORE INFO TO COME ***
@@ -20,15 +19,15 @@ Tests:
 - TODO Rid ourselves of the TestCase - move methods into tests that need them
 
 How:
-- Copy the /cfesapi/esapi/configuration/.esapi/ folder to a location within your CF application and make changes to your ESAPI.properties config file
-***** IMPORTANT: Do NOT forget to replace Encryptor.MasterKey and Encryptor.MasterSalt with your own values! ***** 
-- Run /cfesapi/org/owasp/esapi/reference/crypto/JavaEncryptor.cfm to calculate these values
+- Copy the /cfesapi/esapi/configuration/esapi/ folder to a location within your CF application and make changes to your copy of the config files
+- IMPORTANT: Run /cfesapi/org/owasp/esapi/reference/crypto/JavaEncryptor.cfm to calculate your *own* Encryptor.MasterKey and Encryptor.MasterSalt values
 - Be sure to update the ESAPI.component paths with the location of your implementation CFCs
 - Include the /cfesapi/helpers/ESAPI.cfm in your application (preferably in Application.cfc#onRequest)
 - Immediately following the above include, call ESAPI().securityConfiguration().setResourceDirectory("your config path that you copied")
 
-Demo:
-- See the /cfesapi/demo/ for examples of implementation.
+Demos:
+- See the /cfesapi/demo/ for basic examples of implementation.
+- More to come...
 
 Implementation:
 - You can extend any of the default implementations to overwrite the methods you need
@@ -43,7 +42,7 @@ Implementation:
 * Adobe ColdFusion 9.0.1 *
 **************************
 MXUnit Test Results
- - 252 total = 2 failures + 5 errors + 245 successes
+ - 289 total = 9 failures + 22 errors + 258 successes
 
 Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 - ESAPI.jar (not needed if you have HF: http://kb2.adobe.com/cps/907/cpsid_90784.html)
@@ -56,7 +55,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 252 total = 2 failures + 10 errors + 240 successes
+- 289 total = 8 failures + 26 errors + 255 successes
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar
