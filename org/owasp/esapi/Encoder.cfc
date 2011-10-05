@@ -1,8 +1,26 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfinterface hint="The Encoder interface contains a number of methods for decoding input and encoding output so that it will be safe for a variety of interpreters. To prevent double-encoding, callers should make sure input does not already contain encoded characters by calling canonicalize. Validator implementations should call canonicalize on user input 'before' validating to prevent encoded attacks. All of the methods must use a 'whitelist' or 'positive' security model. For the encoding methods, this means that all characters should be encoded, except for a specific list of 'immune' characters that are known to be safe. The Encoder performs two key functions, encoding and decoding. These functions rely on a set of codecs that can be found in the org.owasp.esapi.codecs package.">
 
 	<cffunction access="public" returntype="String" name="canonicalize" output="false" hint="Canonicalization is simply the operation of reducing a possibly encoded string down to its simplest form. This is important, because attackers frequently use encoding to change their input in a way that will bypass validation filters, but still be interpreted properly by the target of the attack. Note that data encoded more than once is not something that a normal user would generate and should be regarded as an attack. Everyone says you shouldn't do validation without canonicalizing the data first. This is easier said than done. The canonicalize method can be used to simplify just about any input down to its most basic form. Note that canonicalize doesn't handle Unicode issues, it focuses on higher level encoding and escaping schemes.">
 		<cfargument type="String" name="input" required="true" hint="the text to canonicalize">
-		<cfargument type="boolean" name="strict" required="false" hint="true if checking for double encoding is desired, false otherwise">
+		<cfargument type="boolean" name="restrictMultiple" required="false" hint="true if checking for multiple encoding is desired, false otherwise">
+		<cfargument type="boolean" name="restrictMixed" required="false" hint="true if checking for mixed encoding is desired, false otherwise">
 	</cffunction>
 
 

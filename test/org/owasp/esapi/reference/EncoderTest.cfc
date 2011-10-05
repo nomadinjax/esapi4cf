@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
@@ -7,7 +24,7 @@
 		
 		static.PREFERRED_ENCODING = "UTF-8";
 	</cfscript>
-	
+ 
 	<cffunction access="private" returntype="string" name="toUnicode" output="false" description="Convert Unicode in to string characters">
 		<cfargument type="string" name="string" required="true">
 		<cfscript>
@@ -23,9 +40,9 @@
 		 		}
 		 	}
 		 	return local.ret;
-		 </cfscript>
+		 </cfscript> 
 	</cffunction>
-	
+
 
 	<cffunction access="public" returntype="void" name="testCanonicalize" output="false" hint="Test of canonicalize method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
@@ -40,6 +57,10 @@
 			assertEquals( "", local.encoder.canonicalize(""));
 			assertEquals( "", local.encoder.canonicalize("", true));
 			assertEquals( "", local.encoder.canonicalize("", false));
+			assertEquals( "", local.encoder.canonicalize("", true, true));
+			assertEquals( "", local.encoder.canonicalize("", true, false));
+			assertEquals( "", local.encoder.canonicalize("", false, true));
+			assertEquals( "", local.encoder.canonicalize("", false, false));
 
 			// test exception paths
 			assertEquals( "%", local.encoder.canonicalize("%25", true));
@@ -144,22 +165,21 @@
 	        assertEquals( '<script>alert("hello");</script>', local.encoder.canonicalize("%3Cscript%3Ealert%28%22hello%22%29%3B%3C%2Fscript%3E") );
 	        assertEquals( '<script>alert("hello");</script>', local.encoder.canonicalize("%3Cscript&##x3E;alert%28%22hello&##34%29%3B%3C%2Fscript%3E", false) );
 
-/*
 	        // javascript escape syntax
 	        local.js = [];
 	        local.js.add( "JavaScriptCodec" );
-	        local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( ESAPI, local.js );
+	        local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( instance.ESAPI, local.js );
 	        System.out.println( "JavaScript Decoding" );
 
 	        assertEquals( "\0", local.encoder.canonicalize("\0"));
 	        assertEquals( "\b", local.encoder.canonicalize("\b"));
 	        assertEquals( "\t", local.encoder.canonicalize("\\t"));
 	        assertEquals( "\n", local.encoder.canonicalize("\\n"));
-	        assertEquals( ""+(char)0x0b, local.encoder.canonicalize("\\v"));
+	        assertEquals( "" & inputBaseN("0b", 16), local.encoder.canonicalize("\\v"));
 	        assertEquals( "\f", local.encoder.canonicalize("\\f"));
 	        assertEquals( "\r", local.encoder.canonicalize("\\r"));
 	        assertEquals( "\'", local.encoder.canonicalize("\\'"));
-	        assertEquals( "\"", local.encoder.canonicalize("\\\""));
+	        assertEquals( '\"', local.encoder.canonicalize('\\"'));
 	        assertEquals( "\\", local.encoder.canonicalize("\\\\"));
 	        assertEquals( "<", local.encoder.canonicalize("\\<"));
 
@@ -176,7 +196,7 @@
 	        // be careful because some codecs see \0 as null byte
 	        local.css = [];
 	        local.css.add( "CSSCodec" );
-	        local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( ESAPI, local.css );
+	        local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( instance.ESAPI, local.css );
 	        System.out.println( "CSS Decoding" );
 	        assertEquals( "<", local.encoder.canonicalize("\\3c"));  // add strings to prevent null byte
 	        assertEquals( "<", local.encoder.canonicalize("\\03c"));
@@ -188,8 +208,7 @@
 	        assertEquals( "<", local.encoder.canonicalize("\\003C"));
 	        assertEquals( "<", local.encoder.canonicalize("\\0003C"));
 	        assertEquals( "<", local.encoder.canonicalize("\\00003C"));
-	        */
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -197,62 +216,86 @@
 		<cfscript>
 			System.out.println("doubleEncodingCanonicalization");
 			local.encoder = instance.ESAPI.encoder();
-			// note these examples use the strict=false flag on canonicalize to allow
-			// full decoding without throwing an IntrusionException. Generally, you
-			// should use strict mode as allowing double-encoding is an abomination.
-			// double encoding examples
-			assertEquals( "<", local.encoder.canonicalize("&##x26;lt&##59", false ));
-			//double entity
-			assertEquals( "\", local.encoder.canonicalize("%255c", false));
-			//double percent
-			assertEquals( "%", local.encoder.canonicalize("%2525", false));
-			//double percent
-			// double encoding with multiple schemes example
-			assertEquals( "<", local.encoder.canonicalize("%26lt%3b", false));
-			//first entity, then percent
-			assertEquals( "&", local.encoder.canonicalize("&##x25;26", false));
-			//first percent, then entity
-			// nested encoding examples
-			assertEquals( "<", local.encoder.canonicalize("%253c", false));
-			//nested encode % with percent
-			assertEquals( "<", local.encoder.canonicalize("%%33%63", false));
-			//nested encode both nibbles with percent
-			assertEquals( "<", local.encoder.canonicalize("%%33c", false));
-			// nested encode first nibble with percent
-			assertEquals( "<", local.encoder.canonicalize("%3%63", false));
-			//nested encode second nibble with percent
-			assertEquals( "<", local.encoder.canonicalize("&&##108;t;", false));
-			//nested encode l with entity
-			assertEquals( "<", local.encoder.canonicalize("%2&##x35;3c", false));
-			//triple percent, percent, 5 with entity
-			// nested encoding with multiple schemes examples
-			assertEquals( "<", local.encoder.canonicalize("&%6ct;", false));
-			// nested encode l with percent
-			assertEquals( "<", local.encoder.canonicalize("%&##x33;c", false));
-			//nested encode 3 with entity
-			// multiple encoding tests
+			
+			/* note these examples use the strict=false flag on canonicalize to allow
+			full decoding without throwing an IntrusionException. Generally, you
+			should use strict mode as allowing double-encoding is an abomination. */
+			
+			/* double encoding examples */
+			assertEquals( "<", local.encoder.canonicalize("&##x26;lt&##59", false )); /* double entity */
+			assertEquals( "\", local.encoder.canonicalize("%255c", false)); /* double percent */
+			assertEquals( "%", local.encoder.canonicalize("%2525", false)); /* double percent */
+			
+			/* double encoding with multiple schemes example */
+			assertEquals( "<", local.encoder.canonicalize("%26lt%3b", false)); /* first entity, then percent */
+			assertEquals( "&", local.encoder.canonicalize("&##x25;26", false)); /* first percent, then entity */
+			
+			/* enforce multiple and mixed encoding detection */
+			try {
+				local.encoder.canonicalize("%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B", true, true);
+				fail("Multiple and mixed encoding not detected");
+			}
+			catch (cfesapi.org.owasp.esapi.errors.IntrusionException ie) {
+				/* expected */
+			}
+			
+			/* enforce multiple but not mixed encoding detection */
+			try {
+				local.encoder.canonicalize("%252525253C", true, false);
+				fail("Multiple encoding not detected");
+			}
+			catch (cfesapi.org.owasp.esapi.errors.IntrusionException ie) {
+				/* expected */
+			}
+			
+			/* enforce mixed but not multiple encoding detection */
+			try {
+				local.encoder.canonicalize("%25 %2526 %26##X3c;script&##x3e; &##37;3Cscript%25252525253e", false, true);
+				fail("Mixed encoding not detected");
+			}
+			catch (cfesapi.org.owasp.esapi.errors.IntrusionException ie) {
+				/* expected */
+			}
+			
+			/* enforce niether mixed nor multiple encoding detection -should canonicalize but not throw an error */
+			assertEquals( "< < < < < < <", local.encoder.canonicalize("%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B", false, false)); /* nested encoding examples */
+			assertEquals( "<", local.encoder.canonicalize("%253c", false)); /* nested encode % with percent */
+			assertEquals( "<", local.encoder.canonicalize("%%33%63", false)); /* nested encode both nibbles with percent */
+			assertEquals( "<", local.encoder.canonicalize("%%33c", false)); /* nested encode first nibble with percent */
+			assertEquals( "<", local.encoder.canonicalize("%3%63", false)); /* nested encode second nibble with percent */
+			assertEquals( "<", local.encoder.canonicalize("&&##108;t;", false)); /* nested encode l with entity */
+			assertEquals( "<", local.encoder.canonicalize("%2&##x35;3c", false)); /* triple percent, percent, 5 with entity */
+			
+			/* nested encoding with multiple schemes examples */
+			assertEquals( "<", local.encoder.canonicalize("&%6ct;", false)); /* nested encode l with percent */
+			assertEquals( "<", local.encoder.canonicalize("%&##x33;c", false)); /* nested encode 3 with entity */
+			
+			/* multiple encoding tests */
 			assertEquals( "% & <script> <script>", local.encoder.canonicalize( "%25 %2526 %26##X3c;script&##x3e; &##37;3Cscript%25252525253e", false ) );
 			assertEquals( "< < < < < < <", local.encoder.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B", false ) );
-			// test strict mode with both mixed and multiple encoding
+			
+			/* test strict mode with both mixed and multiple encoding */
 			try {
 				assertEquals( "< < < < < < <", local.encoder.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B" ) );
 			}
 			catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
-				// expected
+				/* expected */
 			}
+			
 			try {
 				assertEquals( "<script", local.encoder.canonicalize("%253Cscript" ) );
 	        }
 	        catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
-	            // expected
+	            /* expected */
 	        }
+	        
 	        try {
 	            assertEquals( "<script", local.encoder.canonicalize("&##37;3Cscript" ) );
 	        }
 	        catch( cfesapi.org.owasp.esapi.errors.IntrusionException e ) {
-	            // expected
+	            /* expected */
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -272,7 +315,7 @@
 	        assertEquals("dir&amp;", local.encoder.encodeForHTML("dir&"));
 	        assertEquals("one&amp;two", local.encoder.encodeForHTML("one&two"));
 	        assertEquals("" & chr(12345) & chr(65533) & chr(1244), "" & chr(12345) & chr(65533) & chr(1244) );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -284,7 +327,7 @@
 	        assertEquals("&lt;script&gt;", local.encoder.encodeForHTMLAttribute("<script>"));
 	        assertEquals(",.-_", local.encoder.encodeForHTMLAttribute(",.-_"));
 	        assertEquals("&##x20;&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.encoder.encodeForHTMLAttribute(" !@$%()=+{}[]"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -295,7 +338,7 @@
 	        assertEquals("", local.encoder.encodeForCSS(""));
 	        assertEquals("\3c script\3e ", local.encoder.encodeForCSS("<script>"));
 	        assertEquals("\21 \40 \24 \25 \28 \29 \3d \2b \7b \7d \5b \5d ", local.encoder.encodeForCSS("!@$%()=+{}[]"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -317,7 +360,7 @@
 	        // assertEquals( "\'", local.encoder.encodeForJavaScript("\'"));
 	        // assertEquals( '\"', local.encoder.encodeForJavaScript('\"'));
 	        // assertEquals( "\\", local.encoder.encodeForJavaScript("\\"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -331,7 +374,7 @@
 	        assertEquals( 'alert"&chrw(40)&chrw(39)&"ESAPI"&chrw(32)&"test"&chrw(33)&chrw(39)&chrw(41)', local.encoder.encodeForVBScript("alert('ESAPI test!')" ));
 	        assertEquals( 'jeff.williams"&chrw(64)&"aspectsecurity.com', local.encoder.encodeForVBScript("jeff.williams@aspectsecurity.com"));
 	        assertEquals( 'test"&chrw(32)&chrw(60)&chrw(62)&chrw(32)&"test', local.encoder.encodeForVBScript("test <> test" ));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -341,7 +384,7 @@
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForXPath(""));
 	        assertEquals("&##x27;or 1&##x3d;1", local.encoder.encodeForXPath("'or 1=1"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -363,7 +406,17 @@
 	        local.oracle = OracleCodec.init();
 	        assertEquals("", local.encoder.encodeForSQL(local.oracle, ""), "Oracle");
 	        assertEquals("Jeff'' or ''1''=''1", local.encoder.encodeForSQL(local.oracle, "Jeff' or '1'='1"), "Oracle");
-    	</cfscript>
+    	</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testMySQLANSIModeQuoteInjection" output="false">
+		<cfscript>
+	        local.encoder = instance.ESAPI.encoder();
+	        MySQLCodec = createObject("java", "org.owasp.esapi.codecs.MySQLCodec");
+	        local.c = MySQLCodec.init(MySQLCodec.ANSI_MODE);
+	        assertEquals(" or 1=1 -- -", local.encoder.encodeForSQL(c, '" or 1=1 -- -'), "MySQL Ansi Quote Injection Bug");
+		</cfscript> 
 	</cffunction>
 
 
@@ -375,7 +428,7 @@
 	        assertEquals("Hi This is a test ##��", local.encoder.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
 	        // nulls are not valid CF tests: assertEquals("Hi \00", local.encoder.encodeForLDAP("Hi " & toUnicode("\u0000")), "Zeros");
 	        assertEquals("Hi \28This\29 = is \2a a \5c test ## � � �", local.encoder.encodeForLDAP("Hi (This) = is * a \ test ## � � �"), "LDAP Christams Tree");
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -391,7 +444,7 @@
 	        assertEquals("Hello\<\>", local.encoder.encodeForDN("Hello<>"), "less than greater than");
 	        assertEquals("\  \ ", local.encoder.encodeForDN("   "), "only 3 spaces");
 	        assertEquals('\ Hello\\ \+ \, \"World\" \;\ ', local.encoder.encodeForDN(' Hello\ + , "World" ; '), "Christmas Tree DN");
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -399,7 +452,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForXML(""));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -407,7 +460,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals(" ", local.encoder.encodeForXML(" "));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -415,7 +468,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("&##x3c;script&##x3e;", local.encoder.encodeForXML("<script>"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -424,7 +477,7 @@
 	        System.out.println("encodeForXML");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals(",.-_", local.encoder.encodeForXML(",.-_"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -432,7 +485,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.encoder.encodeForXML("!@$%()=+{}[]"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -441,7 +494,7 @@
 	        System.out.println("encodeForXML");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("&##xa3;", local.encoder.encodeForXML(toUnicode("\u00A3")));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -449,7 +502,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForXMLAttribute(""));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -457,7 +510,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals(" ", local.encoder.encodeForXMLAttribute(" "));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -465,7 +518,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("&##x3c;script&##x3e;", local.encoder.encodeForXMLAttribute("<script>"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -473,7 +526,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals(",.-_", local.encoder.encodeForXMLAttribute(",.-_"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -481,7 +534,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", local.encoder.encodeForXMLAttribute(" !@$%()=+{}[]"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -489,7 +542,7 @@
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("&##xa3;", local.encoder.encodeForXMLAttribute(toUnicode("\u00A3")));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -499,7 +552,7 @@
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForURL(""));
 	        assertEquals("%3Cscript%3E", local.encoder.encodeForURL("<script>"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -520,7 +573,7 @@
 	        } catch( cfesapi.org.owasp.esapi.errors.EncodingException e ) {
 	        	// expected
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -546,7 +599,7 @@
 	        } catch ( java.io.IOException e ) {
 	            fail();
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -579,7 +632,7 @@
 			    	// expected
 			    }
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -619,7 +672,7 @@
 	        assertEquals("c^:^\jeff", local.win.encode(local.immune, "c:\jeff"));
 	        assertEquals("dir^ ^&^ foo", local.encoder.encodeForOS(local.win, "dir & foo"));
 	        assertEquals("dir^ ^&^ foo", local.win.encode(local.immune, "dir & foo"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -663,7 +716,7 @@
 	        // TODO: Check that these are acceptable for Unix
 	        assertEquals("\/etc\/hosts", local.encoder.encodeForOS(local.unix, "/etc/hosts"));
 	        assertEquals("\/etc\/hosts\;\ ls\ -l", local.encoder.encodeForOS(local.unix, "/etc/hosts; ls -l"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -722,7 +775,7 @@
 			}
 			local.stop = System.currentTimeMillis();
 			System.out.println( "Attack Strict: " & (local.stop-local.start) );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -732,7 +785,7 @@
 			<cfthread action="run" name="#i#">
 				<cfscript>
 					createObject("component", "EncoderConcurrencyMock").init( i ).run();
-				</cfscript>
+				</cfscript> 
 			</cfthread>
 		</cfloop>
 	</cffunction>
