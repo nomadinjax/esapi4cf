@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Authenticator" output="false" hint="A partial implementation of the Authenticator interface. This class should not implement any methods that would be meant to modify a User object, since that's probably implementation specific.">
 
 	<cfscript>
@@ -11,7 +28,7 @@
 		instance.logger = "";
 		instance.currentUser = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Authenticator" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
@@ -21,7 +38,7 @@
 			instance.currentUser = createObject("component", "ThreadLocalUser").init(instance.ESAPI);
 
 	        return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -29,7 +46,7 @@
 		<cfscript>
 	        // instance.logger.logWarning(Logger.SECURITY, "************Clearing threadlocals. Thread" + Thread.currentThread().getName() );
 	        instance.currentUser.set("");
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -37,7 +54,7 @@
 		<cfargument type="String" name="accountName" required="true">
 		<cfscript>
         	return isObject(getUserByAccountName(arguments.accountName));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -48,7 +65,7 @@
 	            local.user = createObject("component", "AnonymousUser").init(instance.ESAPI);
 	        }
 	        return local.user;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -57,7 +74,7 @@
 	        local.session = instance.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
 	        if (isNull(local.session) || !isObject(local.session)) return "";
 	        return instance.ESAPI.httpUtilities().getSessionAttribute(key=this.USER);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -78,8 +95,6 @@
 
 	            local.username = local.data[1];
 	            local.password = local.data[2];
-	            System.out.println("DATA0: " & local.username);
-	            System.out.println("DATA1: " & local.password);
 	            local.user = getUserByAccountName(local.username);
 	            if (!isObject(local.user)) {
 	                instance.logger.warning(Logger.SECURITY_FAILURE, "Found valid remember token but no user matching " & local.username);
@@ -96,7 +111,7 @@
 	        }
 	        instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 	        return "";
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -131,7 +146,7 @@
 
 	        arguments.request.setAttribute(local.user.getCSRFToken(), "authenticated");
 	        return local.user;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -155,18 +170,30 @@
 	        // else try to verify credentials - throws exception if login fails
 	        if (isNull(local.user) || !isInstanceOf(local.user, "cfesapi.org.owasp.esapi.reference.DefaultUser")) {
 	            local.user = loginWithUsernameAndPassword(arguments.request);
+
+		        // warn if this authentication request was not POST or non-SSL connection, exposing credentials or session id
+		        try {
+		            instance.ESAPI.httpUtilities().assertSecureRequest(arguments.request);
+		        } catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+		            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Attempt to login with an insecure request", e.detail, e);
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+		        }
 	        }
+	        
+	        // if we have a user, verify we are on SSL (POST not required)
+	        else {
+	        	        
+		        // warn if this authentication request was non-SSL connection, exposing session id
+		        try {
+		            instance.ESAPI.httpUtilities().assertSecureChannel(arguments.request);
+		        } catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+		            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Attempt to login with an insecure request", e.detail, e);
+					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+		        }
+	        }        
 
 	        // set last host address
-	        local.user.setLastHostAddress(arguments.request.getRemoteHost());
-
-	        // warn if this authentication request was not POST or non-SSL connection, exposing credentials or session id
-	        try {
-	            instance.ESAPI.httpUtilities().assertSecureRequest(arguments.request);
-	        } catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Attempt to login with an insecure request", e.detail, e);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
-	        }
+	        local.user.setLastHostAddress(arguments.request.getRemoteAddr());
 
 	        // don't let anonymous user log in
 	        if (local.user.isAnonymous()) {
@@ -229,7 +256,7 @@
 	        local.session.setAttribute(this.USER, local.user);
 	        setCurrentUser(local.user);
 	        return local.user;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -239,7 +266,7 @@
 	        if (isObject(local.user) && !local.user.isAnonymous()) {
 	            local.user.logout();
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -247,7 +274,7 @@
 		<cfargument type="cfesapi.org.owasp.esapi.User" name="user" required="true">
 		<cfscript>
         	instance.currentUser.setUser(arguments.user);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 	<!---
@@ -317,6 +344,7 @@
 	<cffunction access="public" returntype="void" name="verifyPasswordStrength" output="false" hint="Ensures that the password meets site-specific complexity requirements, like length or number of character sets. This method takes the old password so that the algorithm can analyze the new password to see if it is too similar to the old password. Note that this has to be invoked when the user has entered the old password, as the list of old credentials stored by ESAPI is all hashed.">
 		<cfargument type="String" name="oldPassword" required="false" hint="the old password">
 		<cfargument type="String" name="newPassword" required="true" hint="the new password">
+		<cfargument type="cfesapi.org.owasp.esapi.User" name="user" required="true">
 	</cffunction>
 
 

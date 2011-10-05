@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
@@ -70,6 +87,13 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 	            // success
 	        }
+	        try {
+	        	local.uName = "ea234kEknr";	//sufficiently random password that also works as a username
+	            local.authenticator.createUser(local.uName, local.uName, local.uName);  // using username as password
+	            fail();
+	        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
+	            // success
+	        }
 		</cfscript> 
 	</cffunction>
 
@@ -80,17 +104,19 @@
 			local.authenticator = instance.ESAPI.authenticator();
 			local.oldPassword = "iiiiiiiiii";  // i is not allowed in passwords - this prevents failures from containing pieces of old password
 			local.newPassword = "";
+			local.username = "FictionalEsapiUser";
+			local.user = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultUser").init(instance.ESAPI, local.username);
 			for (local.i = 0; local.i < 100; local.i++) {
 	            try {
 	                newPassword = local.authenticator.generateStrongPassword();
-	                local.authenticator.verifyPasswordStrength(local.oldPassword, local.newPassword);
+	                local.authenticator.verifyPasswordStrength(local.oldPassword, local.newPassword, local.user);
 	            } catch( cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e ) {
 	            	System.out.println( "  FAILED >> " & local.newPassword & " : " & e.getLogMessage());
 	                fail();
 	            }
 			}
 			try {
-				local.authenticator.verifyPasswordStrength("test56^$test", "abcdx56^$sl" );
+				local.authenticator.verifyPasswordStrength("test56^$test", "abcdx56^$sl", local.user );
 			} catch( cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e ) {
 				// expected
 			}
@@ -383,64 +409,80 @@
 			System.out.println("validatePasswordStrength");
 	        local.authenticator = instance.ESAPI.authenticator();
 
+			local.username = "FictionalEsapiUser";
+			local.user = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultUser").init(instance.ESAPI, local.username);
+		
 			// should fail
 			try {
-				local.authenticator.verifyPasswordStrength("password", "jeff");
+				local.authenticator.verifyPasswordStrength("password", "jeff", local.user);
 				fail();
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				local.authenticator.verifyPasswordStrength("diff123bang", "same123string");
+				local.authenticator.verifyPasswordStrength("diff123bang", "same123string", local.user);
 				fail();
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				local.authenticator.verifyPasswordStrength("password", "JEFF");
+				local.authenticator.verifyPasswordStrength("password", "JEFF", local.user);
 				fail();
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				local.authenticator.verifyPasswordStrength("password", "1234");
+				local.authenticator.verifyPasswordStrength("password", "1234", local.user);
 				fail();
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				local.authenticator.verifyPasswordStrength("password", "password");
+				local.authenticator.verifyPasswordStrength("password", "password", local.user);
 				fail();
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				local.authenticator.verifyPasswordStrength("password", "-1");
+				local.authenticator.verifyPasswordStrength("password", "-1", local.user);
 				fail();
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				local.authenticator.verifyPasswordStrength("password", "password123");
+				local.authenticator.verifyPasswordStrength("password", "password123", local.user);
 				fail();
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				local.authenticator.verifyPasswordStrength("password", "test123");
+				local.authenticator.verifyPasswordStrength("password", "test123", local.user);
 				fail();
 			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+				// success
+			}
+			//jtm - 11/16/2010 - fix for bug http://code.google.com/p/owasp-esapi-java/issues/detail?id=108
+			try {
+				local.authenticator.verifyPasswordStrength("password", "FictionalEsapiUser", local.user);
+				fail();
+			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
+				// success
+			}
+			try {
+				local.authenticator.verifyPasswordStrength("password", "FICTIONALESAPIUSER", local.user);
+				fail();
+			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
 				// success
 			}
 
 			// should pass
-			local.authenticator.verifyPasswordStrength("password", "jeffJEFF12!");
-			local.authenticator.verifyPasswordStrength("password", "super calif ragil istic");
-			local.authenticator.verifyPasswordStrength("password", "TONYTONYTONYTONY");
-			local.authenticator.verifyPasswordStrength("password", local.authenticator.generateStrongPassword());
+			local.authenticator.verifyPasswordStrength("password", "jeffJEFF12!", local.user);
+			local.authenticator.verifyPasswordStrength("password", "super calif ragil istic", local.user);
+			local.authenticator.verifyPasswordStrength("password", "TONYTONYTONYTONY", local.user);
+			local.authenticator.verifyPasswordStrength("password", local.authenticator.generateStrongPassword(), local.user);
 
 	        // chrisisbeef - Issue 65 - http://code.google.com/p/owasp-esapi-java/issues/detail?id=65
-	        local.authenticator.verifyPasswordStrength("password", "b!gbr0ther");
+	        local.authenticator.verifyPasswordStrength("password", "b!gbr0ther", local.user);
 		</cfscript> 
 	</cffunction>
 

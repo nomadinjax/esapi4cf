@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfinterface hint="The Authenticator interface defines a set of methods for generating and handling account credentials and session identifiers. The goal of this interface is to encourage developers to protect credentials from disclosure to the maximum extent possible. One possible implementation relies on the use of a thread local variable to store the current user's identity. The application is responsible for calling setCurrentUser() as soon as possible after each HTTP request is received. The value of getCurrentUser() is used in several other places in this API. This eliminates the need to pass a user object to methods throughout the library. For example, all of the logging, access control, and exception calls need access to the currently logged in user. The goal is to minimize the responsibility of the developer for authentication.">
 
 	<cffunction access="public" returntype="void" name="clearCurrent" output="false" hint="Clears the current User. This allows the thread to be reused safely. This clears all threadlocal variables from the thread. This should ONLY be called after all possible ESAPI operations have concluded. If you clear too early, many calls will fail, including logging, which requires the user identity.">
@@ -80,9 +97,10 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="void" name="verifyPasswordStrength" output="false" hint="Ensures that the password meets site-specific complexity requirements, like length or number of character sets. This method takes the old password so that the algorithm can analyze the new password to see if it is too similar to the old password. Note that this has to be invoked when the user has entered the old password, as the list of old credentials stored by ESAPI is all hashed.">
+	<cffunction access="public" returntype="void" name="verifyPasswordStrength" output="false" hint="Ensures that the password meets site-specific complexity requirements, like length or number of character sets. This method takes the old password so that the algorithm can analyze the new password to see if it is too similar to the old password. Note that this has to be invoked when the user has entered the old password, as the list of old credentials stored by ESAPI is all hashed. Additionally, the user object is taken in order to verify the password and account name differ.">
 		<cfargument type="String" name="oldPassword" required="false" hint="the old password">
 		<cfargument type="String" name="newPassword" required="true" hint="the new password">
+		<cfargument type="cfesapi.org.owasp.esapi.User" name="user" required="true" hint="the user">
 	</cffunction>
 
 

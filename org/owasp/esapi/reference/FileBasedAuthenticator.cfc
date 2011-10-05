@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="AbstractAuthenticator" output="false" hint="Reference implementation of the Authenticator interface. This reference implementation is backed by a simple text file that contains serialized information about users. Many organizations will want to create their own implementation of the methods provided in the Authenticator interface backed by their own user repository.">
 
 	<cfscript>
@@ -25,7 +42,7 @@
 	    // Map<User, List<String>>, where the strings are password hashes, with the current hash in entry 0
 	    instance.passwordMap = {};
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Authenticator" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
@@ -34,7 +51,7 @@
 			instance.logger = instance.ESAPI.getLogger("Authenticator");
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -49,7 +66,7 @@
 	        }
 	        instance.passwordMap.put(arguments.user.getAccountId(), local.hashes);
 	        instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "New hashed password stored for " & arguments.user.getAccountName());
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -61,7 +78,7 @@
 	        	return local.hashes[1];
 	        }
 	        return "";
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -75,7 +92,7 @@
 	        }
 	        local.hashes.addAll(arguments.oldHashes);
 	        instance.passwordMap.put(arguments.user.getAccountId(), local.hashes);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -93,7 +110,7 @@
 	            return local.hashes;
 	        }
 	        throw(object=createObject("java", "java.lang.RuntimeException").init("No hashes found for " & user.getAccountName() & ". Is User.hashcode() and equals() implemented correctly?"));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -106,7 +123,7 @@
 	            return duplicate(listToArray(listRest(arrayToList(local.hashes))));
 	        }
 	        return [];
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -116,11 +133,10 @@
 		<cfargument type="String" name="password2" required="true">
 		<cfscript>
 			loadUsersIfNecessary();
-	        /* NULL test
-	        if (arguments.accountName == null) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Account creation failed", "Attempt to create user with null accountName");
+	        if (trim(arguments.accountName) == "") {
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Account creation failed", "Attempt to create user with empty accountName");
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
-	        }*/
+	        }
 	        if (isObject(getUserByAccountName(arguments.accountName))) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
@@ -128,19 +144,20 @@
 
 	        verifyAccountNameStrength(arguments.accountName);
 
-	        /* NULL test
-	        if (arguments.password1 == null) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password");
+	        if (trim(arguments.password1) == "") {
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with an empty password");
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
-	        }*/
-	        verifyPasswordStrength(newPassword=arguments.password1);
+	        }
+	        
+	        local.user = createObject("DefaultUser").init(instance.ESAPI, arguments.accountName);
+	        
+	        verifyPasswordStrength(newPassword=arguments.password1, user=local.user);
 
 	        if (!arguments.password1.equals(arguments.password2)) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match");
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
-	        local.user = createObject("DefaultUser").init(instance.ESAPI, arguments.accountName);
 	        try {
 	            setHashedPassword(local.user, hashPassword(arguments.password1, arguments.accountName));
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
@@ -151,7 +168,7 @@
 	        instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "New user created: " & arguments.accountName);
 	        saveUsers();
 	        return local.user;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -168,7 +185,7 @@
 			}
 
 			return _generateStrongPassword("");
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -188,7 +205,7 @@
 	            return local.newPassword;
 	        }
 	        return _generateStrongPassword(arguments.oldPassword);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -210,7 +227,7 @@
 	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & local.accountName);
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
-	            verifyPasswordStrength(arguments.currentPassword, arguments.newPassword);
+	            verifyPasswordStrength(arguments.currentPassword, arguments.newPassword, arguments.user);
 	            arguments.user.setLastPasswordChangeTime(createObject("java", "java.util.Date").init());
 	            local.newHash = hashPassword(arguments.newPassword, local.accountName);
 	            if (arrayFind(getOldPasswordHashes(arguments.user), local.newHash)) {
@@ -219,11 +236,13 @@
 	            }
 	            setHashedPassword(arguments.user, local.newHash);
 	            instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password changed for user: " & local.accountName);
+	            // jtm - 11/2/2010 - added to resolve http://code.google.com/p/owasp-esapi-java/issues/detail?id=13
+	            saveUsers();
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Password change failed", "Encryption exception changing password for " & local.accountName, ee);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -246,7 +265,7 @@
 	        }
 	        instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Password verification failed for " & local.accountName);
 	        return false;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -259,7 +278,7 @@
 	        loadUsersIfNecessary();
 	        local.u = instance.userMap.get(arguments.accountId);
 	        return !isNull(local.u) ? local.u : "";
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -276,7 +295,7 @@
 	            }
 	        }
 	        return "";
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -288,7 +307,7 @@
 	            local.results.add(instance.userMap[local.u].getAccountName());
 	        }
 	        return local.results;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -298,7 +317,7 @@
 		<cfscript>
 			local.salt = arguments.accountName.toLowerCase();
 	        return instance.ESAPI.encryptor().hash(arguments.password, local.salt);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -328,7 +347,7 @@
 	            return;
 	        }
 	        loadUsersImmediately();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -358,14 +377,14 @@
                 instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure loading user file: " & instance.userDB.getAbsolutePath(), e);
             } finally {
                 try {
-                    if (!isNull(local.reader)) {
+                    if (!isNull(local.reader) && isObject(local.reader)) {
                         local.reader.close();
                     }
                 } catch (java.io.IOException e) {
                     instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure closing user file: " & instance.userDB.getAbsolutePath(), e);
                 }
             }
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -385,7 +404,7 @@
 		        local.user.accountId = local.accountId;
 
 		        local.password = local.parts[3];
-	       		verifyPasswordStrength(newPassword=local.password);
+	       		verifyPasswordStrength(newPassword=local.password, user=local.user);
 		        setHashedPassword(local.user, local.password);
 
 		        local.roles = local.parts[4].toLowerCase().split(" *, *");
@@ -408,7 +427,7 @@
 		        local.user.resetCSRFToken();
 
 		        setOldPasswordHashes(local.user, Arrays.asList(local.parts[7].split(" *, *")));
-		        local.user.setLastHostAddress("null" == local.parts[8] ? "" : local.parts[8]);
+		        local.user.setLastHostAddress("unknown" == local.parts[8] ? "" : local.parts[8]);
 		        local.user.setLastPasswordChangeTime(createObject("java", "java.util.Date").init(Long.parseLong(local.parts[9])));
 		        local.user.setLastLoginTime(createObject("java", "java.util.Date").init(Long.parseLong(local.parts[10])));
 		        local.user.setLastFailedLoginTime(createObject("java", "java.util.Date").init(Long.parseLong(local.parts[11])));
@@ -419,7 +438,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				throw(message=e.message, type=e.type);
 			}
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -436,7 +455,7 @@
 	        instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Removing user " & local.user.getAccountName());
 	        instance.passwordMap.remove(local.user);
 	        saveUsers();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -481,7 +500,7 @@
 	                instance.lastChecked = instance.lastModified;
 	            }
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -495,13 +514,13 @@
 	        local.sb.append(" | ");
 	        local.sb.append(getHashedPassword(arguments.user));
 	        local.sb.append(" | ");
-	        local.sb.append(dump(arguments.user.getRoles()));
+	        local.sb.append(arrayToList(arguments.user.getRoles()));
 	        local.sb.append(" | ");
 	        local.sb.append(arguments.user.isLocked() ? "locked" : "unlocked");
 	        local.sb.append(" | ");
 	        local.sb.append(arguments.user.isEnabled() ? "enabled" : "disabled");
 	        local.sb.append(" | ");
-	        local.sb.append(dump(getOldPasswordHashes(arguments.user)));
+	        local.sb.append(arrayToList(getOldPasswordHashes(arguments.user)));
 	        local.sb.append(" | ");
 	        local.sb.append(arguments.user.getLastHostAddress());
 	        local.sb.append(" | ");
@@ -515,24 +534,7 @@
 	        local.sb.append(" | ");
 	        local.sb.append(arguments.user.getFailedLoginCount());
 	        return local.sb.toString();
-    	</cfscript>
-	</cffunction>
-
-
-	<cffunction access="private" returntype="String" name="dump" output="false" hint="Dump a collection as a comma-separated list.">
-		<cfargument type="Array" name="c" required="true" hint="the collection to convert to a comma separated list">
-		<cfscript>
-	        /*local.sb = createObject("java", "java.lang.StringBuilder").init();
-	        for (local.s in arguments.c) {
-	            local.sb.append(local.s).append(",");
-	        }
-	        if ( arguments.c.size() > 0) {
-	        	return local.sb.toString().substring(0, local.sb.length() - 1);
-	        }
-	        return "";*/
-
-			return arrayToList(arguments.c);
-        </cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -547,13 +549,14 @@
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="verifyPasswordStrength" output="false" hint="This implementation checks: - for any 3 character substrings of the old password - for use of a length character sets &gt; 16 (where character sets are upper, lower, digit, and special">
 		<cfargument type="String" name="oldPassword" required="false">
 		<cfargument type="String" name="newPassword" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.User" name="user" required="true">
 		<cfscript>
 			Arrays = createObject("java", "java.util.Arrays");
 			EncoderConstants = createObject("java", "org.owasp.esapi.EncoderConstants");
@@ -608,7 +611,16 @@
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid password", "New password is not long and complex enough");
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
-    	</cfscript>
+	        
+	        local.accountName = arguments.user.getAccountName();
+	        
+	        //jtm - 11/3/2010 - fix for bug http://code.google.com/p/owasp-esapi-java/issues/detail?id=108
+	        if (local.accountName.equalsIgnoreCase(arguments.newPassword)) {
+	        	//password can't be account name
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid password", "Password matches account name, irrespective of case");
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	        }
+    	</cfscript> 
 	</cffunction>
 
 
