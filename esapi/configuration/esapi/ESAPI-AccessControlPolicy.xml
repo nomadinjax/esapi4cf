@@ -93,7 +93,7 @@ We have these as runtime tests, but not as policy file load tests yet.
 		<AccessControlRule
 			name="EchoRuntimeParameterClassCastException"
 			description="Access depends on the value of the runtime parameter"
-			class="org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
+			class="cfesapi.org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
 			<Parameters>
 				<Parameter name="isTrue" type="Boolean" value="This is not a boolean"/>
 			</Parameters>
@@ -101,7 +101,7 @@ We have these as runtime tests, but not as policy file load tests yet.
 		<AccessControlRule
 			name="EchoRuntimeParameterValueNull"
 			description="Access depends on the value of the runtime parameter"
-			class="org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
+			class="cfesapi.org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
 			<Parameters>
 				<Parameter name="isTrue" type="Boolean" value="null"/>
 			</Parameters>
@@ -109,7 +109,7 @@ We have these as runtime tests, but not as policy file load tests yet.
 		<AccessControlRule
 			name="EchoRuntimeParameterValueEmpty"
 			description="Access depends on the value of the runtime parameter"
-			class="org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
+			class="cfesapi.org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
 			<Parameters>
 				<Parameter name="isTrue" type="Boolean" value=""/>
 			</Parameters>
@@ -117,7 +117,7 @@ We have these as runtime tests, but not as policy file load tests yet.
 		<AccessControlRule
 			name="EchoRuntimeParameterValueMissing"
 			description="Access depends on the value of the runtime parameter"
-			class="org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
+			class="cfesapi.org.owasp.esapi.reference.accesscontrol.EchoPolicyParameterACR">
 			<Parameters>
 				<Parameter name="isTrue" type="Boolean"/>
 			</Parameters>
