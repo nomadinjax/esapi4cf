@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HTTPUtilities" output="false">
 
 	<cfscript>
@@ -31,11 +48,11 @@
 		/*
 	     * The currentResponse ThreadLocal variable is used to make the currentResponse available to any call in any part of an
 	     * application. This enables API's for actions that require the response to be much simpler. For example, the logout()
-	     * method in the Authenticator class requires the currentResponse to kill the JSESSIONID cookie.
+	     * method in the Authenticator class requires the currentResponse to kill the Session ID cookie.
 	     */
 		instance.currentResponse = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HTTPUtilities" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
@@ -48,7 +65,7 @@
 			instance.currentResponse = createObject('component', 'ThreadLocalResponse').init(instance.ESAPI);
 
 	        return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -87,7 +104,7 @@
 	            return;
 	        }
 	        instance.logger.warning(jLogger.SECURITY_FAILURE, "Attempt to add unsafe data to cookie (skip mode). Skipping cookie and continuing.");
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -102,7 +119,7 @@
 			// if there are already parameters append with &, otherwise append with ?
 			local.token = this.CSRF_TOKEN_NAME & "=" & local.user.getCSRFToken();
 			return arguments.href.indexOf( '?') != -1 ? arguments.href & "&" & local.token : arguments.href & "?" & local.token;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -122,7 +139,7 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            instance.logger.warning(jLogger.SECURITY_FAILURE, "Attempt to add invalid header denied", e);
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -139,7 +156,7 @@
 		    	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Insecure request received", "HTTP request did not use SSL" );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 		    }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -157,7 +174,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Insecure request received", "Received request using " & local.receivedMethod & " when only " & local.requiredMethod & " is allowed" );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -188,7 +205,7 @@
 				local.newSession.setAttribute(local.stringObjectEntry, local.temp[local.stringObjectEntry]);
 			}
 			return local.newSession;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -196,7 +213,7 @@
 		<cfscript>
 			instance.currentRequest.set("");
 			instance.currentResponse.set("");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -226,7 +243,7 @@
 	            local.header &= "; HttpOnly";
 	        }
 	        return local.header;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -239,7 +256,7 @@
 	    		cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "Invalid request","Tampering detected. Hidden field data did not decrypt properly.", e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	    	}
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -248,7 +265,7 @@
 		<cfscript>
         	local.plaintext = decryptString(arguments.encrypted);
 			return queryToMap(local.plaintext);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -263,7 +280,7 @@
 	    	} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
 	        	return {};
 	    	}
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -271,7 +288,7 @@
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
     		return encryptString(arguments.value);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -279,7 +296,7 @@
 		<cfargument type="String" name="query" required="true">
 		<cfscript>
 	    	return encryptString(arguments.query);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -313,7 +330,7 @@
 
 	    	local.cookie = createObject("java", "javax.servlet.http.Cookie").init( this.ESAPI_STATE, local.encrypted );
 	    	addCookie( arguments.response, local.cookie );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -325,7 +342,7 @@
 	        if ( isNull(local.c) ) return "";
 			local.value = local.c.getValue();
 			return instance.ESAPI.validator().getValidInput("HTTP cookie value: " & local.value, local.value, "HTTPCookieValue", 1000, false);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -334,21 +351,21 @@
 			local.user = instance.ESAPI.authenticator().getCurrentUser();
 			if (!isObject(local.user)) return "";
 			return local.user.getCSRFToken();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpServletRequest" name="getCurrentRequest" output="false">
 		<cfscript>
 	    	return instance.currentRequest.getRequest();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpServletResponse" name="getCurrentResponse" output="false">
 		<cfscript>
         	return instance.currentResponse.getResponse();
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -443,7 +460,7 @@
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}*/
 			return Collections.synchronizedList(local.newFiles);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -461,7 +478,7 @@
 				}
 			}
 			return;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -471,7 +488,7 @@
 		<cfscript>
     		local.value = arguments.request.getHeader(arguments.name);
         	return instance.ESAPI.validator().getValidInput("HTTP header value: " & local.value, local.value, "HTTPHeaderValue", 150, false);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -481,7 +498,7 @@
 		<cfscript>
     		local.value = arguments.request.getParameter(arguments.name);
 	    	return instance.ESAPI.validator().getValidInput("HTTP parameter value: " & local.value, local.value, "HTTPParameterValue", 2000, true);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -496,7 +513,7 @@
 					killCookie(arguments.request, arguments.response, local.cookie.getName());
 				}
 			}
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -517,7 +534,7 @@
 			if ( !isNull(local.domain) ) local.deleter.setDomain( local.domain );
 			if ( !isNull(local.path) ) local.deleter.setPath( local.path );
 			arguments.response.addCookie( local.deleter );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -548,14 +565,14 @@
 		    local.cookies = arguments.request.getCookies();
 		    if ( !isNull(local.cookies) ) {
 	            for (local.cooky in local.cookies) {
-	               if (local.cooky.getName() != "JSESSIONID") {
+	               if (local.cooky.getName() != instance.ESAPI.securityConfiguration().getHttpSessionIdName()) {
 	                  local.params.append("+").append(local.cooky.getName()).append("=").append(local.cooky.getValue());
 		            }
 				}
 		    }
 		    local.msg = arguments.request.getMethod() & " " & arguments.request.getRequestURL() & (local.params.length() > 0 ? "?" & local.params : "");
 		    arguments.logger.info(jLogger.SECURITY_SUCCESS, local.msg);
-	    </cfscript>
+	    </cfscript> 
 	</cffunction>
 
 
@@ -577,7 +594,7 @@
 				}
 			}
 			return local.map;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -592,7 +609,7 @@
 			}
 			local.dispatcher = arguments.request.getRequestDispatcher(arguments.location);
 			local.dispatcher.forward( arguments.request, arguments.response );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -605,7 +622,7 @@
 	            throw(object=createObject("java", "java.io.IOException").init("Redirect failed"));
 	        }
 	        arguments.response.sendRedirect(arguments.location);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -613,7 +630,7 @@
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false" default="#getCurrentResponse()#">
 		<cfscript>
 			arguments.response.setContentType(instance.ESAPI.securityConfiguration().getResponseContentType());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -641,7 +658,7 @@
 
 	     	instance.currentRequest.setRequest(wrappedRequest);
 	        instance.currentResponse.setResponse(wrappedResponse);
-	    </cfscript>
+	    </cfscript> 
 	</cffunction>
 
 
@@ -661,7 +678,7 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            instance.logger.warning(jLogger.SECURITY_FAILURE, "Attempt to set invalid header denied", e);
 	        }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -674,7 +691,7 @@
 			// HTTP 1.0
 			arguments.response.setHeader("Pragma","no-cache");
 			arguments.response.setDateHeader("Expires", -1);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -707,7 +724,7 @@
 				instance.logger.warning(jLogger.SECURITY_FAILURE, "Attempt to set remember me token failed for " & user.getAccountName(), e );
 				return "";
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -725,7 +742,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "Authentication failed", "Possibly forged HTTP request without proper CSRF token detected");
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -737,7 +754,7 @@
 	            return arguments.session.getAttribute(arguments.key);
 	        }
 	        return "";
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -746,7 +763,7 @@
 		<cfargument type="String" name="key" required="true">
 		<cfscript>
 			return arguments.request.getAttribute(arguments.key);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -757,7 +774,7 @@
 	        local.ct = instance.ESAPI.encryptor().encrypt(plain=local.pt);
 	        local.serializedCiphertext = local.ct.asPortableSerializedByteArray();
 	        return createObject("java", "org.owasp.esapi.codecs.Hex").encode(local.serializedCiphertext, false);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -768,14 +785,14 @@
 	        local.restoredCipherText = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI).fromPortableSerializedBytes(local.serializedCiphertext);
 	        local.plaintext = instance.ESAPI.encryptor().decrypt(ciphertext=local.restoredCipherText);
 	        return local.plaintext.toString();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getApplicationName" output="false">
 		<cfscript>
 			return application.applicationName;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
