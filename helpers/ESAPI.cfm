@@ -1,42 +1,54 @@
 <!---
-
-Declare ESAPI convenience function for persistence, i.e. ESAPI()
-
-NOTES:
-What about ColdSpring??
-Is using just Application scope sufficient???
-
---->
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
+<!--- Declare ESAPI convenience function for persistence, i.e. ESAPI() --->
 
 <cffunction access="private" returntype="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" output="false" hint="Your one stop shop to access all things ESAPI. This function takes care of instantiating ESAPI the first time and persisting ESAPI for subsequent use.">
 	<cfscript>
-		if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")) {
+		if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application["ESAPI"], "cfesapi.org.owasp.esapi.ESAPI")) {
 			lock scope="application" type="exclusive" timeout="1" {
-				if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application.ESAPI, "cfesapi.org.owasp.esapi.ESAPI")) {
-					application.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+				if (!structKeyExists(application, "ESAPI") || !isInstanceOf(application["ESAPI"], "cfesapi.org.owasp.esapi.ESAPI")) {
+					application["ESAPI"] = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 				}
 			}
 		}
-		return application.ESAPI;
-	</cfscript>
+		return application["ESAPI"];
+	</cfscript> 
 </cffunction>
 
 <cfscript>
 	/* Configure ESAPI */
 
-	/* ensure every request sets the HTTP request and response objects */
+	// ensure every request sets the HTTP request and response objects
 	ESAPI().httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
 
-	// is there anything we should always configure per request?
-</cfscript>
+	// set up response with default content type, i.e. text/html; charset=UTF-8
+	// NOTE: you can override per request by using ESAPI().httpUtilities().getCurrentResponse().setContentType("text/json; charset=UTF-8");
+	ESAPI().httpUtilities().setContentType();
 
+	// is there anything we should always configure per request?
+</cfscript> 
 <!--- ESAPI helper methods --->
 
 <cffunction access="private" returntype="String" name="encodeForBase64" output="false" hint="Base64 encode a string. UTF-8 is used to encode the string and no line wrapping is performed.">
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return encodeForBase64Charset("UTF-8", arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -44,7 +56,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return encodeForBase64CharsetWrap("UTF-8", arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -53,7 +65,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForBase64(arguments.str.getBytes(arguments.charset), false);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -62,7 +74,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForBase64(arguments.str.getBytes(arguments.charset), true);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -70,7 +82,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForCSS(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -78,7 +90,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForHTML(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -86,7 +98,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForHTMLAttribute(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -94,7 +106,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForJavaScript(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -102,7 +114,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForURL(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -110,7 +122,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForVBScript(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -118,7 +130,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForXML(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -126,7 +138,7 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForXMLAttribute(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
 
 
@@ -134,5 +146,5 @@ Is using just Application scope sufficient???
 	<cfargument type="String" name="str" required="true" hint="The string to encode.">
 	<cfscript>
 		return ESAPI().encoder().encodeForXPath(arguments.str);
-	</cfscript>
+	</cfscript> 
 </cffunction>
