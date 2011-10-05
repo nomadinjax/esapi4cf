@@ -1,9 +1,26 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="BaseValidationRule" output="false">
 
 	<cfscript>
 		instance.format = createObject("java", "java.text.DateFormat").getDateInstance();
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="DateValidationRule" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="typeName" required="true">
@@ -14,7 +31,7 @@
 			setDateFormat( arguments.newFormat );
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -26,7 +43,8 @@
 			}
 
 	        instance.format = arguments.newFormat;
-        </cfscript>
+	        instance.format.setLenient( instance.ESAPI.securityConfiguration().getLenientDatesAccepted() );
+        </cfscript> 
 	</cffunction>
 
 
@@ -40,7 +58,7 @@
 			}
 
 			return safelyParse(arguments.context, arguments.input);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -55,7 +73,7 @@
 				// do nothing
 		    }
 			return local.date;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -63,7 +81,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			// CHECKME should this allow empty Strings? "   " us IsBlank instead?
+			// CHECKME should this allow empty Strings? "   " use IsBlank instead?
 			if (createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input)) {
 				if (instance.allowNull) {
 					return "";
@@ -80,7 +98,7 @@
 				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(instance.ESAPI, arguments.context & ": Invalid date must follow the " & instance.format.getNumberFormat() & " format", "Invalid date: context=" & arguments.context & ", format=" & instance.format & ", input=" & arguments.input, e, arguments.context);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

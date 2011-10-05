@@ -1,9 +1,26 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
 		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="testWhitelistPattern" output="false">
 		<cfscript>
 			local.validationRule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "Alphabetic");
@@ -18,7 +35,7 @@
 				assertTrue(len(ve.message));
 			}
 			assertEquals("MagnumPI", local.validationRule.getValid("", "MagnumPI"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -56,7 +73,7 @@
 			catch (java.lang.IllegalArgumentException ie) {
 				assertTrue(len(ie.message));
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -66,7 +83,7 @@
 
 			local.whitelistArray = ['a', 'b', 'c'];
 			assertEquals("abc", local.validationRule.whitelist("12345abcdef", local.whitelistArray));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -84,7 +101,7 @@
 				assertTrue(len(ve.message));
 			}
 			assertEquals("beg script end", local.validationRule.getValid("", "beg script end"));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -122,7 +139,7 @@
 			catch (java.lang.IllegalArgumentException ie) {
 				assertTrue(len(ie.message));
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -144,7 +161,7 @@
 			assertEquals(0, local.errorList.size());
 			assertEquals("", local.validationRule.getValid("", "123456789012345", local.errorList));
 			assertEquals(1, local.errorList.size());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -158,7 +175,7 @@
 			local.validationRule.setAllowNull(true);
 			assertTrue(local.validationRule.isAllowNull());
 			assertTrue(local.validationRule.isValid("", ""));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.ValidationRule" output="false" hint="Abstract Class">
 
 	<cfscript>
@@ -7,7 +24,7 @@
 		instance.allowNull = false;
 		instance.encoder = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="BaseValidationRule" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="typeName" required="true">
@@ -24,7 +41,7 @@
 			setTypeName( arguments.typeName );
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -32,14 +49,14 @@
 		<cfargument type="boolean" name="flag" required="true">
 		<cfscript>
 			instance.allowNull = arguments.flag;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getTypeName" output="false">
 		<cfscript>
 			return instance.typeName;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -47,7 +64,7 @@
 		<cfargument type="String" name="typeName" required="true">
 		<cfscript>
 			instance.typeName = arguments.typeName;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -55,7 +72,7 @@
 		<cfargument type="cfesapi.org.owasp.esapi.Encoder" name="encoder" required="true">
 		<cfscript>
 			instance.encoder = arguments.encoder;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -64,7 +81,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 			getValid( arguments.context, arguments.input );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -80,7 +97,7 @@
 				errorList.addError(arguments.context, e);
 			}
 			return local.valid;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -95,7 +112,7 @@
 				return sanitize( arguments.context, arguments.input );
 			}
 			return local.valid;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -118,7 +135,7 @@
 			}
 
 			return local.valid;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -134,28 +151,28 @@
 				}
 			}
 			return local.stripped.toString();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isAllowNull" output="false">
 		<cfscript>
 			return instance.allowNull;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Encoder" name="getEncoder" output="false">
 		<cfscript>
 			return instance.encoder;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="toString" output="false">
 		<cfscript>
 			return instance.typeName;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

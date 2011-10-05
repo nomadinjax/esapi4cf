@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="BaseValidationRule" output="false">
 
 	<cfscript>
@@ -8,7 +25,7 @@
 
 		instance.ccrule = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="CreditCardValidationRule" name="init" output="false" hint="Creates a CreditCardValidator using the rule found in security configuration">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="typeName" required="true">
@@ -24,7 +41,7 @@
 			}
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -35,7 +52,7 @@
 			local.ccr.setMaximumLength(getMaxCardLength());
 			local.ccr.setAllowNull( false );
 			return local.ccr;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -70,7 +87,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 				throw(message=e.message, type=e.type);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -107,7 +124,7 @@
 			}
 
 			return local.sum % 10 == 0;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -116,7 +133,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 			return whitelist( arguments.input, createObject("java", "org.owasp.esapi.EncoderConstants").CHAR_DIGITS );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -124,14 +141,14 @@
 		<cfargument type="cfesapi.org.owasp.esapi.reference.validation.StringValidationRule" name="ccrule" required="true" hint="the ccrule to set">
 		<cfscript>
 			instance.ccrule = arguments.ccrule;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="StringValidationRule" name="getStringValidatorRule" output="false">
 		<cfscript>
 			return instance.ccrule;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -139,14 +156,14 @@
 		<cfargument type="numeric" name="maxCardLength" required="true" hint="the maxCardLength to set">
 		<cfscript>
 			instance.maxCardLength = arguments.maxCardLength;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getMaxCardLength" output="false">
 		<cfscript>
 			return instance.maxCardLength;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="BaseValidationRule" output="false">
 
 	<cfscript>
@@ -8,7 +25,7 @@
 		instance.maxLength = createObject("java", "java.lang.Integer").MAX_VALUE;
 		instance.validateInputAndCanonical = true;
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="StringValidationRule" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="typeName" required="true">
@@ -22,7 +39,7 @@
 			}
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -45,7 +62,7 @@
 					throw(object=createObject("java", "java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
 				}
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -68,7 +85,7 @@
 					throw(object=createObject("java", "java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
 				}
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -76,7 +93,7 @@
 		<cfargument type="numeric" name="length" required="true">
 		<cfscript>
 			instance.minLength = arguments.length;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -84,7 +101,7 @@
 		<cfargument type="numeric" name="length" required="true">
 		<cfscript>
 			instance.maxLength = arguments.length;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -92,7 +109,7 @@
 		<cfargument type="boolean" name="flag" required="true">
 		<cfscript>
 			instance.validateInputAndCanonical = arguments.flag;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -117,7 +134,7 @@
 			}
 
 			return arguments.input;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -136,7 +153,7 @@
 			}
 
 			return arguments.input;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -145,19 +162,19 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="String" name="orig" required="false" default="#arguments.input#">
 		<cfscript>
-			if (arguments.input.length() < instance.minLength) {
+			if (len(arguments.input) < instance.minLength) {
 				NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The minimum length of " & instance.minLength & " characters was not met.", logMessage="Input does not meet the minimum length of " & instance.minLength & " by " & (instance.minLength - arguments.input.length()) & " characters: context=" & arguments.context & ", type=" & getTypeName() & "), input=" & arguments.input & (NullSafe.equals(arguments.input,arguments.orig) ? "" : ", orig=" & arguments.orig), context=arguments.context );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
-			if (arguments.input.length() > instance.maxLength) {
+			if (len(arguments.input) > instance.maxLength) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input. The maximum length of " & instance.maxLength & " characters was exceeded.", logMessage="Input exceeds maximum allowed length of " & instance.maxLength & " by " & (arguments.input.length()-instance.maxLength) & " characters: context=" & arguments.context & ", type=" & getTypeName() & ", orig=" & arguments.orig &", input=" & arguments.input, context=arguments.context );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 
 			return arguments.input;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -166,7 +183,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="String" name="orig" required="false" default="#arguments.input#">
 		<cfscript>
-			if(!createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input)) {
+			if(!createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(javaCast("string", arguments.input))) {
 				return arguments.input;
 			}
 			if (instance.allowNull) {
@@ -175,7 +192,7 @@
 			NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
 			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input required.", logMessage="Input required: context=" & arguments.context & "), input=" & arguments.input & (NullSafe.equals(arguments.input,arguments.orig) ? "" : ", orig=" & arguments.orig), context=arguments.context );
 			throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -235,7 +252,7 @@
 
 			// validation passed
 			return local.data;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -244,7 +261,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 			return whitelist( arguments.input, createObject("java", "org.owasp.esapi.EncoderConstants").CHAR_ALPHANUMERICS );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

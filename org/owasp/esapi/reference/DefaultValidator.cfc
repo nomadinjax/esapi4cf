@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Validator" output="false">
 
 	<cfscript>
@@ -12,7 +29,7 @@
 		/* The encoder to use for file system */
 		instance.fileValidator = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Validator" name="init" output="false" hint="Default constructor uses the ESAPI standard encoder or construct a new DefaultValidator that will use the specified Encoder for canonicalization.">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="cfesapi.org.owasp.esapi.Encoder" name="encoder" required="false">
@@ -38,7 +55,7 @@
 			}
 
 	    	return this;
-	    </cfscript>
+	    </cfscript> 
 	</cffunction>
 
 
@@ -46,7 +63,7 @@
 		<cfargument type="cfesapi.org.owasp.esapi.ValidationRule" name="rule" required="true">
 		<cfscript>
 			instance.rules[arguments.rule.getTypeName()] = arguments.rule;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -57,7 +74,7 @@
 				return instance.rules[arguments.name];
 			}
 			return createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "");;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -68,21 +85,25 @@
 		<cfargument type="numeric" name="maxLength" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
 		<cfargument type="boolean" name="canonicalize" required="false" default="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidInput( arguments.context, arguments.input, arguments.type, arguments.maxLength, arguments.allowNull, arguments.canonicalize);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getValidInput" output="false" hint="Validates data received from the browser and returns a safe version. Only URL encoding is supported. Double encoding is treated as an attack.">
 		<cfargument type="String" name="context" required="true" hint="A descriptive name for the field to validate. This is used for error facing validation messages and element identification.">
 		<cfargument type="String" name="input" required="true" hint="The actual user input data to validate.">
-		<cfargument type="String" name="type" required="true" hint="The regular expression name which maps to the actual regular expression from 'ESAPI.properties'.">
+		<cfargument type="String" name="type" required="true" hint="The regular expression name which maps to the actual regular expression in the ESAPI validation configuration file.">
 		<cfargument type="numeric" name="maxLength" required="true" hint="The maximum String length allowed. If input is canonicalized per the canonicalize argument, then maxLength must be verified after canonicalization">
 		<cfargument type="boolean" name="allowNull" required="true" hint="If allowNull is true then a input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException.">
 		<cfargument type="boolean" name="canonicalize" required="false" default="true" hint="If canonicalize is true then input will be canonicalized before validation">
@@ -102,13 +123,14 @@
 			if ( !isNull(local.p) ) {
 				local.rvr.addWhitelistPattern( local.p );
 			} else {
-				local.rvr.addWhitelistPattern( arguments.type );
+	            // Issue 232 - Specify requested type in exception message - CS
+				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("The selected type [" & arguments.type & "] was not set via the ESAPI validation configuration"));
 			}
 			local.rvr.setMaximumLength(arguments.maxLength);
 			local.rvr.setAllowNull(arguments.allowNull);
 			local.rvr.setValidateInputAndCanonical(arguments.canonicalize);
 			return local.rvr.getValid(arguments.context, arguments.input);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -117,14 +139,18 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="any" name="format" required="true" hint="java.text.DateFormat">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
-		try {
-			getValidDate( arguments.context, arguments.input, arguments.format, arguments.allowNull);
-			return true;
-		} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
-			return false;
-		}
-		</cfscript>
+			try {
+				getValidDate( arguments.context, arguments.input, arguments.format, arguments.allowNull);
+				return true;
+			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
+				return false;
+			}
+		</cfscript> 
 	</cffunction>
 
 
@@ -148,7 +174,7 @@
 			local.dvr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.DateValidationRule").init( instance.ESAPI, "SimpleDate", instance.encoder, arguments.format);
 			local.dvr.setAllowNull(arguments.allowNull);
 			return local.dvr.getValid(arguments.context, arguments.input);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -157,14 +183,18 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="numeric" name="maxLength" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidSafeHTML( arguments.context, arguments.input, arguments.maxLength, arguments.allowNull);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -190,7 +220,7 @@
 			local.hvr.setAllowNull(arguments.allowNull);
 			local.hvr.setValidateInputAndCanonical(false);
 			return local.hvr.getValid(arguments.context, arguments.input);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -198,14 +228,18 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidCreditCard( arguments.context, arguments.input, arguments.allowNull);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -228,7 +262,7 @@
 			local.ccvr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.CreditCardValidationRule").init( instance.ESAPI, "creditcard", instance.encoder );
 			local.ccvr.setAllowNull(arguments.allowNull);
 			return local.ccvr.getValid(arguments.context, arguments.input);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -237,14 +271,18 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="any" name="parent" required="true" hint="java.io.File">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidDirectoryPath( arguments.context, arguments.input, arguments.parent, arguments.allowNull);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -308,7 +346,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid directory name", "Failure to validate directory path: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -317,14 +355,18 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="Array" name="allowedExtensions" required="false" default="#instance.ESAPI.securityConfiguration().getAllowedFileExtensions()#">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidFileName( arguments.context, arguments.input, arguments.allowedExtensions, arguments.allowNull);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -388,7 +430,7 @@
 			}
 			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file name does not have valid extension (" & arrayToList(arguments.allowedExtensions) & ")", logMessage="Invalid file name does not have valid extension (" & arrayToList(arguments.allowedExtensions) & "): context=" & arguments.context&", input=" & arguments.input, context=arguments.context );
 			throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -398,14 +440,18 @@
 		<cfargument type="numeric" name="minValue" required="true">
 		<cfargument type="numeric" name="maxValue" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidNumber(arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -430,7 +476,7 @@
 			local.minDoubleValue = createObject("java", "java.lang.Double").init(arguments.minValue);
 			local.maxDoubleValue = createObject("java", "java.lang.Double").init(arguments.maxValue);
 			return getValidDouble(arguments.context, arguments.input, local.minDoubleValue.doubleValue(), local.maxDoubleValue.doubleValue(), arguments.allowNull);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -440,14 +486,18 @@
 		<cfargument type="numeric" name="minValue" required="true">
 		<cfargument type="numeric" name="maxValue" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 	        try {
 	            getValidDouble( arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull );
 	            return true;
 	        } catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 	            return false;
 	        }
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -472,7 +522,7 @@
 			local.nvr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.NumberValidationRule").init( instance.ESAPI, "number", instance.encoder, arguments.minValue, arguments.maxValue );
 			local.nvr.setAllowNull(arguments.allowNull);
 			return local.nvr.getValid(arguments.context, arguments.input);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -482,14 +532,18 @@
 		<cfargument type="numeric" name="minValue" required="true">
 		<cfargument type="numeric" name="maxValue" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidInteger( arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -514,7 +568,7 @@
 			local.ivr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.IntegerValidationRule").init( instance.ESAPI, "number", instance.encoder, arguments.minValue, arguments.maxValue );
 			local.ivr.setAllowNull(arguments.allowNull);
 			return local.ivr.getValid(arguments.context, arguments.input);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -523,14 +577,18 @@
 		<cfargument type="binary" name="input" required="true">
 		<cfargument type="numeric" name="maxBytes" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidFileContent( arguments.context, arguments.input, arguments.maxBytes, arguments.allowNull);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -568,7 +626,7 @@
 			}
 
 			return arguments.input;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -580,11 +638,19 @@
 		<cfargument type="binary" name="content" required="true">
 		<cfargument type="numeric" name="maxBytes" required="true">
 		<cfargument type="boolean" name="allowNull" requird="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
-			return( isValidFileName( context=arguments.context, input=arguments.filename, allowNull=arguments.allowNull ) &&
-					isValidDirectoryPath( arguments.context, arguments.filepath, arguments.parent, arguments.allowNull ) &&
-					isValidFileContent( arguments.context, arguments.content, arguments.maxBytes, arguments.allowNull ) );
-		</cfscript>
+			if (structKeyExists(arguments, "errorList")) {
+				return( isValidFileName( context=arguments.context, input=arguments.filename, allowNull=arguments.allowNull, errorList=arguments.errorList ) &&
+						isValidDirectoryPath( arguments.context, arguments.filepath, arguments.parent, arguments.allowNull, arguments.errorList ) &&
+						isValidFileContent( arguments.context, arguments.content, arguments.maxBytes, arguments.allowNull, arguments.errorList ) );
+			}
+			else {
+				return( isValidFileName( context=arguments.context, input=arguments.filename, allowNull=arguments.allowNull ) &&
+						isValidDirectoryPath( arguments.context, arguments.filepath, arguments.parent, arguments.allowNull ) &&
+						isValidFileContent( arguments.context, arguments.content, arguments.maxBytes, arguments.allowNull ) );
+			}
+		</cfscript> 
 	</cffunction>
 
 
@@ -606,7 +672,7 @@
 			} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 				arguments.errorList.addError(arguments.context, e);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -614,14 +680,18 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="Array" name="list" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidListItem( arguments.context, arguments.input, arguments.list);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -644,7 +714,7 @@
 			if (arguments.list.contains(arguments.input)) return arguments.input;
 			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid list item", logMessage="Invalid list item: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
 			throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -653,14 +723,18 @@
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" requird="true">
 		<cfargument type="Array" name="requiredNames" required="true">
 		<cfargument type="Array" name="optionalNames" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				assertValidHTTPRequestParameterSet( arguments.context, arguments.request, arguments.requiredNames, arguments.optionalNames);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -697,7 +771,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid HTTP request extra parameters " & local.extra, logMessage="Invalid HTTP request extra parameters " & local.extra & ": context=" & arguments.context, context=arguments.context );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -706,14 +780,18 @@
 		<cfargument type="any" name="input" required="true" hint="String or Array">
 		<cfargument type="numeric" name="maxLength" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
 			try {
 				getValidPrintable( arguments.context, arguments.input, arguments.maxLength, arguments.allowNull);
 				return true;
 			} catch( cfesapi.org.owasp.esapi.errors.ValidationException e ) {
+				if (structKeyExists(arguments, "errorList")) {
+					arguments.errorList.addError( arguments.context, e );
+				}
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -769,7 +847,7 @@
 				}
 				return arguments.input;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -777,9 +855,10 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
-			return instance.ESAPI.validator().isValidInput( arguments.context, arguments.input, "Redirect", 512, arguments.allowNull);
-		</cfscript>
+			return instance.ESAPI.validator().isValidInput( arguments.context, arguments.input, "Redirect", 512, arguments.allowNull, arguments.errorList);
+		</cfscript> 
 	</cffunction>
 
 
@@ -796,7 +875,7 @@
 			}
 			// error has been added to list, so return original input
 			return arguments.input;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -836,7 +915,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException").init(instance.ESAPI, "Invalid input", "Invalid readLine. Problem reading from input stream", e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -847,12 +926,12 @@
 				return (arguments.input=="" || arguments.input.trim().length() == 0);
 			}
 			else if (isBinary(arguments.input)) {
-				return (len(arguments.input) == 0);
+				return (arrayLen(arguments.input) == 0);
 			}
 			else if (isArray(arguments.input)) {
 				return (arrayLen(arguments.input) == 0);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

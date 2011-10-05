@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfinterface>
 
 	<cffunction access="public" returntype="void" name="addRule" output="false">
@@ -17,6 +34,7 @@
 		<cfargument type="numeric" name="maxLength" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
 		<cfargument type="boolean" name="canonicalize" required="false" default="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -36,6 +54,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="any" name="format" required="true" hint="java.text.DateFormat">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -53,6 +72,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="numeric" name="maxLength" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -69,6 +89,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -85,6 +106,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="any" name="parent" required="true" hint="java.io.File">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -102,6 +124,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="Array" name="allowedExtensions" required="false">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -120,6 +143,7 @@
 		<cfargument type="numeric" name="minValue" required="true">
 		<cfargument type="numeric" name="maxValue" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -139,6 +163,7 @@
 		<cfargument type="numeric" name="minValue" required="true">
 		<cfargument type="numeric" name="maxValue" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -158,6 +183,7 @@
 		<cfargument type="numeric" name="minValue" required="true">
 		<cfargument type="numeric" name="maxValue" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -176,6 +202,7 @@
 		<cfargument type="binary" name="input" required="true">
 		<cfargument type="numeric" name="maxBytes" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -196,6 +223,7 @@
 		<cfargument type="binary" name="content" required="true">
 		<cfargument type="numeric" name="maxBytes" required="true">
 		<cfargument type="boolean" name="allowNull" requird="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -216,6 +244,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="Array" name="list" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -232,6 +261,7 @@
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" requird="true">
 		<cfargument type="Array" name="requiredNames" required="true">
 		<cfargument type="Array" name="optionalNames" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -249,6 +279,7 @@
 		<cfargument type="any" name="input" required="true" hint="String or Array">
 		<cfargument type="numeric" name="maxLength" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 
@@ -265,6 +296,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfargument type="boolean" name="allowNull" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 	</cffunction>
 
 

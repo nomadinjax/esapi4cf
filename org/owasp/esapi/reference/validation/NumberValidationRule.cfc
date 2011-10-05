@@ -1,10 +1,41 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="BaseValidationRule" output="false" hint="A validator performs syntax and possibly semantic validation of a single piece of data from an untrusted source.">
 
 	<cfscript>
 		instance.minValue = createObject("java", "java.lang.Double").NEGATIVE_INFINITY;
 		instance.maxValue = createObject("java", "java.lang.Double").POSITIVE_INFINITY;
+		
+		// These statics needed to detect double parsing DOS bug in Java
+		instance.bigBad;
+		instance.smallBad;
+	
+		one = createObject("java", "java.math.BigDecimal").init(1);
+		two = createObject("java", "java.math.BigDecimal").init(2);
+		
+		tiny = one.divide(two.pow(1022));
+		
+		// 2^(-1022) ­ 2^(-1076)
+		instance.bigBad = tiny.subtract(one.divide(two.pow(1076)));
+		//2^(-1022) ­ 2^(-1075)
+		instance.smallBad = tiny.subtract(one.divide(two.pow(1075)));
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="NumberValidationRule" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="typeName" required="true">
@@ -23,7 +54,7 @@
 	//		}
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -42,7 +73,7 @@
 			catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 				throw(type=e.type, message=e.message);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -57,7 +88,7 @@
 				// do nothing
 			}
 			return local.toReturn;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -77,11 +108,31 @@
 		    // canonicalize
 		    local.canonical = instance.encoder.canonicalize( arguments.input );
 
+		    //if MinValue is greater than maxValue then programmer is likely calling this wrong
 			if (instance.minValue > instance.maxValue) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid number input: context", logMessage="Validation parameter error for number: maxValue ( " & instance.maxValue & ") must be greater than minValue ( " & instance.minValue & ") for " & arguments.context, context=arguments.context );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
+			
+			//convert to BigDecimal so we can safely parse dangerous numbers to 
+			//check if the number may DOS the double parser
+			local.bd = "";
+			try {
+				local.bd = createObject("java", "java.math.BigDecimal").init(local.canonical);
+			} catch (NumberFormatException e) {
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+			}
+			
+			// Thanks to Brian Chess for this suggestion
+			// Check if string input is in the "dangerous" double parsing range
+			if (local.bd.compareTo(instance.smallBad) >= 0 && local.bd.compareTo(instance.bigBad) <= 0) {
+				// if you get here you know you're looking at a bad value. The final
+				// value for any double in this range is supposed to be the following safe #			
+				return createObject("java", "java.lang.Double").init("2.2250738585072014E-308");
+			}
 
+			// the number is safe to parseDouble
 			local.d = "";
 			// validate min and max
 			try {
@@ -108,7 +159,7 @@
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 			return local.d;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

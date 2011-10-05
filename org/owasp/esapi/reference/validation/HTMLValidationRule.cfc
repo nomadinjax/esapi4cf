@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="StringValidationRule" output="false">
 
 	<cfscript>
@@ -6,7 +23,7 @@
 
 		instance.logger = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="HTMLValidationRule" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="typeName" required="true">
@@ -31,7 +48,7 @@
 			}
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -45,7 +62,7 @@
 			}
 
 			return invokeAntiSamy( arguments.context, arguments.input );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -60,7 +77,7 @@
 				// just return safe
 			}
 			return local.safe;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -97,7 +114,7 @@
 				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(instance.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input does not follow rules in antisamy-esapi.xml: context=" & arguments.context & " error=" & e.message, e, arguments.context );
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
