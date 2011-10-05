@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent output="false">
 
 	<cfscript>
@@ -6,7 +23,7 @@
 		instance.checked = false;
     	instance.unlimited = false;
     </cfscript>
-
+ 
 	<cffunction access="public" returntype="boolean" name="isUnlimitedStrengthCryptoAvailable" output="false" hint="Check to see if unlimited strength crypto is available. There is an implicit assumption that the JCE jurisdiction policy files are not going to be changing while this given JVM is running.">
 		<cfscript>
 	        if ( instance.checked == false ) {
@@ -14,8 +31,9 @@
 	            instance.checked = true;
 	        }
 	        return instance.unlimited;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
+
 
 	<cffunction access="private" returntype="boolean" name="checkCrypto" output="false">
 		<cfscript>
@@ -56,7 +74,7 @@
 	            return false;
 	        }
 	        return true;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

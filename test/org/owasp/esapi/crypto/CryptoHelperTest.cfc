@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
@@ -5,7 +22,7 @@
 		
 		CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="testGenerateSecretKeySunnyDay" output="false">
 		<cfscript>
 	        try {
@@ -16,7 +33,7 @@
 	            // OK if not covered in code coverage -- not expected.
 	            fail("Caught unexpected EncryptionException; msg was " & e.message);
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -28,7 +45,7 @@
 		    } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
 		    	// expected
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -39,7 +56,7 @@
 	        CryptoHelper.overwrite(local.secret, 'x');
 	        assertTrue(arrayLen(local.secret) == local.len); // Length unchanged
 	        assertTrue(checkByteArray(local.secret, 'x')); // Filled with 'x'
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -52,36 +69,36 @@
 	        CryptoHelper.copyByteArray(local.src, local.dest);
 	        assertTrue(checkByteArray(local.src, 'A')); // Still filled with 'A'
 	        assertTrue(checkByteArray(local.dest, 'A')); // Now filled with 'B'
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
-
 	<!--- NULL TEST
-	<cffunction access="public" returntype="void" name="testCopyByteArraySrcNullPointerException" output="false">
+
+		<cffunction access="public" returntype="void" name="testCopyByteArraySrcNullPointerException" output="false">
 		<cfscript>
-			try {
-		        local.ba = newByte(16);
-		        CryptoHelper.copyByteArray(toBinary(toBase64("")), local.ba, arrayLen(local.ba));
-		        fail("");
-	        } catch (java.lang.NullPointerException e) {
-	       		// expected
-	       	}
-    	</cfscript>
-	</cffunction> --->
-
-
+		try {
+		local.ba = newByte(16);
+		CryptoHelper.copyByteArray(toBinary(toBase64("")), local.ba, arrayLen(local.ba));
+		fail("");
+		} catch (java.lang.NullPointerException e) {
+		// expected
+		}
+		</cfscript>
+		</cffunction>
+ --->
 	<!--- NULL TEST
-	<cffunction access="public" returntype="void" name="testCopyByteArrayDestNullPointerException" output="false">
-		<cfscript>
-			try {
-		        local.ba = newByte(16);
-		        CryptoHelper.copyByteArray(local.ba, toBinary(toBase64("")), arrayLen(local.ba));
-			} catch (java.lang.NullPointerException e) {
-				// expected
-			}
-    	</cfscript>
-	</cffunction> --->
 
+		<cffunction access="public" returntype="void" name="testCopyByteArrayDestNullPointerException" output="false">
+		<cfscript>
+		try {
+		local.ba = newByte(16);
+		CryptoHelper.copyByteArray(local.ba, toBinary(toBase64("")), arrayLen(local.ba));
+		} catch (java.lang.NullPointerException e) {
+		// expected
+		}
+		</cfscript>
+		</cffunction>
+ --->
 
 	<cffunction access="public" returntype="void" name="testCopyByteArrayIndexOutOfBoundsException" output="false">
 		<cfscript>
@@ -93,7 +110,7 @@
 			} catch (java.lang.ArrayIndexOutOfBoundsException e) {
 				// expected
 			}
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -161,7 +178,7 @@
 //        stop = System.nanoTime();
 //        diff = stop - start;
 //        System.out.println("diff: " + diff + " nanosec");
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -171,7 +188,7 @@
 			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
 			StringBuilder.setLength(arguments.len);
 			return StringBuilder.toString().getBytes();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -195,7 +212,7 @@
 	        	local.ba[local.i] = arguments.b;
 	        }
 	        return arrayToList(local.ba, "").getBytes();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -209,7 +226,7 @@
 	            }
 	        }
 	        return true;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

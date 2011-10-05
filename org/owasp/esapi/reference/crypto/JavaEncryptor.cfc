@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Encryptor" output="false">
 
 	<cfscript>
@@ -33,7 +50,7 @@
     	static.DECRYPTION_FAILED = "Decryption failed; see logs for details.";
     	static.N_SECS = 2;
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Encryptor" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
@@ -101,7 +118,7 @@
             }
 
 	        return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -133,7 +150,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Internal error", "Can't find encoding for " & instance.encoding, ex);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -164,7 +181,7 @@
 	        local.pair = local.keyGen.generateKeyPair();
 	        instance.privateKey = local.pair.getPrivate();
 	        instance.publicKey = local.pair.getPublic();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -377,7 +394,7 @@
 					 arguments.plain.overwrite();		// Note: Same as overwriting 'plaintext' byte array.
 				}
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -519,7 +536,7 @@
 		        }
 		    }
 		    return local.plaintext;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -593,7 +610,7 @@
 					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	            }
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -613,7 +630,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Signature failure", "Can't find signature algorithm " & instance.signatureAlgorithm, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -635,7 +652,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Invalid signature", "Problem verifying signature: " & e.message, e);
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -661,7 +678,7 @@
 			} catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
 				throw(object=createObject("java", "java.lang.IntegrityException").init( e.getUserMessage(), e.getLogMessage(), e ));
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -708,7 +725,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Invalid seal", "Invalid seal:" & e.message, e);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -721,22 +738,24 @@
 			} catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
 				return false;
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getTimeStamp" output="false">
 		<cfscript>
 			return createObject("java", "java.util.Date").init().getTime();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
+
 
 	<cffunction access="public" returntype="numeric" name="getRelativeTimeStamp" output="false">
 		<cfargument type="numeric" name="offset" required="true">
 		<cfscript>
 			return newLong(createObject("java", "java.util.Date").init().getTime() + arguments.offset).longValue();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
+
 
 	<cffunction access="private" returntype="void" name="logWarning" output="false" hint="Log a security warning every Nth time one of the deprecated encrypt or decrypt methods are called. ('N' is hard-coded to be 25 by default, but may be changed via the system property ESAPI.Encryptor.warnEveryNthUse.) In other words, we nag them until the give in and change it. ;-)">
 		<cfargument type="String" name="where" required="true" hint="The string 'encrypt' or 'decrypt', corresponding to the method that is being logged.">
@@ -758,7 +777,7 @@
 	        if ( (local.counter % instance.logEveryNthUse) == 0 ) {
 	            instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.where & arguments.msg);
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 	<!--- setupAlgorithms --->

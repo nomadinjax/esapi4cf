@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
@@ -104,9 +121,9 @@
 			try {
 					// Don't use null here as compiling JUnit tests disables assertion
 					// checking so we get a NullPointerException here instead.
-				instance.cipherSpec.setCipherTransformation(""); // Throws AssertionError
-			} catch (java.lang.AssertionError e) {
-				assertTrue(true);	// Doesn't work w/ @Test(expected=AssertionError.class)
+				instance.cipherSpec.setCipherTransformation(""); // Throws IllegalArgumentException
+			} catch (java.lang.IllegalArgumentException e) {
+				assertTrue(true);	// Doesn't work w/ @Test(expected=IllegalArgumentException.class)
 			}
 		</cfscript> 
 	</cffunction>

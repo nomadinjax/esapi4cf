@@ -1,7 +1,25 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
-		instance.serialVersionUID = 20100122; // Format: YYYYMMDD
+		this.cipherTextSerializerVersion = 20110203; // Format: YYYYMMDD, max is 99991231.
+	    instance.serialVersionUID = this.cipherTextSerializerVersion;
 
 		CryptoHelper = "";
 
@@ -9,7 +27,7 @@
 		instance.logger = "";
     	instance.cipherText_ = "";
     </cfscript>
-
+ 
 	<cffunction access="public" returntype="CipherTextSerializer" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="cfesapi.org.owasp.esapi.crypto.CipherText" name="cipherTextObj" required="false">
@@ -31,7 +49,7 @@
 			}
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -59,14 +77,14 @@
 	        local.serializedObj = computeSerialization(local.vers, local.timestamp, local.cipherXform, local.keySize, local.blockSize, local.ivLen, local.iv, local.ciphertextLen, local.rawCiphertext, local.macLen, local.mac );
 
 	        return local.serializedObj;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="CipherText" name="asCipherText" output="false">
 		<cfscript>
         	return instance.cipherText_;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -107,7 +125,7 @@
 	        writeShort(local.baos, arguments.macLen);
 	        if ( arguments.macLen > 0 ) local.baos.write(arguments.mac, 0, arrayLen(arguments.mac));
 	        return local.baos.toByteArray();
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -127,7 +145,7 @@
 	            // platforms and could cause really bizarre errors way downstream.
 	            instance.logger.error(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "Ignoring caught UnsupportedEncodingException converting string to UTF8 encoding. Results suspect. Corrupt rt.jar????");
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -139,7 +157,7 @@
 	        local.ret = arguments.bais.read(local.bytes, 0, arguments.sz);
 	        assert(local.ret == arguments.sz, "readString: Failed to read " & arguments.sz & " bytes.");
 	        return createObject("java", "java.lang.String").init(local.bytes, "UTF8");
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -150,7 +168,7 @@
 	        local.shortAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromShort(arguments.s);
 	        assert(arrayLen(local.shortAsByteArray) == 2);
 	        baos.write(local.shortAsByteArray, 0, 2);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -161,7 +179,7 @@
 	        local.ret = arguments.bais.read(local.shortAsByteArray, 0, 2);
 	        assert(local.ret == 2, "readShort: Failed to read 2 bytes.");
 	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toShort(local.shortAsByteArray);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -171,7 +189,7 @@
 		<cfscript>
 	        local.intAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromInt(arguments.i);
 	        baos.write(local.intAsByteArray, 0, 4);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -182,7 +200,7 @@
 	        local.ret = arguments.bais.read(local.intAsByteArray, 0, 4);
 	        assert(local.ret == 4, "readInt: Failed to read 4 bytes.");
 	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toInt(local.intAsByteArray);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -193,7 +211,7 @@
 	        local.longAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromLong(arguments.l);
 	        assert(arrayLen(local.longAsByteArray) == 8);
 	        baos.write(local.longAsByteArray, 0, 8);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -204,7 +222,7 @@
 	        local.ret = arguments.bais.read(local.longAsByteArray, 0, 8);
 	        assert(local.ret == 8, "readLong: Failed to read 8 bytes.");
 	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toLong(local.longAsByteArray);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -282,7 +300,7 @@
 	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", e);
            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -292,7 +310,7 @@
 	        if ( instance.logger.isDebugEnabled() ) {
 	            instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_SUCCESS, arguments.msg);
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

@@ -1,10 +1,27 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false" hint="Class to provide some convenience methods for encryption, decryption, etc.">
 
 	<cfscript>
 		instance.ESAPI = "";
 		instance.logger = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="CryptoHelper" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfscript>
@@ -12,7 +29,7 @@
 			instance.logger = instance.ESAPI.getLogger("CryptoHelper");
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -39,7 +56,7 @@
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Failed to generate random secret key", "Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e);
            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -111,7 +128,7 @@
 			} while( local.totalCopied < arguments.keySize );
 
 			return createObject("java", "javax.crypto.spec.SecretKeySpec").init(local.derivedKey, arguments.keyDerivationKey.getAlgorithm());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -122,7 +139,7 @@
 		    assert(!arguments.cipherMode == "", "Cipher mode may not be empty string");
 		    local.combinedCipherModes = instance.ESAPI.securityConfiguration().getCombinedCipherModes();
 		    return arrayFind( local.combinedCipherModes, arguments.cipherMode ) ? true : false;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -134,7 +151,7 @@
 		    }
 		    local.extraCipherModes = instance.ESAPI.securityConfiguration().getAdditionalAllowedCipherModes();
 		    return arrayFind( local.extraCipherModes, arguments.cipherMode ) ? true : false;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -148,7 +165,7 @@
 	        // not require a MAC as a MAC would be superfluous and just require
 	        // additional computing time.
 	        return ( !local.preferredCipherMode && local.wantsMAC );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -170,7 +187,7 @@
 	            }
 	        }
 	        return true;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -179,7 +196,7 @@
 		<cfargument type="String" name="x" required="false" default="*" hint="The byte array bytes is overwritten with this byte.">
 		<cfscript>
 			createObject("java", "java.util.Arrays").fill(arguments.bytes, javaCast("byte", asc(arguments.x)));
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -195,7 +212,7 @@
 			} catch(java.lang.NullPointerException e) {
 				throw(object=e);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -224,7 +241,7 @@
 		        }
 		    }
 		    return (local.result == 0) ? true : false;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -241,7 +258,7 @@
 	            local.numBytes = local.n + 1;
 	        }
 	        return local.numBytes;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

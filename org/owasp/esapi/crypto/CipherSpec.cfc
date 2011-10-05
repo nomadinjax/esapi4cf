@@ -1,8 +1,27 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false" hint="Specifies all the relevant configuration data needed in constructing and using a javax.crypto.Cipher except for the encryption key.">
 
 	<cfscript>
-		instance.ESAPI = "";
+		instance.serialVersionUID = 20090822;	// version, in YYYYMMDD format
 
+		instance.ESAPI = "";
+		
 		this.cipher_xform_   = "";
 		this.keySize_        = ""; // In bits
 		this.blockSize_      = 16;   // In bytes! I.e., 128 bits!!!
@@ -15,7 +34,7 @@
 			PADDING = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherTransformationComponent").init(3)
 		};
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="CipherSpec" name="init" output="false">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="any" name="cipher" required="false" hint="javax.crypto.Cipher">
@@ -59,15 +78,17 @@
 			}
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="CipherSpec" name="setCipherTransformation" output="false" hint="Set the cipher transformation for this CipherSpec. This is only used by the CTOR CipherSpec(Cipher) and CipherSpec(Cipher, int).">
-		<cfargument type="String" name="cipherXform" required="true" hint="The cipher transformation string; e.g., 'DESede/CBC/PKCS5Padding'.">
+		<cfargument type="String" name="cipherXform" required="true" hint="The cipher transformation string; e.g., 'DESede/CBC/PKCS5Padding'. May not be null or empty.">
 		<cfargument type="boolean" name="fromCipher" required="false" default="false" hint="If true, the cipher transformation was set via Cipher.getAlgorithm() which may only return the actual algorithm. In that case we check and if all 3 parts were not specified, then we specify the parts that were based on 'ECB' as the default cipher mode and 'NoPadding' as the default padding scheme.">
 		<cfscript>
-			assert(createObject("java", "org.owasp.esapi.StringUtilities").notNullOrEmpty(arguments.cipherXform, true), "cipherXform may not be null or empty");
+			if ( ! createObject("java", "org.owasp.esapi.StringUtilities").notNullOrEmpty(arguments.cipherXform, true) ) {	// Yes, really want '!' here.
+				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("Cipher transformation may not be null or empty string (after trimming whitespace)."));
+			}
 			local.parts = arrayLen(arguments.cipherXform.split("/"));
 			assert (( !arguments.fromCipher ? (local.parts == 3) : true ), "Malformed cipherXform (" & arguments.cipherXform & '); must have form: "alg/mode/paddingscheme"');
 			if ( arguments.fromCipher && (local.parts != 3)  ) {
@@ -80,7 +101,7 @@
 					// Only algorithm and mode was given.
 					arguments.cipherXform &= "/NoPadding";
 				} else if ( local.parts == 3 ) {
-					// All threw parts provided. Do nothing. Could happen if not compiled with
+					// All three parts provided. Do nothing. Could happen if not compiled with
 					// assertions enabled.
 					;	// Do nothing - shown only for completeness.
 				} else {
@@ -88,17 +109,20 @@
 					throw(object=createObject("java", "java.lang.IllegalArgumentException").init('Cipher transformation "' & arguments.cipherXform & '" must have form "alg/mode/paddingscheme"'));
 				}
 			}
+			else if ( !arguments.fromCipher && local.parts != 3 ) {
+				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("Malformed cipherXform (" & arguments.cipherXform & '); must have form: "alg/mode/paddingscheme"'));
+			}
 			assert(arrayLen(arguments.cipherXform.split("/")) == 3, "Implementation error setCipherTransformation()");
 			this.cipher_xform_ = arguments.cipherXform;
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction acecss="public" returntype="String" name="getCipherTransformation" output="false" hint="Get the cipher transformation.">
 		<cfscript>
 			return this.cipher_xform_;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -108,14 +132,14 @@
 			assert(keySize > 0, "keySize must be > 0; keySize=" & keySize);
 			this.keySize_ = arguments.keySize;
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getKeySize" output="false" hint="Retrieve the key size, in bits.">
 		<cfscript>
 			return this.keySize_;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -125,42 +149,42 @@
 			assert(blockSize > 0, "blockSize must be > 0; blockSize=" & blockSize);
 			this.blockSize_ = arguments.blockSize;
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="numeric" name="getBlockSize" output="false" hint="Retrieve the block size, in bytes.">
 		<cfscript>
 			return this.blockSize_;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getCipherAlgorithm" output="false" hint="Retrieve the cipher algorithm.">
 		<cfscript>
 			return getFromCipherXform(CipherTransformationComponent.ALG);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getCipherMode" output="false" hint="Retrieve the cipher mode.">
 		<cfscript>
 			return getFromCipherXform(CipherTransformationComponent.MODE);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getPaddingScheme" output="false" hint="Retrieve the cipher padding scheme.">
 		<cfscript>
 			return getFromCipherXform(CipherTransformationComponent.PADDING);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="binary" name="getIV" output="false" hint="Retrieve the initialization vector (IV).">
 		<cfscript>
 			return this.iv_;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -174,7 +198,7 @@
 			CryptoHelper.copyByteArray(arguments.iv, this.iv_);
 		}
 		return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -189,7 +213,7 @@
 				return false;
 			}
 			return true;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -207,8 +231,9 @@
 			}
 			local.sb.append("; IV length = ").append( local.ivLen ).append(" bytes.");
 			return local.sb.toString();
-		</cfscript>
+		</cfscript> 
 	</cffunction>
+
 
 	<cffunction access="public" returntype="boolean" name="equals" output="false">
 		<cfargument type="any" name="other" required="true">
@@ -227,18 +252,18 @@
 	                      CryptoHelper.arrayCompare(this.iv_, local.that.iv_) );
 	        }
 	        return local.result;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
-	
+
 	<!--- TODO: hashCode --->
-		
+
 	<cffunction access="package" returntype="boolean" name="canEqual" output="false">
 		<cfargument type="any" name="other" required="true">
 		<cfscript>
        		return isInstanceOf(arguments.other, "cfesapi.org.owasp.esapi.crypto.CipherSpec");
-		</cfscript>
-	</cffunction>	
-		
+		</cfscript> 
+	</cffunction>
+
 
 	<cffunction access="private" returntype="String" name="getFromCipherXform" output="false" hint="Split the current cipher transformation and return the requested part. ">
 		<cfargument type="cfesapi.org.owasp.esapi.crypto.CipherTransformationComponent" name="component" required="true" hint="The component of the cipher transformation to return.">
@@ -247,7 +272,7 @@
 			local.parts = getCipherTransformation().split("/");
 			assert(arrayLen(local.parts) == 3, "Invalid cipher transformation: " & getCipherTransformation());
 			return local.parts[local.part];
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
@@ -5,12 +22,12 @@
 		
 		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
 			// This is only mechanism to change this for now. Will do this with a soon to be CryptoControls class in next release.
 	        instance.ESAPI.securityConfiguration().setCipherTransformation("AES/CBC/PKCS5Padding");
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -24,7 +41,7 @@
 	        local.hash3 = local.encryptor.hash("test", "salt1");
 	        local.hash4 = local.encryptor.hash("test", "salt2");
 	        assertFalse(local.hash3.equals(local.hash4));
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -36,7 +53,7 @@
 	        local.ciphertext = local.encryptor.encrypt(plain=local.plaintext);
 	    	local.result = local.encryptor.decrypt(ciphertext=local.ciphertext);
 	        assertEquals(local.plaintext, local.result);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -54,7 +71,7 @@
 	        catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
 	        	fail();
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -76,7 +93,7 @@
 	        /*} catch(java.lang.Exception e) {
 	            fail("testEncryptEmptyStrings() -- Caught exception: " & e);
 	        }*/
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 	<!--- NULL test
@@ -124,7 +141,7 @@
 			} catch (UnsupportedEncodingException e) {
 				fail("OK, who stole UTF-8 encoding from the Java rt.jar ???");
 			}
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -209,7 +226,7 @@
 				fail("Caught unexpected exception; msg was: " & e);
 			}*/
 			return "";
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -225,7 +242,7 @@
 	    		}
 	    	}
 	    	return true;
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -238,7 +255,7 @@
 	        assertTrue( local.encryptor.verifySignature( local.signature, local.plaintext ) );
 	        assertFalse( local.encryptor.verifySignature( local.signature, "ridiculous" ) );
 	        assertFalse( local.encryptor.verifySignature( "ridiculous", local.plaintext ) );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -249,7 +266,7 @@
 	        local.plaintext = instance.ESAPI.randomizer().getRandomString( 32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS );
 	        local.signature = local.encryptor.sign(local.plaintext);
 	        assertTrue( local.encryptor.verifySignature( local.signature, local.plaintext ) );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -298,7 +315,7 @@
 	        } catch(java.lang.Exception e) {
 	            fail("Fail test with -1 timestamp: " & e & "; progress mark = " & local.progressMark);
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -357,7 +374,7 @@
 	        } catch ( Exception e ) {
 	            fail("Failed expired seal test. Seal should be expired.");
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -372,7 +389,7 @@
 	        local.plainText = instance.ESAPI.encryptor().decrypt(ciphertext=createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").init(instance.ESAPI).fromPortableSerializedBytes(local.serializedCipherText) );
 
 	        assertTrue( local.secretMsg.equals( local.plainText.toString() ) );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 

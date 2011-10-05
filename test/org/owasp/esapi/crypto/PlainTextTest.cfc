@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
@@ -5,7 +22,7 @@
 		instance.unicodeStr = "A\u00ea\u00f1\u00fcC";	// I.e., "AêñüC"
 		instance.altString  = "AêñüC";					// Same as above.
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="testUnicodeString" output="false">
 		<cfscript>
 			System = createObject("java", "java.lang.System");
@@ -34,7 +51,7 @@
 				fail("No UTF-8 byte encoding: " & e);
 				e.printStackTrace(System.err);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 	<!--- test invalid as CF does not support nulls
@@ -62,7 +79,8 @@
 		}
 		</cfscript>
 		</cffunction>
- --->
+
+		--->
 
 	<cffunction access="public" returntype="void" name="testEmptyString" output="false">
 		<cfscript>
@@ -70,7 +88,7 @@
 			assertTrue( len(local.mt.toString()) == 0 );
 			local.ba = local.mt.asBytes();
 			assertTrue( !isNull(local.ba) && len(local.ba) == 0 );
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -106,7 +124,7 @@
 				fail("No UTF-8 byte encoding: " & e);
 				e.printStackTrace(System.err);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

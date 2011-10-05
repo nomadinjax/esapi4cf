@@ -1,22 +1,49 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
 		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 		instance.encryptor = "";
     	instance.ivSpec = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
 			instance.encryptor = createObject("java", "javax.crypto.Cipher").getInstance("AES/CBC/PKCS5Padding");
 	        local.ivBytes = instance.ESAPI.randomizer().getRandomBytes(instance.encryptor.getBlockSize());
 	        instance.ivSpec = createObject("java", "javax.crypto.spec.IvParameterSpec").init(local.ivBytes);
-		</cfscript>
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="tearDown" output="false">
+		<cfscript>
+			System.out.flush();
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testAsSerializedByteArray" output="false">
 		<cfscript>
+			System.out.println("CipherTextSerializerTest.testAsSerializedByteArray() ...");
 			Cipher = createObject("java", "javax.crypto.Cipher");
 			CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
 
@@ -38,12 +65,13 @@
 	            fail("Test failed: Caught exception: " & e.getClass().getName() & "; msg was: " & e);
 	            e.printStackTrace(System.err);
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testAsCipherText" output="false">
 		<cfscript>
+			System.out.println("CipherTextSerializerTest.testAsCipherText() ...");
 	        try {
 	            local.ct = instance.ESAPI.encryptor().encrypt( plain=createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, "Hello") );
 	            local.cts = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherTextSerializer").init(ESAPI=instance.ESAPI, cipherTextObj=local.ct );
@@ -54,7 +82,7 @@
 	        } catch (EncryptionException e) {
 	            fail("Caught EncryptionException; exception msg: " & e);
 	        }
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
