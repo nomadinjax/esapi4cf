@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.test.TestCase" output="false">
 
 	<cfscript>
@@ -8,7 +25,7 @@
 		instance.testCount = 0;
 		instance.testLogger = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
 			structClear(request);
@@ -19,7 +36,7 @@
 	    	//This ensures a clean logger between tests
 	    	instance.testLogger = instance.ESAPI.getLogger( "test" & instance.testCount++ );
 	    	System.out.println("Test logger: " & instance.testLogger.toString());
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -29,7 +46,7 @@
 			instance.ESAPI.override("");
 			
 			structClear(request);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -47,7 +64,7 @@
 	        local.request.addParameter("two","two2");
 	        local.request.addParameter("password","jwilliams");
 	        instance.ESAPI.httpUtilities().logHTTPRequest( local.request, local.logger, local.ignore );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -142,7 +159,7 @@
 	       	assertTrue(local.newLogger.isInfoEnabled());
 	       	assertFalse(local.newLogger.isDebugEnabled());
 	       	assertFalse(local.newLogger.isTraceEnabled());
-	    </cfscript>
+	    </cfscript> 
 	</cffunction>
 
 
@@ -153,7 +170,7 @@
 	        instance.testLogger.info(Logger.SECURITY_SUCCESS, "test message", "" );
 	        instance.testLogger.info(Logger.SECURITY_SUCCESS, "%3escript%3f test message", "" );
 	        instance.testLogger.info(Logger.SECURITY_SUCCESS, "<script> test message", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -162,7 +179,7 @@
 	        System.out.println("trace");
 	        instance.testLogger.trace(Logger.SECURITY_SUCCESS, "test message trace" );
 	        instance.testLogger.trace(Logger.SECURITY_SUCCESS, "test message trace", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -171,7 +188,7 @@
 	        System.out.println("debug");
 	        instance.testLogger.debug(Logger.SECURITY_SUCCESS, "test message debug" );
 	        instance.testLogger.debug(Logger.SECURITY_SUCCESS, "test message debug", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -180,7 +197,7 @@
 	        System.out.println("error");
 	        instance.testLogger.error(Logger.SECURITY_SUCCESS, "test message error" );
 	        instance.testLogger.error(Logger.SECURITY_SUCCESS, "test message error", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -189,7 +206,7 @@
 	        System.out.println("warning");
 	        instance.testLogger.warning(Logger.SECURITY_SUCCESS, "test message warning" );
 	        instance.testLogger.warning(Logger.SECURITY_SUCCESS, "test message warning", "" );
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
@@ -198,7 +215,23 @@
 	        System.out.println("fatal");
 	        instance.testLogger.fatal(Logger.SECURITY_SUCCESS, "test message fatal" );
 	        instance.testLogger.fatal(Logger.SECURITY_SUCCESS, "test message fatal", "" );
-    	</cfscript>
+    	</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="testAlways" output="false" hint="Test of always method, of class org.owasp.esapi.Logger.">
+		<cfscript>
+	        System.out.println("always");
+	        instance.testLogger.always(Logger.SECURITY_SUCCESS, "test message always 1 (SECURITY_SUCCESS)" );
+	        instance.testLogger.always(Logger.SECURITY_AUDIT,   "test message always 2 (SECURITY_AUDIT)" );
+	        instance.testLogger.always(Logger.SECURITY_SUCCESS, "test message always 3 (SECURITY_SUCCESS)", "" );
+	        instance.testLogger.always(Logger.SECURITY_AUDIT,   "test message always 4 (SECURITY_AUDIT)", "" );
+	        try {
+	        	throw(object=createObject("java", "java.lang.RuntimeException").init("What? You call that a 'throw'? My grandmother throws better than that and she's been dead for more than 10 years!"));
+	        } catch(java.lang.RuntimeException rtex) {
+	            instance.testLogger.always(Logger.SECURITY_AUDIT,   "test message always 5", rtex );
+	        }
+		</cfscript> 
 	</cffunction>
 
 

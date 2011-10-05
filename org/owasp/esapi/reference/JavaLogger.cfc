@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Logger" output="false">
 
 	<cfscript>
@@ -20,7 +37,7 @@
 	   	/* Log the server ip? */
     	instance.logServerIP = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Logger" name="init" output="false" hint="Public constructor should only ever be called via the appropriate LogFactory">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="moduleName" required="true" hint="the module name">
@@ -34,7 +51,7 @@
 			instance.jlogger = createObject("java", "java.util.logging.Logger").getLogger(instance.applicationName & ":" & arguments.moduleName);
 
 			return this;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -47,7 +64,14 @@
 			catch (java.lang.IllegalArgumentException e) {
 				error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "", e);
 			}
-		</cfscript>
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="numeric" name="getESAPILevel" output="false">
+		<cfscript>
+			return instance.jlogger.getLevel().intValue();
+		</cfscript> 
 	</cffunction>
 
 
@@ -67,7 +91,7 @@
         			throw(object=createObject("java", "java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));
         		}
         	}
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -78,7 +102,7 @@
 		<cfscript>
 			arguments.level = jLevel.FINEST;
             logMessage(argumentCollection=arguments);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -89,7 +113,7 @@
 		<cfscript>
 			arguments.level = jLevel.FINE;
             logMessage(argumentCollection=arguments);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -100,7 +124,7 @@
 		<cfscript>
 			arguments.level = jLevel.INFO;
 			logMessage(argumentCollection=arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -111,7 +135,7 @@
 		<cfscript>
 			arguments.level = jLevel.WARNING;
             logMessage(argumentCollection=arguments);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -122,7 +146,7 @@
 		<cfscript>
 			arguments.level = createObject("java", "org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL;
 			logMessage(argumentCollection=arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -133,7 +157,7 @@
 		<cfscript>
 			arguments.level = jLevel.SEVERE;
             logMessage(argumentCollection=arguments);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -183,49 +207,49 @@
 			else {
 				instance.jlogger.log(arguments.level, "[" & local.typeInfo & getUserInfo() & " -> " & local.appInfo & "] " & local.clean);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isDebugEnabled" output="false">
 		<cfscript>
     	    return instance.jlogger.isLoggable(jLevel.FINE);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isErrorEnabled" output="false">
 		<cfscript>
     	    return instance.jlogger.isLoggable(createObject("java", "org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isFatalEnabled" output="false">
 		<cfscript>
     	    return instance.jlogger.isLoggable(jLevel.SEVERE);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isInfoEnabled" output="false">
 		<cfscript>
     	    return instance.jlogger.isLoggable(jLevel.INFO);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isTraceEnabled" output="false">
 		<cfscript>
             return instance.jlogger.isLoggable(jLevel.FINEST);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isWarningEnabled" output="false">
 		<cfscript>
     	    return instance.jlogger.isLoggable(jLevel.WARNING);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -255,14 +279,25 @@
 			}
 
 			return local.userInfo;
-		</cfscript>
+		</cfscript> 
+	</cffunction>
+
+
+	<cffunction access="public" returntype="void" name="always" output="false">
+		<cfargument type="any" name="type" required="true" hint="org.owasp.esapi.Logger$EventType">
+		<cfargument type="String" name="message" required="true">
+		<cfargument type="any" name="throwable" required="false" hint="java.lang.Throwable">
+		<cfscript>
+			arguments.level = jLevel.OFF;  // Seems backward, but this is what works, not Level.ALL	
+            logMessage(argumentCollection=arguments);
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="toString" output="false">
 		<cfscript>
 			return getMetaData().fullName;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 

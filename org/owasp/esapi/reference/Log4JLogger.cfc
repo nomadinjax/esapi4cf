@@ -1,3 +1,20 @@
+<!---
+	/**
+	* OWASP Enterprise Security API (ESAPI)
+	* 
+	* This file is part of the Open Web Application Security Project (OWASP)
+	* Enterprise Security API (ESAPI) project. For details, please see
+	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+	*
+	* Copyright (c) 2011 - The OWASP Foundation
+	* 
+	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
+	* LICENSE before you use, modify, and/or redistribute this software.
+	* 
+	* @author Damon Miller
+	* @created 2011
+	*/
+	--->
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Logger" output="false">
 
 	<cfscript>
@@ -20,7 +37,7 @@
 		/* Log the server ip? */
 		instance.logServerIP = "";
 	</cfscript>
-
+ 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Logger" name="init" output="false" hint="Public constructor should only ever be called via the appropriate LogFactory">
 		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
 		<cfargument type="String" name="moduleName" required="true" hint="the module name">
@@ -34,7 +51,7 @@
             instance.log4jlogger = createObject("java", "org.apache.log4j.Logger").getLogger(instance.applicationName & ":" & arguments.moduleName);
 
             return this;
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -47,7 +64,7 @@
 			catch (java.lang.IllegalArgumentException e) {
 				error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "", e);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -67,7 +84,7 @@
 					throw(object=createObject("java", "java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));
 				}
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -78,7 +95,7 @@
 		<cfscript>
 			arguments.level = jLevel.TRACE;
             logMessage(argumentCollection=arguments);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -89,7 +106,7 @@
 		<cfscript>
 			arguments.level = jLevel.DEBUG;
             logMessage(argumentCollection=arguments);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -100,7 +117,7 @@
 		<cfscript>
 			arguments.level = jLevel.INFO;
 			logMessage(argumentCollection=arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -111,7 +128,7 @@
 		<cfscript>
 			arguments.level = jLevel.WARN;
             logMessage(argumentCollection=arguments);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -122,7 +139,7 @@
 		<cfscript>
 			arguments.level = jLevel.ERROR;
 			logMessage(argumentCollection=arguments);
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
@@ -133,7 +150,7 @@
 		<cfscript>
 			arguments.level = jLevel.FATAL;
             logMessage(argumentCollection=arguments);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -183,49 +200,49 @@
 			else {
 				instance.log4jlogger.log(arguments.level, "[" & local.typeInfo & getUserInfo() & " -> " & local.appInfo & "] " & local.clean);
 			}
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isDebugEnabled" output="false">
 		<cfscript>
     	    return instance.log4jlogger.isEnabledFor(jLevel.DEBUG);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isErrorEnabled" output="false">
 		<cfscript>
     	    return instance.log4jlogger.isEnabledFor(jLevel.ERROR);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isFatalEnabled" output="false">
 		<cfscript>
     	    return instance.log4jlogger.isEnabledFor(jLevel.FATAL);
-    	</cfscript>
+    	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isInfoEnabled" output="false">
 		<cfscript>
     	    return instance.log4jlogger.isEnabledFor(jLevel.INFO);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isTraceEnabled" output="false">
 		<cfscript>
             return instance.log4jlogger.isEnabledFor(jLevel.TRACE);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="boolean" name="isWarningEnabled" output="false">
 		<cfscript>
     	    return instance.log4jlogger.isEnabledFor(jLevel.WARN);
-        </cfscript>
+        </cfscript> 
 	</cffunction>
 
 
@@ -255,14 +272,14 @@
 			}
 
 			return local.userInfo;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="toString" output="false">
 		<cfscript>
 			return getMetaData().fullName;
-		</cfscript>
+		</cfscript> 
 	</cffunction>
 
 
