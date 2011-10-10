@@ -161,8 +161,8 @@
 
 
 	<cffunction access="public" returntype="void" name="setCurrentHTTP" output="false" hint="Stores the current HttpRequest and HttpResponse so that they may be readily accessed throughout ESAPI (and elsewhere)">
-		<cfargument type="any" name="request" required="true" hint="cfesapi.org.owasp.esapi.HttpServletRequest: the current request">
-		<cfargument type="any" name="response" required="true" hint="cfesapi.org.owasp.esapi.HttpServletResponse: the current response">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="true" hint="cfesapi.org.owasp.esapi.HttpServletRequest: the current request">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="true" hint="cfesapi.org.owasp.esapi.HttpServletResponse: the current response">
 	</cffunction>
 
 
