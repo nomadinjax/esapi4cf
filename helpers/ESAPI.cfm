@@ -30,18 +30,6 @@
 	</cfscript> 
 </cffunction>
 
-<cfscript>
-	/* Configure ESAPI */
-
-	// ensure every request sets the HTTP request and response objects
-	ESAPI().httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
-
-	// set up response with default content type, i.e. text/html; charset=UTF-8
-	// NOTE: you can override per request by using ESAPI().httpUtilities().getCurrentResponse().setContentType("text/json; charset=UTF-8");
-	ESAPI().httpUtilities().setContentType();
-
-	// is there anything we should always configure per request?
-</cfscript> 
 <!--- ESAPI helper methods --->
 
 <cffunction access="private" returntype="String" name="encodeForBase64" output="false" hint="Base64 encode a string. UTF-8 is used to encode the string and no line wrapping is performed.">
