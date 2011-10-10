@@ -32,7 +32,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="any" name="currentRequest" output="false" hint="cfesapi.org.owasp.esapi.HttpServletRequest: Get the current HTTP Servlet Request being processed.">
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpServletRequest" name="currentRequest" output="false" hint="Get the current HTTP Servlet Request being processed.">
 		<cfscript>
 			return httpUtilities().getCurrentRequest();
 		</cfscript> 
