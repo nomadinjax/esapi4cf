@@ -211,8 +211,8 @@
 
 	<cffunction access="public" returntype="void" name="clearCurrent" output="false">
 		<cfscript>
-			instance.currentRequest.set("");
-			instance.currentResponse.set("");
+			instance.currentRequest.remove();
+			instance.currentResponse.remove();
 		</cfscript> 
 	</cffunction>
 
@@ -635,29 +635,11 @@
 
 
 	<cffunction access="public" returntype="void" name="setCurrentHTTP" output="false">
-		<cfargument type="any" name="request" required="true">
-		<cfargument type="any" name="response" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="true">
+		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="true">
 		<cfscript>
-			var wrappedRequest = '';
-			var wrappedResponse = '';
-
-			// wrap if necessary
-			if (isInstanceOf(arguments.request, "cfesapi.org.owasp.esapi.HttpServletRequest")) {
-				wrappedRequest = arguments.request;
-			}
-			else if (isObject(arguments.request)) {
-				wrappedRequest = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init(instance.ESAPI, arguments.request);
-			}
-
-			if (isInstanceOf(arguments.response, "cfesapi.org.owasp.esapi.HttpServletResponse")) {
-				wrappedResponse = arguments.response;
-			}
-			else if (isObject(arguments.request)) {
-				wrappedResponse = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperResponse").init(instance.ESAPI, arguments.response);
-			}
-
-	     	instance.currentRequest.setRequest(wrappedRequest);
-	        instance.currentResponse.setResponse(wrappedResponse);
+	     	instance.currentRequest.setRequest(arguments.request);
+	        instance.currentResponse.setResponse(arguments.response);
 	    </cfscript> 
 	</cffunction>
 
