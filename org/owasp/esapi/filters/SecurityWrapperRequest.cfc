@@ -38,7 +38,7 @@
 	</cffunction>
 
 
-	<cffunction access="private" returntype="any" name="getHttpServletRequest" output="false" hint="javax.servlet.http.HttpServletRequest">
+	<cffunction access="package" returntype="any" name="getHttpServletRequest" output="false" hint="javax.servlet.http.HttpServletRequest">
 		<cfscript>
     		return instance.request;
     	</cfscript> 
@@ -233,7 +233,9 @@
 
 	<cffunction access="public" returntype="String" name="getLocalAddr" output="false" hint="A String containing the IP address on which the request was received.">
 		<cfscript>
+			// JRun's J2EE does not support this
         	//return getHttpServletRequest().getLocalAddr();
+        	// FIXME: CF "Zeus" will use Tomcat's J2EE
         	return getRemoteAddr();
         </cfscript> 
 	</cffunction>
@@ -262,7 +264,9 @@
 
 	<cffunction access="public" returntype="numeric" name="getLocalPort" output="false" hint="Returns the Internet Protocol (IP) port number of the interface on which the request was received.">
 		<cfscript>
+			// JRun's J2EE does not support this
         	//return getHttpServletRequest().getLocalPort();
+        	// FIXME: CF "Zeus" will use Tomcat's J2EE
         	return getServerPort();
         </cfscript> 
 	</cffunction>
@@ -345,7 +349,7 @@
 			local.values = getHttpServletRequest().getParameterValues(arguments.name);
 
 			if (isNull(local.values)) {
-				return "";
+				return [];
 			}
 			local.newValues = [];
 			for (local.value in local.values) {
@@ -445,17 +449,16 @@
 	        if (arguments.path.startsWith(instance.allowableContentRoot)) {
 	            return getHttpServletRequest().getRequestDispatcher(arguments.path);
 	        }
-	        return "";
     	</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="String" name="getRequestedSessionId" output="false" hint="Returns the SessionId from the HttpServletRequest after canonicalizing and filtering out any dangerous characters. Code must be very careful not to depend on the value of a requested session id reported by the user.">
 		<cfscript>
-	        local.id = getHttpServletRequest().getRequestedSessionId();
+	        local.id = createObject("java", "org.owasp.esapi.StringUtilities").replaceNull(getHttpServletRequest().getRequestedSessionId(), "");
 	        local.clean = "";
 	        try {
-	            local.clean = ESAPI.validator().getValidInput("Requested cookie: " & local.id, local.id, "HTTPJSESSIONID", 50, false);
+	            local.clean = instance.ESAPI.validator().getValidInput("Requested cookie: " & local.id, local.id, "HTTPJSESSIONID", 50, false);
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            // already logged
 	        }
@@ -679,7 +682,7 @@
 	<cffunction access="public" returntype="void" name="setAllowableContentRoot" output="false">
 		<cfargument type="String" name="allowableContentRoot" required="true">
 		<cfscript>
-       		instance.allowableContentRoot = arguments.allowableContentRoot.startsWith( "/" ) ? allowableContentRoot : "/" & allowableContentRoot;
+       		instance.allowableContentRoot = arguments.allowableContentRoot.startsWith( "/" ) ? arguments.allowableContentRoot : "/" & arguments.allowableContentRoot;
     	</cfscript> 
 	</cffunction>
 

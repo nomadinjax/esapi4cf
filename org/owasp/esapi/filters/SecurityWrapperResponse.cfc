@@ -46,7 +46,7 @@
 	</cffunction>
 
 
-	<cffunction access="private" returntype="any" name="getHttpServletResponse" output="false" hint="javax.servlet.http.HttpServletResponse">
+	<cffunction access="package" returntype="any" name="getHttpServletResponse" output="false" hint="javax.servlet.http.HttpServletResponse">
 		<cfscript>
     		return instance.response;
     	</cfscript> 
