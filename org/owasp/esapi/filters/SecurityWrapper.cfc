@@ -41,7 +41,7 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 	
 		instance.allowableResourcesRoot = createObject("java", "org.owasp.esapi.StringUtilities").replaceNull(arguments.filterConfig.get("allowableResourcesRoot"), 
 	                                                                                                       instance.allowableResourcesRoot);
-		
+	
 		// define custom resourceDirectory - condition to only perform this once otherwise it will force a config reload
 		local.resourceDirectory = arguments.filterConfig.get("resourceDirectory");
 		if(!isNull(local.resourceDirectory) && local.resourceDirectory != instance.ESAPI.securityConfiguration().getResourceDirectory()) {
@@ -67,10 +67,12 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 		local.secureRequest.setAllowableContentRoot(instance.allowableResourcesRoot);
 	
 		instance.ESAPI.httpUtilities().setCurrentHTTP(local.secureRequest, local.secureResponse);
-		
+	
 		// this will verify whether J2EE sessions are turned on which are required for CFESAPI to function
 		// TODO: is this the right way to do this?
-		if (!local.secureRequest.isRequestedSessionIdValid()) {
+		// I don't think RailoCF is liking this - perhaps the cookie is not set yet at this point?
+		// Where would be a better place to check this?
+		if(!local.secureRequest.isRequestedSessionIdValid()) {
 			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("J2EE sessions must be turned on.");
 			throw(type=cfex.getType(), message=cfex.getMessage());
 		}
