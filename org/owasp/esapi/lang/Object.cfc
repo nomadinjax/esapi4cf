@@ -20,7 +20,7 @@
 	<cfscript>
 		System = createObject("java", "java.lang.System");
 
-		instance.version = "2.0_rc10";
+		instance.version = "2.0.1";
 	</cfscript> 
 	<!--- public methods --->
 
