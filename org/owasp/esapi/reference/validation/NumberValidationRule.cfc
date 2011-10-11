@@ -22,8 +22,8 @@
 		instance.maxValue = createObject("java", "java.lang.Double").POSITIVE_INFINITY;
 		
 		// These statics needed to detect double parsing DOS bug in Java
-		instance.bigBad;
-		instance.smallBad;
+		instance.bigBad = "";
+		instance.smallBad = "";
 	
 		one = createObject("java", "java.math.BigDecimal").init(1);
 		two = createObject("java", "java.math.BigDecimal").init(2);
@@ -119,7 +119,7 @@
 			local.bd = "";
 			try {
 				local.bd = createObject("java", "java.math.BigDecimal").init(local.canonical);
-			} catch (NumberFormatException e) {
+			} catch (Object e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
