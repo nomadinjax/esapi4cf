@@ -26,10 +26,13 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 	 *                     to pass information to a filter during initialization. 
 	 */
 	
-	public ClickjackFilter function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required Struct filterConfig) {
+	public ClickjackFilter function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
+	                                     required Struct filterConfig) {
 		instance.ESAPI = arguments.ESAPI;
 	
-		local.configMode = filterConfig.get("mode");
+		if(structKeyExists(arguments.filterConfig, "mode")) {
+			local.configMode = arguments.filterConfig.get("mode");
+		}
 		if(!isNull(local.configMode) && (local.configMode.equals("DENY") || local.configMode.equals("SAMEORIGIN"))) {
 			instance.mode = local.configMode;
 		}
@@ -54,7 +57,6 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 	
 	public boolean function doFilter(required request, required response) {
 		instance.response = arguments.response;
-		
 		return true;
 	}
 	
