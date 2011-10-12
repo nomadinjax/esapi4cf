@@ -95,7 +95,7 @@
 			try {
 				return instance.format.parse(local.canonical);
 			} catch (java.lang.Exception e) {
-				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(instance.ESAPI, arguments.context & ": Invalid date must follow the " & instance.format.getNumberFormat() & " format", "Invalid date: context=" & arguments.context & ", format=" & instance.format & ", input=" & arguments.input, e, arguments.context);
+				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid date must follow the " & instance.format.getNumberFormat() & " format", logMessage="Invalid date: context=" & arguments.context & ", format=" & instance.format & ", input=" & arguments.input, cause=e, context=arguments.context);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 			}
 		</cfscript> 

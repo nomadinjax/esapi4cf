@@ -210,7 +210,7 @@
 			// checks on input itself
 			try {
 				// check for empty/null
-				if(checkEmpty(arguments.context, arguments.input) == "") {
+				if(isNull(checkEmpty(arguments.context, arguments.input))) {
 					return "";
 				}
 				if (instance.validateInputAndCanonical) {

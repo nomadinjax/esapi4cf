@@ -119,6 +119,11 @@
 			local.bd = "";
 			try {
 				local.bd = createObject("java", "java.math.BigDecimal").init(local.canonical);
+			// RCF throws java.lang.NumberFormatException (which is correct!)
+			} catch (java.lang.NumberFormatException e) {
+				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
+				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+			// ACF throws an Object exception with a nested java.lang.reflect.InvocationTargetException exception (not sure what this is)
 			} catch (Object e) {
 				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
