@@ -6,7 +6,7 @@ License: BSD license
 https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML
 
 
-*** SETUP/USAGE - MORE INFO TO COME ***
+*** SETUP/USAGE ***
 
 Setup:
 1. The cfesapi folder should sit at the webroot level.
@@ -16,25 +16,25 @@ NOTE: there are folders included with CFESAPI that you will want to exclude from
 
 Tests:
 - You can run the MXUnit tests using: /cfesapi/test/TestSuite.cfm
-- TODO Rid ourselves of the TestCase - move methods into tests that need them
-
-How:
-- Copy the /cfesapi/esapi/configuration/esapi/ folder to a location within your CF application and make changes to your copy of the config files
-- IMPORTANT: Run /cfesapi/org/owasp/esapi/reference/crypto/JavaEncryptor.cfm to calculate your *own* Encryptor.MasterKey and Encryptor.MasterSalt values
-- Be sure to update the ESAPI.component paths with the location of your implementation CFCs
-- Include the /cfesapi/helpers/ESAPI.cfm in your application (preferably in Application.cfc#onRequest)
-- Immediately following the above include, call ESAPI().securityConfiguration().setResourceDirectory("your config path that you copied")
 
 Demos:
 - See the /cfesapi/demo/ for basic examples of implementation.
-- More to come...
 
 Implementation:
 - You can extend any of the default implementations to overwrite the methods you need
  and/or
 - You can create new implementations that implement the provided interfaces
 
--- need more detail on setup --
+How:
+- Copy the /cfesapi/esapi/configuration/esapi/ folder to a location within your CF application and make changes to your copy of the config files
+- ESAPI.properties
+	- IMPORTANT: Run /cfesapi/org/owasp/esapi/reference/crypto/JavaEncryptor.cfm to calculate your *own* Encryptor.MasterKey and Encryptor.MasterSalt values
+	- Update the component paths with the location of your implementation CFCs
+	- Modify other configs as needed
+- Include the /cfesapi/helpers/ESAPI.cfm in your application
+- Call the filters provided by CFESAPI to secure and authenticate each request.
+- See demos for examples
+
 
 *** COMPATIBILITY ***
 
@@ -42,7 +42,7 @@ Implementation:
 * Adobe ColdFusion 9.0.1 *
 **************************
 MXUnit Test Results
- - 279 total = 11 failures + 14 errors + 254 successes
+ - 279 total = 11 failures + 5 errors + 256 successes
 
 Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 - ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
@@ -55,7 +55,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 279 total = 9 failures + 16 errors + 254 successes
+- 279 total = 9 failures + 10 errors + 253 successes
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar
