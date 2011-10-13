@@ -13,14 +13,11 @@
  * @author Damon Miller
  * @created 2011
  */
-component  {
+component extends="mxunit.framework.TestCase" {
 
-	// CFESAPI only requires that sessionManagement be on
-	this.name = "CFESAPITestingSuite" & hash(getCurrentTemplatePath());
-	this.sessionManagement = true;
-	this.sessionTimeout = createTimeSpan(0, 0, 30, 0);
-
-	// CFESAPI does not use CFID/CFTOKEN
-	this.clientManagement = false;
-	this.setClientCookies = false;
+	/*
+	 * All CFESAPI test cases extend this component. If your MXUnit path is different, you can change it here to affect all tests.
+	 * 
+	 * If you need anything applied to all test cases, put them here
+	 */
 }

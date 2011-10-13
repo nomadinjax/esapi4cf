@@ -15,7 +15,7 @@
 	* @created 2011
 	*/
 	--->
-<cfcomponent extends="cfesapi.test.TestCase" output="false">
+<cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
 		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");

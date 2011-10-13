@@ -15,7 +15,7 @@
 	* @created 2011
 	*/
 	--->
-<cfcomponent extends="cfesapi.test.TestCase" output="false" hint="A simple class that calls the Encoder to test thread safety">
+<cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false" hint="A simple class that calls the Encoder to test thread safety">
 
 	<cfscript>
     	instance.num = 0;

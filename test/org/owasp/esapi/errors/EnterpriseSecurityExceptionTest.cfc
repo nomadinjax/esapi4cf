@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  */
-component EnterpriseSecurityExceptionTest extends="cfesapi.test.TestCase" {
+component EnterpriseSecurityExceptionTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	// imports
 	System = createObject("java", "java.lang.System");

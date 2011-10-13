@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  */
-component extends="cfesapi.test.TestCase" {
+component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
 
