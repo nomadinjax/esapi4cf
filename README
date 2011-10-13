@@ -42,7 +42,7 @@ How:
 * Adobe ColdFusion 9.0.1 *
 **************************
 MXUnit Test Results
- - 279 total = 11 failures + 4 errors + 257 successes
+ - 272 total = 11 failures + 2 errors + 259 successes
 
 Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 - ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
@@ -55,7 +55,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 279 total = 9 failures + 9 errors + 254 successes
+- 272 total = 8 failures + 7 errors + 257 successes
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar

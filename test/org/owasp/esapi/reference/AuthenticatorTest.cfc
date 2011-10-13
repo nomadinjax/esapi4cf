@@ -66,7 +66,7 @@
 	        try {
 	            local.authenticator.createUser(instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS), "password1", "password2"); // don't match
 	            fail();
-	        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException e) {
+	        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 	            // success
 	        }
 	        try {
@@ -91,7 +91,7 @@
 	        	local.uName = "ea234kEknr";	//sufficiently random password that also works as a username
 	            local.authenticator.createUser(local.uName, local.uName, local.uName);  // using username as password
 	            fail();
-	        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
+	        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 	            // success
 	        }
 		</cfscript> 
@@ -465,13 +465,13 @@
 			try {
 				local.authenticator.verifyPasswordStrength("password", "FictionalEsapiUser", local.user);
 				fail();
-			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
+			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.verifyPasswordStrength("password", "FICTIONALESAPIUSER", local.user);
 				fail();
-			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
+			} catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 

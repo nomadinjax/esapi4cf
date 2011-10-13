@@ -145,7 +145,7 @@
 	        verifyAccountNameStrength(arguments.accountName);
 
 	        if (trim(arguments.password1) == "") {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with an empty password");
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with an empty password");
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 	        
@@ -154,14 +154,14 @@
 	        verifyPasswordStrength(newPassword=arguments.password1, user=local.user);
 
 	        if (!arguments.password1.equals(arguments.password2)) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match");
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException").init(instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match");
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 
 	        try {
 	            setHashedPassword(local.user, hashPassword(arguments.password1, arguments.accountName));
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException").init(instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee);
+	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init(instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee);
 				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
 	        }
 	        instance.userMap.put(local.user.getAccountId(), local.user);
