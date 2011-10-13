@@ -22,7 +22,7 @@
 		
 		// delete the users.txt file as running all these tests just once creates tons of users
 		// the more users, the longer the tests take
-		filePath = expandPath("/cfesapi/esapi/configuration/.esapi/users.txt");
+		filePath = expandPath("/cfesapi/esapi/configuration/esapi/users.txt");
 		if (fileExists(filePath)) {
 			try {
 				fileDelete(filePath);
