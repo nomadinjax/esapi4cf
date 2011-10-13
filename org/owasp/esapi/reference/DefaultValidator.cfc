@@ -857,7 +857,12 @@
 		<cfargument type="boolean" name="allowNull" required="true">
 		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
 		<cfscript>
-			return instance.ESAPI.validator().isValidInput( arguments.context, arguments.input, "Redirect", 512, arguments.allowNull, arguments.errorList);
+			if (structKeyExists(arguments, "errorList")) {
+				return instance.ESAPI.validator().isValidInput( arguments.context, arguments.input, "Redirect", 512, arguments.allowNull, arguments.errorList);
+			}
+			else {
+				return instance.ESAPI.validator().isValidInput( arguments.context, arguments.input, "Redirect", 512, arguments.allowNull);
+			}
 		</cfscript> 
 	</cffunction>
 
