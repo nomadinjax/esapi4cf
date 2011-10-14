@@ -105,7 +105,7 @@
 	            instance.logger.fatal( Logger.SECURITY_FAILURE, "INTRUSION - " & arguments.message );
 	        }
 	        local.user = instance.ESAPI.authenticator().getCurrentUser();
-	        if (isInstanceOf(local.user, "cfesapi.org.owasp.esapi.reference.AnonymousUser")) {
+	        if (isInstanceOf(local.user, "cfesapi.org.owasp.esapi.User$ANONYMOUS")) {
 	        	return;
 	        }
 	        if ( arguments.action.equals( "disable" ) ) {

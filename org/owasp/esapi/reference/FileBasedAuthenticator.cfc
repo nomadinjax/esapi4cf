@@ -273,7 +273,7 @@
 		<cfargument type="numeric" name="accountId" required="true" hint="the account id">
 		<cfscript>
 			if (arguments.accountId == 0) {
-	            return createObject("component", "AnonymousUser").init(instance.ESAPI);
+	            return createObject("component", "cfesapi.org.owasp.esapi.User$ANONYMOUS").init(instance.ESAPI);
 	        }
 	        loadUsersIfNecessary();
 	        local.u = instance.userMap.get(arguments.accountId);
@@ -286,7 +286,7 @@
 		<cfargument type="String" name="accountName" required="true">
 		<cfscript>
 	        if (arguments.accountName == "") {
-	            return createObject("component", "AnonymousUser").init(instance.ESAPI);
+	            return createObject("component", "cfesapi.org.owasp.esapi.User$ANONYMOUS").init(instance.ESAPI);
 	        }
 	        loadUsersIfNecessary();
 	        for (local.u in instance.userMap) {
@@ -363,7 +363,7 @@
                 while (!isNull(local.line)) {
                     if (local.line.length() > 0 && local.line.charAt(0) != chr(35)) {
                         local.user = _createUser(local.line);
-                        if (local.map.containsKey(newLong(local.user.getAccountId()))) {
+                        if (local.map.containsKey(createObject("java", "java.lang.Long").init(local.user.getAccountId()))) {
                             instance.logger.fatal(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem in user file. Skipping duplicate user: " & local.user, "");
                         }
                         local.map.put(local.user.getAccountId(), local.user);

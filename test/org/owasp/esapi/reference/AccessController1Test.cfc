@@ -26,7 +26,7 @@
  
 	<cffunction access="public" returntype="void" name="testMatchRule" output="false">
 		<cfscript>
-			instance.ESAPI.authenticator().setCurrentUser(user=createObject("component", "cfesapi.org.owasp.esapi.reference.AnonymousUser"));
+			instance.ESAPI.authenticator().setCurrentUser(user=createObject("component", "cfesapi.org.owasp.esapi.User$ANONYMOUS"));
 			assertFalse(instance.ESAPI.accessController().isAuthorizedForURL("/nobody"));
 		</cfscript> 
 	</cffunction>

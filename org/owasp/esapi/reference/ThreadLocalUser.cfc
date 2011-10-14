@@ -33,7 +33,7 @@
 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="initialValue" output="false">
 		<cfscript>
-            return createObject("component", "AnonymousUser").init(instance.ESAPI);
+            return createObject("component", "cfesapi.org.owasp.esapi.User$ANONYMOUS").init(instance.ESAPI);
         </cfscript> 
 	</cffunction>
 

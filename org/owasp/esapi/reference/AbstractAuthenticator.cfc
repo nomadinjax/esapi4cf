@@ -62,7 +62,7 @@
 		<cfscript>
 	        local.user = instance.currentUser.getUser();
 	        if (isNull(local.user) || !isObject(local.user)) {
-	            local.user = createObject("component", "AnonymousUser").init(instance.ESAPI);
+	            local.user = createObject("component", "cfesapi.org.owasp.esapi.User$ANONYMOUS").init(instance.ESAPI);
 	        }
 	        return local.user;
     	</cfscript> 
