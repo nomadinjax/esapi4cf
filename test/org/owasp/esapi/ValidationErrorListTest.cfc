@@ -17,8 +17,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 
 	// imports
 	System = createObject("java", "java.lang.System");
-	//import org.owasp.esapi.errors.IntrusionException;
-	//import org.owasp.esapi.errors.ValidationException;
+
 	/**
 	 * {@inheritDoc}
 	 *
