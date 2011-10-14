@@ -87,7 +87,7 @@ component ValidationErrorList extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 */
 	
 	public void function addError(required String context, 
-	                              required cfesapi.org.owasp.esapi.errors.ValidationException vex) {
+	                              required vex) {
 		if(!isNull(getError(arguments.context))) {
 			throw(object=RuntimeException.init("Context (" & arguments.context & ") already exists, must be unique"));
 		}
