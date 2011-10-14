@@ -51,6 +51,16 @@
 			return this;
 		</cfscript> 
 	</cffunction>
+	
+	
+	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
+		<cfargument type="numeric" name="len" required="true">
+		<cfscript>
+			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder.setLength(arguments.len);
+			return StringBuilder.toString().getBytes();
+		</cfscript> 
+	</cffunction>
 
 
 	<cffunction access="public" returntype="binary" name="asSerializedByteArray" output="false" hint="Return this CipherText object as a specialized, portable serialized byte array (binary).">

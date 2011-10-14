@@ -20,7 +20,8 @@
 	<cfscript>
 		instance.overrideConfig = "";
 		componentMap = {};
-
+		
+		System = createObject("java", "java.lang.System");
 		static.securityConfigurationImplName = System.getProperty("cfesapi.org.owasp.esapi.SecurityConfiguration", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration");
 	</cfscript>
  

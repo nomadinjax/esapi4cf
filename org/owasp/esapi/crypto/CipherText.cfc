@@ -18,6 +18,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
 		instance.cipherTextVersion = 20110203; // Format: YYYYMMDD, max is 99991231.
 		instance.serialVersionUID = instance.cipherTextVersion; // Format: YYYYMMDD
 
@@ -97,6 +99,16 @@
 
 			return this;
     	</cfscript> 
+	</cffunction>
+	
+	
+	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
+		<cfargument type="numeric" name="len" required="true">
+		<cfscript>
+			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder.setLength(arguments.len);
+			return StringBuilder.toString().getBytes();
+		</cfscript> 
 	</cffunction>
 
 

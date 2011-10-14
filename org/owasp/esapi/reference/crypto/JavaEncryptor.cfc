@@ -18,6 +18,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Encryptor" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
 		instance.ESAPI = "";
 
 		instance.initialized = false;
@@ -121,6 +123,16 @@
 		</cfscript> 
 	</cffunction>
 
+
+	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
+		<cfargument type="numeric" name="len" required="true">
+		<cfscript>
+			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder.setLength(arguments.len);
+			return StringBuilder.toString().getBytes();
+		</cfscript> 
+	</cffunction>
+	
 
 	<cffunction access="public" returntype="String" name="hash" output="false" hint="Hashes the data using the specified algorithm and the Java MessageDigest class. This method first adds the salt, a separator (':'), and the data, and then rehashes the specified number of iterations in order to help strengthen weak passwords.">
 		<cfargument type="String" name="plaintext" required="true">
@@ -752,7 +764,7 @@
 	<cffunction access="public" returntype="numeric" name="getRelativeTimeStamp" output="false">
 		<cfargument type="numeric" name="offset" required="true">
 		<cfscript>
-			return newLong(createObject("java", "java.util.Date").init().getTime() + arguments.offset).longValue();
+			return createObject("java", "java.lang.Long").init(createObject("java", "java.util.Date").init().getTime() + arguments.offset).longValue();
 		</cfscript> 
 	</cffunction>
 

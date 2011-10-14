@@ -82,6 +82,16 @@
 	</cffunction>
 
 
+	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
+		<cfargument type="numeric" name="len" required="true">
+		<cfscript>
+			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder.setLength(arguments.len);
+			return StringBuilder.toString().getBytes();
+		</cfscript> 
+	</cffunction>
+	
+
 	<cffunction access="public" returntype="CipherSpec" name="setCipherTransformation" output="false" hint="Set the cipher transformation for this CipherSpec. This is only used by the CTOR CipherSpec(Cipher) and CipherSpec(Cipher, int).">
 		<cfargument type="String" name="cipherXform" required="true" hint="The cipher transformation string; e.g., 'DESede/CBC/PKCS5Padding'. May not be null or empty.">
 		<cfargument type="boolean" name="fromCipher" required="false" default="false" hint="If true, the cipher transformation was set via Cipher.getAlgorithm() which may only return the actual algorithm. In that case we check and if all 3 parts were not specified, then we specify the parts that were based on 'ECB' as the default cipher mode and 'NoPadding' as the default padding scheme.">

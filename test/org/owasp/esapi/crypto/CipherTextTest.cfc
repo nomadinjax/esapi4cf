@@ -18,6 +18,8 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
 	    static.POST_CLEANUP = true;
 
 		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");

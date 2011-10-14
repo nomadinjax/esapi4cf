@@ -18,6 +18,7 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Executor" output="false" hint="Reference implementation of the Executor interface. This implementation is very restrictive. Commands must exactly equal the canonical path to an executable on the system. ">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
 		Logger = createObject("java", "org.owasp.esapi.Logger");
 
 		instance.ESAPI = "";

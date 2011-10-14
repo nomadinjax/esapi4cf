@@ -18,6 +18,8 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.SecurityConfiguration" output="false">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+		
 		instance.ESAPI = "";
 
 		instance.properties = "";
