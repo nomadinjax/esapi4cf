@@ -220,7 +220,7 @@ component ESAPI extends="cfesapi.org.owasp.esapi.lang.Object" {
 	private function make(required String className, required String typeName) {
 		local.obj = "";
 		local.errMsg = "";
-		try {
+		//try {
 			if (isNull(arguments.className) || "" == arguments.className ) {
 				throwError( IllegalArgumentException.init("Classname cannot be null or empty.") );
 			}
@@ -233,18 +233,18 @@ component ESAPI extends="cfesapi.org.owasp.esapi.lang.Object" {
 				local.obj = instance.make[arguments.typeName];
 			}
 			else {
-	            try {
+	            //try {
 	                local.obj = createObject("component", arguments.className).init(this);
-	            } catch (expression e) {
+	            //} catch (expression e) {
 	                // This is a no-error exception, if this is caught we will continue on assuming the implementation was
 	                // not meant to be used as a singleton.
-	                local.obj = createObject("component", arguments.className);
-	            } catch (SecurityException e) {
+	            //    local.obj = createObject("component", arguments.className);
+	            //} catch (SecurityException e) {
 	                // The class is meant to be singleton, however, the SecurityManager restricts us from calling the
 	                // getInstance method on the class, thus this is a configuration issue and a ConfigurationException
 	                // is thrown
-	                throwError( new cfesapi.org.owasp.esapi.errors.ConfigurationException( "The SecurityManager has restricted the object factory from getting a reference to the singleton implementation of the class [" & arguments.className & "]", e ) );
-	            }
+	            //    throwError( new cfesapi.org.owasp.esapi.errors.ConfigurationException( "The SecurityManager has restricted the object factory from getting a reference to the singleton implementation of the class [" & arguments.className & "]", e ) );
+	            //}
             	instance.make[arguments.typeName] = local.obj;
             }
 
@@ -252,7 +252,7 @@ component ESAPI extends="cfesapi.org.owasp.esapi.lang.Object" {
 			
             // Issue 66 - Removed System.out calls as we are throwing an exception in each of these cases
             // anyhow.
-		} catch( IllegalArgumentException ex ) {
+		/*} catch( IllegalArgumentException ex ) {
 			local.errMsg = ex.toString() & " " & arguments.typeName & " type name cannot be null or empty.";
 			throwError( new cfesapi.org.owasp.esapi.errors.ConfigurationException(local.errMsg, ex) );
 		}catch ( ClassNotFoundException ex ) {
@@ -279,7 +279,7 @@ component ESAPI extends="cfesapi.org.owasp.esapi.lang.Object" {
 			//
 			local.errMsg = ex.toString() & " " & arguments.typeName & " class (" & arguments.className & ") CTOR threw exception.";
 			throwError( new ConfigurationException(local.errMsg, ex) );
-		}
+		}*/
 		// DISCUSS: Should we also catch ExceptionInInitializerError here? See Google Issue #61 comments.
 	}
 }
