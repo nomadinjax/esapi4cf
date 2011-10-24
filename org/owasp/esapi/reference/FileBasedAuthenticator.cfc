@@ -34,9 +34,6 @@
 component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfesapi.org.owasp.esapi.Authenticator" {
 
 	// imports
-	System = createObject("java", "java.lang.System");
-	JavaLong = createObject("java", "java.lang.Long");
-	JavaDate = createObject("java", "java.util.Date");
 	EncoderConstants = createObject("java", "org.owasp.esapi.EncoderConstants");
 	Logger = createObject("java", "org.owasp.esapi.Logger");
 
@@ -380,7 +377,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			instance.userDB = instance.ESAPI.securityConfiguration().getResourceFile("users.txt");
 		}
 		if(!isObject(instance.userDB)) {
-			instance.userDB = createObject("java", "java.io.File").init(System.getProperty("user.home") & "/esapi", "users.txt");
+			instance.userDB = createObject("java", "java.io.File").init(createObject("java", "java.lang.System").getProperty("user.home") & "/esapi", "users.txt");
 			try {
 				if(!instance.userDB.createNewFile()) {
 					throwError(createObject("java", "java.io.IOException").init("Unable to create the user file"));
@@ -421,7 +418,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			while(!isNull(local.line)) {
 				if(local.line.length() > 0 && local.line.charAt(0) != chr(35)) {
 					local.user = _createUser(local.line);
-					if(local.map.containsKey(JavaLong.init(local.user.getAccountId()))) {
+					if(local.map.containsKey(javaCast("long", local.user.getAccountId()))) {
 						instance.logger.fatal(Logger.SECURITY_FAILURE, "Problem in user file. Skipping duplicate user: " & local.user);
 					}
 					local.map.put(local.user.getAccountId(), local.user);
@@ -459,9 +456,11 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 */
 	
 	private DefaultUser function _createUser(required String line) {
+		JavaDate = createObject("java", "java.util.Date");
+		
 		local.parts = line.split(" *\| *");
 		local.accountIdString = local.parts[1];
-		local.accountId = JavaLong.parseLong(local.accountIdString);
+		local.accountId = javaCast("long", local.accountIdString);
 		local.accountName = local.parts[2];
 	
 		verifyAccountNameStrength(local.accountName);
@@ -494,10 +493,10 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	
 		setOldPasswordHashes(local.user, local.parts[7].split(" *, *"));
 		local.user.setLastHostAddress("unknown" == local.parts[8] ? "" : local.parts[8]);
-		local.user.setLastPasswordChangeTime(JavaDate.init(JavaLong.parseLong(local.parts[9])));
-		local.user.setLastLoginTime(JavaDate.init(JavaLong.parseLong(local.parts[10])));
-		local.user.setLastFailedLoginTime(JavaDate.init(JavaLong.parseLong(local.parts[11])));
-		local.user.setExpirationTime(JavaDate.init(JavaLong.parseLong(local.parts[12])));
+		local.user.setLastPasswordChangeTime(JavaDate.init(javaCast("long", local.parts[9])));
+		local.user.setLastLoginTime(JavaDate.init(javaCast("long", local.parts[10])));
+		local.user.setLastFailedLoginTime(JavaDate.init(javaCast("long", local.parts[11])));
+		local.user.setExpirationTime(JavaDate.init(javaCast("long", local.parts[12])));
 		local.user.setFailedLoginCount(int(local.parts[13]));
 		return local.user;
 	}

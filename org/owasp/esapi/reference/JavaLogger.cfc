@@ -24,8 +24,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 
 	// imports
 	LoggingLevel = createObject("java", "java.util.logging.Level");
-	JavaLoggerLevel = createObject("java", 
-                                "org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel");
+	JavaLoggerLevel = createObject("java", "org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel");
 	Logger = createObject("java", "org.owasp.esapi.Logger");
 
 	instance.ESAPI = "";

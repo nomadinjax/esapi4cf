@@ -25,12 +25,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 
 	// imports
 	Logger = createObject("java", "org.owasp.esapi.Logger");
-	DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
-
 	JavaDate = createObject("java", "java.util.Date");
-	JavaLong = createObject("java", "java.lang.Long");
-
-	IllegalArgumentException = createObject("java", "java.lang.IllegalArgumentException");
 
 	instance.ESAPI = "";
 
@@ -80,7 +75,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	instance.lastFailedLoginTime = JavaDate.init(javaCast("long", 0));
 
 	/** The expiration date/time for this user's account. */
-	instance.expirationTime = JavaDate.init(javaCast("long", JavaLong.MAX_VALUE));
+	instance.expirationTime = JavaDate.init(javaCast("long", createObject("java", "java.lang.Long").MAX_VALUE));
 
 	/** The sessions this user is associated with */
 	instance.sessions = [];
@@ -521,7 +516,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	public String function resetCSRFToken() {
 		// user.csrfToken = instance.ESAPI.encryptor().hash( session.getId(),user.name );
 		// user.csrfToken = instance.ESAPI.encryptor().encrypt( address & ":" & instance.ESAPI.encryptor().getTimeStamp();
-		instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		return instance.csrfToken;
 	}
 	

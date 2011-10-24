@@ -45,20 +45,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 
 	// imports
 	System = createObject("java", "java.lang.System");
-	JavaLong = createObject("java", "java.lang.Long");
-	//import java.io.IOException;
-	//import java.io.InputStream;
-	//import java.net.URL;
-	//import java.util.ArrayList;
-	//import java.util.Arrays;
-	//import java.util.HashMap;
-	//import java.util.Iterator;
-	//import java.util.List;
-	//import java.util.Map;
-	//import java.util.regex.PatternSyntaxException;
-	//import org.owasp.esapi.ESAPI;
-	Logger = createObject("java", "org.owasp.esapi.Logger");
-	//import org.owasp.esapi.SecurityConfiguration;
+	
 	instance.ESAPI = "";
 
 	instance.properties = "";
@@ -970,6 +957,8 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	 */
 	
 	public numeric function getLogLevel() {
+		Logger = createObject("java", "org.owasp.esapi.Logger");
+		
 		local.level = getESAPIProperty(this.LOG_LEVEL, "WARNING");
 	
 		if(local.level.equalsIgnoreCase("OFF"))

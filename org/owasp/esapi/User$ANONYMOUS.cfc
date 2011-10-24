@@ -22,7 +22,6 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 
 	// imports
 	RuntimeException = createObject("java", "java.lang.RuntimeException");
-	Encoder = createObject("java", "org.owasp.esapi.Encoder");
 
 	instance.ESAPI = "";
 
@@ -306,7 +305,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public String function resetCSRFToken() {
-		instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, Encoder.CHAR_ALPHANUMERICS);
+		instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 		return instance.csrfToken;
 	}
 	

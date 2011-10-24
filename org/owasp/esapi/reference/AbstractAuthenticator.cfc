@@ -18,21 +18,11 @@
  * This class should not implement any methods that would be meant
  * to modify a User object, since that's probably implementation specific.
  *
+ * DO NOT implement Authenticator here due to CF's weird implementation of interfaces!
+ * Implement Authenticator on component that extends this one.
  */
 component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 
-	// imports
-	//import java.util.Date;
-	//import javax.servlet.http.HttpServletRequest;
-	//import javax.servlet.http.HttpServletResponse;
-	//import javax.servlet.http.HttpSession;
-	//import org.owasp.esapi.Logger;
-	//import org.owasp.esapi.User;
-	//import org.owasp.esapi.errors.AccessControlException;
-	//import org.owasp.esapi.errors.AuthenticationCredentialsException;
-	//import org.owasp.esapi.errors.AuthenticationException;
-	//import org.owasp.esapi.errors.AuthenticationLoginException;
-	//import org.owasp.esapi.errors.EnterpriseSecurityException;
 	instance.ESAPI = "";
 
 	/**
