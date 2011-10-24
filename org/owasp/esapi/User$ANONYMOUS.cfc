@@ -281,7 +281,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 * {@inheritDoc}
 	 */
 	
-	public void function loginWithPassword(required String password) {
+	public void function loginWithPassword(cfesapi.org.owasp.esapi.HttpServletRequest request, required String password) {
 		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
 	}
 	

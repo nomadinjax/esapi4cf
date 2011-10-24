@@ -319,7 +319,7 @@ interface extends="cfesapi.org.owasp.esapi.lang.Principal" {
 	 *         if login fails
 	 */
 	
-	public void function loginWithPassword(required String password);
+	public void function loginWithPassword(cfesapi.org.owasp.esapi.HttpServletRequest request, required String password);
 	
 	/**
 	 * Logout this user.
