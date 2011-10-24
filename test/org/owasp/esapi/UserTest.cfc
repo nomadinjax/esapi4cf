@@ -15,21 +15,8 @@
  */
 component UserTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
-	// imports
-	DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
-
 	public void function setUp() {
-		// delete the users.txt file as running all these tests just once creates tons of users
-		// the more users, the longer the tests take
-		filePath = expandPath("/cfesapi/esapi/configuration/esapi/users.txt");
-		if(fileExists(filePath)) {
-			try {
-				fileDelete(filePath);
-			}
-			catch(Any e) {
-			}
-		}
-	
+		cleanUpUsers();
 		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	}
 	
@@ -39,7 +26,7 @@ component UserTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	
 	public void function testAllMethods() {
 		// create a user to test Anonymous
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.authenticator = instance.ESAPI.authenticator();
 		local.password = local.authenticator.generateStrongPassword();
 		local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
