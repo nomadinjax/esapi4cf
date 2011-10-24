@@ -91,7 +91,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	/** This user's Locale. */
 	instance.locale = "";
 
-	static.MAX_ROLE_LENGTH = 250;
+	instance.MAX_ROLE_LENGTH = 250;
 
 	/**
 	 * Instantiates a new user.
@@ -126,7 +126,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function addRole(required String role) {
 		local.roleName = arguments.role.toLowerCase();
-		if(instance.ESAPI.validator().isValidInput("addRole", local.roleName, "RoleName", static.MAX_ROLE_LENGTH, false)) {
+		if(instance.ESAPI.validator().isValidInput("addRole", local.roleName, "RoleName", instance.MAX_ROLE_LENGTH, false)) {
 			instance.roles.add(local.roleName);
 			instance.logger.info(Logger.SECURITY_SUCCESS, "Role " & local.roleName & " added to " & getAccountName());
 		}

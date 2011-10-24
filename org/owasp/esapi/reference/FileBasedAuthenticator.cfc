@@ -62,7 +62,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 */
 	instance.lastChecked = 0;
 
-	static.MAX_ACCOUNT_NAME_LENGTH = 250;
+	instance.MAX_ACCOUNT_NAME_LENGTH = 250;
 
 	public FileBasedAuthenticator function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI) {
 		super.init(arguments.ESAPI);
@@ -618,7 +618,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		if(arguments.accountName == "") {
 			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid account name", "Attempt to create account with a null account name"));
 		}
-		if(!instance.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.accountName, "AccountName", static.MAX_ACCOUNT_NAME_LENGTH, false)) {
+		if(!instance.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.accountName, "AccountName", instance.MAX_ACCOUNT_NAME_LENGTH, false)) {
 			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName));
 		}
 	}

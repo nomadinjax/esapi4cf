@@ -25,16 +25,16 @@
 		instance.logger = "";
 
 		/* Character sets that define characters (in addition to alphanumerics) that are immune from encoding in various formats */
-		static.IMMUNE_HTML = [ ',', '.', '-', '_', ' ' ];
-		static.IMMUNE_HTMLATTR = [ ',', '.', '-', '_' ];
-		static.IMMUNE_CSS = [];
-		static.IMMUNE_JAVASCRIPT = [ ',', '.', '_' ];
-		static.IMMUNE_VBSCRIPT = [ ',', '.', '_' ];
-		static.IMMUNE_XML = [ ',', '.', '-', '_', ' ' ];
-		static.IMMUNE_SQL = [ ' ' ];
-		static.IMMUNE_OS = [ '-' ];
-		static.IMMUNE_XMLATTR = [ ',', '.', '-', '_' ];
-		static.IMMUNE_XPATH = [ ',', '.', '-', '_', ' ' ];
+		instance.IMMUNE_HTML = [ ',', '.', '-', '_', ' ' ];
+		instance.IMMUNE_HTMLATTR = [ ',', '.', '-', '_' ];
+		instance.IMMUNE_CSS = [];
+		instance.IMMUNE_JAVASCRIPT = [ ',', '.', '_' ];
+		instance.IMMUNE_VBSCRIPT = [ ',', '.', '_' ];
+		instance.IMMUNE_XML = [ ',', '.', '-', '_', ' ' ];
+		instance.IMMUNE_SQL = [ ' ' ];
+		instance.IMMUNE_OS = [ '-' ];
+		instance.IMMUNE_XMLATTR = [ ',', '.', '-', '_' ];
+		instance.IMMUNE_XPATH = [ ',', '.', '-', '_', ' ' ];
 	</cfscript>
  
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Encoder" name="init" output="false" hint="Instantiates a new DefaultEncoder">
@@ -146,7 +146,7 @@
 	<cffunction access="public" returntype="String" name="encodeForHTML" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_HTML, javaCast("string", arguments.input));
+		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_HTML, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -162,7 +162,7 @@
 	<cffunction access="public" returntype="String" name="encodeForHTMLAttribute" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_HTMLATTR, javaCast("string", arguments.input));
+		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_HTMLATTR, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -170,7 +170,7 @@
 	<cffunction access="public" returntype="String" name="encodeForCSS" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.CSSCodec").init().encode( static.IMMUNE_CSS, javaCast("string", arguments.input));
+	    	return createObject("java", "org.owasp.esapi.codecs.CSSCodec").init().encode( instance.IMMUNE_CSS, javaCast("string", arguments.input));
 	    </cfscript> 
 	</cffunction>
 
@@ -178,7 +178,7 @@
 	<cffunction access="public" returntype="String" name="encodeForJavaScript" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.JavaScriptCodec").init().encode(static.IMMUNE_JAVASCRIPT, javaCast("string", arguments.input));
+	    	return createObject("java", "org.owasp.esapi.codecs.JavaScriptCodec").init().encode(instance.IMMUNE_JAVASCRIPT, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -186,7 +186,7 @@
 	<cffunction access="public" returntype="String" name="encodeForVBScript" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return createObject("java", "org.owasp.esapi.codecs.VBScriptCodec").init().encode(static.IMMUNE_VBSCRIPT, javaCast("string", arguments.input));
+			return createObject("java", "org.owasp.esapi.codecs.VBScriptCodec").init().encode(instance.IMMUNE_VBSCRIPT, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -195,7 +195,7 @@
 		<cfargument type="any" name="codec" required="true" hint="org.owasp.esapi.codecs.Codec">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return arguments.codec.encode(static.IMMUNE_SQL, javaCast("string", arguments.input));
+		    return arguments.codec.encode(instance.IMMUNE_SQL, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -204,7 +204,7 @@
 		<cfargument type="any" name="codec" required="true" hint="org.owasp.esapi.codecs.Codec">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return arguments.codec.encode( static.IMMUNE_OS, javaCast("string", arguments.input));
+		    return arguments.codec.encode( instance.IMMUNE_OS, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -292,7 +292,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXPath" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( static.IMMUNE_XPATH, javaCast("string", arguments.input));
+	    	return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_XPATH, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -300,7 +300,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXML" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( static.IMMUNE_XML, javaCast("string", arguments.input));
+	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( instance.IMMUNE_XML, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -308,7 +308,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXMLAttribute" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( static.IMMUNE_XMLATTR, javaCast("string", arguments.input));
+	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( instance.IMMUNE_XMLATTR, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
