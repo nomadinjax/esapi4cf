@@ -15,6 +15,12 @@
  */
 component  {
 
+	/* default init */
+	
+	public Object function init() {
+		return this;
+	}
+	
 	/* private methods */
 	
 	private void function assert(required boolean boolean_expression, 
@@ -24,8 +30,19 @@ component  {
 		}
 	}
 	
-	private void function throwError(required cfesapi.org.owasp.esapi.lang.Exception exception) {
-		throw(type=arguments.exception.getType(), message=arguments.exception.getUserMessage(), detail=arguments.exception.getLogMessage(), extendedInfo=arguments.exception.getCause());
+	private void function throwError(required exception) {
+		// CFESAPI RuntimeExceptions
+		if(isInstanceOf(arguments.exception, "cfesapi.org.owasp.esapi.lang.RuntimeException")) {
+			throw(type=arguments.exception.getType(), message=arguments.exception.getMessage(), extendedInfo=arguments.exception.getCause());
+		}
+		// CFESAPI Exceptions
+		else if(isInstanceOf(arguments.exception, "cfesapi.org.owasp.esapi.lang.Exception")) {
+			throw(type=arguments.exception.getType(), message=arguments.exception.getUserMessage(), detail=arguments.exception.getLogMessage(), extendedInfo=arguments.exception.getCause());
+		}
+		// Java Exceptions
+		else if(isInstanceOf(arguments.exception, "java.lang.Throwable")) {
+			throw(object=arguments.exception);
+		}
 	}
 	
 }
