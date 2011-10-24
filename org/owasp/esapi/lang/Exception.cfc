@@ -144,8 +144,7 @@ component Exception extends="Object" {
 		// drop indexes that contain "cfesapi\org\owasp\esapi\errors"
 		while(arrayLen(local.stackTrace)) {
 			local.item = local.stackTrace[1];
-			// RAILO ERROR: if (not findNoCase("cfesapi\org\owasp\esapi\errors", local.item.template)) {
-			if(not findNoCase("cfesapi\org\owasp\esapi\errors", local.item.getFileName())) {
+			if( !findNoCase("cfesapi\org\owasp\esapi\errors", local.item.getFileName()) ) {
 				break;
 			}
 			arrayDeleteAt(local.stackTrace, 1);

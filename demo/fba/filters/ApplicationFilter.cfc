@@ -48,10 +48,8 @@ component  {
 		include "/cfesapi/helpers/ESAPI.cfm";
 		
 		// SecurityWrapper filter - required - secures request/response objects
-		instance.SecurityWrapper = new cfesapi.org.owasp.esapi.filters.SecurityWrapper(ESAPI(), 
-	                                                                                {allowableResourcesRoot="/cfesapi/demo/fba/", resourceDirectory="/cfesapi/demo/fba/config/"});
-		local.isSecureRequest = instance.SecurityWrapper.doFilter(getPageContext().getRequest(), 
-	                                                           getPageContext().getResponse());
+		instance.SecurityWrapper = new cfesapi.org.owasp.esapi.filters.SecurityWrapper(ESAPI(), {allowableResourcesRoot="/cfesapi/demo/fba/", resourceDirectory="/cfesapi/demo/fba/config/"});
+		local.isSecureRequest = instance.SecurityWrapper.doFilter(getPageContext().getRequest(), getPageContext().getResponse());
 	
 		// ClickjackFilter - optional - prevent your site from being framed
 		// mode options: DENY | SAMEORIGIN
