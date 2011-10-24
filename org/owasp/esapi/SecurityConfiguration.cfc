@@ -37,12 +37,6 @@
  */
 interface  {
 
-	// import
-	//import java.io.File;
-	//import java.io.IOException;
-	//import java.io.InputStream;
-	//import java.util.List;
-	//import java.util.regex.Pattern;
 	/**
 	 * Gets the application name, used for logging
 	 * 
