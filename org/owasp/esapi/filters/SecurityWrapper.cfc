@@ -37,7 +37,6 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 
 	public SecurityWrapper function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required Struct filterConfig) {
 		instance.ESAPI = arguments.ESAPI;
-		instance.logger = instance.ESAPI.getLogger("SecurityWrapper");
 	
 		instance.allowableResourcesRoot = createObject("java", "org.owasp.esapi.StringUtilities").replaceNull(arguments.filterConfig.get("allowableResourcesRoot"), 
 	                                                                                                       instance.allowableResourcesRoot);
@@ -48,6 +47,8 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 			instance.ESAPI.securityConfiguration().setResourceDirectory(local.resourceDirectory);
 		}
 	
+		instance.logger = instance.ESAPI.getLogger("SecurityWrapper");
+
 		return this;
 	}
 	
@@ -72,10 +73,10 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 		// TODO: is this the right way to do this?
 		// I don't think RailoCF is liking this - perhaps the cookie is not set yet at this point?
 		// Where would be a better place to check this?
-		if(!local.secureRequest.isRequestedSessionIdValid()) {
-			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("J2EE sessions must be turned on.");
-			throw(type=cfex.getType(), message=cfex.getMessage());
-		}
+		//if(!local.secureRequest.isRequestedSessionIdValid()) {
+		//	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("J2EE sessions must be turned on.");
+		//	throw(type=cfex.getType(), message=cfex.getMessage());
+		//}
 		return true;
 	}
 	
