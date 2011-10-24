@@ -1,294 +1,696 @@
-<!---
+/**
+ * OWASP Enterprise Security API (ESAPI)
+ * 
+ * This file is part of the Open Web Application Security Project (OWASP)
+ * Enterprise Security API (ESAPI) project. For details, please see
+ * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+ *
+ * Copyright (c) 2011 - The OWASP Foundation
+ * 
+ * The ESAPI is published by OWASP under the BSD license. You should read and accept the
+ * LICENSE before you use, modify, and/or redistribute this software.
+ * 
+ * @author Damon Miller
+ * @created 2011
+ */
+/**
+ * The {@code SecurityConfiguration} interface stores all configuration information
+ * that directs the behavior of the ESAPI implementation.
+ * <br><br>
+ * Protection of this configuration information is critical to the secure
+ * operation of the application using the ESAPI. You should use operating system
+ * access controls to limit access to wherever the configuration information is
+ * stored.
+ * <br><br>
+ * Please note that adding another layer of encryption does not make the
+ * attackers job much more difficult. Somewhere there must be a master "secret"
+ * that is stored unencrypted on the application platform (unless you are
+ * willing to prompt for some passphrase when you application starts or insert
+ * a USB thumb drive or an HSM card, etc., in which case this master "secret"
+ * it would only be in memory). Creating another layer of indirection provides
+ * additional obfuscation, but doesn't provide any real additional security.
+ * It's up to the reference implementation to decide whether this file should
+ * be encrypted or not.
+ * <br><br>
+ * The ESAPI reference implementation (DefaultSecurityConfiguration.java) does
+ * <i>not</i> encrypt its properties file.
+ */
+interface  {
+
+	// import
+	//import java.io.File;
+	//import java.io.IOException;
+	//import java.io.InputStream;
+	//import java.util.List;
+	//import java.util.regex.Pattern;
 	/**
-	* OWASP Enterprise Security API (ESAPI)
-	* 
-	* This file is part of the Open Web Application Security Project (OWASP)
-	* Enterprise Security API (ESAPI) project. For details, please see
-	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
-	*
-	* Copyright (c) 2011 - The OWASP Foundation
-	* 
-	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
-	* LICENSE before you use, modify, and/or redistribute this software.
-	* 
-	* @author Damon Miller
-	* @created 2011
-	*/
-	--->
-<cfinterface hint="The SecurityConfiguration interface stores all configuration information that directs the behavior of the ESAPI implementation. Protection of this configuration information is critical to the secure operation of the application using the ESAPI. You should use operating system access controls to limit access to wherever the configuration information is stored. Please note that adding another layer of encryption does not make the attackers job much more difficult. Somewhere there must be a master 'secret' that is stored unencrypted on the application platform (unless you are willing to prompt for some passphrase when you application starts or insert a USB thumb drive or an HSM card, etc., in which case this master 'secret' it would only be in memory). Creating another layer of indirection provides additional obfuscation, but doesn't provide any real additional security. It's up to the reference implementation to decide whether this file should be encrypted or not. The ESAPI reference implementation (DefaultSecurityConfiguration.java) does NOT encrypt its properties file.">
-
-	<cffunction access="public" returntype="String" name="getApplicationName" output="false" hint="Gets the application name, used for logging">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getLogImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI Logging implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getAuthenticationImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI Authentication implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getEncoderImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI Encoder implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getAccessControlImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI Access Control implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getIntrusionDetectionImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI Intrusion Detection implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getRandomizerImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI Randomizer implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getEncryptionImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI Encryption implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getValidationImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI Validation implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getValidationPattern" output="false" hint="Returns the validation pattern for a particular type">
-		<cfargument type="String" name="key" required="true">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getLenientDatesAccepted" output="false" hint="Determines whether ESAPI will accept 'lenient' dates when attempt to parse dates. Controlled by ESAPI property Validator.AcceptLenientDates, which defaults to false if unset.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getExecutorImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI OS Execution implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getHTTPUtilitiesImplementation" output="false" hint="Returns the fully qualified classname of the ESAPI HTTPUtilities implementation.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="binary" name="getMasterKey" output="false" hint="Gets the master key. This password is used to encrypt/decrypt other files or types of data that need to be protected by your application.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getUploadDirectory" output="false" hint="java.io.File: Retrieves the upload directory as specified in the ESAPI.properties file.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getUploadTempDirectory" output="false" hint="java.io.File: Retrieves the temp directory to use when uploading files, as specified in ESAPI.properties.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getEncryptionKeyLength" output="false" hint="Gets the key length to use in cryptographic operations declared in the ESAPI properties file.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="binary" name="getMasterSalt" output="false" hint="Gets the master salt that is used to salt stored password hashes and any other location where a salt is needed.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="Array" name="getAllowedExecutables" output="false" hint="Gets the allowed executables to run with the Executor.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="Array" name="getAllowedFileExtensions" output="false" hint="Gets the allowed file extensions for files that are uploaded to this application.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getAllowedFileUploadSize" output="false" hint="Gets the maximum allowed file upload size.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getPasswordParameterName" output="false" hint="Gets the name of the password parameter used during user authentication.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getUsernameParameterName" output="false" hint="Gets the name of the username parameter used during user authentication.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getEncryptionAlgorithm" output="false" hint="Gets the encryption algorithm used by ESAPI to protect data. This is mostly used for compatibility with ESAPI 1.4; ESAPI 2.0 prefers to use 'cipher transformation' since it supports multiple cipher modes and padding schemes.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getCipherTransformation" output="false" hint="Retrieve the cipher transformation.">
-	</cffunction>
-
-	<!--- @Deprecated --->
-
-	<cffunction access="public" returntype="String" name="setCipherTransformation" output="false" hint="Set the cipher transformation. This allows a different cipher transformation to be used without changing the ESAPI.properties file. For instance you may normally want to use AES/CBC/PKCS5Padding, but have some legacy encryption where you have ciphertext that was encrypted using 3DES.">
-		<cfargument type="String" name="cipherXform" required="true" hint="The new cipher transformation. See getCipherTransformation for format. If null is passed as the parameter, the cipher transformation will be set to the the default taken from the property Encryptor.CipherTransformation in the ESAPI.properties file. BEWARE: there is NO sanity checking here (other than the empty string, and then, only if Java assertions are enabled), so if you set this wrong, you will not get any errors until you later try to use it to encrypt or decrypt data.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getPreferredJCEProvider" output="false" hint="Retrieve the PREFERRED JCE provider for ESAPI and your application. ESAPI 2.0 now allows setting the property Encryptor.PreferredJCEProvider in the ESAPI.properties file, which will cause the specified JCE provider to be automatically and dynamically loaded (assuming that SecurityManager permissions allow) as the Ii&gt;preferred&lt;/i&gt; JCE provider. (Note this only happens if the JCE provider is not already loaded.) This method returns the property Encryptor.PreferredJCEProvider. By default, this Encryptor.PreferredJCEProvider property is set to an empty string, which means that the preferred JCE provider is not changed.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="useMACforCipherText" output="false" hint="Determines whether the CipherText should be used with a Message Authentication Code (MAC). Generally this makes for a more robust cryptographic scheme, but there are some minor performance implications. Controlled by the ESAPI property Encryptor.CipherText.useMAC.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="overwritePlainText" output="false" hint="Indicates whether the PlainText objects may be overwritten after they have been encrypted. Generally this is a good idea, especially if your VM is shared by multiple applications (e.g., multiple applications running in the same J2EE container) or if there is a possibility that your VM may leave a core dump (say because it is running non-native Java code. Controlled by the property Encryptor.PlainText.overwrite in the ESAPI.properties file.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getIVType" output="false" hint="Get a string indicating how to compute an Initialization Vector (IV). Currently supported modes are 'random' to generate a random IV or 'fixed' to use a fixed (static) IV. If a 'fixed' IV is chosen, then the the value of this fixed IV must be specified as the property Encryptor.fixedIV and be of the appropriate length.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getFixedIV" output="false" hint="If a 'fixed' (i.e., static) Initialization Vector (IV) is to be used, this will return the IV value as a hex-encoded string.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="Array" name="getCombinedCipherModes" output="false" hint="Return a List of strings of combined cipher modes that support BOTH confidentiality and authenticity. These would be preferred cipher modes to use if your JCE provider supports them. If such a cipher mode is used, no explicit SEPARATE MAC is calculated as part of the CipherText object upon encryption nor is any attempt made to verify the same on decryption. The list is taken from the comma-separated list of cipher modes specified by the ESAPI property Encryptor.cipher_modes.combined_modes.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="Array" name="getAdditionalAllowedCipherModes" output="false" hint="Return List of strings of additional cipher modes that are permitted (i.e., in ADDITION to those returned by getPreferredCipherModes()) to be used for encryption and decryption operations. The list is taken from the comma-separated list of cipher modes specified by the ESAPI property Encryptor.cipher_modes.additional_allowed.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false" hint="Gets the hashing algorithm used by ESAPI to hash data.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getHashIterations" output="false" hint="Gets the hash iterations used by ESAPI to hash data.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getKDFPseudoRandomFunction" output="false" hint="Retrieve the Pseudo Random Function (PRF) used by the ESAPI Key Derivation Function (KDF).">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false" hint="Gets the character encoding scheme supported by this application. This is used to set the character encoding scheme on requests and responses when setCharacterEncoding() is called on SafeRequests and SafeResponses. This scheme is also used for encoding/decoding URLs and any other place where the current encoding scheme needs to be known. Note: This does not get the configured response content type. That is accessed by calling getResponseContentType().">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getAllowMixedEncoding" output="false" hint="Return true if mixed encoding is allowed">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getAllowMultipleEncoding" output="false" hint="Return true if multiple encoding is allowed">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="Array" name="getDefaultCanonicalizationCodecs" output="false" hint="Returns the List of Codecs to use when canonicalizing data">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false" hint="Gets the digital signature algorithm used by ESAPI to generate and verify signatures.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getDigitalSignatureKeyLength" output="false" hint="Gets the digital signature key length used by ESAPI to generate and verify signatures.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getRandomAlgorithm" output="false" hint="Gets the random number generation algorithm used to generate random numbers where needed.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getAllowedLoginAttempts" output="false" hint="Gets the number of login attempts allowed before the user's account is locked. If this many failures are detected within the alloted time period, the user's account will be locked.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getMaxOldPasswordHashes" output="false" hint="Gets the maximum number of old password hashes that should be retained. These hashes can be used to ensure that the user doesn't reuse the specified number of previous passwords when they change their password.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getDisableIntrusionDetection" output="false" hint="Allows for complete disabling of all intrusion detection mechanisms">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getQuota" output="false" hint="cfesapi.org.owasp.esapi.reference.Threshold: Gets the intrusion detection quota for the specified event.">
-		<cfargument type="String" name="eventName" required="true" hint="the name of the event whose quota is desired">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getResourceFile" output="false" hint="java.io.File: Gets a file from the resource directory">
-		<cfargument type="String" name="filename" required="true" hint="The file name resource.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getForceHttpOnlySession" output="false" hint="Forces new cookies to have HttpOnly flag set.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getForceSecureSession" output="false" hint="Forces session cookies to have Secure flag set.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getForceHttpOnlyCookies" output="false" hint="Forces new cookies to have HttpOnly flag set.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getForceSecureCookies" output="false" hint="Forces new cookies to have Secure flag set.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getMaxHttpHeaderSize" output="false" hint="Returns the maximum allowable HTTP header size.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getResourceStream" output="false" hint="java.io.InputStream: Gets an InputStream to a file in the resource directory">
-		<cfargument type="String" name="filename" required="true" hint="A file name in the resource directory.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="setResourceDirectory" output="false" hint="Sets the ESAPI resource directory.">
-		<cfargument type="String" name="dir" required="true" hint="The location of the resource directory.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getResponseContentType" output="false" hint="Gets the content type for responses used when setSafeContentType() is called. Note: This does not get the configured character encoding scheme. That is accessed by calling getCharacterEncoding().">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getHttpSessionIdName" output="false" hint="This method returns the configured name of the session identifier, likely 'JSESSIONID' though this can be overridden.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false" hint="Gets the length of the time to live window for remember me tokens (in milliseconds).">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false" hint="Gets the idle timeout length for sessions (in milliseconds). This is the amount of time that a session can live before it expires due to lack of activity. Applications or frameworks could provide a reauthenticate function that enables a session to continue after reauthentication.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getSessionAbsoluteTimeoutLength" output="false" hint="Gets the absolute timeout length for sessions (in milliseconds). This is the amount of time that a session can live before it expires regardless of the amount of user activity. Applications or frameworks could provide a reauthenticate function that enables a session to continue after reauthentication.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getLogEncodingRequired" output="false" hint="Returns whether HTML entity encoding should be applied to log entries.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getLogApplicationName" output="false" hint="Returns whether ESAPI should log the application name. This might be clutter in some single-server/single-app environments.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getLogServerIP" output="false" hint="Returns whether ESAPI should log the server IP. This might be clutter in some single-server environments.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getLogLevel" output="false" hint="Returns the current log level.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getLogFileName" output="false" hint="Get the name of the log file specified in the ESAPI configuration properties file. Return a default value if it is not specified.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="getMaxLogFileSize" output="false" hint="Get the maximum size of a single log file from the ESAPI configuration properties file. Return a default value if it is not specified. Once the log hits this file size, it will roll over into a new log.">
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="getWorkingDirectory" output="false" hint="java.io.File: Returns the default working directory for executing native processes with Runtime.exec().">
-	</cffunction>
-
-</cfinterface>
+	 * Gets the application name, used for logging
+	 * 
+	 * @return the name of the current application
+	 */
+	
+	public String function getApplicationName();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI Logging implementation.
+	 */
+	
+	public String function getLogImplementation();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI Authentication implementation.
+	 */
+	
+	public String function getAuthenticationImplementation();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI Encoder implementation.
+	 */
+	
+	public String function getEncoderImplementation();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI Access Control implementation.
+	 */
+	
+	public String function getAccessControlImplementation();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI Intrusion Detection implementation.
+	 */
+	
+	public String function getIntrusionDetectionImplementation();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI Randomizer implementation.
+	 */
+	
+	public String function getRandomizerImplementation();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI Encryption implementation.
+	 */
+	
+	public String function getEncryptionImplementation();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI Validation implementation.
+	 */
+	
+	public String function getValidationImplementation();
+	
+	/**
+	 * Returns the validation pattern for a particular type
+	 * @param typeName
+	 * @return the validation pattern
+	 */
+	
+	public function getValidationPattern(required String key);
+	
+	/**
+	 * Determines whether ESAPI will accept "lenient" dates when attempt
+	 * to parse dates. Controlled by ESAPI property
+	 * {@code Validator.AcceptLenientDates}, which defaults to {@code false}
+	 * if unset.
+	 * 
+	 * @return True if lenient dates are accepted; false otherwise.
+	 * @see java.text.DateFormat#setLenient(boolean)
+	 */
+	
+	public boolean function getLenientDatesAccepted();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI OS Execution implementation.
+	 */
+	
+	public String function getExecutorImplementation();
+	
+	/**
+	 * Returns the fully qualified classname of the ESAPI HTTPUtilities implementation.
+	 */
+	
+	public String function getHTTPUtilitiesImplementation();
+	
+	/**
+	 * Gets the master key. This password is used to encrypt/decrypt other files or types
+	 * of data that need to be protected by your application.
+	 * 
+	 * @return the current master key
+	 */
+	
+	public binary function getMasterKey();
+	
+	/**
+	 * Retrieves the upload directory as specified in the ESAPI.properties file.
+	 * @return the upload directory
+	 */
+	
+	public function getUploadDirectory();
+	
+	/**
+	 * Retrieves the temp directory to use when uploading files, as specified in ESAPI.properties.
+	 * @return the temp directory
+	 */
+	
+	public function getUploadTempDirectory();
+	
+	/**
+	 * Gets the key length to use in cryptographic operations declared in the ESAPI properties file.
+	 * 
+	 * @return the key length.
+	 */
+	
+	public numeric function getEncryptionKeyLength();
+	
+	/**
+	 * Gets the master salt that is used to salt stored password hashes and any other location 
+	 * where a salt is needed.
+	 * 
+	 * @return the current master salt
+	 */
+	
+	public binary function getMasterSalt();
+	
+	/**
+	 * Gets the allowed executables to run with the Executor.
+	 * 
+	 * @return a list of the current allowed file extensions
+	 */
+	
+	public Array function getAllowedExecutables();
+	
+	/**
+	 * Gets the allowed file extensions for files that are uploaded to this application.
+	 * 
+	 * @return a list of the current allowed file extensions
+	 */
+	
+	public Array function getAllowedFileExtensions();
+	
+	/**
+	 * Gets the maximum allowed file upload size.
+	 * 
+	 * @return the current allowed file upload size
+	 */
+	
+	public numeric function getAllowedFileUploadSize();
+	
+	/**
+	 * Gets the name of the password parameter used during user authentication.
+	 * 
+	 * @return the name of the password parameter
+	 */
+	
+	public String function getPasswordParameterName();
+	
+	/**
+	 * Gets the name of the username parameter used during user authentication.
+	 * 
+	 * @return the name of the username parameter
+	 */
+	
+	public String function getUsernameParameterName();
+	
+	/**
+	 * Gets the encryption algorithm used by ESAPI to protect data. This is
+	 * mostly used for compatibility with ESAPI 1.4; ESAPI 2.0 prefers to
+	 * use "cipher transformation" since it supports multiple cipher modes
+	 * and padding schemes.
+	 * 
+	 * @return the current encryption algorithm
+	 */
+	
+	public String function getEncryptionAlgorithm();
+	
+	/**
+	 * Retrieve the <i>cipher transformation</i>. In general, the cipher transformation
+	 * is a specification of cipher algorithm, cipher mode, and padding scheme
+	 * and in general, is a {@code String} that takes the following form:
+	 * <pre>
+	 *         <i>cipher_alg</i>/<i>cipher_mode[bits]</i>/<i>padding_scheme</i>
+	 * </pre>
+	 * where <i>cipher_alg</i> is the JCE cipher algorithm (e.g., "DESede"),
+	 * <i>cipher_mode</i> is the cipher mode (e.g., "CBC", "CFB", "CTR", etc.),
+	 * and <i>padding_scheme</i> is the cipher padding scheme (e.g., "NONE" for
+	 * no padding, "PKCS5Padding" for PKCS#5 padding, etc.) and where
+	 * <i>[bits]</i> is an optional bit size that applies to certain cipher
+	 * modes such as {@code CFB} and {@code OFB}. Using modes such as CFB and
+	 * OFB, block ciphers can encrypt data in units smaller than the cipher's
+	 * actual block size. When requesting such a mode, you may optionally
+	 * specify the number of bits to be processed at a time. This generally must
+	 * be an integral multiple of 8-bits so that it can specify a whole number
+	 * of octets. 
+	 * </p><p>
+	 * Examples are:
+	 * <pre>
+	 *         "AES/ECB/NoPadding"        // Default for ESAPI Java 1.4 (insecure)
+	 *         "AES/CBC/PKCS5Padding"    // Default for ESAPI Java 2.0
+	 *         "DESede/OFB32/PKCS5Padding"
+	 * </pre>
+	 * <b>NOTE:</b> Occasionally, in cryptographic literature, you may also
+	 * see the key size (in bits) specified after the cipher algorithm in the
+	 * cipher transformation. Generally, this is done to account for cipher
+	 * algorithms that have variable key sizes. The Blowfish cipher for example
+	 * supports key sizes from 32 to 448 bits. So for Blowfish, you might see
+	 * a cipher transformation something like this:
+	 * <pre>
+	 *         "Blowfish-192/CFB8/PKCS5Padding"
+	 * </pre>
+	 * in the cryptographic literature. It should be noted that the Java
+	 * Cryptography Extensions (JCE) do not generally support this (at least
+	 * not the reference JCE implementation of "SunJCE"), and therefore it
+	 * should be avoided.
+	 * @return    The cipher transformation.
+	 */
+	
+	public String function getCipherTransformation();
+	
+	/**
+	 * Set the cipher transformation. This allows a different cipher transformation
+	 * to be used without changing the {@code ESAPI.properties} file. For instance
+	 * you may normally want to use AES/CBC/PKCS5Padding, but have some legacy
+	 * encryption where you have ciphertext that was encrypted using 3DES.
+	 * 
+	 * @param cipherXform    The new cipher transformation. See
+	 *                         {@link #getCipherTransformation} for format. If
+	 *                         {@code null} is passed as the parameter, the cipher
+	 *                         transformation will be set to the the default taken
+	 *                         from the property {@code Encryptor.CipherTransformation}
+	 *                         in the {@code ESAPI.properties} file. <b>BEWARE:</b>
+	 *                         there is <b>NO</b> sanity checking here (other than
+	 *                         the empty string, and then, only if Java assertions are
+	 *                         enabled), so if you set this wrong, you will not get
+	 *                         any errors until you later try to use it to encrypt
+	 *                         or decrypt data.
+	 * @return    The previous cipher transformation is returned for convenience,
+	 *             with the assumption that you may wish to restore it once you have
+	 *             completed the encryption / decryption with the new cipher
+	 *             transformation.
+	 * @deprecated To be replaced by new class in ESAPI 2.1, but here if you need it
+	 *          until then. Details of replacement forthcoming to ESAPI-Dev list.
+	 */
+	// @Deprecated
+	
+	public String function setCipherTransformation(required String cipherXform);
+	
+	/**
+	 * Retrieve the <i>preferred</i> JCE provider for ESAPI and your application.
+	 * ESAPI 2.0 now allows setting the property
+	 * {@code Encryptor.PreferredJCEProvider} in the
+	 * {@code ESAPI.properties} file, which will cause the specified JCE
+	 * provider to be automatically and dynamically loaded (assuming that
+	 * {@code SecurityManager} permissions allow) as the Ii>preferred</i>
+	 * JCE provider. (Note this only happens if the JCE provider is not already
+	 * loaded.) This method returns the property {@code Encryptor.PreferredJCEProvider}.
+	 * </p<p>
+	 * By default, this {@code Encryptor.PreferredJCEProvider} property is set
+	 * to an empty string, which means that the preferred JCE provider is not
+	 * changed.
+	 * @return The property {@code Encryptor.PreferredJCEProvider} is returned.
+	 * @see org.owasp.esapi.crypto.SecurityProvider
+	 */
+	
+	public String function getPreferredJCEProvider();
+	
+	// TODO - DISCUSS: Where should this web page (below) go? Maybe with the Javadoc? But where?
+	//               Think it makes more sense as part of the release notes, but OTOH, I
+	//               really don't want to rewrite this as a Wiki page either.
+	/**
+	 * Determines whether the {@code CipherText} should be used with a Message
+	 * Authentication Code (MAC). Generally this makes for a more robust cryptographic
+	 * scheme, but there are some minor performance implications. Controlled by
+	 * the ESAPI property <i>Encryptor.CipherText.useMAC</i>.
+	 * </p><p>
+	 * For further details, see the "Advanced Usage" section of
+	 * <a href="http://www.owasp.org/ESAPI_2.0_ReleaseNotes_CryptoChanges.html">
+	 * "Why Is OWASP Changing ESAPI Encryption?"</a>.
+	 * </p>
+	 * @return    {@code true} if a you want a MAC to be used, otherwise {@code false}.
+	 */
+	
+	public boolean function useMACforCipherText();
+	
+	/**
+	 * Indicates whether the {@code PlainText} objects may be overwritten after
+	 * they have been encrypted. Generally this is a good idea, especially if
+	 * your VM is shared by multiple applications (e.g., multiple applications
+	 * running in the same J2EE container) or if there is a possibility that
+	 * your VM may leave a core dump (say because it is running non-native
+	 * Java code.
+	 * <p>
+	 * Controlled by the property {@code Encryptor.PlainText.overwrite} in
+	 * the {@code ESAPI.properties} file.
+	 * </p>
+	 * @return    True if it is OK to overwrite the {@code PlainText} objects
+	 *            after encrypting, false otherwise.
+	 */
+	
+	public boolean function overwritePlainText();
+	
+	/**
+	 * Get a string indicating how to compute an Initialization Vector (IV).
+	 * Currently supported modes are "random" to generate a random IV or
+	 * "fixed" to use a fixed (static) IV. If a "fixed" IV is chosen, then the
+	 * the value of this fixed IV must be specified as the property
+	 * {@code Encryptor.fixedIV} and be of the appropriate length.
+	 * 
+	 * @return A string specifying the IV type. Should be "random" or "fixed".
+	 * 
+	 * @see #getFixedIV()
+	 */
+	
+	public String function getIVType();
+	
+	/**
+	 * If a "fixed" (i.e., static) Initialization Vector (IV) is to be used,
+	 * this will return the IV value as a hex-encoded string.
+	 * @return The fixed IV as a hex-encoded string.
+	 */
+	
+	public String function getFixedIV();
+	
+	/**
+	 * Return a {@code List} of strings of combined cipher modes that support
+	 * <b>both</b> confidentiality and authenticity. These would be preferred
+	 * cipher modes to use if your JCE provider supports them. If such a
+	 * cipher mode is used, no explicit <i>separate</i> MAC is calculated as part of
+	 * the {@code CipherText} object upon encryption nor is any attempt made
+	 * to verify the same on decryption.
+	 * </p><p>
+	 * The list is taken from the comma-separated list of cipher modes specified
+	 * by the ESAPI property
+	 * {@code Encryptor.cipher_modes.combined_modes}.
+	 * 
+	 * @return The parsed list of comma-separated cipher modes if the property
+	 * was specified in {@code ESAPI.properties}; otherwise the empty list is
+	 * returned.
+	 */
+	
+	public Array function getCombinedCipherModes();
+	
+	/**
+	 * Return {@code List} of strings of additional cipher modes that are
+	 * permitted (i.e., in <i>addition<i> to those returned by
+	 * {@link #getPreferredCipherModes()}) to be used for encryption and
+	 * decryption operations.
+	 * </p><p>
+	 * The list is taken from the comma-separated list of cipher modes specified
+	 * by the ESAPI property
+	 * {@code Encryptor.cipher_modes.additional_allowed}.
+	 * 
+	 * @return The parsed list of comma-separated cipher modes if the property
+	 * was specified in {@code ESAPI.properties}; otherwise the empty list is
+	 * returned.
+	 *
+	 * @see #getPreferredCipherModes() 
+	 */
+	
+	public Array function getAdditionalAllowedCipherModes();
+	
+	/**
+	 * Gets the hashing algorithm used by ESAPI to hash data.
+	 * 
+	 * @return the current hashing algorithm
+	 */
+	
+	public String function getHashAlgorithm();
+	
+	/**
+	 * Gets the hash iterations used by ESAPI to hash data.
+	 * 
+	 * @return the current hashing algorithm
+	 */
+	
+	public numeric function getHashIterations();
+	
+	/**
+	 * Retrieve the Pseudo Random Function (PRF) used by the ESAPI
+	 * Key Derivation Function (KDF).
+	 * 
+	 * @return    The KDF PRF algorithm name.
+	 */
+	
+	public String function getKDFPseudoRandomFunction();
+	
+	/**
+	 * Gets the character encoding scheme supported by this application. This is used to set the
+	 * character encoding scheme on requests and responses when setCharacterEncoding() is called
+	 * on SafeRequests and SafeResponses. This scheme is also used for encoding/decoding URLs 
+	 * and any other place where the current encoding scheme needs to be known.
+	 * <br><br>
+	 * Note: This does not get the configured response content type. That is accessed by calling 
+	 * getResponseContentType().
+	 * 
+	 * @return the current character encoding scheme
+	 */
+	
+	public String function getCharacterEncoding();
+	
+	/**
+	 * Return true if multiple encoding is allowed
+	 *
+	 * @return whether multiple encoding is allowed when canonicalizing data
+	 */
+	
+	public boolean function getAllowMultipleEncoding();
+	
+	/**
+	 * Return true if mixed encoding is allowed
+	 *
+	 * @return whether mixed encoding is allowed when canonicalizing data
+	 */
+	
+	public boolean function getAllowMixedEncoding();
+	
+	/**
+	 * Returns the List of Codecs to use when canonicalizing data
+	 * 
+	 * @return the codec list
+	 */
+	
+	public Array function getDefaultCanonicalizationCodecs();
+	
+	/**
+	 * Gets the digital signature algorithm used by ESAPI to generate and verify signatures.
+	 * 
+	 * @return the current digital signature algorithm
+	 */
+	
+	public String function getDigitalSignatureAlgorithm();
+	
+	/**
+	 * Gets the digital signature key length used by ESAPI to generate and verify signatures.
+	 * 
+	 * @return the current digital signature key length
+	 */
+	
+	public numeric function getDigitalSignatureKeyLength();
+	
+	/**
+	 * Gets the random number generation algorithm used to generate random numbers where needed.
+	 * 
+	 * @return the current random number generation algorithm
+	 */
+	
+	public String function getRandomAlgorithm();
+	
+	/**
+	 * Gets the number of login attempts allowed before the user's account is locked. If this 
+	 * many failures are detected within the alloted time period, the user's account will be locked.
+	 * 
+	 * @return the number of failed login attempts that cause an account to be locked
+	 */
+	
+	public numeric function getAllowedLoginAttempts();
+	
+	/**
+	 * Gets the maximum number of old password hashes that should be retained. These hashes can 
+	 * be used to ensure that the user doesn't reuse the specified number of previous passwords
+	 * when they change their password.
+	 * 
+	 * @return the number of old hashed passwords to retain
+	 */
+	
+	public numeric function getMaxOldPasswordHashes();
+	
+	/**
+	 * Allows for complete disabling of all intrusion detection mechanisms
+	 * 
+	 * @return true if intrusion detection should be disabled
+	 */
+	
+	public boolean function getDisableIntrusionDetection();
+	
+	/**
+	 * Gets the intrusion detection quota for the specified event.
+	 * 
+	 * @param eventName the name of the event whose quota is desired
+	 * 
+	 * @return the Quota that has been configured for the specified type of event
+	 */
+	
+	public function getQuota(required String eventName);
+	
+	/**
+	 * Gets a file from the resource directory
+	 *
+	 * @param filename The file name resource.
+	 * @return A {@code File} object representing the specified file name or null if not found.
+	 */
+	
+	public function getResourceFile(required String filename);
+	
+	/**
+	 * Forces new cookies to have HttpOnly flag set.
+	 */
+	
+	public boolean function getForceHttpOnlySession();
+	
+	/**
+	 * Forces session cookies to have Secure flag set.
+	 */
+	
+	public boolean function getForceSecureSession();
+	
+	/**
+	 * Forces new cookies to have HttpOnly flag set.
+	 */
+	
+	public boolean function getForceHttpOnlyCookies();
+	
+	/**
+	 * Forces new cookies to have Secure flag set.
+	 */
+	
+	public boolean function getForceSecureCookies();
+	
+	/**
+	 * Returns the maximum allowable HTTP header size.
+	 */
+	
+	public numeric function getMaxHttpHeaderSize();
+	
+	/**
+	 * Gets an InputStream to a file in the resource directory
+	 *
+	 * @param filename A file name in the resource directory.
+	 * @return An {@code InputStream} to the specified file name in the resource directory.
+	 * @throws IOException If the specified file name cannot be found or opened for reading.
+	 */
+	
+	public function getResourceStream(required String filename);
+	
+	/**
+	 * Sets the ESAPI resource directory.
+	 * 
+	 * @param dir The location of the resource directory.
+	 */
+	
+	public void function setResourceDirectory(required String dir);
+	
+	/**
+	 * Gets the content type for responses used when setSafeContentType() is called.
+	 * <br><br>
+	 * Note: This does not get the configured character encoding scheme. That is accessed by calling 
+	 * getCharacterEncoding().
+	 * 
+	 * @return The current content-type set for responses.
+	 */
+	
+	public String function getResponseContentType();
+	
+	/**
+	 * This method returns the configured name of the session identifier, 
+	 * likely "JSESSIONID" though this can be overridden.
+	 * 
+	 * @return The name of the session identifier, like "JSESSIONID"
+	 */
+	
+	public String function getHttpSessionIdName();
+	
+	/**
+	 * Gets the length of the time to live window for remember me tokens (in milliseconds).
+	 * 
+	 * @return The time to live length for generated remember me tokens.
+	 */
+	
+	public numeric function getRememberTokenDuration();
+	
+	/**
+	 * Gets the idle timeout length for sessions (in milliseconds). This is the amount of time that a session
+	 * can live before it expires due to lack of activity. Applications or frameworks could provide a reauthenticate
+	 * function that enables a session to continue after reauthentication.
+	 * 
+	 * @return The session idle timeout length.
+	 */
+	
+	public numeric function getSessionIdleTimeoutLength();
+	
+	/**
+	 * Gets the absolute timeout length for sessions (in milliseconds). This is the amount of time that a session
+	 * can live before it expires regardless of the amount of user activity. Applications or frameworks could 
+	 * provide a reauthenticate function that enables a session to continue after reauthentication.
+	 * 
+	 * @return The session absolute timeout length.
+	 */
+	
+	public numeric function getSessionAbsoluteTimeoutLength();
+	
+	/**
+	 * Returns whether HTML entity encoding should be applied to log entries.
+	 * 
+	 * @return True if log entries are to be HTML Entity encoded. False otherwise.
+	 */
+	
+	public boolean function getLogEncodingRequired();
+	
+	/**
+	 * Returns whether ESAPI should log the application name. This might be clutter in some
+	 * single-server/single-app environments.
+	 * 
+	 * @return True if ESAPI should log the application name, False otherwise
+	 */
+	
+	public boolean function getLogApplicationName();
+	
+	/**
+	 * Returns whether ESAPI should log the server IP. This might be clutter in some
+	 * single-server environments.
+	 * 
+	 * @return True if ESAPI should log the server IP and port, False otherwise
+	 */
+	
+	public boolean function getLogServerIP();
+	
+	/**
+	 * Returns the current log level.
+	 * @return    An integer representing the current log level.
+	 */
+	
+	public numeric function getLogLevel();
+	
+	/**
+	 * Get the name of the log file specified in the ESAPI configuration properties file. Return a default value 
+	 * if it is not specified.
+	 * 
+	 * @return the log file name defined in the properties file.
+	 */
+	
+	public String function getLogFileName();
+	
+	/**
+	 * Get the maximum size of a single log file from the ESAPI configuration properties file. Return a default value 
+	 * if it is not specified. Once the log hits this file size, it will roll over into a new log.
+	 * 
+	 * @return the maximum size of a single log file (in bytes).
+	 */
+	
+	public numeric function getMaxLogFileSize();
+	
+	/**
+	 * Returns the default working directory for executing native processes with Runtime.exec().
+	 */
+	
+	public function getWorkingDirectory();
+	
+}
