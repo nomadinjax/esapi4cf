@@ -15,6 +15,7 @@ Setup:
 NOTE: there are folders included with CFESAPI that you will want to exclude from your production environment
 
 Tests:
+- You will need to create an 'esapi' folder under your User Home directory so the users.txt file can be written to disk i.e. C:\Users\myusername\esapi\
 - You can run the MXUnit tests using: /cfesapi/test/TestSuite.cfm
 
 Demos:
@@ -35,6 +36,10 @@ How:
 - Call the filters provided by CFESAPI to secure and authenticate each request.
 - See demos for examples
 
+Known Issues:
+- When you receive Unauthorized msg in FBA Demo app, the Logout link does nothing - CAUSE: authorization check is before the logout check
+- FBA Demo app does not persist user after initial login (Railo only) - CAUSE: unknown
+
 
 *** COMPATIBILITY ***
 
@@ -42,7 +47,7 @@ How:
 * Adobe ColdFusion 9.0.1 *
 **************************
 MXUnit Test Results
- - 278 total = 11 failures + 2 errors + 265 successes
+ - 279 total = 11 failures + 3 errors + 265 successes
 
 Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 - ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
@@ -55,7 +60,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 278 total = 9 failures + 8 errors + 261 successes
+- 278 total = 10 failures + 8 errors + 261 successes
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar
