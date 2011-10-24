@@ -1,74 +1,112 @@
-<!---
+/**
+ * OWASP Enterprise Security API (ESAPI)
+ * 
+ * This file is part of the Open Web Application Security Project (OWASP)
+ * Enterprise Security API (ESAPI) project. For details, please see
+ * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+ *
+ * Copyright (c) 2011 - The OWASP Foundation
+ * 
+ * The ESAPI is published by OWASP under the BSD license. You should read and accept the
+ * LICENSE before you use, modify, and/or redistribute this software.
+ * 
+ * @author Damon Miller
+ * @created 2011
+ */
+/**
+ * This allows a singleton to store a request specific variable so it will not be shared.
+ * The variable will be stored in the request scope and available only throughout the current request.
+ */
+component extends="cfesapi.org.owasp.esapi.lang.Object" {
+
+	instance.currentThread = resetThreadId();
+
+	private String function resetThreadId() {
+		instance.currentThread = "ThreadLocal_" & createUUID();
+		return instance.currentThread;
+	}
+	
 	/**
-	* OWASP Enterprise Security API (ESAPI)
-	* 
-	* This file is part of the Open Web Application Security Project (OWASP)
-	* Enterprise Security API (ESAPI) project. For details, please see
-	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
-	*
-	* Copyright (c) 2011 - The OWASP Foundation
-	* 
-	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
-	* LICENSE before you use, modify, and/or redistribute this software.
-	* 
-	* @author Damon Miller
-	* @created 2011
-	*/
-	--->
-<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false" hint="Creates a thread local variable.">
-
-	<cfscript>
-		instance.key = "CFESAPI_ThreadLocal_" & createUUID();
-	</cfscript>
- 
-	<cffunction access="private" returntype="void" name="setup" output="false">
-		<cfscript>
-			if (!structKeyExists(request, instance.key)) {
-				request[instance.key] = {
-					useInitialValue = true,
-					value = ""
-				};
-			}
-		</cfscript> 
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="get" output="false" hint="Returns the value in the current thread's copy of this thread-local variable.">
-		<cfscript>
-			setup();
-			if (request[instance.key].useInitialValue) {
-				request[instance.key].value = initialValue();
-				request[instance.key].useInitialValue = false;
-			}
-			return request[instance.key].value;
-		</cfscript> 
-	</cffunction>
-
-
-	<cffunction access="public" returntype="any" name="initialValue" output="false" hint="Returns the current thread's initial value for this thread-local variable.">
-		<cfscript>
-			return ""; // must override
-		</cfscript> 
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="remove" output="false" hint="Removes the value for this ThreadLocal.">
-		<cfscript>
-			setup();
-			request[instance.key].value = "";
-			request[instance.key].useInitialValue = true;
-		</cfscript> 
-	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="set" output="false" hint="Sets the current thread's copy of this thread-local variable to the specified value.">
-		<cfargument type="any" name="value" required="true">
-		<cfscript>
-			setup();
-			request[instance.key].value = arguments.value;
-			request[instance.key].useInitialValue = false;
-		</cfscript> 
-	</cffunction>
-
-
-</cfcomponent>
+	 * Returns the current thread's "initial value" for this
+	 * thread-local variable.  This method will be invoked the first
+	 * time a thread accesses the variable with the {@link #get}
+	 * method, unless the thread previously invoked the {@link #set}
+	 * method, in which case the <tt>initialValue</tt> method will not
+	 * be invoked for the thread.  Normally, this method is invoked at
+	 * most once per thread, but it may be invoked again in case of
+	 * subsequent invocations of {@link #remove} followed by {@link #get}.
+	 *
+	 * <p>This implementation simply returns <tt>null</tt>; if the
+	 * programmer desires thread-local variables to have an initial
+	 * value other than <tt>null</tt>, <tt>ThreadLocal</tt> must be
+	 * subclassed, and this method overridden.  Typically, an
+	 * anonymous inner class will be used.
+	 *
+	 * @return the initial value for this thread-local
+	 */
+	
+	public function initialValue() {
+		return "";
+	}
+	
+	/**
+	 * Returns the value in the current thread's copy of this
+	 * thread-local variable.  If the variable has no value for the
+	 * current thread, it is first initialized to the value returned
+	 * by an invocation of the {@link #initialValue} method.
+	 *
+	 * @return the current thread's value of this thread-local
+	 */
+	
+	public function get() {
+		if(structKeyExists(request, instance.currentThread)) {
+			return request[instance.currentThread];
+		}
+		return setInitialValue();
+	}
+	
+	/**
+	 * Variant of set() to establish initialValue. Used instead
+	 * of set() in case user has overridden the set() method.
+	 *
+	 * @return the initial value
+	 */
+	
+	private function setInitialValue() {
+		local.value = initialValue();
+		request[instance.currentThread] = local.value;
+		return local.value;
+	}
+	
+	/**
+	 * Sets the current thread's copy of this thread-local variable
+	 * to the specified value.  Most subclasses will have no need to
+	 * override this method, relying solely on the {@link #initialValue}
+	 * method to set the values of thread-locals.
+	 *
+	 * @param value the value to be stored in the current thread's copy of
+	 *        this thread-local.
+	 */
+	
+	public void function set(required value) {
+		request[instance.currentThread] = arguments.value;
+	}
+	
+	/**
+	 * Removes the current thread's value for this thread-local
+	 * variable.  If this thread-local variable is subsequently
+	 * {@linkplain #get read} by the current thread, its value will be
+	 * reinitialized by invoking its {@link #initialValue} method,
+	 * unless its value is {@linkplain #set set} by the current thread
+	 * in the interim.  This may result in multiple invocations of the
+	 * <tt>initialValue</tt> method in the current thread.
+	 *
+	 * @since 1.5
+	 */
+	
+	public void function remove() {
+		structDelete(request, instance.currentThread);
+		resetThreadId();
+	}
+	
+}
