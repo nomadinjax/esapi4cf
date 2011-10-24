@@ -13,10 +13,34 @@
  * @author Damon Miller
  * @created 2011
  */
+/**
+ * The Class ClickjackFilterTest.
+ */
 component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
-	instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-
+	/**
+	 * {@inheritDoc}
+	 * @throws Exception
+	 */
+	
+	public void function setUp() {
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws Exception
+	 */
+	
+	public void function tearDown() {
+		instance.ESAPI = "";
+	}
+	
+	/**
+	 * Test of update method, of class org.owasp.esapi.AccessReferenceMap.
+	 * @throws Exception
+	 */
+	
 	public void function testFilter() {
 		System = createObject("java", "java.lang.System");
 	
