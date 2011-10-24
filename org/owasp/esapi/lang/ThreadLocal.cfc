@@ -19,11 +19,17 @@
  */
 component extends="cfesapi.org.owasp.esapi.lang.Object" {
 
-	instance.currentThread = resetThreadId();
+	instance.threadId = "";
 
-	private String function resetThreadId() {
-		instance.currentThread = "ThreadLocal_" & createUUID();
-		return instance.currentThread;
+	private void function resetThreadId() {
+		instance.threadId = "ThreadLocal_" & createUUID();
+	}
+	
+	private String function getThreadId() {
+		if(instance.threadId == "") {
+			resetThreadId();
+		}
+		return instance.threadId;
 	}
 	
 	/**
@@ -59,8 +65,9 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 */
 	
 	public function get() {
-		if(structKeyExists(request, instance.currentThread)) {
-			return request[instance.currentThread];
+		local.threadId = getThreadId();
+		if(structKeyExists(request, local.threadId)) {
+			return request[local.threadId];
 		}
 		return setInitialValue();
 	}
@@ -73,8 +80,9 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 */
 	
 	private function setInitialValue() {
+		local.threadId = getThreadId();
 		local.value = initialValue();
-		request[instance.currentThread] = local.value;
+		request[local.threadId] = local.value;
 		return local.value;
 	}
 	
@@ -89,7 +97,8 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 */
 	
 	public void function set(required value) {
-		request[instance.currentThread] = arguments.value;
+		local.threadId = getThreadId();
+		request[local.threadId] = arguments.value;
 	}
 	
 	/**
@@ -105,7 +114,10 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 */
 	
 	public void function remove() {
-		structDelete(request, instance.currentThread);
+		local.threadId = getThreadId();
+		structDelete(request, local.threadId);
+		
+		// reset the Thread ID so we never use this request variable again
 		resetThreadId();
 	}
 	
