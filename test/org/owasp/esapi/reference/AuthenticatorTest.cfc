@@ -20,29 +20,8 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 
 	// imports
 	System = createObject("java", "java.lang.System");
-	//import java.util.Date;
-	//import java.util.Set;
-	
-	//import org.owasp.esapi.Authenticator;
 	DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
-	//import org.owasp.esapi.HTTPUtilities;
-	//import org.owasp.esapi.Logger;
-	//import org.owasp.esapi.User;
-	//import org.owasp.esapi.errors.AuthenticationException;
-	//import org.owasp.esapi.errors.EncryptionException;
-	//import org.owasp.esapi.http.MockHttpServletRequest;
-	//import org.owasp.esapi.http.MockHttpServletResponse;
 
-	private void function cleanUpUsers() {
-		local.filePath = System.getProperty("user.home") & "/esapi/users.txt";
-		if (fileExists(local.filePath)) {
-			try {
-				fileDelete(local.filePath);
-			}
-			catch (Any e) {}
-		}
-	}
-	
     /**
      * {@inheritDoc}
      *
