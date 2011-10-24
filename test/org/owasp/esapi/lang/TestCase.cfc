@@ -15,6 +15,11 @@
  */
 component extends="mxunit.framework.TestCase" {
 
+	Assert = {};
+	Assert["assertTrue"] = assertTrue;
+	Assert["assertFalse"] = assertFalse;
+	Assert["assertEquals"] = assertEquals;
+
 	/*
 	 * All CFESAPI test cases extend this component. If your MXUnit path is different, you can change it here to affect all tests.
 	 * 
