@@ -30,7 +30,7 @@ How:
 - Copy the /cfesapi/esapi/configuration/esapi/ folder to a location within your CF application and make changes to your copy of the config files
 - ESAPI.properties
 	- IMPORTANT: Run /cfesapi/org/owasp/esapi/reference/crypto/JavaEncryptor.cfm to calculate your *own* Encryptor.MasterKey and Encryptor.MasterSalt values
-	- Update the component paths with the location of your implementation components
+	- Update the component paths with the location of your implementation CFCs
 	- Modify other configs as needed
 - Include the /cfesapi/helpers/ESAPI.cfm in your application
 - Call the filters provided by CFESAPI to secure and authenticate each request.
@@ -49,7 +49,7 @@ Known Issues:
 * Adobe ColdFusion 9.0.1 *
 **************************
 MXUnit Test Results
- - 10 failures + 2 errors + 261 successes
+ - 279 total = 10 failures + 2 errors + 267 successes
 
 Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 - ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
@@ -62,7 +62,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 11 failures + 5 errors + 257 successes
+- 279 total = 10 failures + 7 errors + 262 successes
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar

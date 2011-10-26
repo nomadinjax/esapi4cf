@@ -27,9 +27,9 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	* needed for dynamic configuration.
 	*/
 	
-	public JavaLogFactory function init(cfesapi.org.owasp.esapi.ESAPI ESAPI) {
+	public JavaLogFactory function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI) {
 		instance.ESAPI = arguments.ESAPI;
-		
+	
 		return this;
 	}
 	
