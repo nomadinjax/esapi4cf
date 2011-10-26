@@ -18,23 +18,7 @@
  */
 component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
-	/**
-	 * {@inheritDoc}
-	 * @throws Exception
-	 */
-	
-	public void function setUp() {
-		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @throws Exception
-	 */
-	
-	public void function tearDown() {
-		instance.ESAPI = "";
-	}
+	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	
 	/**
 	 * Test of update method, of class org.owasp.esapi.AccessReferenceMap.
@@ -47,13 +31,13 @@ component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		System.out.println("ClickjackFilter");
 	
 		local.mfc = {};
-		local.filter = createObject("component", "cfesapi.org.owasp.esapi.filters.ClickjackFilter").init(instance.ESAPI, local.mfc);
-		local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init();
+		local.filter = new cfesapi.org.owasp.esapi.filters.ClickjackFilter(instance.ESAPI, local.mfc);
+		local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest();
 	
 		local.url = createObject("java", "java.net.URL").init("http://www.example.com/index.jsp");
 		System.out.println("\nTest request: " & local.url);
-		local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest").init(local.url);
-		local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse").init();
+		local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest(local.url);
+		local.response = new cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse();
 		try {
 			local.filter.doFilter(local.request, local.response);
 			local.filter.destroy();

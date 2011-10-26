@@ -18,25 +18,9 @@ component EnterpriseSecurityExceptionTest extends="cfesapi.test.org.owasp.esapi.
 	// imports
 	System = createObject("java", "java.lang.System");
 	Throwable = createObject("java", "java.lang.Throwable");
+	
+	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
-	/**
-	 * {@inheritDoc}
-	 * @throws Exception
-	 */
-	
-	public void function setUp() {
-		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @throws Exception
-	 */
-	
-	public void function tearDown() {
-		instance.ESAPI = "";
-	}
-	
 	/**
 	 * Test of update method, of class org.owasp.esapi.AccessReferenceMap.
 	 * 

@@ -18,15 +18,9 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	// imports
 	JavaProperties = createObject("java", "java.util.Properties");
 	Logger = createObject("java", "org.owasp.esapi.Logger");
+	
+	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
-	public void function setUp() {
-		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
-	}
-	
-	public void function tearDown() {
-		instance.ESAPI = "";
-	}
-	
 	private cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration function createWithProperty(required String key, 
 	                                                                                                   required String val) {
 		local.properties = JavaProperties.init();

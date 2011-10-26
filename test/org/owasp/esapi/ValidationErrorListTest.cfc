@@ -17,27 +17,9 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 
 	// imports
 	System = createObject("java", "java.lang.System");
+	
+	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Exception
-	 */
-	
-	public void function setUp() {
-		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Exception
-	 */
-	
-	public void function tearDown() {
-		instance.ESAPI = "";
-	}
-	
 	public void function testAddError() throws Exception {
 		System.out.println("testAddError");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();

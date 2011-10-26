@@ -21,6 +21,8 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	// imports
 	System = createObject("java", "java.lang.System");
 	DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
+	
+	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
     /**
      * {@inheritDoc}
@@ -31,7 +33,6 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 		structClear(session);
 		structClear(request);
 		cleanUpUsers();
-		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	}
 
     /**
@@ -40,7 +41,6 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
      * @throws Exception
      */
 	public void function tearDown() {
-		instance.ESAPI = "";
 		structClear(session);
 		structClear(request);
 	}

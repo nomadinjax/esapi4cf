@@ -21,28 +21,9 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	// import
 	System = createObject("java", "java.lang.System");
 	JavaFile = createObject("java", "java.io.File");
-	//import java.util.ArrayList;
-	//import java.util.Collections;
-	//import java.util.List;
 	
-	//import org.owasp.esapi.ESAPI;
-	//import org.owasp.esapi.ExecuteResult;
-	//import org.owasp.esapi.Executor;
-	//import org.owasp.esapi.SecurityConfiguration;
-	//import org.owasp.esapi.SecurityConfigurationWrapper;
-	//import org.owasp.esapi.codecs.Codec;
-
+	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	instance.origConfig = "";
-
-    // @Override
-    public void function setup() {
-		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
-    }
-    
-    // @Override
-    public void function tearDown() {
-        instance.ESAPI.override("");
-    }
 
 	/**
 	 * Test of executeOSCommand method, of class org.owasp.esapi.Executor

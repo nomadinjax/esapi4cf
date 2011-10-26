@@ -18,8 +18,8 @@
  */
 component SafeRequestTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
-	// import
-	//import org.owasp.esapi.http.MockHttpServletRequest;
+	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
+	
 	/**
 	 * {@inheritDoc}
 	 *
@@ -28,7 +28,6 @@ component SafeRequestTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	
 	public void function setUp() {
 		structClear(request);
-		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	}
 	
 	/**
@@ -38,7 +37,6 @@ component SafeRequestTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	 */
 	
 	public void function tearDown() {
-		instance.ESAPI = "";
 		structClear(request);
 	}
 	
