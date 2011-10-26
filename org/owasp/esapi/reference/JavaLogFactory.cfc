@@ -43,7 +43,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 			local.moduleLogger = instance.loggersMap.get(arguments.moduleName);
 		}
 		if(isNull(local.moduleLogger)) {
-			local.moduleLogger = createObject("component", "cfesapi.org.owasp.esapi.reference.JavaLogger").init(instance.ESAPI, arguments.moduleName);
+			local.moduleLogger = new cfesapi.org.owasp.esapi.reference.JavaLogger(instance.ESAPI, arguments.moduleName);
 			instance.loggersMap.put(arguments.moduleName, local.moduleLogger);
 		}
 		return local.moduleLogger;

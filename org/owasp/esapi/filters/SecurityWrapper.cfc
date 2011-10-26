@@ -74,7 +74,7 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 		// I don't think RailoCF is liking this - perhaps the cookie is not set yet at this point?
 		// Where would be a better place to check this?
 		//if(!local.secureRequest.isRequestedSessionIdValid()) {
-		//	cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ConfigurationException").init("J2EE sessions must be turned on.");
+		//	cfex = new cfesapi.org.owasp.esapi.errors.ConfigurationException("J2EE sessions must be turned on.");
 		//	throw(type=cfex.getType(), message=cfex.getMessage());
 		//}
 		return true;
