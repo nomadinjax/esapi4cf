@@ -486,7 +486,7 @@
 	            local.that = arguments.other;
 	            if ( this.collectedAll() && local.that.collectedAll() ) {
 	                local.result = (local.that.canEqual(this) &&
-						this.cipherSpec_.equals(local.that.cipherSpec_) &&
+						this.cipherSpec_.equalsObj(local.that.cipherSpec_) &&
 						// Safe comparison, resistant to timing attacks
 						CryptoHelper.arrayCompare(this.raw_ciphertext_, local.that.raw_ciphertext_) &&
 						CryptoHelper.arrayCompare(this.separate_mac_, local.that.separate_mac_) &&
