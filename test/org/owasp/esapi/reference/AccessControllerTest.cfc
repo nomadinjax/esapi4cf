@@ -21,12 +21,12 @@
 		System = createObject("java", "java.lang.System");
 		DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
 		
-		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	</cfscript>
  
 	<cffunction access="public" returntype="void" name="testMatchRule" output="false">
 		<cfscript>
-			instance.ESAPI.authenticator().setCurrentUser(user=createObject("component", "cfesapi.org.owasp.esapi.User$ANONYMOUS"));
+			instance.ESAPI.authenticator().setCurrentUser(user=new cfesapi.org.owasp.esapi.User$ANONYMOUS(instance.ESAPI));
 			assertFalse(instance.ESAPI.accessController().isAuthorizedForURL("/nobody"));
 		</cfscript> 
 	</cffunction>
