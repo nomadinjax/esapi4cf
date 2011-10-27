@@ -18,8 +18,6 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
-		Logger = createObject("java", "org.owasp.esapi.Logger");
-
 		instance.ESAPI = "";
 		instance.logger = "";
 	</cfscript>
@@ -37,23 +35,21 @@
 
 	<cffunction access="public" returntype="PolicyDTO" name="load" output="false">
 		<cfscript>
-			local.policyDTO = createObject("component", "PolicyDTO").init(instance.ESAPI);
+			local.policyDTO = new PolicyDTO(instance.ESAPI);
 			local.config = "";
 			local.file = instance.ESAPI.securityConfiguration().getResourceFile("ESAPI-AccessControlPolicy.xml");
 			try {
-			    local.config = createObject("java", "org.apache.commons.configuration.XMLConfiguration").init(local.file);
+			    local.config = newJava("org.apache.commons.configuration.XMLConfiguration").init(local.file);
 			}
 			catch(org.apache.commons.configuration.ConfigurationException cex) {
 				if(local.file == "") {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Unable to load configuration file for the following: " & "ESAPI-AccessControlPolicy.xml", "", cex);
-            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.AccessControlException(instance.ESAPI, "Unable to load configuration file for the following: " & "ESAPI-AccessControlPolicy.xml", "", cex));
 				}
-			    cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Unable to load configuration file from the following location: " & local.file.getAbsolutePath(), "", cex);
-            	throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+			    throwError(new cfesapi.org.owasp.esapi.errors.AccessControlException(instance.ESAPI, "Unable to load configuration file from the following location: " & local.file.getAbsolutePath(), "", cex));
 			}
 
 			local.property = local.config.getProperty("AccessControlRules.AccessControlRule[@name]");
-			instance.logger.info(Logger.EVENT_SUCCESS, "Loading Property: " & local.property.toString());
+			instance.logger.info(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "Loading Property: " & local.property.toString());
 			local.numberOfRules = 0;
 			if(isInstanceOf(local.property, "java.util.Collection")) {
 				local.numberOfRules = local.property.size();
@@ -64,25 +60,24 @@
 			local.rulePolicyParameter = "";
 			local.currentRule = 0;
 		    try {
-		    	instance.logger.info(Logger.EVENT_SUCCESS, "Number of rules: " & local.numberOfRules);
+		    	instance.logger.info(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "Number of rules: " & local.numberOfRules);
 				for(local.currentRule = 0; local.currentRule < local.numberOfRules; local.currentRule++) {
-					instance.logger.trace(Logger.EVENT_SUCCESS, "----");
+					instance.logger.trace(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "----");
 					local.ruleName = local.config.getString("AccessControlRules.AccessControlRule(" & local.currentRule & ")[@name]");
-					instance.logger.trace(Logger.EVENT_SUCCESS, "Rule name: " & local.ruleName);
+					instance.logger.trace(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "Rule name: " & local.ruleName);
 					local.ruleClass = local.config.getString("AccessControlRules.AccessControlRule(" & local.currentRule & ")[@class]");
-					instance.logger.trace(Logger.EVENT_SUCCESS, "Rule Class: " & local.ruleClass);
+					instance.logger.trace(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "Rule Class: " & local.ruleClass);
 					local.rulePolicyParameter = getPolicyParameter(local.config, local.currentRule);
-					instance.logger.trace(Logger.EVENT_SUCCESS, "rulePolicyParameters: " & local.rulePolicyParameter.toString());
+					instance.logger.trace(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "rulePolicyParameters: " & local.rulePolicyParameter.toString());
 					local.policyDTO.addAccessControlRule( local.ruleName, local.ruleClass, local.rulePolicyParameter );
 				}
-				instance.logger.info(Logger.EVENT_SUCCESS, "policyDTO loaded: " & local.policyDTO.toString());
+				instance.logger.info(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "policyDTO loaded: " & local.policyDTO.toString());
 			} catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Unable to load AccessControlRule parameter. " &
+				throwError(new cfesapi.org.owasp.esapi.errors.AccessControlException(instance.ESAPI, "Unable to load AccessControlRule parameter. " &
 					" Rule number: " & local.currentRule &
 					" Probably: Rule.name: " & local.ruleName &
 					" Probably: Rule.class: " & local.ruleClass &
-					" " & e.message, "", e);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					" " & e.message, "", e));
 			}
 			return local.policyDTO;
 		</cfscript> 
@@ -106,7 +101,7 @@
 			} else {
 				local.numberOfProperties = 1;
 			}
-			instance.logger.info(Logger.EVENT_SUCCESS, "Number of properties: " & local.numberOfProperties);
+			instance.logger.info(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "Number of properties: " & local.numberOfProperties);
 
 			if(local.numberOfProperties < 1) {
 				return "";
@@ -116,7 +111,7 @@
 				//this default should have a properties file override option
 				local.parametersLoaderClassName = "cfesapi.org.owasp.esapi.reference.accesscontrol.policyloader.DynaBeanACRParameterLoader";
 			}
-			instance.logger.info(Logger.EVENT_SUCCESS, "Parameters Loader:" & local.parametersLoaderClassName);
+			instance.logger.info(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, "Parameters Loader:" & local.parametersLoaderClassName);
 			local.acrParamaterLoader = createObject("component", local.parametersLoaderClassName).init(instance.ESAPI);
 			return local.acrParamaterLoader.getParameters(arguments.config, arguments.currentRule);
 		</cfscript> 

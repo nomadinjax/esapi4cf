@@ -22,10 +22,10 @@
 		instance.invalidated = false;
 
 		/* The creation time. */
-		instance.creationTime = createObject("java", "java.util.Date").getTime();
+		instance.creationTime = newJava("java.util.Date").getTime();
 
 		/* The accessed time. */
-		instance.accessedTime = createObject("java", "java.util.Date").getTime();
+		instance.accessedTime = newJava("java.util.Date").getTime();
 
 		/* The count. */
 		if (!structKeyExists(request, "count")) {

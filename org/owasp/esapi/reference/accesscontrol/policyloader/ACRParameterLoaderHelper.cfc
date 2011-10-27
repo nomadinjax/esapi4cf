@@ -47,15 +47,15 @@
 			} else if("BigInteger" == arguments.parameterType){
 				local.parameterValue = arguments.config.getBigInteger(local.key);
 			} else if("Date" == arguments.parameterType){
-				local.parameterValue = createObject("java", "java.text.DateFormat").getDateInstance().parse(arguments.config.getString(local.key));
+				local.parameterValue = newJava("java.text.DateFormat").getDateInstance().parse(arguments.config.getString(local.key));
 			} else if("Time" == arguments.parameterType){
-				local.sdf = createObject("java", "java.text.SimpleDateFormat").init("h:mm a");
+				local.sdf = newJava("java.text.SimpleDateFormat").init("h:mm a");
 				local.parameterValue = local.sdf.parseObject(arguments.config.getString(local.key));
 	//			local.parameterValue = java.text.DateFormat.getTimeInstance().parse(arguments.config.getString(key));
 			}
 			//add timestamp. check for other stuff.
 			else {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init('Unable to load the key "' & local.key & '", because the type "' & arguments.parameterType & '" was not recognized.' ));
+				throwError(newJava("java.lang.IllegalArgumentException").init('Unable to load the key "' & local.key & '", because the type "' & arguments.parameterType & '" was not recognized.' ));
 			}
 			return local.parameterValue;
 		</cfscript> 

@@ -18,15 +18,15 @@
 <cfcomponent extends="BaseValidationRule" output="false" hint="A validator performs syntax and possibly semantic validation of a single piece of data from an untrusted source.">
 
 	<cfscript>
-		instance.minValue = createObject("java", "java.lang.Double").NEGATIVE_INFINITY;
-		instance.maxValue = createObject("java", "java.lang.Double").POSITIVE_INFINITY;
+		instance.minValue = newJava("java.lang.Double").NEGATIVE_INFINITY;
+		instance.maxValue = newJava("java.lang.Double").POSITIVE_INFINITY;
 		
 		// These statics needed to detect double parsing DOS bug in Java
 		instance.bigBad = "";
 		instance.smallBad = "";
 	
-		one = createObject("java", "java.math.BigDecimal").init(1);
-		two = createObject("java", "java.math.BigDecimal").init(2);
+		one = newJava("java.math.BigDecimal").init(1);
+		two = newJava("java.math.BigDecimal").init(2);
 		
 		tiny = one.divide(two.pow(1022));
 		
@@ -81,7 +81,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			local.toReturn = createObject("java", "java.lang.Double").valueOf(0);
+			local.toReturn = newJava("java.lang.Double").valueOf(0);
 			try {
 				local.toReturn = safelyParse(arguments.context, arguments.input);
 			} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
@@ -97,12 +97,11 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 			// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-		    if ( createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
+		    if ( newJava("org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
 				if (instance.allowNull) {
 					return "";
 				}
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input number required", logMessage="Input number required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input number required", logMessage="Input number required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 		    }
 
 		    // canonicalize
@@ -110,23 +109,20 @@
 
 		    //if MinValue is greater than maxValue then programmer is likely calling this wrong
 			if (instance.minValue > instance.maxValue) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid number input: context", logMessage="Validation parameter error for number: maxValue ( " & instance.maxValue & ") must be greater than minValue ( " & instance.minValue & ") for " & arguments.context, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid number input: context", logMessage="Validation parameter error for number: maxValue ( " & instance.maxValue & ") must be greater than minValue ( " & instance.minValue & ") for " & arguments.context, context=arguments.context ));
 			}
 			
 			//convert to BigDecimal so we can safely parse dangerous numbers to 
 			//check if the number may DOS the double parser
 			local.bd = "";
 			try {
-				local.bd = createObject("java", "java.math.BigDecimal").init(local.canonical);
+				local.bd = newJava("java.math.BigDecimal").init(local.canonical);
 			// RCF throws java.lang.NumberFormatException (which is correct!)
 			} catch (java.lang.NumberFormatException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context));
 			// ACF throws an Object exception with a nested java.lang.reflect.InvocationTargetException exception (not sure what this is)
 			} catch (Object e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context));
 			}
 			
 			// Thanks to Brian Chess for this suggestion
@@ -134,34 +130,29 @@
 			if (local.bd.compareTo(instance.smallBad) >= 0 && local.bd.compareTo(instance.bigBad) <= 0) {
 				// if you get here you know you're looking at a bad value. The final
 				// value for any double in this range is supposed to be the following safe #			
-				return createObject("java", "java.lang.Double").init("2.2250738585072014E-308");
+				return newJava("java.lang.Double").init("2.2250738585072014E-308");
 			}
 
 			// the number is safe to parseDouble
 			local.d = "";
 			// validate min and max
 			try {
-				local.d = createObject("java", "java.lang.Double").valueOf(createObject("java", "java.lang.Double").parseDouble( local.canonical ));
+				local.d = newJava("java.lang.Double").valueOf(newJava("java.lang.Double").parseDouble( local.canonical ));
 			} catch (java.lang.NumberFormatException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( instance.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context));
 			}
 
 			if (local.d.isInfinite()) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage="Invalid number input: context=" & arguments.context, logMessage="Invalid double input is infinite: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage="Invalid number input: context=" & arguments.context, logMessage="Invalid double input is infinite: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 			}
 			if (local.d.isNaN()) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage="Invalid number input: context=" & arguments.context, logMessage="Invalid double input is not a number: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage="Invalid number input: context=" & arguments.context, logMessage="Invalid double input is not a number: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 			}
 			if (local.d.doubleValue() < instance.minValue) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context, logMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context, logMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 			}
 			if (local.d.doubleValue() > instance.maxValue) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context, logMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context, logMessage="Invalid number input must be between " & instance.minValue & " and " & instance.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 			}
 			return local.d;
 		</cfscript> 

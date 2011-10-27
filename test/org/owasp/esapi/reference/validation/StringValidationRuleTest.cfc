@@ -18,12 +18,12 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	</cfscript>
  
 	<cffunction access="public" returntype="void" name="testWhitelistPattern" output="false">
 		<cfscript>
-			local.validationRule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "Alphabetic");
+			local.validationRule = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "Alphabetic");
 
 			assertEquals("Magnum44", local.validationRule.getValid("", "Magnum44"));
 			local.validationRule.addWhitelistPattern("^[a-zA-Z]*");
@@ -41,7 +41,7 @@
 
 	<cffunction access="public" returntype="void" name="testWhitelistPattern_Invalid" output="false">
 		<cfscript>
-			local.validationRule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "");
+			local.validationRule = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "");
 
 			//null white list patterns throw IllegalArgumentException
 			/* NULL test
@@ -79,7 +79,7 @@
 
 	<cffunction access="public" returntype="void" name="testWhitelist" output="false">
 		<cfscript>
-			local.validationRule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "");
+			local.validationRule = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "");
 
 			local.whitelistArray = ['a', 'b', 'c'];
 			assertEquals("abc", local.validationRule.whitelist("12345abcdef", local.whitelistArray));
@@ -89,7 +89,7 @@
 
 	<cffunction access="public" returntype="void" name="testBlacklistPattern" output="false">
 		<cfscript>
-			local.validationRule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "NoAngleBrackets");
+			local.validationRule = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "NoAngleBrackets");
 
 			assertEquals("beg <script> end", validationRule.getValid("", "beg <script> end"));
 			local.validationRule.addBlacklistPattern("^.*(<|>).*");
@@ -107,7 +107,7 @@
 
 	<cffunction access="public" returntype="void" name="testBlacklistPattern_Invalid" output="false">
 		<cfscript>
-			local.validationRule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "");
+			local.validationRule = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "");
 
 			//null black list patterns throw IllegalArgumentException
 			/* NULL test
@@ -145,7 +145,7 @@
 
 	<cffunction access="public" returntype="void" name="testCheckLengths" output="false">
 		<cfscript>
-			local.validationRule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "Max12_Min2");
+			local.validationRule = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "Max12_Min2");
 			local.validationRule.setMinimumLength(2);
 			local.validationRule.setMaximumLength(12);
 
@@ -156,7 +156,7 @@
 			assertFalse(local.validationRule.isValid("", "1"));
 			assertFalse(local.validationRule.isValid("", "ABCDEFGHIJKLM"));
 
-			local.errorList = createObject("component", "cfesapi.org.owasp.esapi.ValidationErrorList");
+			local.errorList = new cfesapi.org.owasp.esapi.ValidationErrorList();
 			assertEquals("1234567890", local.validationRule.getValid("", "1234567890", local.errorList));
 			assertEquals(0, local.errorList.size());
 			assertEquals("", local.validationRule.getValid("", "123456789012345", local.errorList));
@@ -167,7 +167,7 @@
 
 	<cffunction access="public" returntype="void" name="testAllowNull" output="false">
 		<cfscript>
-			local.validationRule = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "");
+			local.validationRule = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "");
 
 			assertFalse(local.validationRule.isAllowNull());
 			assertFalse(local.validationRule.isValid("", ""));

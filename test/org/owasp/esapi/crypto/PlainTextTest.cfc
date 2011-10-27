@@ -18,26 +18,28 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 		instance.unicodeStr = "A\u00ea\u00f1\u00fcC";	// I.e., "AêñüC"
 		instance.altString  = "AêñüC";					// Same as above.
 	</cfscript>
  
 	<cffunction access="public" returntype="void" name="testUnicodeString" output="false">
 		<cfscript>
-			System = createObject("java", "java.lang.System");
-			
 		    // These 2 strings are *meant* to be equal. If they are not, please
 		    // do *NOT* change the test. It's a Windows thing. Sorry. Change your
 		    // OS instead. ;-)
 		    if ( ! instance.unicodeStr.equals(instance.altString) ) {
-		        System.err.println("Skipping MXUnit test case PlainTextTest.testUnicodeString() on OS " & System.getProperty("os.name") );
+		        newJava("java.lang.System").err.println("Skipping MXUnit test case PlainTextTest.testUnicodeString() on OS " & newJava("java.lang.System").getProperty("os.name") );
 		        return;
 		    }
+
+			// CFB/ACF throws syntax errors when newJava() is used in assertX() 
+			Arrays = newJava("java.util.Arrays");
+
 			try {
 				local.utf8Bytes = instance.unicodeStr.getBytes("UTF-8");
-				local.pt1 = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, instance.unicodeStr);
-				local.pt2 = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, instance.altString);
+				local.pt1 = new cfesapi.org.owasp.esapi.crypto.PlainText(instance.ESAPI, instance.unicodeStr);
+				local.pt2 = new cfesapi.org.owasp.esapi.crypto.PlainText(instance.ESAPI, instance.altString);
 
 				assertTrue( local.pt1.equals(local.pt1) );   // Equals self
 				assertFalse( local.pt1.equals("") );
@@ -47,9 +49,9 @@
 				assertTrue( Arrays.equals(local.utf8Bytes, local.pt1.asBytes()) );
 				assertTrue( local.pt1.hashCode() == instance.unicodeStr.hashCode() );
 
-			} catch (UnsupportedEncodingException e) {
+			} catch (java.io.UnsupportedEncodingException e) {
 				fail("No UTF-8 byte encoding: " & e);
-				e.printStackTrace(System.err);
+				e.printStackTrace(newJava("java.lang.System").err);
 			}
 		</cfscript> 
 	</cffunction>
@@ -61,18 +63,18 @@
 		local.counter = 0;
 		try {
 		local.bytes = toBinary("");
-		local.pt = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.bytes);
+		local.pt = new cfesapi.org.owasp.esapi.crypto.PlainText(instance.ESAPI, local.bytes);
 		assertTrue( !isNull(local.pt) );   // Should never get to here.
 		fail("testNullCase(): Expected NullPointerException or AssertionError");
 		} catch (NullPointerException e) {
 		// Will get this case if assertions are not enabled for PlainText.
-		// System.err.println("Caught NullPointerException; exception was: " + e);
-		// e.printStackTrace(System.err);
+		// newJava("java.lang.System").err.println("Caught NullPointerException; exception was: " + e);
+		// e.printStackTrace(newJava("java.lang.System").err);
 		local.counter++;
 		} catch (AssertionError e) {
 		// Will get this case if assertions *are* enabled for PlainText.
-		// System.err.println("Caught AssertionError; exception was: " + e);
-		// e.printStackTrace(System.err);
+		// newJava("java.lang.System").err.println("Caught AssertionError; exception was: " + e);
+		// e.printStackTrace(newJava("java.lang.System").err);
 		local.counter++;
 		} finally {
 		assertTrue( local.counter > 0 );
@@ -84,7 +86,7 @@
 
 	<cffunction access="public" returntype="void" name="testEmptyString" output="false">
 		<cfscript>
-			local.mt = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, "");
+			local.mt = new cfesapi.org.owasp.esapi.crypto.PlainText(instance.ESAPI, "");
 			assertTrue( len(local.mt.toString()) == 0 );
 			local.ba = local.mt.asBytes();
 			assertTrue( !isNull(local.ba) && len(local.ba) == 0 );
@@ -94,11 +96,12 @@
 
 	<cffunction access="public" returntype="void" name="testOverwrite" output="false">
 		<cfscript>
-			Arrays = createObject("java", "java.util.Arrays");
-
+			// CFB/ACF throws syntax errors when newJava() is used in assertX() 
+			Arrays = newJava("java.util.Arrays");
+			
 			try {
 				local.origBytes = instance.unicodeStr.getBytes("UTF-8");
-				local.pt = createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.origBytes);
+				local.pt = new cfesapi.org.owasp.esapi.crypto.PlainText(instance.ESAPI, local.origBytes);
 				assertTrue( local.pt.toString() == instance.unicodeStr );
 				assertTrue( Arrays.equals(local.origBytes, local.pt.asBytes()) );
 				assertTrue( local.pt.hashCode() == instance.unicodeStr.hashCode() );
@@ -122,7 +125,7 @@
 				assertTrue( local.afterLen == local.sum );
 			} catch (UnsupportedEncodingException e) {
 				fail("No UTF-8 byte encoding: " & e);
-				e.printStackTrace(System.err);
+				e.printStackTrace(newJava("java.lang.System").err);
 			}
 		</cfscript> 
 	</cffunction>

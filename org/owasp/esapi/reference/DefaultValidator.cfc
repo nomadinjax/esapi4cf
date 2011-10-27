@@ -50,8 +50,8 @@
 				local.list = [];
 				local.list.add( "HTMLEntityCodec" );
 				local.list.add( "PercentCodec" );
-				local.fileEncoder = createObject("component", "DefaultEncoder").init( instance.ESAPI, local.list );
-				instance.fileValidator = createObject("component", "DefaultValidator").init( instance.ESAPI, local.fileEncoder, true );
+				local.fileEncoder = new DefaultEncoder( instance.ESAPI, local.list );
+				instance.fileValidator = new DefaultValidator( instance.ESAPI, local.fileEncoder, true );
 			}
 
 	    	return this;
@@ -73,7 +73,7 @@
 			if (structKeyExists(instance.rules, arguments.name)) {
 				return instance.rules[arguments.name];
 			}
-			return createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "");;
+			return new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "");;
 		</cfscript> 
 	</cffunction>
 
@@ -118,13 +118,13 @@
 				return "";
 			}
 
-			local.rvr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init( instance.ESAPI, arguments.type, instance.encoder );
+			local.rvr = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule( instance.ESAPI, arguments.type, instance.encoder );
 			local.p = instance.ESAPI.securityConfiguration().getValidationPattern( arguments.type );
 			if ( !isNull(local.p) ) {
 				local.rvr.addWhitelistPattern( local.p );
 			} else {
 	            // Issue 232 - Specify requested type in exception message - CS
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("The selected type [" & arguments.type & "] was not set via the ESAPI validation configuration"));
+				throwError(newJava("java.lang.IllegalArgumentException").init("The selected type [" & arguments.type & "] was not set via the ESAPI validation configuration"));
 			}
 			local.rvr.setMaximumLength(arguments.maxLength);
 			local.rvr.setAllowNull(arguments.allowNull);
@@ -171,7 +171,7 @@
 				return "";
 			}
 
-			local.dvr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.DateValidationRule").init( instance.ESAPI, "SimpleDate", instance.encoder, arguments.format);
+			local.dvr = new cfesapi.org.owasp.esapi.reference.validation.DateValidationRule( instance.ESAPI, "SimpleDate", instance.encoder, arguments.format);
 			local.dvr.setAllowNull(arguments.allowNull);
 			return local.dvr.getValid(arguments.context, arguments.input);
 		</cfscript> 
@@ -215,7 +215,7 @@
 				return "";
 			}
 
-			local.hvr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.HTMLValidationRule").init( instance.ESAPI, "safehtml", instance.encoder );
+			local.hvr = new cfesapi.org.owasp.esapi.reference.validation.HTMLValidationRule( instance.ESAPI, "safehtml", instance.encoder );
 			local.hvr.setMaximumLength(arguments.maxLength);
 			local.hvr.setAllowNull(arguments.allowNull);
 			local.hvr.setValidateInputAndCanonical(false);
@@ -259,7 +259,7 @@
 				return "";
 			}
 
-			local.ccvr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.CreditCardValidationRule").init( instance.ESAPI, "creditcard", instance.encoder );
+			local.ccvr = new cfesapi.org.owasp.esapi.reference.validation.CreditCardValidationRule( instance.ESAPI, "creditcard", instance.encoder );
 			local.ccvr.setAllowNull(arguments.allowNull);
 			return local.ccvr.getValid(arguments.context, arguments.input);
 		</cfscript> 
@@ -306,45 +306,37 @@
 			try {
 				if (isEmpty(arguments.input)) {
 					if (arguments.allowNull) return "";
-	       			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input directory path required", logMessage="Input directory path required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	       			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input directory path required", logMessage="Input directory path required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 				}
 
-				local.dir = createObject("java", "java.io.File").init( arguments.input );
+				local.dir = newJava("java.io.File").init( arguments.input );
 
 				// check dir exists and parent exists and dir is inside parent
 				if ( !local.dir.exists() ) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, does not exist: context=" & arguments.context & ", input=" & arguments.input );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, does not exist: context=" & arguments.context & ", input=" & arguments.input ));
 				}
 				if ( !local.dir.isDirectory() ) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not a directory: context=" & arguments.context & ", input=" & arguments.input );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not a directory: context=" & arguments.context & ", input=" & arguments.input ));
 				}
 				if ( !arguments.parent.exists() ) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, specified parent does not exist: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, specified parent does not exist: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
 				}
 				if ( !arguments.parent.isDirectory() ) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, specified parent is not a directory: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, specified parent is not a directory: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
 				}
 				if ( !local.dir.getCanonicalPath().startsWith(arguments.parent.getCanonicalPath() ) ) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not inside specified parent: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not inside specified parent: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
 				}
 
 				// check canonical form matches input
 				local.canonicalPath = local.dir.getCanonicalPath();
 				local.canonical = instance.fileValidator.getValidInput( arguments.context, local.canonicalPath, "DirectoryName", 255, false);
 				if ( !local.canonical.equals( arguments.input ) ) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid directory name", logMessage="Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & local.canonical, context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid directory name", logMessage="Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & local.canonical, context=arguments.context ));
 				}
 				return local.canonical;
 			} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid directory name", "Failure to validate directory path: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, arguments.context & ": Invalid directory name", "Failure to validate directory path: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context ));
 			}
 		</cfscript> 
 	</cffunction>
@@ -388,8 +380,7 @@
 			}
 
 			if (arguments.allowedExtensions.isEmpty()) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, "Internal Error", "getValidFileName called with an empty or null list of allowed Extensions, therefore no files can be uploaded" );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, "Internal Error", "getValidFileName called with an empty or null list of allowed Extensions, therefore no files can be uploaded" ));
 			}
 
 			local.canonical = "";
@@ -397,27 +388,24 @@
 			try {
 				if (isEmpty(arguments.input)) {
 					if (arguments.allowNull) return "";
-		   			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input file name required", logMessage="Input required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-		   			throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+		   			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input file name required", logMessage="Input required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 				}
 
 				// do basic validation
-		        local.canonical = createObject("java", "java.io.File").init(arguments.input).getCanonicalFile().getName();
+		        local.canonical = newJava("java.io.File").init(arguments.input).getCanonicalFile().getName();
 		        getValidInput( arguments.context, arguments.input, "FileName", 255, true );
 
-				local.f = createObject("java", "java.io.File").init(local.canonical);
+				local.f = newJava("java.io.File").init(local.canonical);
 				local.c = local.f.getCanonicalPath();
-				local.cpath = local.c.substring(local.c.lastIndexOf(createObject("java", "java.io.File").separator) + 1);
+				local.cpath = local.c.substring(local.c.lastIndexOf(newJava("java.io.File").separator) + 1);
 
 				// the path is valid if the input matches the canonical path
 				if (arguments.input != local.cpath) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file name", logMessage="Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & local.canonical, context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file name", logMessage="Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & local.canonical, context=arguments.context ));
 				}
 
 			} catch (java.io.IOException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid file name", "Invalid file name does not exist: context=" & arguments.context & ", canonical=" & local.canonical, e, arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, arguments.context & ": Invalid file name", "Invalid file name does not exist: context=" & arguments.context & ", canonical=" & local.canonical, e, arguments.context ));
 			}
 
 			// verify extensions
@@ -428,8 +416,7 @@
 					return local.canonical;
 				}
 			}
-			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file name does not have valid extension (" & arrayToList(arguments.allowedExtensions) & ")", logMessage="Invalid file name does not have valid extension (" & arrayToList(arguments.allowedExtensions) & "): context=" & arguments.context&", input=" & arguments.input, context=arguments.context );
-			throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file name does not have valid extension (" & arrayToList(arguments.allowedExtensions) & ")", logMessage="Invalid file name does not have valid extension (" & arrayToList(arguments.allowedExtensions) & "): context=" & arguments.context&", input=" & arguments.input, context=arguments.context ));
 		</cfscript> 
 	</cffunction>
 
@@ -473,8 +460,8 @@
 				return "";
 			}
 
-			local.minDoubleValue = createObject("java", "java.lang.Double").init(arguments.minValue);
-			local.maxDoubleValue = createObject("java", "java.lang.Double").init(arguments.maxValue);
+			local.minDoubleValue = newJava("java.lang.Double").init(arguments.minValue);
+			local.maxDoubleValue = newJava("java.lang.Double").init(arguments.maxValue);
 			return getValidDouble(arguments.context, arguments.input, local.minDoubleValue.doubleValue(), local.maxDoubleValue.doubleValue(), arguments.allowNull);
 		</cfscript> 
 	</cffunction>
@@ -516,10 +503,10 @@
 					arguments.errorList.addError(arguments.context, e);
 				}
 
-				return createObject("java", "java.lang.Double").init(createObject("java", "java.lang.Double").NaN);
+				return newJava("java.lang.Double").init(newJava("java.lang.Double").NaN);
 			}
 
-			local.nvr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.NumberValidationRule").init( instance.ESAPI, "number", instance.encoder, arguments.minValue, arguments.maxValue );
+			local.nvr = new cfesapi.org.owasp.esapi.reference.validation.NumberValidationRule( instance.ESAPI, "number", instance.encoder, arguments.minValue, arguments.maxValue );
 			local.nvr.setAllowNull(arguments.allowNull);
 			return local.nvr.getValid(arguments.context, arguments.input);
 		</cfscript> 
@@ -565,7 +552,7 @@
 				return "";
 			}
 
-			local.ivr = createObject("component", "cfesapi.org.owasp.esapi.reference.validation.IntegerValidationRule").init( instance.ESAPI, "number", instance.encoder, arguments.minValue, arguments.maxValue );
+			local.ivr = new cfesapi.org.owasp.esapi.reference.validation.IntegerValidationRule( instance.ESAPI, "number", instance.encoder, arguments.minValue, arguments.maxValue );
 			local.ivr.setAllowNull(arguments.allowNull);
 			return local.ivr.getValid(arguments.context, arguments.input);
 		</cfscript> 
@@ -606,23 +593,20 @@
 					arguments.errorList.addError(arguments.context, e);
 				}
 				// return empty byte array on error
-				return createObject("java", "java.lang.String").init("").getBytes();
+				return newJava("java.lang.String").init("").getBytes();
 			}
 
 			if (isEmpty(arguments.input)) {
 				if (arguments.allowNull) return "";
-	   			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input required", logMessage="Input required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	   			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input required", logMessage="Input required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 			}
 
 			local.esapiMaxBytes = instance.ESAPI.securityConfiguration().getAllowedFileUploadSize();
 			if (len(arguments.input) > local.esapiMaxBytes ) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file content can not exceed " & local.esapiMaxBytes & " bytes", logMessage="Exceeded ESAPI max length", context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file content can not exceed " & local.esapiMaxBytes & " bytes", logMessage="Exceeded ESAPI max length", context=arguments.context ));
 			}
 			if (len(arguments.input) > arguments.maxBytes ) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file content can not exceed " & arguments.maxBytes & " bytes", logMessage="Exceeded maxBytes ( " & len(arguments.input) & ")", context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid file content can not exceed " & arguments.maxBytes & " bytes", logMessage="Exceeded maxBytes ( " & len(arguments.input) & ")", context=arguments.context ));
 			}
 
 			return arguments.input;
@@ -712,8 +696,7 @@
 			}
 
 			if (arguments.list.contains(arguments.input)) return arguments.input;
-			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid list item", logMessage="Invalid list item: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context );
-			throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid list item", logMessage="Invalid list item: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context ));
 		</cfscript> 
 	</cffunction>
 
@@ -759,8 +742,7 @@
 			local.missing = duplicate(arguments.required);
 			local.missing.removeAll(local.actualNames);
 			if (local.missing.size() > 0) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid HTTP request missing parameters", logMessage="Invalid HTTP request missing parameters " & arrayToList(local.missing) & ": context=" & arguments.context, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid HTTP request missing parameters", logMessage="Invalid HTTP request missing parameters " & arrayToList(local.missing) & ": context=" & arguments.context, context=arguments.context ));
 			}
 
 			// verify ONLY optional + required parameters are present
@@ -768,8 +750,7 @@
 			local.extra.removeAll(arguments.required);
 			local.extra.removeAll(arguments.optional);
 			if (local.extra.size() > 0) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid HTTP request extra parameters " & local.extra, logMessage="Invalid HTTP request extra parameters " & local.extra & ": context=" & arguments.context, context=arguments.context );
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid HTTP request extra parameters " & local.extra, logMessage="Invalid HTTP request extra parameters " & local.extra & ": context=" & arguments.context, context=arguments.context ));
 			}
 		</cfscript> 
 	</cffunction>
@@ -815,24 +796,21 @@
 			if (isSimpleValue(arguments.input)) {
 				try {
 		    		local.canonical = instance.encoder.canonicalize(arguments.input);
-		    		return createObject("java", "java.lang.String").init( getValidPrintable( arguments.context, local.canonical.toCharArray(), arguments.maxLength, arguments.allowNull) );
+		    		return newJava("java.lang.String").init( getValidPrintable( arguments.context, local.canonical.toCharArray(), arguments.maxLength, arguments.allowNull) );
 				    //TODO - changed this to base Exception since we no longer need EncodingException
 			    	//TODO - this is a bit lame: we need to re-think this function.
 				} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-			        cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, arguments.context & ": Invalid printable input", "Invalid encoding of printable input, context=" & arguments.context & ", input=" & arguments.input, e, arguments.context);
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+			        throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, arguments.context & ": Invalid printable input", "Invalid encoding of printable input, context=" & arguments.context & ", input=" & arguments.input, e, arguments.context));
 			    }
 			}
 			else if (isArray(arguments.input)) {
 				if (isEmpty(arguments.input)) {
 					if (arguments.allowNull) return "";
-		   			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input bytes required", logMessage="Input bytes required: HTTP request is null", context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+		   			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input bytes required", logMessage="Input bytes required: HTTP request is null", context=arguments.context ));
 				}
 
 				if (arrayLen(arguments.input) > arguments.maxLength) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input bytes can not exceed " & arguments.maxLength & " bytes", logMessage="Input exceeds maximum allowed length of " & arguments.maxLength & " by " & (arguments.input.length-arguments.maxLength) & " bytes: context=" & arguments.context & ", input=" & arrayToList(arguments.input, ""), context=arguments.context);
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input bytes can not exceed " & arguments.maxLength & " bytes", logMessage="Input exceeds maximum allowed length of " & arguments.maxLength & " by " & (arguments.input.length-arguments.maxLength) & " bytes: context=" & arguments.context & ", input=" & arrayToList(arguments.input, ""), context=arguments.context));
 				}
 
 				for (local.i = 1; local.i <= arrayLen(arguments.input); local.i++) {
@@ -841,8 +819,7 @@
 						local.input = asc(local.input);
 					}
 					if (local.input <= inputBaseN("20", 16) || local.input >= inputBaseN("7E", 16) ) {
-						cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input bytes: context=" & arguments.context, logMessage="Invalid non-ASCII input bytes, context=" & arguments.context & ", input=" & arrayToList(arguments.input, ""), context=arguments.context);
-						throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+						throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid input bytes: context=" & arguments.context, logMessage="Invalid non-ASCII input bytes, context=" & arguments.context & ", input=" & arrayToList(arguments.input, ""), context=arguments.context));
 					}
 				}
 				return arguments.input;
@@ -889,11 +866,10 @@
 		<cfargument type="numeric" name="max" required="true">
 		<cfscript>
 			if (arguments.max <= 0) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException").init(instance.ESAPI, "Invalid input", "Invalid readline. Must read a positive number of bytes from the stream");
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException(instance.ESAPI, "Invalid input", "Invalid readline. Must read a positive number of bytes from the stream"));
 			}
 
-			local.sb = createObject("java", "java.lang.StringBuilder").init();
+			local.sb = newJava("java.lang.StringBuilder").init();
 			local.count = 0;
 
 			try {
@@ -910,15 +886,13 @@
 					}
 					local.count++;
 					if (local.count > arguments.max) {
-						cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException").init(instance.ESAPI, "Invalid input", "Invalid readLine. Read more than maximum characters allowed (" & arguments.max & ")");
-						throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+						throwError(new cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException(instance.ESAPI, "Invalid input", "Invalid readLine. Read more than maximum characters allowed (" & arguments.max & ")"));
 					}
 					local.sb.append(chr(local.c));
 				}
 				return local.sb.toString();
 			} catch (java.lang.IOException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException").init(instance.ESAPI, "Invalid input", "Invalid readLine. Problem reading from input stream", e);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException(instance.ESAPI, "Invalid input", "Invalid readLine. Problem reading from input stream", e));
 			}
 		</cfscript> 
 	</cffunction>

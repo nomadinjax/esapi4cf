@@ -136,7 +136,7 @@
 	                local.domain = local.c.getDomain();
 	                local.path = local.c.getPath();
 
-	                local.n = createObject("java", "javax.servlet.http.Cookie").init(local.name, local.value);
+	                local.n = newJava("javax.servlet.http.Cookie").init(local.name, local.value);
 	                local.n.setMaxAge(local.maxAge);
 
 	                if (!isNull(local.domain)) {
@@ -147,7 +147,7 @@
 	                }
 	                local.newCookies.add(local.n);
 	            } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-	                instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Skipping bad cookie: " & local.c.getName() & "=" & local.c.getValue(), e );
+	                instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Skipping bad cookie: " & local.c.getName() & "=" & local.c.getValue(), e );
 	            }
 	        }
 	        return local.newCookies;
@@ -357,7 +357,7 @@
 					local.cleanValue = instance.ESAPI.validator().getValidInput("HTTP parameter value: " & local.value, local.value, "HTTPParameterValue", 2000, true);
 					local.newValues.add(local.cleanValue);
 				} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-					instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Skipping bad parameter");
+					instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Skipping bad parameter");
 				}
 			}
 			return local.newValues;
@@ -455,7 +455,7 @@
 
 	<cffunction access="public" returntype="String" name="getRequestedSessionId" output="false" hint="Returns the SessionId from the HttpServletRequest after canonicalizing and filtering out any dangerous characters. Code must be very careful not to depend on the value of a requested session id reported by the user.">
 		<cfscript>
-	        local.id = createObject("java", "org.owasp.esapi.StringUtilities").replaceNull(getHttpServletRequest().getRequestedSessionId(), "");
+	        local.id = newJava("org.owasp.esapi.StringUtilities").replaceNull(getHttpServletRequest().getRequestedSessionId(), "");
 	        local.clean = "";
 	        try {
 	            local.clean = instance.ESAPI.validator().getValidInput("Requested cookie: " & local.id, local.id, "HTTPJSESSIONID", 50, false);
@@ -490,7 +490,7 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            // already logged
 	        }
-	        return createObject("java", "java.lang.StringBuffer").init(local.clean);
+	        return newJava("java.lang.StringBuffer").init(local.clean);
         </cfscript> 
 	</cffunction>
 
@@ -527,7 +527,7 @@
 		<cfscript>
 			local.port = getHttpServletRequest().getServerPort();
 			if ( local.port < 0 || local.port > 65536 ) {
-				instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "HTTP server port out of range: " & local.port );
+				instance.logger.warning( newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "HTTP server port out of range: " & local.port );
 				local.port = 0;
 			}
 			return local.port;
@@ -563,7 +563,7 @@
 				return;
 			}
 
-			local.session = createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperSession").init(instance.ESAPI, local.jsession);
+			local.session = new cfesapi.org.owasp.esapi.filters.SecurityWrapperSession(instance.ESAPI, local.jsession);
 
 			// send a new cookie header with HttpOnly on first and second responses
 		    if (instance.ESAPI.securityConfiguration().getForceHttpOnlySession()) {
@@ -585,7 +585,7 @@
 		         */
 		        if (local.session.getAttribute("HTTP_ONLY") == "") {
 					local.session.setAttribute("HTTP_ONLY", "set");
-					local.cookie = createObject("java", "javax.servlet.http.Cookie").init(instance.ESAPI.securityConfiguration().getHttpSessionIdName(), local.session.getId());
+					local.cookie = newJava("javax.servlet.http.Cookie").init(instance.ESAPI.securityConfiguration().getHttpSessionIdName(), local.session.getId());
 					local.cookie.setPath( getHttpServletRequest().getContextPath() );
 					local.cookie.setMaxAge(-1); // session cookie
 		            local.response = instance.ESAPI.currentResponse();

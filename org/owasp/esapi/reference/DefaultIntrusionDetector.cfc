@@ -18,8 +18,6 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.IntrusionDetector" output="false" hint="Reference implementation of the IntrusionDetector interface. This implementation monitors EnterpriseSecurityExceptions to see if any user exceeds a configurable threshold in a configurable time period.">
 
 	<cfscript>
-		Logger = createObject("java", "org.owasp.esapi.Logger");
-
 		instance.ESAPI = "";
 		instance.logger = "";
 	</cfscript>
@@ -41,10 +39,10 @@
 			if (instance.ESAPI.securityConfiguration().getDisableIntrusionDetection()) return;
 
 	        if (isInstanceOf(arguments.exception, "cfesapi.org.owasp.esapi.errors.EnterpriseSecurityException")) {
-	            instance.logger.warning( Logger.SECURITY_FAILURE, arguments.exception.getLogMessage(), arguments.exception );
+	            instance.logger.warning( newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.exception.getLogMessage(), arguments.exception );
 	        }
 	        else {
-	            instance.logger.warning( Logger.SECURITY_FAILURE, arguments.exception.getMessage(), arguments.exception );
+	            instance.logger.warning( newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, arguments.exception.getMessage(), arguments.exception );
 	        }
 
 	        // add the exception to the current user, which may trigger a detector
@@ -77,7 +75,7 @@
 		<cfscript>
 	    	if (instance.ESAPI.securityConfiguration().getDisableIntrusionDetection()) return;
 
-	        instance.logger.warning( Logger.SECURITY_FAILURE, "Security event " & arguments.eventName & " received : " & arguments.logMessage );
+	        instance.logger.warning( newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Security event " & arguments.eventName & " received : " & arguments.logMessage );
 
 	        // add the event to the current user, which may trigger a detector
 	        local.user = instance.ESAPI.authenticator().getCurrentUser();
@@ -102,7 +100,7 @@
 	    	if (instance.ESAPI.securityConfiguration().getDisableIntrusionDetection()) return;
 
 	        if ( arguments.action.equals( "log" ) ) {
-	            instance.logger.fatal( Logger.SECURITY_FAILURE, "INTRUSION - " & arguments.message );
+	            instance.logger.fatal( newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "INTRUSION - " & arguments.message );
 	        }
 	        local.user = instance.ESAPI.authenticator().getCurrentUser();
 	        if (isInstanceOf(local.user, "cfesapi.org.owasp.esapi.User$ANONYMOUS")) {
@@ -135,7 +133,7 @@
 					local.event = local.eventMap.get( arguments.eventName );
 				}
 				if ( isNull(local.event) ) {
-					local.event = createObject("component", "Event").init(instance.ESAPI, arguments.eventName );
+					local.event = new Event(instance.ESAPI, arguments.eventName );
 					local.eventMap.put( arguments.eventName, local.event );
 				}
 				// increment

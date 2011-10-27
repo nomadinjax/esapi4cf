@@ -18,10 +18,6 @@
  */
 component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
-	// imports
-	System = createObject("java", "java.lang.System");
-	DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
-	
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
     /**
@@ -54,8 +50,8 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
      * @throws EncryptionException
 	 */
 	public void function testCreateUser() {
-		System.out.println("createUser");
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		newJava("java.lang.System").out.println("createUser");
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.authenticator = instance.ESAPI.authenticator();
 		local.password = local.authenticator.generateStrongPassword();
 		local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
@@ -67,13 +63,13 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
             // success
         }
         try {
-            local.authenticator.createUser(instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS), "password1", "password2"); // don't match
+            local.authenticator.createUser(instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), "password1", "password2"); // don't match
             fail();
         } catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
             // success
         }
         try {
-            local.authenticator.createUser(instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS), "weak1", "weak1");  // weak password
+            local.authenticator.createUser(instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), "weak1", "weak1");  // weak password
             fail();
         } catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
             // success
@@ -85,7 +81,7 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
             // success
         }
         try {
-            local.authenticator.createUser(instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS), "", "");  // null password
+            local.authenticator.createUser(instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), "", "");  // null password
             fail();
         } catch (cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
             // success
@@ -107,7 +103,7 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the authentication exception
 	 */
 	public void function testGenerateStrongPassword() {
-		System.out.println("generateStrongPassword");		
+		newJava("java.lang.System").out.println("generateStrongPassword");		
 		local.authenticator = instance.ESAPI.authenticator();
 		local.oldPassword = "iiiiiiiiii";  // i is not allowed in passwords - this prevents failures from containing pieces of old password
 		local.newPassword = "";
@@ -118,7 +114,7 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
                 local.newPassword = local.authenticator.generateStrongPassword();
                 local.authenticator.verifyPasswordStrength(local.oldPassword, local.newPassword, local.user);
             } catch( cfesapi.org.owasp.esapi.errors.AuthenticationException e ) {
-            	System.out.println( "  FAILED >> " & local.newPassword & " : " & e.getLogMessage());
+            	newJava("java.lang.System").out.println( "  FAILED >> " & local.newPassword & " : " & e.getLogMessage());
                 fail();
             }
 		}
@@ -137,10 +133,10 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
      * @throws Exception
      */
 	public void function testGetCurrentUser() {
-		System.out.println("getCurrentUser");
+		newJava("java.lang.System").out.println("getCurrentUser");
         local.authenticator = instance.ESAPI.authenticator();
-		local.username1 = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
-		local.username2 = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		local.username1 = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+		local.username2 = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.user1 = local.authenticator.createUser(local.username1, "getCurrentUser", "getCurrentUser");
 		local.user2 = local.authenticator.createUser(local.username2, "getCurrentUser", "getCurrentUser");		
 		local.user1.enable();
@@ -192,13 +188,13 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the authentication exception
 	 */
 	public void function testGetUser() {
-		System.out.println("getUser");
+		newJava("java.lang.System").out.println("getUser");
         local.authenticator = instance.ESAPI.authenticator();
 		local.password = local.authenticator.generateStrongPassword();
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.authenticator.createUser(local.accountName, local.password, local.password);
 		assertTrue(isObject(local.authenticator.getUserByAccountName( local.accountName )));
-		assertFalse(isObject(local.authenticator.getUserByAccountName( instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS) )));
+		assertFalse(isObject(local.authenticator.getUserByAccountName( instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) )));
 	}
 	
     /**
@@ -206,18 +202,18 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
      * @throws org.owasp.esapi.errors.AuthenticationException
      */
     public void function testGetUserFromRememberToken() {
-		System.out.println("getUserFromRememberToken");
+		newJava("java.lang.System").out.println("getUserFromRememberToken");
         local.authenticator = instance.ESAPI.authenticator();
         local.authenticator.logout();  // in case anyone is logged in
 		local.password = local.authenticator.generateStrongPassword();
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
 		local.user.enable();
 		local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest();
 		local.response = new cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse();
 		instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 		
-		System.out.println("getUserFromRememberToken - expecting failure");
+		newJava("java.lang.System").out.println("getUserFromRememberToken - expecting failure");
 		local.request.setCookie( instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, "ridiculous" );
 		try {
 			local.authenticator.login( local.request, local.response );  // wrong cookie will fail
@@ -225,7 +221,7 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 			// expected
 		}
 
-		System.out.println("getUserFromRememberToken - expecting success");
+		newJava("java.lang.System").out.println("getUserFromRememberToken - expecting success");
 		local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest();
 		instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 		instance.ESAPI.authenticator().setCurrentUser(local.user);
@@ -245,10 +241,10 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the authentication exception
 	 */
 	public void function testGetUserFromSession() {
-		System.out.println("getUserFromSession");
+		newJava("java.lang.System").out.println("getUserFromSession");
         local.authenticator = instance.ESAPI.authenticator();
         local.authenticator.logout();  // in case anyone is logged in
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.password = local.authenticator.generateStrongPassword();
 		local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
 		local.user.enable();
@@ -269,12 +265,12 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the authentication exception
 	 */
 	public void function testGetUserNames() {
-		System.out.println("getUserNames");
+		newJava("java.lang.System").out.println("getUserNames");
         local.authenticator = instance.ESAPI.authenticator();
 		local.password = local.authenticator.generateStrongPassword();
 		local.testnames = ["", "", "", "", "", "", "", "", "", ""];
 		for(local.i=1;local.i<=arrayLen(local.testnames);local.i++) {
-			local.testnames[local.i] = instance.ESAPI.randomizer().getRandomString(8,DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.testnames[local.i] = instance.ESAPI.randomizer().getRandomString(8,newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		}
 		for(local.i=1;local.i<=arrayLen(local.testnames);local.i++) {
 			local.authenticator.createUser(local.testnames[local.i], local.password, local.password);
@@ -291,7 +287,7 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
      * @throws EncryptionException
      */
 	public void function testHashPassword() {
-		System.out.println("hashPassword");
+		newJava("java.lang.System").out.println("hashPassword");
 		local.username = "Jeff";
 		local.password = "test";
         local.authenticator = instance.ESAPI.authenticator();
@@ -307,9 +303,9 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the authentication exception
 	 */
 	public void function testLogin() {
-		System.out.println("login");
+		newJava("java.lang.System").out.println("login");
         local.authenticator = instance.ESAPI.authenticator();
-        local.username = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+        local.username = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.password = local.authenticator.generateStrongPassword();
 		local.user = local.authenticator.createUser(local.username, local.password, local.password);
 		local.user.enable();
@@ -328,8 +324,8 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the exception
 	 */
 	public void function testRemoveUser() {
-		System.out.println("removeUser");
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		newJava("java.lang.System").out.println("removeUser");
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
         local.authenticator = instance.ESAPI.authenticator();
 		local.password = local.authenticator.generateStrongPassword();
 		local.authenticator.createUser(local.accountName, local.password, local.password);
@@ -345,8 +341,8 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the exception
 	 */
 	public void function testSaveUsers() {
-		System.out.println("saveUsers");
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		newJava("java.lang.System").out.println("saveUsers");
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
         local.authenticator = instance.ESAPI.authenticator();
 		local.password = local.authenticator.generateStrongPassword();
 		local.authenticator.createUser(local.accountName, local.password, local.password);
@@ -364,10 +360,10 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the authentication exception
 	 */
 	public void function testSetCurrentUser() {
-		System.out.println("setCurrentUser");
+		newJava("java.lang.System").out.println("setCurrentUser");
         local.authenticator = instance.ESAPI.authenticator();
-		local.user1 = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_UPPERS);
-		local.user2 = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_UPPERS);
+		local.user1 = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_UPPERS);
+		local.user2 = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_UPPERS);
 		local.userOne = local.authenticator.createUser(local.user1, "getCurrentUser", "getCurrentUser");
 		local.userOne.enable();
 	    local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest();
@@ -386,7 +382,7 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 			public void run() {
 				User u=null;
 				try {
-					local.password = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+					local.password = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 					u = local.authenticator.createUser("test" & count++, local.password, local.password);
 					local.authenticator.setCurrentUser(u);
 					instance.ESAPI.getLogger("test").info( Logger.SECURITY_SUCCESS, "Got current user" );
@@ -409,11 +405,11 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the authentication exception
 	 */
 	public void function testSetCurrentUserWithRequest() {
-		System.out.println("setCurrentUser(req,resp)");
+		newJava("java.lang.System").out.println("setCurrentUser(req,resp)");
         local.authenticator = instance.ESAPI.authenticator();
         local.authenticator.logout();  // in case anyone is logged in
 		local.password = local.authenticator.generateStrongPassword();
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
 		local.user.enable();
 		local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest();
@@ -454,7 +450,7 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the authentication exception
 	 */
 	public void function testValidatePasswordStrength() {
-		System.out.println("validatePasswordStrength");
+		newJava("java.lang.System").out.println("validatePasswordStrength");
         local.authenticator = instance.ESAPI.authenticator();
         
         local.username = "FictionalEsapiUser";
@@ -540,8 +536,8 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
 	 *             the exception
 	 */
 	public void function testExists() {
-		System.out.println("exists");
-		local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+		newJava("java.lang.System").out.println("exists");
+		local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
         local.authenticator = instance.ESAPI.authenticator();
 		local.password = local.authenticator.generateStrongPassword();
 		local.authenticator.createUser(local.accountName, local.password, local.password);
@@ -556,9 +552,9 @@ component AuthenticatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase"
      */
     /* NOTE: do we need this test?
     public void function testMain() {
-        System.out.println("Authenticator Main");
+        newJava("java.lang.System").out.println("Authenticator Main");
         local.authenticator = instance.ESAPI.authenticator();
-        local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+        local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
         local.password = local.authenticator.generateStrongPassword();
         local.role = "test";
         

@@ -19,7 +19,7 @@
  */
 component ESAPI extends="cfesapi.org.owasp.esapi.lang.Object" {
 
-	instance.securityConfigurationImplName = createObject("java", "java.lang.System").getProperty("cfesapi.org.owasp.esapi.SecurityConfiguration", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration");
+	instance.securityConfigurationImplName = newJava( "java.lang.System").getProperty("cfesapi.org.owasp.esapi.SecurityConfiguration", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration");
 
     /**
 	 * Clears the current User, HttpRequest, and HttpResponse associated with the current thread. This method

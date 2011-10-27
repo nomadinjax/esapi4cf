@@ -58,7 +58,7 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 */
 	
 	public void function clearCurrent() {
-		// instance.logger.logWarning(Logger.SECURITY, "************Clearing threadlocals. Thread" & Thread.currentThread().getName() );
+		// instance.logger.logWarning(newJava("org.owasp.esapi.Logger").SECURITY, "************Clearing threadlocals. Thread" & Thread.currentThread().getName() );
 		instance.currentUser.remove();
 	}
 	
@@ -120,7 +120,7 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 			// TODO - kww - URLDecode token first, and THEN unseal. See Google Issue 144.
 			local.data = instance.ESAPI.encryptor().unseal(local.token).split("\|");
 			if(arrayLen(local.data) != 2) {
-				instance.logger.warning(Logger.SECURITY_FAILURE, "Found corrupt or expired remember token");
+				instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Found corrupt or expired remember token");
 				instance.ESAPI.httpUtilities().killCookie(arguments.request, arguments.response, instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 				return "";
 			}
@@ -129,19 +129,19 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 			local.password = local.data[2];
 			local.user = getUserByAccountName(local.username);
 			if(!isObject(local.user)) {
-				instance.logger.warning(Logger.SECURITY_FAILURE, "Found valid remember token but no user matching " & local.username);
+				instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Found valid remember token but no user matching " & local.username);
 				return "";
 			}
 		
-			instance.logger.info(Logger.SECURITY_SUCCESS, "Logging in user with remember token: " & local.user.getAccountName());
+			instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Logging in user with remember token: " & local.user.getAccountName());
 			local.user.loginWithPassword(arguments.request, local.password);
 			return local.user;
 		}
 		catch(cfesapi.org.owasp.esapi.errors.AuthenticationException ae) {
-			instance.logger.warning(Logger.SECURITY_FAILURE, "Login via remember me cookie failed", ae);
+			instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Login via remember me cookie failed", ae);
 		}
 		catch(cfesapi.org.owasp.esapi.errors.EncryptionException e) {
-			instance.logger.warning(Logger.SECURITY_FAILURE, "Remember token was missing, corrupt, or expired");
+			instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Remember token was missing, corrupt, or expired");
 		}
 		instance.ESAPI.httpUtilities().killCookie(arguments.request, arguments.response, instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 		return "";
@@ -163,7 +163,7 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 		// if a logged-in user is requesting to login, log them out first
 		local.user = getCurrentUser();
 		if(isObject(local.user) && !local.user.isAnonymous()) {
-			instance.logger.warning(Logger.SECURITY_SUCCESS, "User requested relogin. Performing logout then authentication");
+			instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User requested relogin. Performing logout then authentication");
 			local.user.logout();
 		}
 	

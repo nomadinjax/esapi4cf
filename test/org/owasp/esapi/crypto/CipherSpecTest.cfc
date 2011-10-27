@@ -28,11 +28,11 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		// This will throw ConfigurationException if IV type is not set to
 		// 'fixed', which it's not. (We have it set to 'random'.)
 		// myIV = Hex.decode( ESAPI.securityConfiguration().getFixedIV() );
-		instance.myIV = createObject("java", "org.owasp.esapi.codecs.Hex").decode("0x000102030405060708090a0b0c0d0e0f");
+		instance.myIV = newJava("org.owasp.esapi.codecs.Hex").decode("0x000102030405060708090a0b0c0d0e0f");
 	
-		instance.dfltAESCipher = createObject("java", "javax.crypto.Cipher").getInstance("AES");
-		instance.dfltECBCipher = createObject("java", "javax.crypto.Cipher").getInstance("AES/ECB/NoPadding");
-		instance.dfltOtherCipher = createObject("java", "javax.crypto.Cipher").getInstance("Blowfish/OFB8/PKCS5Padding");
+		instance.dfltAESCipher = newJava("javax.crypto.Cipher").getInstance("AES");
+		instance.dfltECBCipher = newJava("javax.crypto.Cipher").getInstance("AES/ECB/NoPadding");
+		instance.dfltOtherCipher = newJava("javax.crypto.Cipher").getInstance("Blowfish/OFB8/PKCS5Padding");
 	
 		assertTrue(!isNull(instance.dfltAESCipher));
 		assertTrue(!isNull(instance.dfltECBCipher));
@@ -86,7 +86,7 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(instance.cipherSpec.getCipherAlgorithm() == "AES");
 		assertTrue(instance.cipherSpec.getCipherMode() == "ECB");
 		assertTrue(instance.cipherSpec.getPaddingScheme() == "NoPadding");
-		// System.out.println("testCipherSpecInt(): " & instance.cipherSpec);
+		// newJava("java.lang.System").out.println("testCipherSpecInt(): " & instance.cipherSpec);
 	}
 	
 	/** Test CipherSpec(final byte[] iv) */
@@ -223,15 +223,8 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	/** Test serialization */
 	// @Test 
 	public void function testSerialization() {
-		System = createObject("java", "java.lang.System");
-		JavaFile = createObject("java", "java.io.File");
-		FileOutputStream = createObject("java", "java.io.FileOutputStream");
-		ObjectOutputStream = createObject("java", "java.io.ObjectOutputStream");
-		FileInputStream = createObject("java", "java.io.FileInputStream");
-		ObjectInputStream = createObject("java", "java.io.ObjectInputStream");
-	
 		local.filename = "cipherspec.ser";
-		local.serializedFile = JavaFile.init(local.filename);
+		local.serializedFile = newJava("java.io.File").init(local.filename);
 		local.success = false;
 		try {
 			// Delete any old serialized file. If it fails, it's not
@@ -243,14 +236,14 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			local.serializedFile.delete();
 		
 			instance.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipherXform="AES/CBC/NoPadding", keySize=128, blockSize=8, iv=instance.myIV);
-			local.fos = FileOutputStream.init(local.filename);
-			local.out = ObjectOutputStream.init(local.fos);
+			local.fos = newJava("java.io.FileOutputStream").init(local.filename);
+			local.out = newJava("java.io.ObjectOutputStream").init(local.fos);
 			local.out.writeObject(instance.cipherSpec);
 			local.out.close();
 			local.fos.close();
 		
-			local.fis = FileInputStream.init(local.filename);
-			local.in = ObjectInputStream.init(local.fis);
+			local.fis = newJava("java.io.FileInputStream").init(local.filename);
+			local.in = newJava("java.io.ObjectInputStream").init(local.fis);
 			local.restoredCipherSpec = local.in.readObject();
 			local.in.close();
 			local.fis.close();
@@ -262,11 +255,11 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			local.success = true;
 		}
 		catch(java.io.IOException ex) {
-			// RAILO error: ex.printStackTrace(System.err);
+			// RAILO error: ex.printStackTrace(newJava("java.lang.System").err);
 			fail("testSerialization(): Unexpected IOException: " & ex);
 		}
 		catch(java.lang.ClassNotFoundException ex) {
-			// RAILO error: ex.printStackTrace(System.err);
+			// RAILO error: ex.printStackTrace(newJava("java.lang.System").err);
 			fail("testSerialization(): Unexpected ClassNotFoundException: " & ex);
 		}
 		finally
@@ -277,7 +270,7 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 				local.deleted = local.serializedFile.delete();
 				if(!local.deleted) {
 					try {
-						System.err.println("Unable to delete file: " & local.serializedFile.getCanonicalPath());
+						newJava("java.lang.System").err.println("Unable to delete file: " & local.serializedFile.getCanonicalPath());
 					}
 					catch(java.io.IOException e) {// Ignore
 					}

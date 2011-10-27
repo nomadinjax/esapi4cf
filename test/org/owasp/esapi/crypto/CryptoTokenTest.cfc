@@ -18,7 +18,7 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" name="CryptoTokenTest" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 		
 		instance.skey1 = "";
 		instance.skey2 = "";
@@ -26,8 +26,9 @@
  
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
-	        instance.skey1 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").generateSecretKey("AES", 128);
-	        instance.skey2 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").generateSecretKey("AES", 128);
+			CryptoHelper = new cfesapi.org.owasp.esapi.crypto.CryptoHelper(instance.ESAPI);
+	        instance.skey1 = CryptoHelper.generateSecretKey("AES", 128);
+	        instance.skey2 = CryptoHelper.generateSecretKey("AES", 128);
 		</cfscript> 
 	</cffunction>
 
@@ -35,7 +36,7 @@
 	<cffunction access="public" returntype="void" name="testCryptoToken" output="false">
 		<cfscript>
 	        // Test with default CTOR
-	        local.ctok = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI);
+	        local.ctok = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI);
 	        CTORtest( local.ctok );
 		</cfscript> 
 	</cffunction>
@@ -44,7 +45,7 @@
 	<cffunction access="public" returntype="void" name="testCryptoTokenSecretKey" output="false">
 		<cfscript>
 	     	// Test with default CTOR
-	        local.ctok = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI, skey=instance.skey1);
+	        local.ctok = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI, skey=instance.skey1);
 	        CTORtest( local.ctok, instance.skey1 );
 		</cfscript> 
 	</cffunction>
@@ -54,8 +55,6 @@
 		<cfargument type="cfesapi.org.owasp.esapi.crypto.CryptoToken" name="ctok" required="true">
 		<cfargument type="any" name="sk" required="false" hint="javax.crypto.SecretKey">
 		<cfscript>
-			System = createObject("java", "java.lang.System");
-			
 	        local.token = "";
 	        try {
 	            if ( isNull(arguments.sk) ) {
@@ -67,30 +66,30 @@
 	            fail("Caught unexpected exception on getToken() call: " & e.toString());
 	        }
 	        assertFalse(isNull(local.token));
-	        assertEquals( arguments.ctok.getUserAccountName(), createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").ANONYMOUS_USER);
+	        assertEquals( arguments.ctok.getUserAccountName(), new cfesapi.org.owasp.esapi.crypto.CryptoToken(instance.ESAPI).ANONYMOUS_USER);
 	        assertFalse( arguments.ctok.isExpired() );
 	        local.expTime1 = arguments.ctok.getExpiration();
 	        
 	        local.ctok2 = "";
 	        try {
 	            if ( isNull(arguments.sk) ) {
-	                local.ctok2 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init( ESAPI=instance.ESAPI, token=local.token );    // Use default key, Encryptor.MasterKey
+	                local.ctok2 = new cfesapi.org.owasp.esapi.crypto.CryptoToken( ESAPI=instance.ESAPI, token=local.token );    // Use default key, Encryptor.MasterKey
 	            } else {
-	                local.ctok2 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init( ESAPI=instance.ESAPI, skey=arguments.sk, token=local.token );
+	                local.ctok2 = new cfesapi.org.owasp.esapi.crypto.CryptoToken( ESAPI=instance.ESAPI, skey=arguments.sk, token=local.token );
 	            }
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
-	            e.printStackTrace(System.err);
+	            e.printStackTrace(newJava("java.lang.System").err);
 	            fail("Caught unexpected exception on CryptoToken CTOR: " & e.toString());
 	        }
 	        local.expTime2 = local.ctok2.getExpiration();
-	        assertTrue(( local.expTime2 >= local.expTime1 ), "Expected expiration for ctok2 (" & createObject("java", "java.util.Date").init(local.expTime2) & ") to be later than of ctok (" & createObject("java", "java.util.Date").init(local.expTime1) & ").");
+	        assertTrue(( local.expTime2 >= local.expTime1 ), "Expected expiration for ctok2 (" & newJava("java.util.Date").init(local.expTime2) & ") to be later than of ctok (" & newJava("java.util.Date").init(local.expTime1) & ").");
 		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testCryptoTokenSecretKeyString" output="false">
 		<cfscript>
-	        local.ctok1 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI, skey=instance.skey1);
+	        local.ctok1 = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI, skey=instance.skey1);
 	        try {
 	            local.ctok1.setUserAccountName("kevin.w.wall@gmail.com");
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
@@ -115,7 +114,7 @@
 	        }
 	        local.ctok2 = "";
 	        try {
-	            local.ctok2 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI, skey=instance.skey1, token=local.token1);
+	            local.ctok2 = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI, skey=instance.skey1, token=local.token1);
 	            local.token2 = local.ctok2.getToken();
 	            local.ctok2.setAttribute("company", "CenturyLink");
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
@@ -135,11 +134,11 @@
 
 	<cffunction access="public" returntype="void" name="testExpiration" output="false">
 		<cfscript>
-	        local.ctok = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI);
+	        local.ctok = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI);
 	        local.ctok.setExpiration(intervalSecs=2);  // 2 seconds
 	        local.ctok2 = "";
 	        try {
-	            local.ctok2 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init( ESAPI=instance.ESAPI, token=local.ctok.getToken() );
+	            local.ctok2 = new cfesapi.org.owasp.esapi.crypto.CryptoToken( ESAPI=instance.ESAPI, token=local.ctok.getToken() );
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e1) {
 	            fail("Failed to decrypt token");
 	        }
@@ -180,7 +179,7 @@
 
 	<cffunction access="public" returntype="void" name="testSetUserAccountName" output="false">
 		<cfscript>
-	        local.ctok = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI);
+	        local.ctok = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI);
 	        try {
 	            local.ctok.setUserAccountName("kevin.w.wall@gmail.com");
 	            local.ctok.setUserAccountName("kevin");
@@ -226,7 +225,7 @@
 
 	<cffunction access="public" returntype="void" name="testSetExpirationDate" output="false">
 		<cfscript>
-	        local.ctok = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI);
+	        local.ctok = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI);
 	        /* NULL test - not valid in CF
 	        try {
 	            local.ctok.setExpiration(null);
@@ -238,7 +237,7 @@
 	        } */
 	
 	        try {
-	            local.now = createObject("java", "java.util.Date").init();
+	            local.now = now();
 	            nap(1);
 	            local.ctok.setExpiration(expirationDate=local.now);
 	            fail("Expected IllegalArgumentException on ctok.setExpiration(Date) w/ Date in past.");
@@ -258,7 +257,7 @@
 	        }
 	
 	        try {
-	            local.maxDate = createObject("java", "java.util.Date").init( createObject("java", "java.lang.Long").MAX_VALUE - 1 );
+	            local.maxDate = newJava("java.util.Date").init( newJava("java.lang.Long").MAX_VALUE - 1 );
 	            local.ctok.setExpiration( expirationDate=local.maxDate );
 	            local.ctok.updateToken(1);
 	            fail("Expected ArithmeticException on ctok.setExpiration(int).");
@@ -273,9 +272,7 @@
 
 	<cffunction access="public" returntype="void" name="testSetAndGetAttribute" output="false">
 		<cfscript>
-			System = createObject("java", "java.lang.System");
-
-	        local.ctok = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI);
+	        local.ctok = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI);
 	
 	        // Test case where attr name is empty string. Expect ValidationException
 	        try {
@@ -323,7 +320,7 @@
 	            local.tokenVal = local.ctok.getToken();
 	            assertTrue(!isNull(local.tokenVal), "tokenVal should not be null");
 	            
-	            local.ctok2 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI, token=local.tokenVal);
+	            local.ctok2 = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI, token=local.tokenVal);
 	            local.weirdAttr = local.ctok2.getAttribute("..--__");
 	            assertTrue(local.weirdAttr.equals(""), "Expecting empty string for value of weird attr, but got: " & local.weirdAttr);
 	
@@ -343,7 +340,7 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            fail("Caught unexpected ValidationException: " & e.toString());
 	        } catch (java.lang.Exception e) {
-	            e.printStackTrace(System.err);
+	            e.printStackTrace(newJava("java.lang.System").err);
 	            fail("Caught unexpected exception: " & e.toString());
 	        }
 		</cfscript> 
@@ -357,9 +354,7 @@
 
 	<cffunction access="public" returntype="void" name="tesAddandGetAttributes" output="false">
 		<cfscript>
-			System = createObject("java", "java.lang.System");
-
-	        local.ctok = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI);    
+	        local.ctok = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI);    
 	        local.origAttrs = "";
 	
 	        try {
@@ -378,7 +373,7 @@
 	        }
 	        try {
 	            local.token = local.ctok.getToken();
-	            local.ctok = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init(ESAPI=instance.ESAPI, token=local.token);
+	            local.ctok = new cfesapi.org.owasp.esapi.crypto.CryptoToken(ESAPI=instance.ESAPI, token=local.token);
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
 	            fail("Caught unexpected EncryptionException: " & e.toString());
 	        }
@@ -393,7 +388,7 @@
 	        } catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
 	            ;   // Success
 	        } catch (java.lang.Exception e) {
-	            e.printStackTrace(System.err);
+	            e.printStackTrace(newJava("java.lang.System").err);
 	            fail("Caught unexpected exception: " & e.toString());
 	        }
 	        
@@ -401,7 +396,7 @@
 	        local.ctok2 = "";
 	        try {
 	            local.ctok.clearAttributes();     // Clear any attributes
-	            local.ctok2 = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoToken").init( ESAPI=instance.ESAPI, token=local.ctok.getToken() );
+	            local.ctok2 = new cfesapi.org.owasp.esapi.crypto.CryptoToken( ESAPI=instance.ESAPI, token=local.ctok.getToken() );
 	        } catch (cfesapi.org.owasp.esapi.errors.EncryptionException e) {
 	            fail("Unexpected EncryptionException");
 	        }
@@ -420,11 +415,9 @@
 	<cffunction access="private" returntype="void" name="nap" output="false" hint="Sleep n seconds.">
 		<cfargument type="numeric" name="n" required="true">
 		<cfscript>
-			System = createObject("java", "java.lang.System");
-
 	        try {
-	            System.out.println("Sleeping " & n & " seconds...");
-	            createObject("java", "java.lang.Thread").sleep( n * 1000 );
+	            newJava("java.lang.System").out.println("Sleeping " & n & " seconds...");
+	            newJava("java.lang.Thread").sleep( n * 1000 );
 	        } catch (java.lang.InterruptedException e) {
 	            ;   // Ignore
 	        }

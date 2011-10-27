@@ -43,9 +43,6 @@
  */
 component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.SecurityConfiguration" {
 
-	// imports
-	System = createObject("java", "java.lang.System");
-	
 	instance.ESAPI = "";
 
 	instance.properties = "";
@@ -168,7 +165,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	/*
 	 * Absolute path to the user.home. No longer includes the ESAPI portion as it used to.
 	 */
-	instance.userHome = System.getProperty("user.home");
+	instance.userHome = newJava("java.lang.System").getProperty("user.home");
 	
 	/*
 	 * Absolute path to the customDirectory
@@ -324,24 +321,23 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		return local.key;
 	}
 	
-	public String function getResourceDirectory() {
-		return instance.resourceDirectory;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
 	
 	public void function setResourceDirectory(required String dir) {
-		instance.resourceDirectory = arguments.dir;
-		logSpecial("Reset resource directory to: " & arguments.dir);
-	
-		// reload configuration if necessary
-		try {
-			loadConfiguration();
-		}
-		catch(java.io.IOException e) {
-			logSpecial("Failed to load security configuration from " & arguments.dir, e);
+		// check whether we are changing this so we do not reload configuration unless we have to
+		if (instance.resourceDirectory != arguments.dir) {
+			instance.resourceDirectory = arguments.dir;
+			logSpecial("Reset resource directory to: " & arguments.dir);
+		
+			// reload configuration if necessary
+			try {
+				loadConfiguration();
+			}
+			catch(java.io.IOException e) {
+				logSpecial("Failed to load security configuration from " & arguments.dir, e);
+			}
 		}
 	}
 	
@@ -390,7 +386,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	}
 	
 	private function loadPropertiesFromStream(required input, required String name) {
-		local.config = createObject("java", "java.util.Properties").init();
+		local.config = newJava("java.util.Properties").init();
 		try {
 			local.config.load(arguments.input);
 			logSpecial("Loaded '" & arguments.name & "' properties file");
@@ -504,17 +500,13 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		try {
 			local.f = getResourceFile(arguments.filename);
 			if(!isNull(local.f) && local.f.exists()) {
-				return createObject("java", "java.io.FileInputStream").init(local.f);
-			}
-			else {
-				writedump(var=local.f,abort=true);
+				return newJava("java.io.FileInputStream").init(local.f);
 			}
 		}
 		catch(java.lang.Exception e) {
-			writedump(var=e,abort=true);
 		}
 		
-		throwError(createObject("java", "java.io.FileNotFoundException").init(arguments.filename & " file was not found."));
+		throwError(newJava("java.io.FileNotFoundException").init(arguments.filename & " file was not found."));
 	}
 	
 	/**
@@ -522,10 +514,6 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	 */
 	
 	public function getResourceFile(required String filename) {
-		// imports
-		ClassLoader = createObject("java", "java.lang.ClassLoader");
-		JavaFile = createObject("java", "java.io.File");
-		
 		logSpecial("Attempting to load " & arguments.filename & " as resource file via file I/O.");
 	
 		if(arguments.filename == "") {
@@ -542,7 +530,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		}
 	
 		if(fileExists(local.fileLocation)) {
-			local.f = JavaFile.init(local.fileLocation);
+			local.f = newJava("java.io.File").init(local.fileLocation);
 			if(local.f.exists()) {
 				logSpecial("Found in SystemResource Directory/resourceDirectory: " & local.f.getAbsolutePath());
 				return local.f;
@@ -565,14 +553,14 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 			// the string        "null/.esapi"        which surely is not intended.
 		}
 		// First look under ".esapi" (for reasons of backward compatibility).
-		local.f = JavaFile.init(local.homeDir & "/.esapi", arguments.filename);
+		local.f = newJava("java.io.File").init(local.homeDir & "/.esapi", arguments.filename);
 		if(local.f.canRead()) {
 			logSpecial("[Compatibility] Found in 'user.home' directory: " & local.f.getAbsolutePath());
 			return local.f;
 		}
 		else {
 			// Didn't find it under old directory ".esapi" so now look under the "esapi" directory.
-			local.f = JavaFile.init(local.homeDir & "/esapi", arguments.filename);
+			local.f = newJava("java.io.File").init(local.homeDir & "/esapi", arguments.filename);
 			if(local.f.canRead()) {
 				logSpecial("Found in 'user.home' directory: " & local.f.getAbsolutePath());
 				return local.f;
@@ -583,7 +571,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		}
 
 		// third, fallback to the default configuration directory
-		local.f = JavaFile.init(instance.configurationDirectory, arguments.filename);
+		local.f = newJava("java.io.File").init(instance.configurationDirectory, arguments.filename);
 		if(!isNull(instance.configurationDirectory) && local.f.canRead()) {
 			logSpecial("Found in configuration directory: " & local.f.getAbsolutePath());
 			return local.f;
@@ -606,7 +594,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		local.result = "";
 		local.in = "";
 	
-		local.loaders = new ClassLoader(Thread.currentThread().getContextClassLoader(), ClassLoader.getSystemClassLoader(), getClass().getClassLoader());
+		local.loaders = newJava("java.lang.ClassLoader").init(Thread.currentThread().getContextClassLoader(), newJava("java.lang.ClassLoader").getSystemClassLoader(), getClass().getClassLoader());
 		local.classLoaderNames = ["current thread context class loader", 
 	                            "system class loader",
 	                            "class loader for DefaultSecurityConfiguration class"];
@@ -646,7 +634,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 				
 					// now load the properties
 					if(!isNull(local.in)) {
-						local.result = createObject("java", "java.util.Properties").init();
+						local.result = newJava("java.util.Properties").init();
 						local.result.load(local.in);// Can throw IOException
 						logSpecial("SUCCESSFULLY LOADED " & arguments.fileName & " via the CLASSPATH from '" & local.currentClasspathSearchLocation & "' using " & local.classLoaderNames[i] & "!");
 						break;// Outta here since we've found and loaded it.
@@ -684,11 +672,11 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	 */
 	
 	private void function logSpecial(required String message, e) {
-		local.msg = createObject("java", "java.lang.StringBuffer").init(javaCast("string", arguments.message));
+		local.msg = newJava("java.lang.StringBuffer").init(javaCast("string", arguments.message));
 		if(!isNull(arguments.e)) {
 			local.msg.append(" Exception was: ").append(arguments.e.toString());
 		}
-		System.out.println(local.msg.toString());
+		newJava("java.lang.System").out.println(local.msg.toString());
 		// if ( e != null) e.printStackTrace();// TODO ??? Do we want this?
 	}
 	
@@ -910,7 +898,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	
 	public function getUploadDirectory() {
 		local.dir = getESAPIProperty(this.UPLOAD_DIRECTORY, "UploadDir");
-		return createObject("java", "java.io.File").init(local.dir);
+		return newJava("java.io.File").init(local.dir);
 	}
 	
 	/**
@@ -918,8 +906,8 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	 */
 	
 	public function getUploadTempDirectory() {
-		local.dir = getESAPIProperty(this.UPLOAD_TEMP_DIRECTORY, System.getProperty("java.io.tmpdir", "UploadTempDir"));
-		return createObject("java", "java.io.File").init(local.dir);
+		local.dir = getESAPIProperty(this.UPLOAD_TEMP_DIRECTORY, newJava("java.lang.System").getProperty("java.io.tmpdir", "UploadTempDir"));
+		return newJava("java.io.File").init(local.dir);
 	}
 	
 	/**
@@ -957,31 +945,29 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	 */
 	
 	public numeric function getLogLevel() {
-		Logger = createObject("java", "org.owasp.esapi.Logger");
-		
 		local.level = getESAPIProperty(this.LOG_LEVEL, "WARNING");
 	
 		if(local.level.equalsIgnoreCase("OFF"))
-			return Logger.OFF;
+			return newJava("org.owasp.esapi.Logger").OFF;
 		if(local.level.equalsIgnoreCase("FATAL"))
-			return Logger.FATAL;
+			return newJava("org.owasp.esapi.Logger").FATAL;
 		if(local.level.equalsIgnoreCase("ERROR"))
-			return Logger.ERROR;
+			return newJava("org.owasp.esapi.Logger").ERROR;
 		if(local.level.equalsIgnoreCase("WARNING"))
-			return Logger.WARNING;
+			return newJava("org.owasp.esapi.Logger").WARNING;
 		if(local.level.equalsIgnoreCase("INFO"))
-			return Logger.INFO;
+			return newJava("org.owasp.esapi.Logger").INFO;
 		if(local.level.equalsIgnoreCase("DEBUG"))
-			return Logger.DEBUG;
+			return newJava("org.owasp.esapi.Logger").DEBUG;
 		if(local.level.equalsIgnoreCase("TRACE"))
-			return Logger.TRACE;
+			return newJava("org.owasp.esapi.Logger").TRACE;
 		if(local.level.equalsIgnoreCase("ALL"))
-			return Logger.ALL;
+			return newJava("org.owasp.esapi.Logger").ALL;
 	
 		// This error is NOT logged the normal way because the logger constructor calls getLogLevel() and if this error occurred it would cause
 		// an infinite loop.
 		logSpecial("The LOG-LEVEL property in the ESAPI properties file has the unrecognized value: " & local.level & ". Using default: WARNING");
-		return Logger.WARNING;// Note: The default logging level is WARNING.
+		return newJava("org.owasp.esapi.Logger").WARNING;// Note: The default logging level is WARNING.
 	}
 	
 	/**
@@ -1129,7 +1115,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		if(isNull(local.value) || local.value.equals(""))
 			return "";
 		try {
-			local.q = createObject("java", "java.util.regex.Pattern").compile(local.value);
+			local.q = newJava("java.util.regex.Pattern").compile(local.value);
 			instance.patternCache.put(local.value, local.q);
 			return local.q;
 		}
@@ -1145,9 +1131,9 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	 */
 	
 	public function getWorkingDirectory() {
-		local.dir = getESAPIProperty(this.WORKING_DIRECTORY, System.getProperty("user.dir"));
+		local.dir = getESAPIProperty(this.WORKING_DIRECTORY, newJava("java.lang.System").getProperty("user.dir"));
 		if(!isNull(local.dir)) {
-			return createObject("java", "java.io.File").init(local.dir);
+			return newJava("java.io.File").init(local.dir);
 		}
 		return "";
 	}

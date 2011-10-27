@@ -22,11 +22,24 @@ component  {
 	}
 	
 	/* private methods */
+	instance.javaCache = {};
+
+	/**
+	 * Returns a reference to the specified Java class.
+	 * Internally, this stores the reference for reuse to save on the number of classes created per request.
+	 */
+	
+	private function newJava(required classpath) {
+		if(!structKeyExists(instance.javaCache, arguments.classpath)) {
+			instance.javaCache[arguments.classpath] = createObject("java", arguments.classpath);
+		}
+		return instance.javaCache[arguments.classpath];
+	}
 	
 	private void function assert(required boolean boolean_expression, 
 	                             String string_expression) {
 		if(!arguments.boolean_expression) {
-			throw(object=createObject("java", "java.lang.AssertionError").init(arguments.string_expression));
+			throw(object=newJava("java.lang.AssertionError").init(arguments.string_expression));
 		}
 	}
 	

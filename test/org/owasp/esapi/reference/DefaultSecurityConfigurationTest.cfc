@@ -15,15 +15,11 @@
  */
 component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
-	// imports
-	JavaProperties = createObject("java", "java.util.Properties");
-	Logger = createObject("java", "org.owasp.esapi.Logger");
-	
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
 	private cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration function createWithProperty(required String key, 
 	                                                                                                   required String val) {
-		local.properties = JavaProperties.init();
+		local.properties = newJava("java.util.Properties").init();
 		local.properties.setProperty(javaCast("string", arguments.key), javaCast("string", arguments.val));
 		return new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, local.properties);
 	}
@@ -40,7 +36,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testGetLogImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_LOG_IMPLEMENTATION, local.secConf.getLogImplementation());
 	
 		local.expected = "TestLogger";
@@ -52,7 +48,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testAuthenticationImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_AUTHENTICATION_IMPLEMENTATION, local.secConf.getAuthenticationImplementation());
 	
 		local.expected = "TestAuthentication";
@@ -64,7 +60,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testEncoderImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_ENCODER_IMPLEMENTATION, local.secConf.getEncoderImplementation());
 	
 		local.expected = "TestEncoder";
@@ -76,7 +72,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testAccessControlImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_ACCESS_CONTROL_IMPLEMENTATION, local.secConf.getAccessControlImplementation());
 	
 		local.expected = "TestAccessControl";
@@ -88,7 +84,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testEncryptionImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_ENCRYPTION_IMPLEMENTATION, local.secConf.getEncryptionImplementation());
 	
 		local.expected = "TestEncryption";
@@ -100,7 +96,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testIntrusionDetectionImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_INTRUSION_DETECTION_IMPLEMENTATION, local.secConf.getIntrusionDetectionImplementation());
 	
 		local.expected = "TestIntrusionDetection";
@@ -112,7 +108,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testRandomizerImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_RANDOMIZER_IMPLEMENTATION, local.secConf.getRandomizerImplementation());
 	
 		local.expected = "TestRandomizer";
@@ -124,7 +120,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testExecutorImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_EXECUTOR_IMPLEMENTATION, local.secConf.getExecutorImplementation());
 	
 		local.expected = "TestExecutor";
@@ -136,7 +132,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testHTTPUtilitiesImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_HTTP_UTILITIES_IMPLEMENTATION, local.secConf.getHTTPUtilitiesImplementation());
 	
 		local.expected = "TestHTTPUtilities";
@@ -148,7 +144,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testValidationImplementation() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_VALIDATOR_IMPLEMENTATION, local.secConf.getValidationImplementation());
 	
 		local.expected = "TestValidation";
@@ -160,7 +156,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testGetEncryptionKeyLength() {
 		// test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(128, local.secConf.getEncryptionKeyLength());
 	
 		local.expected = 256;
@@ -172,7 +168,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testGetKDFPseudoRandomFunction() {
 		// test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals("HmacSHA256", local.secConf.getKDFPseudoRandomFunction());
 	
 		local.expected = "HmacSHA1";
@@ -184,7 +180,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testGetMasterSalt() {
 		try {
-			local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+			local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 			local.secConf.getMasterSalt();
 			Assert.fail("Expected Exception not thrown");
 		}
@@ -194,23 +190,23 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 		
 		local.salt = "53081";
 		local.property = instance.ESAPI.encoder().encodeForBase64(local.salt.getBytes(), false);
-		local.properties = JavaProperties.init();
+		local.properties = newJava("java.util.Properties").init();
 		local.properties.setProperty(instance.ESAPI.securityConfiguration().MASTER_SALT, local.property);
 		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, local.properties);
-		Assert.assertEquals(local.salt, createObject("java", "java.lang.String").init(local.secConf.getMasterSalt()));
+		Assert.assertEquals(local.salt, newJava("java.lang.String").init(local.secConf.getMasterSalt()));
 	}
 	
 	//@Test
 	
 	public void function testGetAllowedExecutables() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		local.allowedExecutables = local.secConf.getAllowedExecutables();
 	
 		//is this really what should be returned? what about an empty list?
 		Assert.assertEquals(1, arrayLen(local.allowedExecutables));
 		Assert.assertEquals("", local.allowedExecutables[1]);
 	
-		local.properties = JavaProperties.init();
+		local.properties = newJava("java.util.Properties").init();
 		local.properties.setProperty(instance.ESAPI.securityConfiguration().APPROVED_EXECUTABLES, "/bin/bzip2,/bin/diff, /bin/cvs");
 		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, local.properties);
 		local.allowedExecutables = local.secConf.getAllowedExecutables();
@@ -227,11 +223,11 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testGetAllowedFileExtensions() {
 	
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		local.allowedFileExtensions = local.secConf.getAllowedFileExtensions();
 		Assert.assertFalse(arrayLen(local.allowedFileExtensions) == 0);
 	
-		local.properties = JavaProperties.init();
+		local.properties = newJava("java.util.Properties").init();
 		local.properties.setProperty(instance.ESAPI.securityConfiguration().APPROVED_UPLOAD_EXTENSIONS, ".txt,.xml,.html,.png");
 		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, local.properties);
 		local.allowedFileExtensions = local.secConf.getAllowedFileExtensions();
@@ -242,7 +238,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	//@Test
 	
 	public void function testGetAllowedFileUploadSize() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		//assert that the default is of some reasonable size
 		Assert.assertTrue(local.secConf.getAllowedFileUploadSize() > (1024 * 100));
 	
@@ -255,11 +251,11 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testGetParameterNames() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals("password", local.secConf.getPasswordParameterName());
 		Assert.assertEquals("username", local.secConf.getUsernameParameterName());
 	
-		local.properties = JavaProperties.init();
+		local.properties = newJava("java.util.Properties").init();
 		local.properties.setProperty(instance.ESAPI.securityConfiguration().PASSWORD_PARAMETER_NAME, "j_password");
 		local.properties.setProperty(instance.ESAPI.securityConfiguration().USERNAME_PARAMETER_NAME, "j_username");
 		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, local.properties);
@@ -271,7 +267,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	
 	public void function testGetEncryptionAlgorithm() {
 		//test the default
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals("AES", local.secConf.getEncryptionAlgorithm());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().ENCRYPTION_ALGORITHM, "3DES");
@@ -281,10 +277,10 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	//@Test
 	
 	public void function testGetCipherXProperties() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals("AES/CBC/PKCS5Padding", local.secConf.getCipherTransformation());
 		//Assert.assertEquals("AES/CBC/PKCS5Padding", local.secConf.getC);
-		local.properties = JavaProperties.init();
+		local.properties = newJava("java.util.Properties").init();
 		local.properties.setProperty(instance.ESAPI.securityConfiguration().CIPHER_TRANSFORMATION_IMPLEMENTATION, "Blowfish/CFB/ISO10126Padding");
 		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, local.properties);
 		Assert.assertEquals("Blowfish/CFB/ISO10126Padding", local.secConf.getCipherTransformation());
@@ -299,7 +295,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	//@Test
 	
 	public void function testIV() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals("random", local.secConf.getIVType());
 		try {
 			local.secConf.getFixedIV();
@@ -309,7 +305,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 			Assert.assertFalse(isNull(ce.message));
 		}
 		
-		local.properties = JavaProperties.init();
+		local.properties = newJava("java.util.Properties").init();
 		local.properties.setProperty(instance.ESAPI.securityConfiguration().IV_TYPE, "fixed");
 		local.properties.setProperty(instance.ESAPI.securityConfiguration().FIXED_IV, "ivValue");
 		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, local.properties);
@@ -337,7 +333,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	//@Test
 	
 	public void function testGetAllowMultipleEncoding() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertFalse(local.secConf.getAllowMultipleEncoding());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().ALLOW_MULTIPLE_ENCODING, "yes");
@@ -353,7 +349,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	//@Test
 	
 	public void function testGetDefaultCanonicalizationCodecs() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertFalse(local.secConf.getDefaultCanonicalizationCodecs().isEmpty());
 	
 		local.property = "org.owasp.esapi.codecs.TestCodec1,org.owasp.esapi.codecs.TestCodec2";
@@ -364,7 +360,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	//@Test
 	
 	public void function testGetDisableIntrusionDetection() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertFalse(local.secConf.getDisableIntrusionDetection());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().DISABLE_INTRUSION_DETECTION, "TRUE");
@@ -380,32 +376,32 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	//@Test
 	
 	public void function testGetLogLevel() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
-		Assert.assertEquals(Logger.WARNING, local.secConf.getLogLevel());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
+		Assert.assertEquals(newJava("org.owasp.esapi.Logger").WARNING, local.secConf.getLogLevel());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().LOG_LEVEL, "trace");
-		Assert.assertEquals(Logger.TRACE, local.secConf.getLogLevel());
+		Assert.assertEquals(newJava("org.owasp.esapi.Logger").TRACE, local.secConf.getLogLevel());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().LOG_LEVEL, "Off");
-		Assert.assertEquals(Logger.OFF, local.secConf.getLogLevel());
+		Assert.assertEquals(newJava("org.owasp.esapi.Logger").OFF, local.secConf.getLogLevel());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().LOG_LEVEL, "all");
-		Assert.assertEquals(Logger.ALL, local.secConf.getLogLevel());
+		Assert.assertEquals(newJava("org.owasp.esapi.Logger").ALL, local.secConf.getLogLevel());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().LOG_LEVEL, "DEBUG");
-		Assert.assertEquals(Logger.DEBUG, local.secConf.getLogLevel());
+		Assert.assertEquals(newJava("org.owasp.esapi.Logger").DEBUG, local.secConf.getLogLevel());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().LOG_LEVEL, "info");
-		Assert.assertEquals(Logger.INFO, local.secConf.getLogLevel());
+		Assert.assertEquals(newJava("org.owasp.esapi.Logger").INFO, local.secConf.getLogLevel());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().LOG_LEVEL, "ERROR");
-		Assert.assertEquals(Logger.ERROR, local.secConf.getLogLevel());
+		Assert.assertEquals(newJava("org.owasp.esapi.Logger").ERROR, local.secConf.getLogLevel());
 	}
 	
 	//@Test
 	
 	public void function testGetLogFileName() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals("ESAPI_logging_file", local.secConf.getLogFileName());
 	
 		local.secConf = createWithProperty(instance.ESAPI.securityConfiguration().LOG_FILE_NAME, "log.txt");
@@ -415,7 +411,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 	//@Test
 	
 	public void function testGetMaxLogFileSize() {
-		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, JavaProperties.init());
+		local.secConf = new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, newJava("java.util.Properties").init());
 		Assert.assertEquals(instance.ESAPI.securityConfiguration().DEFAULT_MAX_LOG_FILE_SIZE, local.secConf.getMaxLogFileSize());
 	
 		local.maxLogSize = (1024 * 1000);

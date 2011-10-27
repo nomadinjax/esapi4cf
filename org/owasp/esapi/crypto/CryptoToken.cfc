@@ -22,14 +22,14 @@
 	    this.ANONYMOUS_USER = "<anonymous>";
 	    
 	    // Default expiration time
-	    static.DEFAULT_EXP_TIME = 5 * 60 * 1000;  // 5 min == 300000 milliseconds
-	    static.DELIM = ";";                     // field delimiter
-	    static.DELIM_CHAR = ';';                  // field delim as a char
-	    static.QUOTE_CHAR = '\';                 // char used to quote delimiters, '=' and itself.
+	    instance.DEFAULT_EXP_TIME = 5 * 60 * 1000;  // 5 min == 300000 milliseconds
+	    instance.DELIM = ";";                     // field delimiter
+	    instance.DELIM_CHAR = ';';                  // field delim as a char
+	    instance.QUOTE_CHAR = '\';                 // char used to quote delimiters, '=' and itself.
 	    
 	    // OPEN ISSUE: Should we make these 2 regex's properties in ESAPI.properties???
-	    static.ATTR_NAME_REGEX = "[A-Za-z0-9_.-]+"; // One or more alphanumeric, underscore, periods, or hyphens.
-	    static.USERNAME_REGEX = "[a-z][a-z0-9_.@-]*";
+	    instance.ATTR_NAME_REGEX = "[A-Za-z0-9_.-]+"; // One or more alphanumeric, underscore, periods, or hyphens.
+	    instance.USERNAME_REGEX = "[a-z][a-z0-9_.@-]*";
 	    
 	    instance.ESAPI = "";
 	    instance.logger = "";
@@ -40,8 +40,8 @@
         // But this might make debugging a bit easier, so why not?
 	    instance.attributes = {};
 	    instance.secretKey = "";
-	    instance.attrNameRegex = createObject("java", "java.util.regex.Pattern").compile(static.ATTR_NAME_REGEX);
-	    instance.userNameRegex = createObject("java", "java.util.regex.Pattern").compile(static.USERNAME_REGEX);
+	    instance.attrNameRegex = newJava("java.util.regex.Pattern").compile(instance.ATTR_NAME_REGEX);
+	    instance.userNameRegex = newJava("java.util.regex.Pattern").compile(instance.USERNAME_REGEX);
 	</cfscript>
  
 	<cffunction access="public" returntype="CryptoToken" name="init" output="false" hint="Create a cryptographic token using specified SecretKey.">
@@ -63,14 +63,13 @@
 				try {
 		            decryptToken(instance.secretKey, arguments.token);
 		        } catch (EncodingException e) {
-		            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Decryption of token failed. Token improperly encoded.", "Can't decrypt token because not correctly encoded.", e);
-	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+		            throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, "Decryption of token failed. Token improperly encoded.", "Can't decrypt token because not correctly encoded.", e));
 		        }
 		        assert(!isNull(instance.username), "Programming error: Decrypted token found username null.");
 		        assert(instance.expirationTime > 0, "Programming error: Decrypted token found expirationTime <= 0.");
 			}
 			else {
-		        instance.expirationTime = javaCast("long", getTickCount() + static.DEFAULT_EXP_TIME);
+		        instance.expirationTime = javaCast("long", getTickCount() + instance.DEFAULT_EXP_TIME);
 			}
 	        
 	        return this;
@@ -98,8 +97,7 @@
 	        if ( local.userNameChecker.matches() ) {
 	            instance.username = local.userAcct;
 	        } else {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, "Invalid user account name encountered.", "User account name " & arguments.userAccountName & " does not match regex " & static.USERNAME_REGEX & " after conversion to lowercase.");
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, "Invalid user account name encountered.", "User account name " & arguments.userAccountName & " does not match regex " & instance.USERNAME_REGEX & " after conversion to lowercase."));
 	        }
         </cfscript> 
 	</cffunction>
@@ -120,7 +118,7 @@
 		        local.curTime = getTickCount();
 		        local.expTime = arguments.expirationDate.getTime();
 		        if ( local.expTime <= local.curTime ) {
-		            throw(object=createObject("java", "java.lang.IllegalArgumentException").init("Expiration date must be after current date/time."));
+		            throwError(newJava("java.lang.IllegalArgumentException").init("Expiration date must be after current date/time."));
 		        }
 		        instance.expirationTime = local.expTime;
 			}
@@ -131,7 +129,7 @@
 		        // this would result in setting the expiration time prior to the
 		        // current time, hence it would already be expired.
 		        if ( local.intervalMillis <= 0) {
-		            throw(object=createObject("java", "java.lang.IllegalArgumentException").init("intervalSecs argument, converted to millisecs, must be > 0."));
+		            throwError(newJava("java.lang.IllegalArgumentException").init("intervalSecs argument, converted to millisecs, must be > 0."));
 		        }
 		        // Check for arithmetic overflow here. In reality, this condition
 		        // should never happen, but we want to avoid it--even theoretically--
@@ -141,7 +139,7 @@
 		        instance.expirationTime = javaCast("long", local.now + local.intervalMillis);
 			}
 			else {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("You must specify either an expirationDate or intervalSecs argument."));
+				throwError(newJava("java.lang.IllegalArgumentException").init("You must specify either an expirationDate or intervalSecs argument."));
 			}
 		</cfscript> 
 	</cffunction>
@@ -157,7 +155,7 @@
 
 	<cffunction access="public" returntype="Date" name="getExpirationDate" output="false" hint="Return the expiration time as a Date.">
 		<cfscript>
-       		return createObject("component", "java.util.Date").init( getExpiration() );
+       		return newJava("java.util.Date").init( getExpiration() );
         </cfscript> 
 	</cffunction>
 
@@ -170,15 +168,13 @@
 	            // CHECKME: Should this be an IllegalArgumentException instead? I
 	            // would prefer an assertion here and state this as a precondition
 	            // in the Javadoc.
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, "Null or empty attribute NAME encountered", "Attribute NAMES may not be null or empty string.");
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, "Null or empty attribute NAME encountered", "Attribute NAMES may not be null or empty string."));
 	        }
 	        if ( isNull(arguments.value) ) {
 	            // CHECKME: Should this be an IllegalArgumentException instead? I
 	            // would prefer an assertion here and state this as a precondition
 	            // in the Javadoc.
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, "Null attribute VALUE encountered for attr name " & arguments.name, "Attribute VALUE may not be null; attr name: " & arguments.name);            
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, "Null attribute VALUE encountered for attr name " & arguments.name, "Attribute VALUE may not be null; attr name: " & arguments.name));            
 	        }
 	        // NOTE: OTOH, it *is* VALID if the _value_ is empty! Null values cause too much trouble
 	        // to make it worth the effort of getting it to work consistently.
@@ -188,8 +184,7 @@
 	        if ( local.attrNameChecker.matches() ) {
 	            instance.attributes.put(arguments.name, arguments.value);
 	        } else {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, "Invalid attribute name encountered.", "Attribute name " & arguments.name & " does not match regex " & static.ATTR_NAME_REGEX);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, "Invalid attribute name encountered.", "Attribute name " & arguments.name & " does not match regex " & instance.ATTR_NAME_REGEX));
 	        }
         </cfscript> 
 	</cffunction>
@@ -248,7 +243,7 @@
 		<cfargument type="numeric" name="additionalSecs" required="true">
 		<cfscript>
 	        if ( arguments.additionalSecs < 0) {
-	            throw(object=createObject("java", "java.lang.IllegalArgumentException").init("additionalSecs argument must be >= 0."));
+	            throwError(newJava("java.lang.IllegalArgumentException").init("additionalSecs argument must be >= 0."));
 	        }
 	        
 	        // Avoid integer overflow. This could happen if one first calls
@@ -264,8 +259,7 @@
 	        if ( isExpired() ) {
 	            // Too bad there is no ProcrastinationException ;-)
 	            instance.expirationTime = local.curExpTime;    // Restore the original value (which still may be expired.
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init(instance.ESAPI, "Token timed out.", "Cryptographic token not increased to sufficient value to prevent timeout.");
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(instance.ESAPI, "Token timed out.", "Cryptographic token not increased to sufficient value to prevent timeout."));
 	        }
 	        // Don't change anything else (user acct name, attributes, skey, etc.)
 	        return this.getToken();
@@ -276,15 +270,15 @@
 	<cffunction access="private" returntype="String" name="createEncryptedToken" output="false" hint="Create the actual encrypted token based on the specified SecretKey. This method will ensure that the decrypted token always ends with an unquoted delimiter.">
 		<cfargument type="any" name="skey" required="true" hint="javax.crypto.SecretKey">
 		<cfscript>
-	        local.sb = createObject("java", "java.lang.StringBuilder").init( getUserAccountName() & static.DELIM);
+	        local.sb = newJava("java.lang.StringBuilder").init( getUserAccountName() & instance.DELIM);
 	        // CHECKME: Should we check here to see if token has already expired
 	        //          and refuse to encrypt it (by throwing exception) if it has???
 	        //          If so, then updateToken() should also be revisited.
-	        local.sb.append( getExpiration() ).append( static.DELIM );
+	        local.sb.append( getExpiration() ).append( instance.DELIM );
 	        local.sb.append( getQuotedAttributes() );
 	        
 	        local.encryptor = instance.ESAPI.encryptor();
-	        local.ct = local.encryptor.encrypt(arguments.skey, createObject("component", "cfesapi.org.owasp.esapi.crypto.PlainText").init(instance.ESAPI, local.sb.toString() ) );
+	        local.ct = local.encryptor.encrypt(arguments.skey, new cfesapi.org.owasp.esapi.crypto.PlainText(instance.ESAPI, local.sb.toString() ) );
 	        local.b64 = instance.ESAPI.encoder().encodeForBase64(local.ct.asPortableSerializedByteArray(), false);
 	        return local.b64;
         </cfscript> 
@@ -293,7 +287,7 @@
 
 	<cffunction access="private" returntype="String" name="getQuotedAttributes" output="false" hint="Return a string of all the attributes, properly quoted. This is used in creating the encrypted token. Note that this method ensures that the quoted attribute string always ends with an (quoted) delimiter.">
 		<cfscript>
-	        local.sb = createObject("java", "java.lang.StringBuilder").init();
+	        local.sb = newJava("java.lang.StringBuilder").init();
 	        local.keyValueSet = instance.attributes.entrySet();
 	        local.it = local.keyValueSet.iterator();
 	        while( local.it.hasNext() ) {
@@ -301,8 +295,8 @@
 	            local.key = local.entry.getKey();
 	            local.value = local.entry.getValue();
 	            // Because attribute values may be confidential, we don't want to log them!
-	            instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_UNSPECIFIED, "   " & local.key & " -> <not shown>");
-	            local.sb.append(local.key & "=" & quoteAttributeValue( local.value ) & static.DELIM);
+	            instance.logger.debug(newJava("org.owasp.esapi.Logger").EVENT_UNSPECIFIED, "   " & local.key & " -> <not shown>");
+	            local.sb.append(local.key & "=" & quoteAttributeValue( local.value ) & instance.DELIM);
 	        }
 	        return local.sb.toString();
         </cfscript> 
@@ -323,12 +317,12 @@
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
 	        assert(!isNull(arguments.value), "Program error: Value should not be null."); // Empty is OK.
-	        local.sb = createObject("java", "java.lang.StringBuilder").init();
+	        local.sb = newJava("java.lang.StringBuilder").init();
 	        local.charArray = value.toCharArray();
 	        for( local.i = 1; local.i <= arrayLen(local.charArray); local.i++ ) {
 	            local.c = local.charArray[local.i];
-	            if ( local.c == static.QUOTE_CHAR || local.c == "=" || local.c == static.DELIM_CHAR ) {
-	                local.sb.append(static.QUOTE_CHAR).append(local.c);
+	            if ( local.c == instance.QUOTE_CHAR || local.c == "=" || local.c == instance.DELIM_CHAR ) {
+	                local.sb.append(instance.QUOTE_CHAR).append(local.c);
 	            } else {
 	                local.sb.append(local.c);
 	            }
@@ -341,11 +335,11 @@
 	<cffunction access="private" returntype="String" name="parseQuotedValue" output="false" hint="Parse the possibly quoted value and return the unquoted value.">
 		<cfargument type="String" name="quotedValue" required="true">
 		<cfscript>
-	        local.sb = createObject("java", "java.lang.StringBuilder").init();
+	        local.sb = newJava("java.lang.StringBuilder").init();
 	        local.charArray = quotedValue.toCharArray();
 	        for( local.i = 1; local.i <= arrayLen(local.charArray); local.i++ ) {
 	            local.c = local.charArray[local.i];
-	            if ( local.c == static.QUOTE_CHAR ) {
+	            if ( local.c == instance.QUOTE_CHAR ) {
 	                local.i++;    // Skip past quote character.
 	                local.sb.append( local.charArray[local.i] );
 	            } else {
@@ -371,14 +365,13 @@
 	            //          case like someone failing to apply some other type of encoding
 	            //          consistently (e.g., URL encoding), in which case logging this should
 	            //          make this pretty obvious once a few of these are logged.
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Invalid base64 encoding.", "Invalid base64 encoding. Encrypted token was: " & arguments.b64token);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.EncodingException(instance.ESAPI, "Invalid base64 encoding.", "Invalid base64 encoding. Encrypted token was: " & arguments.b64token));
 	        }
 	        local.ct = new CipherText(instance.ESAPI).fromPortableSerializedBytes(local.token);
 	        local.encryptor = instance.ESAPI.encryptor();
 	        local.pt = local.encryptor.decrypt(arguments.skey, local.ct);
 	        local.str = local.pt.toString();
-	        assert(local.str.endsWith(static.DELIM), "Programming error: Expecting decrypted token to end with delim char, " & static.DELIM_CHAR);
+	        assert(local.str.endsWith(instance.DELIM), "Programming error: Expecting decrypted token to end with delim char, " & instance.DELIM_CHAR);
 	        local.charArray = local.str.toCharArray();
 	        local.prevPos = -1;                // Position of previous unquoted delimiter.
 	        local.fieldNo = 0;
@@ -387,7 +380,7 @@
 	        for ( local.curPos = 1; local.curPos <= local.lastPos; local.curPos++ ) {
 	            local.quoted = false;
 	            local.curChar = local.charArray[local.curPos];
-	            if ( local.curChar == static.QUOTE_CHAR ) {
+	            if ( local.curChar == instance.QUOTE_CHAR ) {
 	                // Found a case where we have quoted character. We need to skip
 	                // over this and set the current character to the next character.
 	                local.curPos++;
@@ -397,10 +390,10 @@
 	                } else {
 	                    // Last position will always be a delimiter character that
 	                    // should be treated as unquoted.
-	                    local.curChar = static.DELIM_CHAR;
+	                    local.curChar = instance.DELIM_CHAR;
 	                }
 	            }
-	            if ( local.curChar == static.DELIM_CHAR && !local.quoted ) {
+	            if ( local.curChar == instance.DELIM_CHAR && !local.quoted ) {
 	                // We found an actual (unquoted) field delimiter.
 	                local.record = local.str.substring(local.prevPos + 1, local.curPos - 1);
 	                local.fields.add( local.record );
@@ -410,32 +403,30 @@
 	        }
 	        
 	        assert(local.fieldNo == arrayLen(local.fields), "Program error: Mismatch of delimited field count.");
-	        instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_UNSPECIFIED, "Found " & arrayLen(local.fields) & " fields.");
+	        instance.logger.debug(newJava("org.owasp.esapi.Logger").EVENT_UNSPECIFIED, "Found " & arrayLen(local.fields) & " fields.");
 	        assert(arrayLen(local.fields) >= 2, "Missing mandatory fields from decrypted token (username &/or expiration time).");
 	        local.username = local.fields[1].toLowerCase();
 	        local.expTime = local.fields[2];
-	        instance.expirationTime = createObject("java", "java.lang.Long").parseLong(local.expTime);
+	        instance.expirationTime = newJava("java.lang.Long").parseLong(local.expTime);
 	        
 	        for( local.i = 3; local.i <= arrayLen(local.fields); local.i++ ) {
 	            local.nvpair = local.fields[local.i];
 	            local.equalsAt = local.nvpair.indexOf("=");
 	            if ( local.equalsAt == -1 ) {
-	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Invalid attribute encountered in decrypted token.", "Malformed attribute name/value pair (" & local.nvpair & ") found in decrypted token.");
-	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	                throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, "Invalid attribute encountered in decrypted token.", "Malformed attribute name/value pair (" & local.nvpair & ") found in decrypted token."));
 	            }
 	            local.name = local.nvpair.substring(0, local.equalsAt);
 	            local.quotedValue = local.nvpair.substring(local.equalsAt + 1);
 	            local.value = parseQuotedValue( local.quotedValue );
 	            // Because attribute values may be confidential, we don't want to log them!
-	            instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_UNSPECIFIED, "Attribute[" & i & "]: name=" & local.name & ", value=<not shown>");
+	            instance.logger.debug(newJava("org.owasp.esapi.Logger").EVENT_UNSPECIFIED, "Attribute[" & i & "]: name=" & local.name & ", value=<not shown>");
 	
 	            // Check to make sure that attribute name is valid as per our regex.
 	            local.attrNameChecker = instance.attrNameRegex.matcher(local.name);
 	            if ( local.attrNameChecker.matches() ) {
 	                instance.attributes.put(local.name, local.value);
 	            } else {
-	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Invalid attribute name encountered in decrypted token.", "Invalid attribute name encountered in decrypted token; attribute name " & local.name & " does not match regex " & static.ATTR_NAME_REGEX);
-	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	                throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, "Invalid attribute name encountered in decrypted token.", "Invalid attribute name encountered in decrypted token; attribute name " & local.name & " does not match regex " & instance.ATTR_NAME_REGEX));
 	            }
 	            instance.attributes.put(local.name, local.value);
 	        }
@@ -454,7 +445,7 @@
 	        // Set up secretKeySpec for use for symmetric encryption and decryption,
 	        // and set up the public/private keys for asymmetric encryption /
 	        // decryption.
-	        return createObject("java", "javax.crypto.spec.SecretKeySpec").init(local.skey, arguments.encryptAlgorithm );
+	        return newJava("javax.crypto.spec.SecretKeySpec").init(local.skey, arguments.encryptAlgorithm );
         </cfscript> 
 	</cffunction>
 
@@ -464,10 +455,10 @@
 		<cfargument type="numeric" name="rightIntValue" required="true">
 		<cfscript>
 	        if ( arguments.rightIntValue > 0 && ( javaCast("long", arguments.leftLongValue + arguments.rightIntValue) < arguments.leftLongValue) ) {
-	            throw(object=createObject("java", "java.lang.ArithmeticException").init("Arithmetic overflow for addition."));
+	            throwError(newJava("java.lang.ArithmeticException").init("Arithmetic overflow for addition."));
 	        }
 	        if ( arguments.rightIntValue < 0 && ( javaCast("long", arguments.leftLongValue + arguments.rightIntValue) > arguments.leftLongValue) ) {
-	            throw(object=createObject("java", "java.lang.ArithmeticException").init("Arithmetic underflow for addition."));
+	            throwError(newJava("java.lang.ArithmeticException").init("Arithmetic underflow for addition."));
 	        }
         </cfscript> 
 	</cffunction>

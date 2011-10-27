@@ -30,7 +30,7 @@
 		/* The status. */
 		instance.status = 200;
 
-		instance.body = createObject("java", "java.lang.StringBuffer").init();
+		instance.body = newJava("java.lang.StringBuffer").init();
 
 		//instance.contentType = "text/html; charset=ISO-8895-1";
 	</cfscript>
@@ -104,8 +104,8 @@
 	<cffunction access="public" returntype="void" name="sendRedirect" output="false">
 		<cfargument type="String" name="location" required="true">
 		<cfscript>
-			instance.status = createObject("java", "javax.servlet.http.HttpServletResponse").SC_MOVED_PERMANENTLY;
-			instance.body = createObject("java", "java.lang.StringBuffer").init( "Redirect to " & arguments.location );
+			instance.status = newJava("javax.servlet.http.HttpServletResponse").SC_MOVED_PERMANENTLY;
+			instance.body = newJava("java.lang.StringBuffer").init( "Redirect to " & arguments.location );
 		</cfscript> 
 	</cffunction>
 

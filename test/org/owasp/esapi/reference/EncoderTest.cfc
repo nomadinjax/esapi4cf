@@ -18,11 +18,9 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 		
-		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
-		
-		static.PREFERRED_ENCODING = "UTF-8";
+		instance.PREFERRED_ENCODING = "UTF-8";
 	</cfscript>
  
 	<cffunction access="private" returntype="string" name="toUnicode" output="false" description="Convert Unicode in to string characters">
@@ -46,12 +44,12 @@
 
 	<cffunction access="public" returntype="void" name="testCanonicalize" output="false" hint="Test of canonicalize method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-			System.out.println("canonicalize");
+			newJava("java.lang.System").out.println("canonicalize");
 
 	        local.list = [];
 	        local.list.add( "HTMLEntityCodec" );
 		    local.list.add( "PercentCodec" );
-			local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( instance.ESAPI, local.list );
+			local.encoder = new cfesapi.org.owasp.esapi.reference.DefaultEncoder( instance.ESAPI, local.list );
 
 			// Test null paths
 			assertEquals( "", local.encoder.canonicalize(""));
@@ -168,8 +166,8 @@
 	        // javascript escape syntax
 	        local.js = [];
 	        local.js.add( "JavaScriptCodec" );
-	        local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( instance.ESAPI, local.js );
-	        System.out.println( "JavaScript Decoding" );
+	        local.encoder = new cfesapi.org.owasp.esapi.reference.DefaultEncoder( instance.ESAPI, local.js );
+	        newJava("java.lang.System").out.println( "JavaScript Decoding" );
 
 	        assertEquals( "\0", local.encoder.canonicalize("\0"));
 	        assertEquals( "\b", local.encoder.canonicalize("\b"));
@@ -196,8 +194,8 @@
 	        // be careful because some codecs see \0 as null byte
 	        local.css = [];
 	        local.css.add( "CSSCodec" );
-	        local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init( instance.ESAPI, local.css );
-	        System.out.println( "CSS Decoding" );
+	        local.encoder = new cfesapi.org.owasp.esapi.reference.DefaultEncoder( instance.ESAPI, local.css );
+	        newJava("java.lang.System").out.println( "CSS Decoding" );
 	        assertEquals( "<", local.encoder.canonicalize("\\3c"));  // add strings to prevent null byte
 	        assertEquals( "<", local.encoder.canonicalize("\\03c"));
 	        assertEquals( "<", local.encoder.canonicalize("\\003c"));
@@ -214,7 +212,7 @@
 
 	<cffunction access="public" returntype="void" name="testDoubleEncodingCanonicalization" output="false" hint="Test of canonicalize method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-			System.out.println("doubleEncodingCanonicalization");
+			newJava("java.lang.System").out.println("doubleEncodingCanonicalization");
 			local.encoder = instance.ESAPI.encoder();
 			
 			/* note these examples use the strict=false flag on canonicalize to allow
@@ -301,7 +299,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForHTML" output="false" hint="Test of encodeForHTML method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("encodeForHTML");
+	        newJava("java.lang.System").out.println("encodeForHTML");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForHTML(""));
 	        // test invalid characters are replaced with spaces
@@ -321,7 +319,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForHTMLAttribute" output="false" hint="Test of encodeForHTMLAttribute method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("encodeForHTMLAttribute");
+	        newJava("java.lang.System").out.println("encodeForHTMLAttribute");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForHTMLAttribute(""));
 	        assertEquals("&lt;script&gt;", local.encoder.encodeForHTMLAttribute("<script>"));
@@ -333,7 +331,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForCSS" output="false">
 		<cfscript>
-	        System.out.println("encodeForCSS");
+	        newJava("java.lang.System").out.println("encodeForCSS");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForCSS(""));
 	        assertEquals("\3c script\3e ", local.encoder.encodeForCSS("<script>"));
@@ -344,7 +342,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForJavascript" output="false" hint="Test of encodeForJavaScript method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("encodeForJavascript");
+	        newJava("java.lang.System").out.println("encodeForJavascript");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForJavaScript(""));
 	        assertEquals("\x3Cscript\x3E", local.encoder.encodeForJavaScript("<script>"));
@@ -366,7 +364,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForVBScript" output="false">
 		<cfscript>
-	        System.out.println("encodeForVBScript");
+	        newJava("java.lang.System").out.println("encodeForVBScript");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForVBScript(""));
 	        assertEquals( 'chrw(60)&"script"&chrw(62)', local.encoder.encodeForVBScript("<script>"));
@@ -380,7 +378,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForXPath" output="false" hint="Test of encodeForXPath method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("encodeForXPath");
+	        newJava("java.lang.System").out.println("encodeForXPath");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForXPath(""));
 	        assertEquals("&##x27;or 1&##x3d;1", local.encoder.encodeForXPath("'or 1=1"));
@@ -390,20 +388,18 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForSQL" output="false" hint="Test of encodeForSQL method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("encodeForSQL");
+	        newJava("java.lang.System").out.println("encodeForSQL");
 	        local.encoder = instance.ESAPI.encoder();
-			MySQLCodec = createObject("java", "org.owasp.esapi.codecs.MySQLCodec");
-			OracleCodec = createObject("java", "org.owasp.esapi.codecs.OracleCodec");
 
-	        local.mySQL1 = MySQLCodec.init( MySQLCodec.ANSI_MODE );
+	        local.mySQL1 = newJava("org.owasp.esapi.codecs.MySQLCodec").init( newJava("org.owasp.esapi.codecs.MySQLCodec").ANSI_MODE );
 	        assertEquals("", local.encoder.encodeForSQL(local.mySQL1, ""), "ANSI_MODE");
 	        assertEquals("Jeff'' or ''1''=''1", local.encoder.encodeForSQL(local.mySQL1, "Jeff' or '1'='1"), "ANSI_MODE");
 
-	        local.mySQL2 = MySQLCodec.init( MySQLCodec.MYSQL_MODE );
+	        local.mySQL2 = newJava("org.owasp.esapi.codecs.MySQLCodec").init( newJava("org.owasp.esapi.codecs.MySQLCodec").MYSQL_MODE );
 	        assertEquals("", local.encoder.encodeForSQL(local.mySQL2, ""), "MYSQL_MODE");
 	        assertEquals("Jeff\' or \'1\'\=\'1", local.encoder.encodeForSQL(local.mySQL2, "Jeff' or '1'='1"), "MYSQL_MODE");
 
-	        local.oracle = OracleCodec.init();
+	        local.oracle = newJava("org.owasp.esapi.codecs.OracleCodec").init();
 	        assertEquals("", local.encoder.encodeForSQL(local.oracle, ""), "Oracle");
 	        assertEquals("Jeff'' or ''1''=''1", local.encoder.encodeForSQL(local.oracle, "Jeff' or '1'='1"), "Oracle");
     	</cfscript> 
@@ -413,8 +409,7 @@
 	<cffunction access="public" returntype="void" name="testMySQLANSIModeQuoteInjection" output="false">
 		<cfscript>
 	        local.encoder = instance.ESAPI.encoder();
-	        MySQLCodec = createObject("java", "org.owasp.esapi.codecs.MySQLCodec");
-	        local.c = MySQLCodec.init(MySQLCodec.ANSI_MODE);
+	        local.c = newJava("org.owasp.esapi.codecs.MySQLCodec").init(newJava("org.owasp.esapi.codecs.MySQLCodec").ANSI_MODE);
 	        assertEquals(" or 1=1 -- -", local.encoder.encodeForSQL(c, '" or 1=1 -- -'), "MySQL Ansi Quote Injection Bug");
 		</cfscript> 
 	</cffunction>
@@ -422,7 +417,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForLDAP" output="false" hint="Test of encodeForLDAP method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("encodeForLDAP");
+	        newJava("java.lang.System").out.println("encodeForLDAP");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForLDAP(""));
 	        assertEquals("Hi This is a test ##��", local.encoder.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
@@ -434,7 +429,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForDN" output="false" hint="Test of encodeForLDAP method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("encodeForDN");
+	        newJava("java.lang.System").out.println("encodeForDN");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForDN(""));
 	        assertEquals("Hello�", local.encoder.encodeForDN("Hello�"), "No special characters to escape");
@@ -474,7 +469,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLImmune" output="false">
 		<cfscript>
-	        System.out.println("encodeForXML");
+	        newJava("java.lang.System").out.println("encodeForXML");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals(",.-_", local.encoder.encodeForXML(",.-_"));
     	</cfscript> 
@@ -491,7 +486,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLPound" output="false">
 		<cfscript>
-	        System.out.println("encodeForXML");
+	        newJava("java.lang.System").out.println("encodeForXML");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("&##xa3;", local.encoder.encodeForXML(toUnicode("\u00A3")));
     	</cfscript> 
@@ -548,7 +543,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForURL" output="false" hint="Test of encodeForURL method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("encodeForURL");
+	        newJava("java.lang.System").out.println("encodeForURL");
 	        local.encoder = instance.ESAPI.encoder();
 	        assertEquals("", local.encoder.encodeForURL(""));
 	        assertEquals("%3Cscript%3E", local.encoder.encodeForURL("<script>"));
@@ -558,7 +553,7 @@
 
 	<cffunction access="public" returntype="void" name="testDecodeFromURL" output="false" hint="Test of decodeFromURL method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-	        System.out.println("decodeFromURL");
+	        newJava("java.lang.System").out.println("decodeFromURL");
 	        local.encoder = instance.ESAPI.encoder();
 	        try {
 	        	assertEquals("", local.encoder.decodeFromURL(""));
@@ -579,10 +574,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForBase64" output="false" hint="Test of encodeForBase64 method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-			Arrays = createObject("java", "java.util.Arrays");
-			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
-
-	        System.out.println("encodeForBase64");
+	        newJava("java.lang.System").out.println("encodeForBase64");
 	        local.encoder = instance.ESAPI.encoder();
 
 	        try {
@@ -591,7 +583,7 @@
 	            //assertEquals(null, local.encoder.encodeForBase64(null, true));
 	            //assertEquals(null, local.encoder.decodeFromBase64(null));
 	            for ( local.i=0; local.i < 100; local.i++ ) {
-	                local.r = instance.ESAPI.randomizer().getRandomString( 20, DefaultEncoder.CHAR_SPECIALS ).getBytes(static.PREFERRED_ENCODING);
+	                local.r = instance.ESAPI.randomizer().getRandomString( 20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS ).getBytes(instance.PREFERRED_ENCODING);
 	                local.encoded = local.encoder.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
 	                local.decoded = local.encoder.decodeFromBase64( local.encoded );
 	                assertEquals( charsetEncode(local.r, 'utf-8'), charsetEncode(local.decoded, 'utf-8') );
@@ -605,14 +597,14 @@
 
 	<cffunction access="public" returntype="void" name="testDecodeFromBase64" output="false" hint="Test of decodeFromBase64 method, of class org.owasp.esapi.Encoder.">
 		<cfscript>
-			Arrays = createObject("java", "java.util.Arrays");
-			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
+			// using newJava() in assertX() gives syntax error in CFB
+			Arrays = newJava("java.util.Arrays");
 
-			System.out.println("decodeFromBase64");
+			newJava("java.lang.System").out.println("decodeFromBase64");
 			local.encoder = instance.ESAPI.encoder();
 			for ( local.i=0; local.i < 100; local.i++ ) {
 			    try {
-			        local.r = instance.ESAPI.randomizer().getRandomString( 20, DefaultEncoder.CHAR_SPECIALS ).getBytes(static.PREFERRED_ENCODING);
+			        local.r = instance.ESAPI.randomizer().getRandomString( 20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS ).getBytes(instance.PREFERRED_ENCODING);
 			        local.encoded = local.encoder.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
 			        local.decoded = local.encoder.decodeFromBase64( local.encoded );
 			        assertTrue( Arrays.equals( local.r, local.decoded ) );
@@ -622,8 +614,8 @@
 			}
 			for ( local.i=0; local.i < 100; local.i++ ) {
 			    try {
-			        local.r = instance.ESAPI.randomizer().getRandomString( 20, DefaultEncoder.CHAR_SPECIALS ).getBytes(static.PREFERRED_ENCODING);
-			        local.encoded = instance.ESAPI.randomizer().getRandomString(1, DefaultEncoder.CHAR_ALPHANUMERICS) & local.encoder.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
+			        local.r = instance.ESAPI.randomizer().getRandomString( 20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS ).getBytes(instance.PREFERRED_ENCODING);
+			        local.encoded = instance.ESAPI.randomizer().getRandomString(1, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & local.encoder.encodeForBase64( local.r, instance.ESAPI.randomizer().getRandomBoolean() );
 			     	local.decoded = local.encoder.decodeFromBase64( local.encoded );
 			    	assertFalse( Arrays.equals(local.r, local.decoded) );
 			    } catch( java.io.UnsupportedEncodingException ex) {
@@ -638,32 +630,28 @@
 
 	<cffunction access="public" returntype="void" name="testWindowsCodec" output="false" hint="Test of WindowsCodec">
 		<cfscript>
-			Character = createObject("java", "java.lang.Character");
-			DefaultEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
-			PushbackString = createObject("java", "org.owasp.esapi.codecs.PushbackString");
-
-	        System.out.println("WindowsCodec");
+	        newJava("java.lang.System").out.println("WindowsCodec");
 	        local.encoder = instance.ESAPI.encoder();
 
-	        local.win = createObject("java", "org.owasp.esapi.codecs.WindowsCodec").init();
-	        local.immune = Character.toChars(0);
+	        local.win = newJava("org.owasp.esapi.codecs.WindowsCodec").init();
+	        local.immune = newJava("java.lang.Character").toChars(0);
 	        assertEquals("", local.encoder.encodeForOS(local.win, ""));
 
-	        local.npbs = PushbackString.init("n");
+	        local.npbs = newJava("org.owasp.esapi.codecs.PushbackString").init("n");
 	        //assertEquals("", local.win.decodeCharacter(local.npbs));
 	        assertTrue(isNull(local.win.decodeCharacter(local.npbs)));
 
-	        local.epbs = PushbackString.init("");
+	        local.epbs = newJava("org.owasp.esapi.codecs.PushbackString").init("");
 	        //assertEquals("", local.win.decodeCharacter(local.epbs));
 	        assertTrue(isNull(local.win.decodeCharacter(local.epbs)));
 
-	        local.c = Character.valueOf('<');
-	        local.cpbs = PushbackString.init(local.win.encodeCharacter(local.immune, local.c));
+	        local.c = newJava("java.lang.Character").valueOf('<');
+	        local.cpbs = newJava("org.owasp.esapi.codecs.PushbackString").init(local.win.encodeCharacter(local.immune, local.c));
 	        local.decoded = local.win.decodeCharacter(local.cpbs);
 	        assertEquals(local.c, local.decoded);
 
 	        local.orig = "c:\jeff";
-	        local.enc = local.win.encode(DefaultEncoder.CHAR_ALPHANUMERICS, local.orig);
+	        local.enc = local.win.encode(newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS, local.orig);
 	        assertEquals(local.orig, local.win.decode(local.enc));
 	        assertEquals(local.orig, local.win.decode(local.orig));
 
@@ -678,26 +666,23 @@
 
 	<cffunction access="public" returntype="void" name="testUnixCodec" output="false" hint="Test of UnixCodec">
 		<cfscript>
-			Character = createObject("java", "java.lang.Character");
-			PushbackString = createObject("java", "org.owasp.esapi.codecs.PushbackString");
-
-	        System.out.println("UnixCodec");
+	        newJava("java.lang.System").out.println("UnixCodec");
 	        local.encoder = instance.ESAPI.encoder();
 
-	        local.unix = createObject("java", "org.owasp.esapi.codecs.UnixCodec").init();
-	        local.immune = Character.toChars(0);
+	        local.unix = newJava("org.owasp.esapi.codecs.UnixCodec").init();
+	        local.immune = newJava("java.lang.Character").toChars(0);
 	        assertEquals("", local.encoder.encodeForOS(local.unix, ""));
 
-	        local.npbs = PushbackString.init("n");
+	        local.npbs = newJava("org.owasp.esapi.codecs.PushbackString").init("n");
 	        //assertEquals("", local.unix.decodeCharacter(local.npbs));
 	        assertTrue(isNull(local.unix.decodeCharacter(local.npbs)));
 
-	        local.c = Character.valueOf('<');
-	        local.cpbs = PushbackString.init(local.unix.encodeCharacter(local.immune, local.c));
+	        local.c = newJava("java.lang.Character").valueOf('<');
+	        local.cpbs = newJava("org.owasp.esapi.codecs.PushbackString").init(local.unix.encodeCharacter(local.immune, local.c));
 	        local.decoded = local.unix.decodeCharacter(local.cpbs);
 	        assertEquals(local.c, local.decoded);
 
-	        local.epbs = PushbackString.init("");
+	        local.epbs = newJava("org.owasp.esapi.codecs.PushbackString").init("");
 	        //assertEquals("", local.unix.decodeCharacter(local.epbs));
 	        assertTrue(isNull(local.unix.decodeCharacter(local.epbs)));
 
@@ -722,50 +707,50 @@
 
 	<cffunction access="public" returntype="void" name="testCanonicalizePerformance" output="false">
 		<cfscript>
-			System.out.println("Canonicalization Performance");
+			newJava("java.lang.System").out.println("Canonicalization Performance");
 			local.encoder = instance.ESAPI.encoder();
 			local.iterations = 100;
 			local.normal = "The quick brown fox jumped over the lazy dog";
 
-			local.start = System.currentTimeMillis();
+			local.start = newJava("java.lang.System").currentTimeMillis();
 			local.temp = "";		// Trade in 1/2 doz warnings in Eclipse for one (never read)
 			for ( local.i=0; local.i< local.iterations; local.i++ ) {
 				local.temp = local.normal;
 			}
-			local.stop = System.currentTimeMillis();
-			System.out.println( "Normal: " & (local.stop-local.start) );
+			local.stop = newJava("java.lang.System").currentTimeMillis();
+			newJava("java.lang.System").out.println( "Normal: " & (local.stop-local.start) );
 
-			local.start = System.currentTimeMillis();
+			local.start = newJava("java.lang.System").currentTimeMillis();
 			for ( local.i=0; local.i< local.iterations; local.i++ ) {
 				local.temp = local.encoder.canonicalize( local.normal, false );
 			}
-			local.stop = System.currentTimeMillis();
-			System.out.println( "Normal Loose: " & (local.stop-local.start) );
+			local.stop = newJava("java.lang.System").currentTimeMillis();
+			newJava("java.lang.System").out.println( "Normal Loose: " & (local.stop-local.start) );
 
-			local.start = System.currentTimeMillis();
+			local.start = newJava("java.lang.System").currentTimeMillis();
 			for ( local.i=0; local.i< local.iterations; local.i++ ) {
 				local.temp = local.encoder.canonicalize( local.normal, true );
 			}
-			local.stop = System.currentTimeMillis();
-			System.out.println( "Normal Strict: " & (local.stop-local.start) );
+			local.stop = newJava("java.lang.System").currentTimeMillis();
+			newJava("java.lang.System").out.println( "Normal Strict: " & (local.stop-local.start) );
 
 			local.attack = "%2&##x35;2%3525&##x32;" & toUnicode("\u0036") & "lt;\r\n\r\n%&##x%%%3333" & toUnicode('\u0033') & ";&%23101;";
 
-			local.start = System.currentTimeMillis();
+			local.start = newJava("java.lang.System").currentTimeMillis();
 			for ( local.i=0; local.i< local.iterations; local.i++ ) {
 				local.temp = local.attack;
 			}
-			local.stop = System.currentTimeMillis();
-			System.out.println( "Attack: " & (local.stop-local.start) );
+			local.stop = newJava("java.lang.System").currentTimeMillis();
+			newJava("java.lang.System").out.println( "Attack: " & (local.stop-local.start) );
 
-			local.start = System.currentTimeMillis();
+			local.start = newJava("java.lang.System").currentTimeMillis();
 			for ( local.i=0; local.i< local.iterations; local.i++ ) {
 				local.temp = local.encoder.canonicalize( local.attack, false );
 			}
-			local.stop = System.currentTimeMillis();
-			System.out.println( "Attack Loose: " & (local.stop-local.start) );
+			local.stop = newJava("java.lang.System").currentTimeMillis();
+			newJava("java.lang.System").out.println( "Attack Loose: " & (local.stop-local.start) );
 
-			local.start = System.currentTimeMillis();
+			local.start = newJava("java.lang.System").currentTimeMillis();
 			for ( local.i=0; local.i< local.iterations; local.i++ ) {
 				try {
 					local.temp = local.encoder.canonicalize( local.attack, true );
@@ -773,18 +758,18 @@
 					// expected
 				}
 			}
-			local.stop = System.currentTimeMillis();
-			System.out.println( "Attack Strict: " & (local.stop-local.start) );
+			local.stop = newJava("java.lang.System").currentTimeMillis();
+			newJava("java.lang.System").out.println( "Attack Strict: " & (local.stop-local.start) );
 		</cfscript> 
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testConcurrency" output="false">
-		<cfset System.out.println("Encoder Concurrency") />
+		<cfset newJava("java.lang.System").out.println("Encoder Concurrency") />
 		<cfloop index="i" from="1" to="10">
 			<cfthread action="run" name="#i#">
 				<cfscript>
-					createObject("component", "EncoderConcurrencyMock").init( i ).run();
+					new EncoderConcurrencyMock( i ).run();
 				</cfscript> 
 			</cfthread>
 		</cfloop>

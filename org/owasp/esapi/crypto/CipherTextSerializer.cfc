@@ -36,15 +36,16 @@
 			instance.ESAPI = arguments.ESAPI;
 			instance.logger = instance.ESAPI.getLogger("CipherTextSerializer");
 
-			CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
+			CryptoHelper = new cfesapi.org.owasp.esapi.crypto.CryptoHelper(instance.ESAPI);
+			CipherText = new cfesapi.org.owasp.esapi.crypto.CipherText(instance.ESAPI);
 
 			if (structKeyExists(arguments, "cipherTextObj")) {
 				assert(!isNull(arguments.cipherTextObj), "CipherText object must not be null.");
-		        assert(instance.serialVersionUID == createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").getSerialVersionUID(), "Version of CipherText and CipherTextSerializer not compatible.");
+		        assert(instance.serialVersionUID == CipherText.getSerialVersionUID(), "Version of CipherText and CipherTextSerializer not compatible.");
 		        instance.cipherText_ = arguments.cipherTextObj;
 			}
 			else if (structKeyExists(arguments, "cipherTextSerializedBytes")) {
-				assert(instance.serialVersionUID == createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").getSerialVersionUID(), "Version of CipherText and CipherTextSerializer not compatible.");
+				assert(instance.serialVersionUID == CipherText.getSerialVersionUID(), "Version of CipherText and CipherTextSerializer not compatible.");
         		instance.cipherText_ = convertToCipherText(arguments.cipherTextSerializedBytes);
 			}
 
@@ -56,7 +57,7 @@
 	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
 		<cfargument type="numeric" name="len" required="true">
 		<cfscript>
-			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder = newJava("java.lang.StringBuilder").init();
 			StringBuilder.setLength(arguments.len);
 			return StringBuilder.toString().getBytes();
 		</cfscript> 
@@ -65,23 +66,21 @@
 
 	<cffunction access="public" returntype="binary" name="asSerializedByteArray" output="false" hint="Return this CipherText object as a specialized, portable serialized byte array (binary).">
 		<cfscript>
-			Short = createObject("java", "java.lang.Short");
-
 	        local.vers = instance.cipherText_.getSerialVersionUID(); // static method
 	        local.timestamp = instance.cipherText_.getEncryptionTimestamp();
 	        local.cipherXform = instance.cipherText_.getCipherTransformation();
-	        assert(instance.cipherText_.getKeySize() < Short.MAX_VALUE, "Key size too large. Max is " & Short.MAX_VALUE);
+	        assert(instance.cipherText_.getKeySize() < newJava("java.lang.Short").MAX_VALUE, "Key size too large. Max is " & newJava("java.lang.Short").MAX_VALUE);
 	        local.keySize = instance.cipherText_.getKeySize();
-	        assert(instance.cipherText_.getBlockSize() < Short.MAX_VALUE, "Block size too large. Max is " & Short.MAX_VALUE);
+	        assert(instance.cipherText_.getBlockSize() < newJava("java.lang.Short").MAX_VALUE, "Block size too large. Max is " & newJava("java.lang.Short").MAX_VALUE);
 	        local.blockSize = instance.cipherText_.getBlockSize();
 	        local.iv = instance.cipherText_.getIV();
-	        assert(arrayLen(local.iv) < Short.MAX_VALUE, "IV size too large. Max is " & Short.MAX_VALUE);
+	        assert(arrayLen(local.iv) < newJava("java.lang.Short").MAX_VALUE, "IV size too large. Max is " & newJava("java.lang.Short").MAX_VALUE);
 	        local.ivLen = arrayLen(local.iv);
 	        local.rawCiphertext = instance.cipherText_.getRawCipherText();
 	        local.ciphertextLen = arrayLen(local.rawCiphertext);
 	        assert(local.ciphertextLen >= 1, "Raw ciphertext length must be >= 1 byte.");
 	        local.mac = instance.cipherText_.getSeparateMAC();
-	        assert(arrayLen(local.mac) < Short.MAX_VALUE, "MAC length too large. Max is " & Short.MAX_VALUE);
+	        assert(arrayLen(local.mac) < newJava("java.lang.Short").MAX_VALUE, "MAC length too large. Max is " & newJava("java.lang.Short").MAX_VALUE);
 	        local.macLen = arrayLen(local.mac);
 
 	        local.serializedObj = computeSerialization(local.vers, local.timestamp, local.cipherXform, local.keySize, local.blockSize, local.ivLen, local.iv, local.ciphertextLen, local.rawCiphertext, local.macLen, local.mac );
@@ -112,7 +111,7 @@
 		<cfargument type="binary" name="mac" required="true">
 		<cfscript>
 	        debug("computeSerialization: vers = " & arguments.vers);
-	        debug("computeSerialization: timestamp = " & createObject("java", "java.util.Date").init( javaCast("long", arguments.timestamp) ));
+	        debug("computeSerialization: timestamp = " & newJava("java.util.Date").init( javaCast("long", arguments.timestamp) ));
 	        debug("computeSerialization: cipherXform = " & arguments.cipherXform);
 	        debug("computeSerialization: keySize = " & arguments.keySize);
 	        debug("computeSerialization: blockSize = " & arguments.blockSize);
@@ -120,7 +119,7 @@
 	        debug("computeSerialization: ciphertextLen = " & arguments.ciphertextLen);
 	        debug("computeSerialization: macLen = " & arguments.macLen);
 
-	        local.baos = createObject("java", "java.io.ByteArrayOutputStream").init();
+	        local.baos = newJava("java.io.ByteArrayOutputStream").init();
 	        writeLong(local.baos, arguments.vers);
 	        writeLong(local.baos, arguments.timestamp);
 	        local.parts = arguments.cipherXform.split("/");
@@ -146,14 +145,14 @@
 	        try {
 	            assert(!isNull(arguments.str) && arguments.str.length() > 0);
 	            local.bytes = arguments.str.getBytes("UTF8");
-	            assert(arrayLen(local.bytes) < createObject("java", "java.lang.Short").MAX_VALUE, "writeString: String exceeds max length");
+	            assert(arrayLen(local.bytes) < newJava("java.lang.Short").MAX_VALUE, "writeString: String exceeds max length");
 	            writeShort(arguments.baos, arrayLen(local.bytes));
 	            arguments.baos.write(local.bytes, 0, arrayLen(local.bytes));
 	        } catch (UnsupportedEncodingException e) {
 	            // Should never happen. UTF8 is built into the rt.jar. We don't use native encoding as
 	            // a fall-back because that simply is not guaranteed to be portable across Java
 	            // platforms and could cause really bizarre errors way downstream.
-	            instance.logger.error(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "Ignoring caught UnsupportedEncodingException converting string to UTF8 encoding. Results suspect. Corrupt rt.jar????");
+	            instance.logger.error(newJava("org.owasp.esapi.Logger").EVENT_FAILURE, "Ignoring caught UnsupportedEncodingException converting string to UTF8 encoding. Results suspect. Corrupt rt.jar????");
 	        }
     	</cfscript> 
 	</cffunction>
@@ -166,7 +165,7 @@
 	        local.bytes = newByte(arguments.sz);
 	        local.ret = arguments.bais.read(local.bytes, 0, arguments.sz);
 	        assert(local.ret == arguments.sz, "readString: Failed to read " & arguments.sz & " bytes.");
-	        return createObject("java", "java.lang.String").init(local.bytes, "UTF8");
+	        return newJava("java.lang.String").init(local.bytes, "UTF8");
     	</cfscript> 
 	</cffunction>
 
@@ -175,7 +174,7 @@
 		<cfargument type="any" name="baos" required="true" hint="java.io.ByteArrayOutputStream">
 		<cfargument type="numeric" name="s" required="true">
 		<cfscript>
-	        local.shortAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromShort(arguments.s);
+	        local.shortAsByteArray = newJava("org.owasp.esapi.util.ByteConversionUtil").fromShort(arguments.s);
 	        assert(arrayLen(local.shortAsByteArray) == 2);
 	        baos.write(local.shortAsByteArray, 0, 2);
     	</cfscript> 
@@ -188,7 +187,7 @@
 	        local.shortAsByteArray = newByte(2);
 	        local.ret = arguments.bais.read(local.shortAsByteArray, 0, 2);
 	        assert(local.ret == 2, "readShort: Failed to read 2 bytes.");
-	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toShort(local.shortAsByteArray);
+	        return newJava("org.owasp.esapi.util.ByteConversionUtil").toShort(local.shortAsByteArray);
     	</cfscript> 
 	</cffunction>
 
@@ -197,7 +196,7 @@
 		<cfargument type="any" name="baos" required="true" hint="java.io.ByteArrayOutputStream">
 		<cfargument type="numeric" name="i" required="true">
 		<cfscript>
-	        local.intAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromInt(arguments.i);
+	        local.intAsByteArray = newJava("org.owasp.esapi.util.ByteConversionUtil").fromInt(arguments.i);
 	        baos.write(local.intAsByteArray, 0, 4);
     	</cfscript> 
 	</cffunction>
@@ -209,7 +208,7 @@
 	        local.intAsByteArray = newByte(4);
 	        local.ret = arguments.bais.read(local.intAsByteArray, 0, 4);
 	        assert(local.ret == 4, "readInt: Failed to read 4 bytes.");
-	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toInt(local.intAsByteArray);
+	        return newJava("org.owasp.esapi.util.ByteConversionUtil").toInt(local.intAsByteArray);
     	</cfscript> 
 	</cffunction>
 
@@ -218,7 +217,7 @@
 		<cfargument type="any" name="baos" required="true" hint="java.io.ByteArrayOutputStream">
 		<cfargument type="numeric" name="l" required="true">
 		<cfscript>
-	        local.longAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromLong(arguments.l);
+	        local.longAsByteArray = newJava("org.owasp.esapi.util.ByteConversionUtil").fromLong(arguments.l);
 	        assert(arrayLen(local.longAsByteArray) == 8);
 	        baos.write(local.longAsByteArray, 0, 8);
     	</cfscript> 
@@ -231,7 +230,7 @@
 	        local.longAsByteArray = newByte(8);
 	        local.ret = arguments.bais.read(local.longAsByteArray, 0, 8);
 	        assert(local.ret == 8, "readLong: Failed to read 8 bytes.");
-	        return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toLong(local.longAsByteArray);
+	        return newJava("org.owasp.esapi.util.ByteConversionUtil").toLong(local.longAsByteArray);
 		</cfscript> 
 	</cffunction>
 
@@ -240,19 +239,19 @@
 		<cfargument type="binary" name="cipherTextSerializedBytes" required="true">
 		<cfscript>
 	        try {
-	            local.bais = createObject("java", "java.io.ByteArrayInputStream").init(arguments.cipherTextSerializedBytes);
+	            local.bais = newJava("java.io.ByteArrayInputStream").init(arguments.cipherTextSerializedBytes);
 	            local.vers = readLong(local.bais);
 	            debug("convertToCipherText: vers = " & local.vers);
-	            local.svUID = createObject("component", "cfesapi.org.owasp.esapi.crypto.CipherText").getSerialVersionUID();
+	            local.svUID = new cfesapi.org.owasp.esapi.crypto.CipherText(instance.ESAPI).getSerialVersionUID();
 	            /* TODO: valid objects are being tripped up here
 	            if ( local.vers != local.svUID ) {
 	                // NOTE: In future, support backward compatibility via this mechanism. As of now,
 	                //       this is first version so nothing to be backward compatible with. So any
 	                //       mismatch at this point is an error.
-	                throw(object=createObject("java", "java.io.InvalidClassException").init("This serialized byte stream not compatible with loaded CipherText class. Version read = " & local.vers & "; version from loaded CipherText class = " & local.svUID));
+	                throwError(newJava("java.io.InvalidClassException").init("This serialized byte stream not compatible with loaded CipherText class. Version read = " & local.vers & "; version from loaded CipherText class = " & local.svUID)));
 	            }*/
 	            local.timestamp = readLong(local.bais);
-	            debug("convertToCipherText: timestamp = " & createObject("java", "java.util.Date").init( javaCast("long", local.timestamp) ));
+	            debug("convertToCipherText: timestamp = " & newJava("java.util.Date").init( javaCast("long", local.timestamp) ));
 	            local.strSize = readShort(local.bais);
 	            debug("convertToCipherText: length of cipherXform = " & local.strSize);
 	            local.cipherXform = readString(local.bais, local.strSize);
@@ -262,8 +261,7 @@
 	            local.cipherMode = local.parts[2];
 	            if ( ! CryptoHelper.isAllowedCipherMode(local.cipherMode) ) {
 	                local.msg = "Cipher mode " & local.cipherMode & " is not an allowed cipher mode";
-	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, local.msg, local.msg);
-	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	                throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, local.msg, local.msg));
 	            }
 	            local.keySize = readShort(local.bais);
 	            debug("convertToCipherText: keySize = " & local.keySize);
@@ -289,11 +287,11 @@
 	                local.bais.read(local.mac, 0, arrayLen(local.mac));
 	            }
 
-	            local.cipherSpec = createObject("component", "CipherSpec").init(ESAPI=instance.ESAPI, cipherXform=local.cipherXform, keySize=local.keySize);
+	            local.cipherSpec = new CipherSpec(ESAPI=instance.ESAPI, cipherXform=local.cipherXform, keySize=local.keySize);
 	            local.cipherSpec.setBlockSize(local.blockSize);
 	            local.cipherSpec.setIV(local.iv);
 	            debug("convertToCipherText: CipherSpec: " & local.cipherSpec.toString());
-	            local.ct = createObject("component", "CipherText").init(ESAPI=instance.ESAPI, cipherSpec=local.cipherSpec);
+	            local.ct = new CipherText(ESAPI=instance.ESAPI, cipherSpec=local.cipherSpec);
 	            assert( (local.ivLen > 0 && local.ct.requiresIV()), "convertToCipherText: Mismatch between IV length and cipher mode." );
 	            local.ct.setCiphertext(local.rawCiphertext);
 	              // Set this *AFTER* setting raw ciphertext because setCiphertext()
@@ -304,11 +302,9 @@
 	            }
 	            return local.ct;
 	        } catch(cfesapi.org.owasp.esapi.errors.EncryptionException ex) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", ex);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", ex));
 	        } catch (java.io.IOException e) {
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", e);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", e));
 	        }
     	</cfscript> 
 	</cffunction>
@@ -318,7 +314,7 @@
 		<cfargument type="String" name="msg" required="true">
 		<cfscript>
 	        if ( instance.logger.isDebugEnabled() ) {
-	            instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").EVENT_SUCCESS, arguments.msg);
+	            instance.logger.debug(newJava("org.owasp.esapi.Logger").EVENT_SUCCESS, arguments.msg);
 	        }
     	</cfscript> 
 	</cffunction>

@@ -18,19 +18,17 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
-		Boolean = createObject("java", "java.lang.Boolean");
-
-		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 		instance.accessController = "";
 	</cfscript>
  
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
 			local.accessControlRules = {};
-			local.accessControlRules.put("AlwaysTrue", createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysTrueACR"));
-			local.accessControlRules.put("AlwaysFalse", createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysFalseACR"));
-			local.accessControlRules.put("EchoRuntimeParameter", createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.EchoRuntimeParameterACR"));
-			instance.accessController = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.ExperimentalAccessController").init(instance.ESAPI, local.accessControlRules);
+			local.accessControlRules.put("AlwaysTrue", new cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysTrueACR(instance.ESAPI));
+			local.accessControlRules.put("AlwaysFalse", new cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysFalseACR(instance.ESAPI));
+			local.accessControlRules.put("EchoRuntimeParameter", new cfesapi.org.owasp.esapi.reference.accesscontrol.EchoRuntimeParameterACR(instance.ESAPI));
+			instance.accessController = new cfesapi.org.owasp.esapi.reference.accesscontrol.ExperimentalAccessController(instance.ESAPI, local.accessControlRules);
 		</cfscript> 
 	</cffunction>
 
@@ -50,6 +48,8 @@
 			assertEquals(instance.accessController.isAuthorized("AlwaysTrue", {}), true, "AlwaysTrue");
 			assertEquals(instance.accessController.isAuthorized("AlwaysFalse", {}), false, "AlwaysFalse");
 
+			// CFB throws syntax errors when newJava() used in assertX()
+			Boolean = newJava("java.lang.Boolean");
 			assertEquals(instance.accessController.isAuthorized("EchoRuntimeParameter", Boolean.TRUE), true, "EchoRuntimeParameter: True");
 			assertEquals(instance.accessController.isAuthorized("EchoRuntimeParameter", Boolean.FALSE), false, "EchoRuntimeParameter: False");
 			assertEquals(instance.accessController.isAuthorized("EchoRuntimeParameter", "This is not a boolean"), false, "EchoRuntimeParameter: ClassCastException");
@@ -110,6 +110,8 @@
 
 	<cffunction access="public" returntype="void" name="enforceAuthorizationEchoRuntimeParameterTrue" output="false" hint="Ensure that isAuthorized does nothing if enforceAuthorization is called and isAuthorized returns true">
 		<cfscript>
+			// CFB throws syntax errors when newJava() used in assertX()
+			Boolean = newJava("java.lang.Boolean");
 			try {
 				instance.accessController.assertAuthorized("EchoRuntimeParameter", Boolean.TRUE);
 			} catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
@@ -122,6 +124,8 @@
 
 	<cffunction access="public" returntype="void" name="enforceAuthorizationEchoRuntimeParameterFalse" output="false" hint="Ensure that isAuthorized translates into an exception if enforceAuthorization is called and isAuthorized returns false">
 		<cfscript>
+			// CFB throws syntax errors when newJava() used in assertX()
+			Boolean = newJava("java.lang.Boolean");
 			try {
 				instance.accessController.assertAuthorized("EchoRuntimeParameter", Boolean.FALSE);
 				fail("");
@@ -159,8 +163,8 @@
 	<cffunction access="public" returntype="void" name="delegatingACR" output="false">
 		<cfscript>
 			/* not valid test case - all delegateClasses must be CFC's
-			local.delegatingACR = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.DelegatingACR").init();
-			local.policyParameter = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.DynaBeanACRParameter").init();
+			local.delegatingACR = new cfesapi.org.owasp.esapi.reference.accesscontrol.DelegatingACR();
+			local.policyParameter = new cfesapi.org.owasp.esapi.reference.accesscontrol.DynaBeanACRParameter();
 			local.policyParameter.set("delegateClass", "java.lang.Object");
 			local.policyParameter.set("delegateMethod", "equals");
 			local.policyParameter.set("parameterClasses", []);
@@ -169,16 +173,16 @@
 			assertFalse(local.delegatingACR.isAuthorized([local.delegatingACR]));
 			*/
 
-			local.delegatingACR = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.DelegatingACR").init(instance.ESAPI);
-			local.policyParameter = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.DynaBeanACRParameter").init();
+			local.delegatingACR = new cfesapi.org.owasp.esapi.reference.accesscontrol.DelegatingACR(instance.ESAPI);
+			local.policyParameter = new cfesapi.org.owasp.esapi.reference.accesscontrol.DynaBeanACRParameter();
 			local.policyParameter.set("delegateClass", "cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysTrueACR");
 			local.policyParameter.set("delegateMethod", "isAuthorized");
 			local.policyParameter.set("parameterClasses", []);
 			local.delegatingACR.setPolicyParameters(local.policyParameter);
 			assertTrue(local.delegatingACR.isAuthorized({runtimeParameter={}}));
 
-			local.delegatingACR = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.DelegatingACR").init(instance.ESAPI);
-			local.policyParameter = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.DynaBeanACRParameter").init();
+			local.delegatingACR = new cfesapi.org.owasp.esapi.reference.accesscontrol.DelegatingACR(instance.ESAPI);
+			local.policyParameter = new cfesapi.org.owasp.esapi.reference.accesscontrol.DynaBeanACRParameter();
 			local.policyParameter.set("delegateClass", "cfesapi.org.owasp.esapi.reference.accesscontrol.AlwaysFalseACR");
 			local.policyParameter.set("delegateMethod", "isAuthorized");
 			local.policyParameter.set("parameterClasses", []);

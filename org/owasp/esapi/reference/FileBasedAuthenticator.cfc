@@ -33,10 +33,6 @@
  */
 component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfesapi.org.owasp.esapi.Authenticator" {
 
-	// imports
-	EncoderConstants = createObject("java", "org.owasp.esapi.EncoderConstants");
-	Logger = createObject("java", "org.owasp.esapi.Logger");
-
 	/**
 	 * The logger.
 	 */
@@ -86,7 +82,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			local.hashes.remove(local.hashes.size() - 1);
 		}
 		instance.passwordMap.put(arguments.user.getAccountId(), local.hashes);
-		instance.logger.info(Logger.SECURITY_SUCCESS, "New hashed password stored for " & arguments.user.getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "New hashed password stored for " & arguments.user.getAccountName());
 	}
 	
 	/**
@@ -146,7 +142,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			instance.passwordMap.put(arguments.user.getAccountId(), local.hashes);
 			return local.hashes;
 		}
-		throwError(createObject("java", "java.lang.RuntimeException").init("No hashes found for " & arguments.user.getAccountName() & ". Is User.hashcode() and equals() implemented correctly?"));
+		throwError(newJava("java.lang.RuntimeException").init("No hashes found for " & arguments.user.getAccountName() & ". Is User.hashcode() and equals() implemented correctly?"));
 	}
 	
 	/**
@@ -209,7 +205,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee));
 		}
 		instance.userMap.put(local.user.getAccountId(), local.user);
-		instance.logger.info(Logger.SECURITY_SUCCESS, "New user created: " & arguments.accountName);
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "New user created: " & arguments.accountName);
 		saveUsers();
 		return local.user;
 	}
@@ -225,11 +221,11 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		local.r = instance.ESAPI.randomizer();
 		local.letters = local.r.getRandomInteger(4, 6);// inclusive, exclusive
 		local.digits = 7 - local.letters;
-		local.passLetters = local.r.getRandomString(local.letters, EncoderConstants.CHAR_PASSWORD_LETTERS);
-		local.passDigits = local.r.getRandomString(local.digits, EncoderConstants.CHAR_PASSWORD_DIGITS);
-		local.passSpecial = local.r.getRandomString(1, EncoderConstants.CHAR_PASSWORD_SPECIALS);
+		local.passLetters = local.r.getRandomString(local.letters, newJava("org.owasp.esapi.EncoderConstants").CHAR_PASSWORD_LETTERS);
+		local.passDigits = local.r.getRandomString(local.digits, newJava("org.owasp.esapi.EncoderConstants").CHAR_PASSWORD_DIGITS);
+		local.passSpecial = local.r.getRandomString(1, newJava("org.owasp.esapi.EncoderConstants").CHAR_PASSWORD_SPECIALS);
 		local.newPassword = local.passLetters & local.passSpecial & local.passDigits;
-		if(createObject("java", "org.owasp.esapi.StringUtilities").getLevenshteinDistance(arguments.oldPassword, local.newPassword) > 5) {
+		if(newJava("org.owasp.esapi.StringUtilities").getLevenshteinDistance(arguments.oldPassword, local.newPassword) > 5) {
 			return local.newPassword;
 		}
 		return _generateStrongPassword(arguments.oldPassword);
@@ -260,7 +256,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 				throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Password change failed", "Password change matches a recent password for user: " & local.accountName));
 			}
 			setHashedPassword(arguments.user, local.newHash);
-			instance.logger.info(Logger.SECURITY_SUCCESS, "Password changed for user: " & local.accountName);
+			instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password changed for user: " & local.accountName);
 			// jtm - 11/2/2010 - added to resolve http://code.google.com/p/owasp-esapi-java/issues/detail?id=13
 			saveUsers();
 		}
@@ -282,14 +278,14 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			if(local.hash.equals(local.currentHash)) {
 				arguments.user.setLastLoginTime(now());
 				arguments.user.setFailedLoginCount(0);
-				instance.logger.info(Logger.SECURITY_SUCCESS, "Password verified for " & local.accountName);
+				instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password verified for " & local.accountName);
 				return true;
 			}
 		}
 		catch(cfesapi.org.owasp.esapi.errors.EncryptionException e) {
-			instance.logger.fatal(Logger.SECURITY_FAILURE, "Encryption error verifying password for " & local.accountName);
+			instance.logger.fatal(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Encryption error verifying password for " & local.accountName);
 		}
-		instance.logger.fatal(Logger.SECURITY_FAILURE, "Password verification failed for " & local.accountName);
+		instance.logger.fatal(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Password verification failed for " & local.accountName);
 		return false;
 	}
 	
@@ -302,7 +298,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		if (structKeyExists(arguments, "user") && structKeyExists(arguments, "oldPassword")) {
 			local.newPassword = _generateStrongPassword(arguments.oldPassword);
 			if(!isNull(local.newPassword)) {
-				instance.logger.info(Logger.SECURITY_SUCCESS, "Generated strong password for " & arguments.user.getAccountName());
+				instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated strong password for " & arguments.user.getAccountName());
 			}
 			return local.newPassword;
 		}
@@ -377,15 +373,15 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			instance.userDB = instance.ESAPI.securityConfiguration().getResourceFile("users.txt");
 		}
 		if(!isObject(instance.userDB)) {
-			instance.userDB = createObject("java", "java.io.File").init(createObject("java", "java.lang.System").getProperty("user.home") & "/esapi", "users.txt");
+			instance.userDB = newJava("java.io.File").init(newJava("java.lang.System").getProperty("user.home") & "/esapi", "users.txt");
 			try {
 				if(!instance.userDB.createNewFile()) {
-					throwError(createObject("java", "java.io.IOException").init("Unable to create the user file"));
+					throwError(newJava("java.io.IOException").init("Unable to create the user file"));
 				}
-				instance.logger.warning(Logger.SECURITY_SUCCESS, "Created " & instance.userDB.getAbsolutePath());
+				instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Created " & instance.userDB.getAbsolutePath());
 			}
 			catch(java.io.IOException e) {
-				instance.logger.fatal(Logger.SECURITY_FAILURE, "Could not create " & instance.userDB.getAbsolutePath(), e);
+				instance.logger.fatal(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Could not create " & instance.userDB.getAbsolutePath(), e);
 			}
 		}
 	
@@ -408,18 +404,18 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 */
 	
 	private void function loadUsersImmediately() {
-		instance.logger.trace(Logger.SECURITY_SUCCESS, "Loading users from " & instance.userDB.getAbsolutePath());
+		instance.logger.trace(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Loading users from " & instance.userDB.getAbsolutePath());
 	
 		local.reader = "";
 		try {
 			local.map = {};
-			local.reader = createObject("java", "java.io.BufferedReader").init(createObject("java", "java.io.FileReader").init(instance.userDB));
+			local.reader = newJava("java.io.BufferedReader").init(newJava("java.io.FileReader").init(instance.userDB));
 			local.line = local.reader.readLine();
 			while(!isNull(local.line)) {
 				if(local.line.length() > 0 && local.line.charAt(0) != chr(35)) {
 					local.user = _createUser(local.line);
 					if(local.map.containsKey(javaCast("long", local.user.getAccountId()))) {
-						instance.logger.fatal(Logger.SECURITY_FAILURE, "Problem in user file. Skipping duplicate user: " & local.user);
+						instance.logger.fatal(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem in user file. Skipping duplicate user: " & local.user);
 					}
 					local.map.put(local.user.getAccountId(), local.user);
 				}
@@ -427,10 +423,10 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			}
 			instance.userMap = local.map;
 			instance.lastModified = getTickCount();
-			instance.logger.trace(Logger.SECURITY_SUCCESS, "User file reloaded: " & local.map.size());
+			instance.logger.trace(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User file reloaded: " & local.map.size());
 		}
 		catch(Exception e) {
-			instance.logger.fatal(Logger.SECURITY_FAILURE, "Failure loading user file: " & instance.userDB.getAbsolutePath(), e);
+			instance.logger.fatal(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure loading user file: " & instance.userDB.getAbsolutePath(), e);
 		}
 		finally
 		{
@@ -440,7 +436,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 				}
 			}
 			catch(java.io.IOException e) {
-				instance.logger.fatal(Logger.SECURITY_FAILURE, "Failure closing user file: " & instance.userDB.getAbsolutePath(), e);
+				instance.logger.fatal(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Failure closing user file: " & instance.userDB.getAbsolutePath(), e);
 			}
 		}
 	}
@@ -456,8 +452,6 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 */
 	
 	private DefaultUser function _createUser(required String line) {
-		JavaDate = createObject("java", "java.util.Date");
-		
 		local.parts = line.split(" *\| *");
 		local.accountIdString = local.parts[1];
 		local.accountId = javaCast("long", local.accountIdString);
@@ -493,10 +487,10 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	
 		setOldPasswordHashes(local.user, local.parts[7].split(" *, *"));
 		local.user.setLastHostAddress("unknown" == local.parts[8] ? "" : local.parts[8]);
-		local.user.setLastPasswordChangeTime(JavaDate.init(javaCast("long", local.parts[9])));
-		local.user.setLastLoginTime(JavaDate.init(javaCast("long", local.parts[10])));
-		local.user.setLastFailedLoginTime(JavaDate.init(javaCast("long", local.parts[11])));
-		local.user.setExpirationTime(JavaDate.init(javaCast("long", local.parts[12])));
+		local.user.setLastPasswordChangeTime(newJava("java.util.Date").init(javaCast("long", local.parts[9])));
+		local.user.setLastLoginTime(newJava("java.util.Date").init(javaCast("long", local.parts[10])));
+		local.user.setLastFailedLoginTime(newJava("java.util.Date").init(javaCast("long", local.parts[11])));
+		local.user.setExpirationTime(newJava("java.util.Date").init(javaCast("long", local.parts[12])));
 		local.user.setFailedLoginCount(int(local.parts[13]));
 		return local.user;
 	}
@@ -512,7 +506,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName));
 		}
 		instance.userMap.remove(local.user.getAccountId());
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Removing user " & local.user.getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Removing user " & local.user.getAccountName());
 		instance.passwordMap.remove(local.user.getAccountId());
 		saveUsers();
 	}
@@ -527,16 +521,16 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	public void function saveUsers() {
 		local.writer = "";
 		try {
-			local.writer = createObject("java", "java.io.PrintWriter").init(createObject("java", "java.io.FileWriter").init(instance.userDB));
+			local.writer = newJava("java.io.PrintWriter").init(newJava("java.io.FileWriter").init(instance.userDB));
 			local.writer.println("## This is the user file associated with the ESAPI library from http://www.owasp.org");
 			local.writer.println("## accountId | accountName | hashedPassword | roles | locked | enabled | csrfToken | oldPasswordHashes | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount");
 			local.writer.println();
 			_saveUsers(local.writer);
 			local.writer.flush();
-			instance.logger.info(Logger.SECURITY_SUCCESS, "User file written to disk");
+			instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User file written to disk");
 		}
 		catch(java.io.IOException e) {
-			instance.logger.fatal(Logger.SECURITY_FAILURE, "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
+			instance.logger.fatal(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
 			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Internal Error", "Problem saving user file " & instance.userDB.getAbsolutePath(), e));
 		}
 		finally
@@ -576,7 +570,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 */
 	
 	private String function save(required DefaultUser user) {
-		local.sb = createObject("java", "java.lang.StringBuilder").init();
+		local.sb = newJava("java.lang.StringBuilder").init();
 		local.sb.append(arguments.user.getAccountId());
 		local.sb.append(" | ");
 		local.sb.append(arguments.user.getAccountName());
@@ -649,30 +643,28 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			}
 		}
 		
-		Arrays = createObject("java", "java.util.Arrays");
-	
 		// new password must have enough character sets and length
 		local.charsets = 0;
 		for(local.i = 0; local.i < arguments.newPassword.length(); local.i++) {
-			if(Arrays.binarySearch(EncoderConstants.CHAR_LOWERS, arguments.newPassword.charAt(local.i)) >= 0) {
+			if(newJava("java.util.Arrays").binarySearch(newJava("org.owasp.esapi.EncoderConstants").CHAR_LOWERS, arguments.newPassword.charAt(local.i)) >= 0) {
 				local.charsets++;
 				break;
 			}
 		}
 		for(local.i = 0; local.i < arguments.newPassword.length(); local.i++) {
-			if(Arrays.binarySearch(EncoderConstants.CHAR_UPPERS, arguments.newPassword.charAt(local.i)) >= 0) {
+			if(newJava("java.util.Arrays").binarySearch(newJava("org.owasp.esapi.EncoderConstants").CHAR_UPPERS, arguments.newPassword.charAt(local.i)) >= 0) {
 				local.charsets++;
 				break;
 			}
 		}
 		for(local.i = 0; local.i < arguments.newPassword.length(); local.i++) {
-			if(Arrays.binarySearch(EncoderConstants.CHAR_DIGITS, arguments.newPassword.charAt(local.i)) >= 0) {
+			if(newJava("java.util.Arrays").binarySearch(newJava("org.owasp.esapi.EncoderConstants").CHAR_DIGITS, arguments.newPassword.charAt(local.i)) >= 0) {
 				local.charsets++;
 				break;
 			}
 		}
 		for(local.i = 0; local.i < arguments.newPassword.length(); local.i++) {
-			if(Arrays.binarySearch(EncoderConstants.CHAR_SPECIALS, arguments.newPassword.charAt(local.i)) >= 0) {
+			if(newJava("java.util.Arrays").binarySearch(newJava("org.owasp.esapi.EncoderConstants").CHAR_SPECIALS, arguments.newPassword.charAt(local.i)) >= 0) {
 				local.charsets++;
 				break;
 			}

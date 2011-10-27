@@ -18,9 +18,9 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 		
-		CryptoHelper = createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI);
+		CryptoHelper = new cfesapi.org.owasp.esapi.crypto.CryptoHelper(instance.ESAPI);
 	</cfscript>
  
 	<cffunction access="public" returntype="void" name="testGenerateSecretKeySunnyDay" output="false">
@@ -51,11 +51,11 @@
 
 	<cffunction access="public" returntype="void" name="testOverwriteByteArrayByte" output="false">
 		<cfscript>
-	        local.secret = createObject("java", "java.lang.String").init("secret password").getBytes();
+	        local.secret = newJava("java.lang.String").init("secret password").getBytes();
 	        local.len = arrayLen(local.secret);
-	        CryptoHelper.overwrite(local.secret, 'x');
+	        CryptoHelper.overwrite(local.secret, "x");
 	        assertTrue(arrayLen(local.secret) == local.len); // Length unchanged
-	        assertTrue(checkByteArray(local.secret, 'x')); // Filled with 'x'
+	        assertTrue(checkByteArray(local.secret, "x")); // Filled with 'x'
     	</cfscript> 
 	</cffunction>
 
@@ -121,7 +121,7 @@
         local.ba3 = newByte(48);
 
         // Note: Don't need cryptographically secure random numbers for this!
-        local.prng = createObject("java", "java.util.Random").init();
+        local.prng = newJava("java.util.Random").init();
 
         local.prng.nextBytes(local.ba1);
         local.prng.nextBytes(local.ba2);
@@ -185,7 +185,7 @@
 	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
 		<cfargument type="numeric" name="len" required="true">
 		<cfscript>
-			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder = newJava("java.lang.StringBuilder").init();
 			StringBuilder.setLength(arguments.len);
 			return StringBuilder.toString().getBytes();
 		</cfscript> 

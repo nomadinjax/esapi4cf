@@ -52,18 +52,18 @@
 							if ( local.path.indexOf( "." ) == -1 ) {
 								local.path = "org.owasp.esapi.codecs." & local.clazz;
 							}
-							variables[local.clazz] = createObject("java", local.path);
+							variables[local.clazz] = newJava(local.path);
 						}
 						instance.codecs.add(variables[local.clazz].init());
 					} catch ( java.lang.Exception e ) {
-						instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "Codec " & local.clazz & " listed in ESAPI.properties not on classpath" );
+						instance.logger.warning( newJava("org.owasp.esapi.Logger").EVENT_FAILURE, "Codec " & local.clazz & " listed in ESAPI.properties not on classpath" );
 					}
 				}
 			}
 			else {
-				instance.codecs.add( createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init() );
-				instance.codecs.add( createObject("java", "org.owasp.esapi.codecs.PercentCodec").init() );
-				instance.codecs.add( createObject("java", "org.owasp.esapi.codecs.JavaScriptCodec").init() );
+				instance.codecs.add( newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init() );
+				instance.codecs.add( newJava("org.owasp.esapi.codecs.PercentCodec").init() );
+				instance.codecs.add( newJava("org.owasp.esapi.codecs.JavaScriptCodec").init() );
 			}
 
 			return this;
@@ -116,26 +116,23 @@
 			// do strict tests and handle if any mixed, multiple, nested encoding were found
 			if ( local.foundCount >= 2 && local.mixedCount > 1 ) {
 			    if ( arguments.restrictMultiple || arguments.restrictMixed ) {
-                	cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.IntrusionException').init(instance.ESAPI, "Input validation failure", "Multiple ("& local.foundCount &"x) and mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
-            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+                	throwError(new cfesapi.org.owasp.esapi.errors.IntrusionException(instance.ESAPI, "Input validation failure", "Multiple ("& local.foundCount &"x) and mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input ));
 			    } else {
-			        instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Multiple ("& local.foundCount &"x) and mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
+			        instance.logger.warning( newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Multiple ("& local.foundCount &"x) and mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
 			    }
 			}
 			else if ( local.foundCount >= 2 ) {
 			    if ( arguments.restrictMultiple ) {
-                	cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.IntrusionException').init(instance.ESAPI, "Input validation failure", "Multiple ("& local.foundCount &"x) encoding detected in " & arguments.input );
-            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+                	throwError(new cfesapi.org.owasp.esapi.errors.IntrusionException(instance.ESAPI, "Input validation failure", "Multiple ("& local.foundCount &"x) encoding detected in " & arguments.input ));
 			    } else {
-			        instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Multiple ("& local.foundCount &"x) encoding detected in " & arguments.input );
+			        instance.logger.warning( newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Multiple ("& local.foundCount &"x) encoding detected in " & arguments.input );
 			    }
 			}
 			else if ( local.mixedCount > 1 ) {
 			    if ( arguments.restrictMixed ) {
-	                cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.IntrusionException').init(instance.ESAPI, "Input validation failure", "Mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
-            		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	                throwError(new cfesapi.org.owasp.esapi.errors.IntrusionException(instance.ESAPI, "Input validation failure", "Mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input ));
 			    } else {
-			        instance.logger.warning( createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
+			        instance.logger.warning( newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Mixed encoding ("& local.mixedCount &"x) detected in " & arguments.input );
 			    }
 			}
 			return local.working;
@@ -146,7 +143,7 @@
 	<cffunction access="public" returntype="String" name="encodeForHTML" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_HTML, javaCast("string", arguments.input));
+		    return newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_HTML, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -154,7 +151,7 @@
 	<cffunction access="public" returntype="String" name="decodeForHTML" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().decode(javaCast("string", arguments.input));
+			return newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init().decode(javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -162,7 +159,7 @@
 	<cffunction access="public" returntype="String" name="encodeForHTMLAttribute" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-		    return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_HTMLATTR, javaCast("string", arguments.input));
+		    return newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_HTMLATTR, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -170,7 +167,7 @@
 	<cffunction access="public" returntype="String" name="encodeForCSS" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.CSSCodec").init().encode( instance.IMMUNE_CSS, javaCast("string", arguments.input));
+	    	return newJava("org.owasp.esapi.codecs.CSSCodec").init().encode( instance.IMMUNE_CSS, javaCast("string", arguments.input));
 	    </cfscript> 
 	</cffunction>
 
@@ -178,7 +175,7 @@
 	<cffunction access="public" returntype="String" name="encodeForJavaScript" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.JavaScriptCodec").init().encode(instance.IMMUNE_JAVASCRIPT, javaCast("string", arguments.input));
+	    	return newJava("org.owasp.esapi.codecs.JavaScriptCodec").init().encode(instance.IMMUNE_JAVASCRIPT, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -186,7 +183,7 @@
 	<cffunction access="public" returntype="String" name="encodeForVBScript" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return createObject("java", "org.owasp.esapi.codecs.VBScriptCodec").init().encode(instance.IMMUNE_VBSCRIPT, javaCast("string", arguments.input));
+			return newJava("org.owasp.esapi.codecs.VBScriptCodec").init().encode(instance.IMMUNE_VBSCRIPT, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -213,7 +210,7 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 			// TODO: replace with LDAP codec
-		    local.sb = createObject("java", "java.lang.StringBuilder").init();
+		    local.sb = newJava("java.lang.StringBuilder").init();
 			for (local.i = 0; local.i < arguments.input.length(); local.i++) {
 				local.c = arguments.input.charAt(local.i);
 				switch (local.c) {
@@ -248,7 +245,7 @@
 		    	return "";
 		    }
 			// TODO: replace with DN codec
-		    local.sb = createObject("java", "java.lang.StringBuilder").init();
+		    local.sb = newJava("java.lang.StringBuilder").init();
 			if ((arguments.input.length() > 0) && ((arguments.input.charAt(0) == ' ') || (arguments.input.charAt(0) == chr(35)))) {
 				local.sb.append('\'); // add the leading backslash if needed
 			}
@@ -292,7 +289,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXPath" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_XPATH, javaCast("string", arguments.input));
+	    	return newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init().encode( instance.IMMUNE_XPATH, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -300,7 +297,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXML" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( instance.IMMUNE_XML, javaCast("string", arguments.input));
+	    	return newJava("org.owasp.esapi.codecs.XMLEntityCodec").init().encode( instance.IMMUNE_XML, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -308,7 +305,7 @@
 	<cffunction access="public" returntype="String" name="encodeForXMLAttribute" output="false">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-	    	return createObject("java", "org.owasp.esapi.codecs.XMLEntityCodec").init().encode( instance.IMMUNE_XMLATTR, javaCast("string", arguments.input));
+	    	return newJava("org.owasp.esapi.codecs.XMLEntityCodec").init().encode( instance.IMMUNE_XMLATTR, javaCast("string", arguments.input));
 		</cfscript> 
 	</cffunction>
 
@@ -317,13 +314,11 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 	    	try {
-				return createObject("java", "java.net.URLEncoder").encode(javaCast("string", arguments.input), instance.ESAPI.securityConfiguration().getCharacterEncoding());
+				return newJava("java.net.URLEncoder").encode(javaCast("string", arguments.input), instance.ESAPI.securityConfiguration().getCharacterEncoding());
 			} catch (java.io.UnsupportedEncodingException ex) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Encoding failure", "Character encoding not supported", ex);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.EncodingException(instance.ESAPI, "Encoding failure", "Character encoding not supported", ex));
 			} catch (java.lang.Exception e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Encoding failure", "Problem URL encoding input", e);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.EncodingException(instance.ESAPI, "Encoding failure", "Problem URL encoding input", e));
 			}
 		</cfscript> 
 	</cffunction>
@@ -334,13 +329,11 @@
 		<cfscript>
 	    	local.canonical = canonicalize(arguments.input);
 			try {
-				return createObject("java", "java.net.URLDecoder").decode(javaCast("string", local.canonical), instance.ESAPI.securityConfiguration().getCharacterEncoding());
+				return newJava("java.net.URLDecoder").decode(javaCast("string", local.canonical), instance.ESAPI.securityConfiguration().getCharacterEncoding());
 			} catch (java.io.UnsupportedEncodingException ex) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Decoding failed", "Character encoding not supported", ex);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.EncodingException(instance.ESAPI, "Decoding failed", "Character encoding not supported", ex));
 			} catch (java.lang.Exception e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncodingException").init(instance.ESAPI, "Decoding failed", "Problem URL decoding input", e);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.EncodingException(instance.ESAPI, "Decoding failed", "Problem URL decoding input", e));
 			}
 		</cfscript> 
 	</cffunction>

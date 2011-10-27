@@ -26,16 +26,14 @@ component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	 */
 	
 	public void function testFilter() {
-		System = createObject("java", "java.lang.System");
-	
-		System.out.println("ClickjackFilter");
+		newJava("java.lang.System").out.println("ClickjackFilter");
 	
 		local.mfc = {};
 		local.filter = new cfesapi.org.owasp.esapi.filters.ClickjackFilter(instance.ESAPI, local.mfc);
 		local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest();
 	
-		local.url = createObject("java", "java.net.URL").init("http://www.example.com/index.jsp");
-		System.out.println("\nTest request: " & local.url);
+		local.url = newJava("java.net.URL").init("http://www.example.com/index.jsp");
+		newJava("java.lang.System").out.println("\nTest request: " & local.url);
 		local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest(local.url);
 		local.response = new cfesapi.test.org.owasp.esapi.http.MockHttpServletResponse();
 		try {
@@ -47,7 +45,7 @@ component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			fail();
 		}
 		local.header = local.response.getHeader("X-FRAME-OPTIONS");
-		System.out.println(">>>" & local.header);
+		newJava("java.lang.System").out.println(">>>" & local.header);
 		assertEquals("DENY", local.header);
 	}
 	

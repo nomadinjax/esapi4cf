@@ -22,11 +22,6 @@
  */
 component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Logger" {
 
-	// imports
-	LoggingLevel = createObject("java", "java.util.logging.Level");
-	JavaLoggerLevel = createObject("java", "org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel");
-	Logger = createObject("java", "org.owasp.esapi.Logger");
-
 	instance.ESAPI = "";
 
 	/** The jlogger object used by this class to log everything. */
@@ -58,7 +53,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 		instance.logServerIP = instance.ESAPI.securityConfiguration().getLogServerIP();
 	
 		instance.moduleName = arguments.moduleName;
-		instance.jlogger = createObject("java", "java.util.logging.Logger").getLogger(instance.applicationName & ":" & arguments.moduleName);
+		instance.jlogger = newJava("java.util.logging.Logger").getLogger(instance.applicationName & ":" & arguments.moduleName);
 	
 		return this;
 	}
@@ -75,7 +70,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 			instance.jlogger.setLevel(convertESAPILeveltoLoggerLevel(arguments.level));
 		}
 		catch(java.lang.IllegalArgumentException e) {
-			this.error(Logger.SECURITY_FAILURE, "", e);
+			this.error(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "", e);
 		}
 	}
 	
@@ -100,23 +95,23 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 		// ACF: use of Logger constants in case statements causes "This expression must have a constant value. " error
 		switch(arguments.level) {
 			case 2147483647: //Logger.OFF:
-				return LoggingLevel.OFF;
+				return newJava("java.util.logging.Level").OFF;
 			case 1000: //Logger.FATAL:
-				return LoggingLevel.SEVERE;
+				return newJava("java.util.logging.Level").SEVERE;
 			case 800: //Logger.ERROR:
-				return JavaLoggerLevel.ERROR_LEVEL;// This is a custom level.
+				return newJava("org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL;// This is a custom level.
 			case 600: //Logger.WARNING:
-				return LoggingLevel.WARNING;
+				return newJava("java.util.logging.Level").WARNING;
 			case 400: //Logger.INFO:
-				return LoggingLevel.INFO;
+				return newJava("java.util.logging.Level").INFO;
 			case 200: //Logger.DEBUG:
-				return LoggingLevel.FINE;
+				return newJava("java.util.logging.Level").FINE;
 			case 100: //Logger.TRACE:
-				return LoggingLevel.FINEST;
+				return newJava("java.util.logging.Level").FINEST;
 			case -2147483648: //Logger.ALL:
-				return LoggingLevel.ALL;
+				return newJava("java.util.logging.Level").ALL;
 			default: {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));
+				throwError(newJava("java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));
 			}
 		}
 		
@@ -127,7 +122,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public void function trace(required type, required String message, throwable) {
-		arguments.level = LoggingLevel.FINEST;
+		arguments.level = newJava("java.util.logging.Level").FINEST;
 		logMessage(argumentCollection=arguments);
 	}
 	
@@ -136,7 +131,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public void function debug(required type, required String message, throwable) {
-		arguments.level = LoggingLevel.FINE;
+		arguments.level = newJava("java.util.logging.Level").FINE;
 		logMessage(argumentCollection=arguments);
 	}
 	
@@ -145,7 +140,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public void function info(required type, required String message, throwable) {
-		arguments.level = LoggingLevel.INFO;
+		arguments.level = newJava("java.util.logging.Level").INFO;
 		logMessage(argumentCollection=arguments);
 	}
 	
@@ -154,7 +149,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public void function warning(required type, required String message, throwable) {
-		arguments.level = LoggingLevel.WARNING;
+		arguments.level = newJava("java.util.logging.Level").WARNING;
 		logMessage(argumentCollection=arguments);
 	}
 	
@@ -163,7 +158,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public void function error(required type, required String message, throwable) {
-		arguments.level = LoggingLevel.SEVERE;
+		arguments.level = newJava("java.util.logging.Level").SEVERE;
 		logMessage(argumentCollection=arguments);
 	}
 	
@@ -172,7 +167,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public void function fatal(required type, required String message, throwable) {
-		arguments.level = LoggingLevel.SEVERE;
+		arguments.level = newJava("java.util.logging.Level").SEVERE;
 		logMessage(argumentCollection=arguments);
 	}
 	
@@ -213,7 +208,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 		}
 	
 		// log server, port, app name, module name -- server:80/app/module
-		local.appInfo = createObject("java", "java.lang.StringBuilder").init();
+		local.appInfo = newJava("java.lang.StringBuilder").init();
 		if(!isNull(instance.ESAPI.currentRequest()) && instance.logServerIP) {
 			local.appInfo.append(instance.ESAPI.currentRequest().getLocalAddr() & ":" & instance.ESAPI.currentRequest().getLocalPort());
 		}
@@ -246,7 +241,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public boolean function isDebugEnabled() {
-		return instance.jlogger.isLoggable(LoggingLevel.FINE);
+		return instance.jlogger.isLoggable(newJava("java.util.logging.Level").FINE);
 	}
 	
 	/**
@@ -254,7 +249,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public boolean function isErrorEnabled() {
-		return instance.jlogger.isLoggable(JavaLoggerLevel.ERROR_LEVEL);
+		return instance.jlogger.isLoggable(newJava("org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL);
 	}
 	
 	/**
@@ -262,7 +257,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public boolean function isFatalEnabled() {
-		return instance.jlogger.isLoggable(LoggingLevel.SEVERE);
+		return instance.jlogger.isLoggable(newJava("java.util.logging.Level").SEVERE);
 	}
 	
 	/**
@@ -270,7 +265,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public boolean function isInfoEnabled() {
-		return instance.jlogger.isLoggable(LoggingLevel.INFO);
+		return instance.jlogger.isLoggable(newJava("java.util.logging.Level").INFO);
 	}
 	
 	/**
@@ -278,7 +273,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public boolean function isTraceEnabled() {
-		return instance.jlogger.isLoggable(LoggingLevel.FINEST);
+		return instance.jlogger.isLoggable(newJava("java.util.logging.Level").FINEST);
 	}
 	
 	/**
@@ -286,7 +281,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	*/
 	
 	public boolean function isWarningEnabled() {
-		return instance.jlogger.isLoggable(LoggingLevel.WARNING);
+		return instance.jlogger.isLoggable(newJava("java.util.logging.Level").WARNING);
 	}
 	
 	public String function getUserInfo() {
@@ -321,7 +316,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	 */
 	
 	public void function always(required type, required String message, throwable) {
-		arguments.level = LoggingLevel.OFF;// Seems backward, but this is what works, not Level.ALL
+		arguments.level = newJava("java.util.logging.Level").OFF;// Seems backward, but this is what works, not Level.ALL
 		logMessage(argumentCollection=arguments);
 	}
 	

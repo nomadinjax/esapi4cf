@@ -21,7 +21,7 @@
 		instance.maxCardLength = 19;
 
 		/* Key used to pull out encoder in configuration.  Prefixed with "Validator." */
-		static.CREDIT_CARD_VALIDATOR_KEY = "CreditCard";
+		instance.CREDIT_CARD_VALIDATOR_KEY = "CreditCard";
 
 		instance.ccrule = "";
 	</cfscript>
@@ -47,8 +47,8 @@
 
 	<cffunction access="private" returntype="StringValidationRule" name="readDefaultCreditCardRule" output="false">
 		<cfscript>
-			local.p = instance.ESAPI.securityConfiguration().getValidationPattern( static.CREDIT_CARD_VALIDATOR_KEY );
-			local.ccr = createObject("component", "StringValidationRule").init( instance.ESAPI, "ccrule", instance.encoder, local.p.pattern() );
+			local.p = instance.ESAPI.securityConfiguration().getValidationPattern( instance.CREDIT_CARD_VALIDATOR_KEY );
+			local.ccr = new StringValidationRule( instance.ESAPI, "ccrule", instance.encoder, local.p.pattern() );
 			local.ccr.setMaximumLength(getMaxCardLength());
 			local.ccr.setAllowNull( false );
 			return local.ccr;
@@ -67,19 +67,17 @@
 
 			try {
 				// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-			    if ( createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
+			    if ( newJava("org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
 					if (allowNull) {
 						return "";
 					}
-	       			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input credit card required", logMessage="Input credit card required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context);
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	       			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input credit card required", logMessage="Input credit card required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
 			    }
 
 			   	local.canonical = instance.ccrule.getValid( arguments.context, arguments.input );
 
 				if( ! validCreditCardFormat(local.canonical)) {
-	       			cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.ValidationException").init( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid credit card input", logMessage="Invalid credit card input: context=" & arguments.context, context=arguments.context );
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	       			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid credit card input", logMessage="Invalid credit card input: context=" & arguments.context, context=arguments.context ));
 				}
 
 				return local.canonical;
@@ -94,11 +92,11 @@
 	<cffunction access="package" returntype="boolean" name="validCreditCardFormat" output="false" hint="Performs additional validation on the card nummber. This implementation performs Luhn algorithm checking">
 		<cfargument type="String" name="ccNum" required="true" hint="number to be validated">
 		<cfscript>
-		    local.digitsOnly = createObject("java", "java.lang.StringBuilder").init();
+		    local.digitsOnly = newJava("java.lang.StringBuilder").init();
 			local.c = "";
 			for (local.i = 0; local.i < arguments.ccNum.length(); local.i++) {
 				local.c = arguments.ccNum.charAt(local.i);
-				if (createObject("java", "java.lang.Character").isDigit(local.c)) {
+				if (newJava("java.lang.Character").isDigit(local.c)) {
 					local.digitsOnly.append(local.c);
 				}
 			}
@@ -110,7 +108,7 @@
 
 			for (local.i = local.digitsOnly.length() - 1; local.i >= 0; local.i--) {
 				// guaranteed to be an int
-				local.digit = createObject("java", "java.lang.Integer").valueOf(local.digitsOnly.substring(local.i, local.i + 1));
+				local.digit = newJava("java.lang.Integer").valueOf(local.digitsOnly.substring(local.i, local.i + 1));
 				if (local.timesTwo) {
 					local.addend = local.digit * 2;
 					if (local.addend > 9) {
@@ -132,7 +130,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			return whitelist( arguments.input, createObject("java", "org.owasp.esapi.EncoderConstants").CHAR_DIGITS );
+			return whitelist( arguments.input, newJava("org.owasp.esapi.EncoderConstants").CHAR_DIGITS );
 		</cfscript> 
 	</cffunction>
 

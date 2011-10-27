@@ -37,16 +37,16 @@
 		<cfargument type="any" name="config" required="true" hint="org.apache.commons.configuration.XMLConfiguration">
 		<cfargument type="numeric" name="currentRule" required="true">
 		<cfscript>
-			local.policyParameter = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.DynaBeanACRParameter").init();
+			local.policyParameter = new cfesapi.org.owasp.esapi.reference.accesscontrol.DynaBeanACRParameter();
 			local.numberOfParameters = config.getList("AccessControlRules.AccessControlRule(" & currentRule & ").Parameters.Parameter[@name]").size();
 			for(local.currentParameter = 0; local.currentParameter < local.numberOfParameters; local.currentParameter++) {
 				local.parameterName = config.getString("AccessControlRules.AccessControlRule(" & currentRule & ").Parameters.Parameter(" & local.currentParameter & ")[@name]");
 				local.parameterType = config.getString("AccessControlRules.AccessControlRule(" & currentRule & ").Parameters.Parameter(" & local.currentParameter & ")[@type]");
-				local.parameterValue = createObject("component", "ACRParameterLoaderHelper").getParameterValue(config, currentRule, local.currentParameter, local.parameterType);
+				local.parameterValue = new ACRParameterLoaderHelper().getParameterValue(config, currentRule, local.currentParameter, local.parameterType);
 				local.policyParameter.set(local.parameterName, local.parameterValue);
 			}
 			local.policyParameter.lock(); //This line makes the policyParameter read only.
-			instance.logger.info(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Loaded " & local.numberOfParameters & " parameters: " & local.policyParameter.toString());
+			instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Loaded " & local.numberOfParameters & " parameters: " & local.policyParameter.toString());
 			return local.policyParameter;
 		</cfscript> 
 	</cffunction>

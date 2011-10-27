@@ -23,9 +23,6 @@
  */
 component IntrusionException extends="cfesapi.org.owasp.esapi.lang.RuntimeException" {
 
-	// imports
-	Logger = createObject("java", "org.owasp.esapi.Logger");
-
 	instance.ESAPI = "";
 
 	/** The logger. */
@@ -52,12 +49,12 @@ component IntrusionException extends="cfesapi.org.owasp.esapi.lang.RuntimeExcept
 		if(structKeyExists(arguments, "cause")) {
 			super.init(arguments.userMessage, arguments.cause);
 			instance.logMessage = arguments.logMessage;
-			instance.logger.error(Logger.SECURITY_FAILURE, "INTRUSION - " & arguments.logMessage, arguments.cause);
+			instance.logger.error(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "INTRUSION - " & arguments.logMessage, arguments.cause);
 		}
 		else {
 			super.init(arguments.userMessage);
 			instance.logMessage = arguments.logMessage;
-			instance.logger.error(Logger.SECURITY_FAILURE, "INTRUSION - " & arguments.logMessage);
+			instance.logger.error(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "INTRUSION - " & arguments.logMessage);
 		}
 		return this;
 	}

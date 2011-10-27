@@ -18,9 +18,6 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-		DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
-		
 		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	</cfscript>
  
@@ -34,11 +31,11 @@
 
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForURL" output="false" hint="Test of isAuthorizedForURL method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
-			System.out.println("isAuthorizedForURL");
+			newJava("java.lang.System").out.println("isAuthorizedForURL");
 			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user1 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user1.setRoles(["user"]);
@@ -56,7 +53,7 @@
 			assertTrue(local.accessController.isAuthorizedForURL("/test/profile"));
 			assertFalse(local.accessController.isAuthorizedForURL("/upload"));
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user2 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user2.setRoles(["admin"]);
@@ -72,7 +69,7 @@
 			assertTrue(local.accessController.isAuthorizedForURL("/test/profile"));
 			assertFalse(local.accessController.isAuthorizedForURL("/upload"));
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user3 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user3.setRoles(["user","admin"]);
@@ -105,11 +102,11 @@
 
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForFunction" output="false" hint="Test of isAuthorizedForFunction method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
-			System.out.println("isAuthorizedForFunction");
+			newJava("java.lang.System").out.println("isAuthorizedForFunction");
 			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user1 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user1.setRoles(["user"]);
@@ -122,7 +119,7 @@
 			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionC"));
 			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionCdeny"));
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user2 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user2.setRoles(["admin"]);
@@ -135,7 +132,7 @@
 			assertTrue(local.accessController.isAuthorizedForFunction("/FunctionD"));
 			assertFalse(local.accessController.isAuthorizedForFunction("/FunctionDdeny"));
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user3 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user3.setRoles(["user","admin"]);
@@ -166,7 +163,7 @@
 
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForData" output="false" hint="Test of isAuthorizedForData method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
-			System.out.println("isAuthorizedForData");
+			newJava("java.lang.System").out.println("isAuthorizedForData");
 			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
@@ -180,21 +177,21 @@
 			local.undefined = "";
 
 			try{
-				local.adminR = createObject("java", "java.util.ArrayList");
-				local.adminRW = createObject("java", "java.lang.Math");
-				local.userW = createObject("java", "java.util.Date");
-				local.userRW = createObject("java", "java.lang.String");
-				local.anyR = createObject("java", "java.io.BufferedReader");
-				local.userAdminR = createObject("java", "java.util.Random");
-				local.userAdminRW = createObject("java", "java.awt.event.MouseWheelEvent");
-				local.undefined = createObject("java", "java.io.FileWriter");
+				local.adminR = newJava("java.util.ArrayList");
+				local.adminRW = newJava("java.lang.Math");
+				local.userW = newJava("java.util.Date");
+				local.userRW = newJava("java.lang.String");
+				local.anyR = newJava("java.io.BufferedReader");
+				local.userAdminR = newJava("java.util.Random");
+				local.userAdminRW = newJava("java.awt.event.MouseWheelEvent");
+				local.undefined = newJava("java.io.FileWriter");
 
 			}catch(ClassNotFoundException cnf){
-				System.out.println("CLASS NOT FOUND.");
+				newJava("java.lang.System").out.println("CLASS NOT FOUND.");
 				cnf.printStackTrace();
 			}
 			//test User
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user1 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user1.setRoles(["user"]);
@@ -213,7 +210,7 @@
 			assertTrue(local.accessController.isAuthorizedForData("write", local.userAdminRW));
 
 			//test Admin
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user2 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user2.setRoles(["admin"]);
@@ -230,7 +227,7 @@
 			assertTrue(local.accessController.isAuthorizedForData("write", local.userAdminRW));
 
 			//test User/Admin
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user3 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user3.setRoles(["user","admin"]);
@@ -264,11 +261,11 @@
 
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForFile" output="false" hint="Test of isAuthorizedForFile method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
-			System.out.println("isAuthorizedForFile");
+			newJava("java.lang.System").out.println("isAuthorizedForFile");
 			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user1 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user1.setRoles(["user"]);
@@ -279,7 +276,7 @@
 			assertTrue(local.accessController.isAuthorizedForFile("/Dir/File3"));
 			assertFalse(local.accessController.isAuthorizedForFile("/Dir/ridiculous"));
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user2 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user2.setRoles(["admin"]);
@@ -290,7 +287,7 @@
 			assertTrue(local.accessController.isAuthorizedForFile("/Dir/File4"));
 			assertFalse(local.accessController.isAuthorizedForFile("/Dir/ridiculous"));
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user3 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user3.setRoles(["user","admin"]);
@@ -318,11 +315,11 @@
 
 	<cffunction access="public" returntype="void" name="testIsAuthorizedForService" output="false" hint="Test of isAuthorizedForService method, of class org.owasp.esapi.AccessController.">
 		<cfscript>
-			System.out.println("isAuthorizedForService");
+			newJava("java.lang.System").out.println("isAuthorizedForService");
 			local.accessController = instance.ESAPI.accessController();
 			local.auth = instance.ESAPI.authenticator();
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user1 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user1.setRoles(["user"]);
@@ -333,7 +330,7 @@
 			assertTrue(local.accessController.isAuthorizedForService("/services/ServiceC"));
 			assertFalse(local.accessController.isAuthorizedForService("/test/ridiculous"));
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user2 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user2.setRoles(["admin"]);
@@ -344,7 +341,7 @@
 			assertFalse(local.accessController.isAuthorizedForService("/services/ServiceF"));
 			assertFalse(local.accessController.isAuthorizedForService("/test/ridiculous"));
 
-			local.accountName = instance.ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
+			local.accountName = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			local.password = local.auth.generateStrongPassword();
 			local.user3 = local.auth.createUser(local.accountName, local.password, local.password);
 			local.user3.setRoles(["user","admin"]);

@@ -25,14 +25,6 @@
  */
 component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.Executor" {
 
-	// imports
-	//import java.io.File;
-	//import java.io.IOException;
-	//import java.io.InputStream;
-	//import java.util.Map;
-	//import org.owasp.esapi.Executor;
-	Logger = createObject("java", "org.owasp.esapi.Logger");
-	//import org.owasp.esapi.codecs.Codec;
 	instance.ESAPI = "";
 
 	/** The logger. */
@@ -47,13 +39,13 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 		instance.ESAPI = arguments.ESAPI;
 		instance.logger = instance.ESAPI.getLogger("Executor");
 		
-		if(createObject("java", "java.lang.System").getProperty("os.name").indexOf("Windows") != -1) {
-			instance.logger.warning(Logger.SECURITY_SUCCESS, "Using WindowsCodec for Executor. If this is not running on Windows this could allow injection");
-			instance.codec = createObject("java", "org.owasp.esapi.codecs.WindowsCodec").init();
+		if(newJava("java.lang.System").getProperty("os.name").indexOf("Windows") != -1) {
+			instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Using WindowsCodec for Executor. If this is not running on Windows this could allow injection");
+			instance.codec = newJava("org.owasp.esapi.codecs.WindowsCodec").init();
 		}
 		else {
-			instance.logger.warning(Logger.SECURITY_SUCCESS, "Using UnixCodec for Executor. If this is not running on Unix this could allow injection");
-			instance.codec = createObject("java", "org.owasp.esapi.codecs.UnixCodec").init();
+			instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Using UnixCodec for Executor. If this is not running on Unix this could allow injection");
+			instance.codec = newJava("org.owasp.esapi.codecs.UnixCodec").init();
 		}
 		
 		return this;
@@ -115,22 +107,21 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 			// String[] command = (String[])params.toArray( new String[0] );
 			// Process process = Runtime.getRuntime().exec(command, new String[0], workdir);
 			// The following is host to implement in Java 1.5+
-			local.pb = createObject("java", "java.lang.ProcessBuilder").init(arguments.params);
+			local.pb = newJava("java.lang.ProcessBuilder").init(arguments.params);
 			local.env = local.pb.environment();
 			local.env.clear();// Security check - clear environment variables!
 			local.pb.directory(arguments.workdir);
 			local.pb.redirectErrorStream(arguments.redirectErrorStream);
 		
 			if(arguments.logParams) {
-				instance.logger.warning(Logger.SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " " & arguments.params & " in " & arguments.workdir);
+				instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " " & arguments.params & " in " & arguments.workdir);
 			}
 			else {
-				instance.logger.warning(Logger.SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " [sensitive parameters obscured] in " & arguments.workdir);
+				instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " [sensitive parameters obscured] in " & arguments.workdir);
 			}
 			
-			StringBuilder = createObject("java", "java.lang.StringBuilder");
-			local.outputBuffer = StringBuilder.init();
-			local.errorsBuffer = StringBuilder.init();
+			local.outputBuffer = newJava("java.lang.StringBuilder").init();
+			local.errorsBuffer = newJava("java.lang.StringBuilder").init();
 			local.process = local.pb.start();
 			try {
 				local.errorReader = "";
@@ -164,14 +155,14 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 				if(local.logErrors.length() > local.MAX_LEN) {
 					local.logErrors = local.logErrors.substring(0, local.MAX_LEN) & "(truncated at " & local.MAX_LEN & " characters)";
 				}
-				instance.logger.warning(Logger.SECURITY_SUCCESS, "Error during system command: " & local.logErrors);
+				instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Error during system command: " & local.logErrors);
 			}
 			if(local.exitValue != 0) {
-				instance.logger.warning(Logger.EVENT_FAILURE, "System command exited with non-zero status: " & local.exitValue);
+				instance.logger.warning(newJava("org.owasp.esapi.Logger").EVENT_FAILURE, "System command exited with non-zero status: " & local.exitValue);
 			}
 		
-			instance.logger.warning(Logger.SECURITY_SUCCESS, "System command complete");
-			return createObject("java", "org.owasp.esapi.ExecuteResult").init(local.exitValue, local.output, local.errors);
+			instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "System command complete");
+			return newJava("org.owasp.esapi.ExecuteResult").init(local.exitValue, local.output, local.errors);
 		}
 		catch(java.io.IOException e) {
 			throwError( new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e) );
@@ -189,8 +180,8 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 	 */
 	
 	private void function readStream(required input, required sb) {
-		local.isr = createObject("java", "java.io.InputStreamReader").init(arguments.input);
-		local.br = createObject("java", "java.io.BufferedReader").init(local.isr);
+		local.isr = newJava("java.io.InputStreamReader").init(arguments.input);
+		local.br = newJava("java.io.BufferedReader").init(local.isr);
 		local.line = local.br.readLine();
 		while(!isNull(local.line)) {
 			sb.append(line).append("\n");

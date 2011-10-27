@@ -18,7 +18,7 @@
 <cfcomponent extends="BaseValidationRule" output="false">
 
 	<cfscript>
-		instance.format = createObject("java", "java.text.DateFormat").getDateInstance();
+		instance.format = newJava("java.text.DateFormat").getDateInstance();
 	</cfscript>
  
 	<cffunction access="public" returntype="DateValidationRule" name="init" output="false">
@@ -39,7 +39,7 @@
 		<cfargument type="any" name="newFormat" required="true" hint="java.text.DateFormat">
 		<cfscript>
 	        if (isNull(arguments.newFormat)) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("DateValidationRule.setDateFormat requires a non-null DateFormat"));
+				throwError(newJava("java.lang.IllegalArgumentException").init("DateValidationRule.setDateFormat requires a non-null DateFormat"));
 			}
 
 	        instance.format = arguments.newFormat;
@@ -66,7 +66,7 @@
 		<cfargument type="String" name="context" required="true">
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
-			local.date = createObject("java", "java.util.Date").init(0);
+			local.date = newJava("java.util.Date").init(0);
 			try {
 				local.date = safelyParse(arguments.context, arguments.input);
 			} catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
@@ -82,12 +82,11 @@
 		<cfargument type="String" name="input" required="true">
 		<cfscript>
 			// CHECKME should this allow empty Strings? "   " use IsBlank instead?
-			if (createObject("java", "org.owasp.esapi.StringUtilities").isEmpty(arguments.input)) {
+			if (newJava("org.owasp.esapi.StringUtilities").isEmpty(arguments.input)) {
 				if (instance.allowNull) {
 					return "";
 				}
-				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input date required", logMessage="Input date required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input date required", logMessage="Input date required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
 			}
 
 		    local.canonical = instance.encoder.canonicalize(arguments.input);
@@ -95,8 +94,7 @@
 			try {
 				return instance.format.parse(local.canonical);
 			} catch (java.lang.Exception e) {
-				cfex = createObject('component', 'cfesapi.org.owasp.esapi.errors.ValidationException').init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid date must follow the " & instance.format.getNumberFormat() & " format", logMessage="Invalid date: context=" & arguments.context & ", format=" & instance.format & ", input=" & arguments.input, cause=e, context=arguments.context);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.ValidationException(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid date must follow the " & instance.format.getNumberFormat() & " format", logMessage="Invalid date: context=" & arguments.context & ", format=" & instance.format & ", input=" & arguments.input, cause=e, context=arguments.context));
 			}
 		</cfscript> 
 	</cffunction>

@@ -18,22 +18,19 @@
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.lang.TestCase" output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-		
-		instance.ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI");
+		instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	</cfscript>
  
 	<cffunction access="public" returntype="void" name="testGetRandomString" output="false" hint="Test of getRandomString method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
-	        System.out.println("getRandomString");
-			DefaultEncoder = createObject("java", "org.owasp.esapi.Encoder");
+	        newJava("java.lang.System").out.println("getRandomString");
 
 	        local.length = 20;
 	        local.randomizer = instance.ESAPI.randomizer();
 	        for ( local.i = 0; local.i < 100; local.i++ ) {
-	            local.result = local.randomizer.getRandomString(local.length, DefaultEncoder.CHAR_ALPHANUMERICS );
+	            local.result = local.randomizer.getRandomString(local.length, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS );
 	            for ( local.j=0;local.j<local.result.length();local.j++ ) {
-	            	if ( !createObject("java", "org.owasp.esapi.codecs.Codec").containsCharacter( local.result.charAt(local.j), DefaultEncoder.CHAR_ALPHANUMERICS) ) {
+	            	if ( !newJava("org.owasp.esapi.codecs.Codec").containsCharacter( local.result.charAt(local.j), newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS) ) {
 	            		fail();
 	            	}
 	            }
@@ -45,7 +42,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetRandomInteger" output="false" hint="Test of getRandomInteger method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
-	        System.out.println("getRandomInteger");
+	        newJava("java.lang.System").out.println("getRandomInteger");
 	        local.min = -20;
 	        local.max = 100;
 	        local.randomizer = instance.ESAPI.randomizer();
@@ -63,10 +60,9 @@
 
 	<cffunction access="public" returntype="void" name="testGetRandomReal" output="false" hint="Test of getRandomReal method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
-	        System.out.println("getRandomReal");
-	        Float = createObject("java", "java.lang.Float");
-	        local.min = Float.init("-20.5234F").floatValue();
-	        local.max = Float.init("100.12124F").floatValue();
+	        newJava("java.lang.System").out.println("getRandomReal");
+	        local.min = newJava("java.lang.Float").init("-20.5234F").floatValue();
+	        local.max = newJava("java.lang.Float").init("100.12124F").floatValue();
 	        local.randomizer = instance.ESAPI.randomizer();
 	        local.minResult = ( local.max - local.min ) / 2;
 	        local.maxResult = ( local.max - local.min ) / 2;
@@ -82,7 +78,7 @@
 
 	<cffunction access="public" returntype="void" name="testGetRandomGUID" output="false" hint="Test of getRandomGUID method, of class org.owasp.esapi.Randomizer.">
 		<cfscript>
-	        System.out.println("getRandomGUID");
+	        newJava("java.lang.System").out.println("getRandomGUID");
 	        local.randomizer = instance.ESAPI.randomizer();
 	        local.list = [];
 	        for ( local.i = 0; local.i < 100; local.i++ ) {

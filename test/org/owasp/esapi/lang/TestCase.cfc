@@ -25,12 +25,27 @@ component extends="mxunit.framework.TestCase" {
 	Assert["assertFalse"] = assertFalse;
 	Assert["assertEquals"] = assertEquals;
 
+	instance.javaCache = {};
+
+	/**
+	 * Returns a reference to the specified Java class.
+	 * Internally, this stores the reference for reuse to save on the number of classes created per request.
+	 */
+	
+	private function newJava(required classpath) {
+		if(!structKeyExists(instance.javaCache, arguments.classpath)) {
+			instance.javaCache[arguments.classpath] = createObject("java", arguments.classpath);
+		}
+		return instance.javaCache[arguments.classpath];
+	}
+	
 	/**
 	 * Deletes the users.txt file from the User's Home directory.
 	 * This prevents the file from getting too large and causing the test cases to take an extremely long time to run.
 	 */
+	
 	private void function cleanUpUsers() {
-		local.filePath = createObject("java", "java.lang.System").getProperty("user.home") & "/esapi/users.txt";
+		local.filePath = newJava("java.lang.System").getProperty("user.home") & "/esapi/users.txt";
 		if(fileExists(local.filePath)) {
 			try {
 				fileDelete(local.filePath);

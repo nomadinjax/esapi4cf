@@ -15,13 +15,10 @@
  */
 component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
-	// imports
-	System = createObject("java", "java.lang.System");
-	
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
 	public void function testAddError() throws Exception {
-		System.out.println("testAddError");
+		newJava("java.lang.System").out.println("testAddError");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		local.vex = createValidationException();
 		local.vel.addError("context", vex);
@@ -49,7 +46,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 	}
 	
 	public void function testErrors() throws Exception {
-		System.out.println("testErrors");
+		newJava("java.lang.System").out.println("testErrors");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		local.vex = createValidationException();
 		local.vel.addError("context", local.vex);
@@ -57,7 +54,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 	}
 	
 	public void function testGetError() throws Exception {
-		System.out.println("testGetError");
+		newJava("java.lang.System").out.println("testGetError");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		local.vex = createValidationException();
 		local.vel.addError("context", local.vex);
@@ -66,7 +63,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 	}
 	
 	public void function testIsEmpty() throws Exception {
-		System.out.println("testIsEmpty");
+		newJava("java.lang.System").out.println("testIsEmpty");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		assertTrue(local.vel.isEmpty());
 		local.vex = createValidationException();
@@ -75,7 +72,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 	}
 	
 	public void function testSize() throws Exception {
-		System.out.println("testSize");
+		newJava("java.lang.System").out.println("testSize");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		assertTrue(local.vel.size() == 0);
 		local.vex = createValidationException();

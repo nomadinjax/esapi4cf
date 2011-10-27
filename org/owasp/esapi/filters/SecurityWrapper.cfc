@@ -22,7 +22,7 @@
  * injection. Attackers use techniques like CRLF injection and null byte injection
  * to confuse the parsing of requests and responses.
  */
-component implements="cfesapi.org.owasp.esapi.lang.Filter" {
+component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.lang.Filter" {
 
 	instance.ESAPI = "";
 	instance.logger = "";
@@ -38,12 +38,12 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 	public SecurityWrapper function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required Struct filterConfig) {
 		instance.ESAPI = arguments.ESAPI;
 	
-		instance.allowableResourcesRoot = createObject("java", "org.owasp.esapi.StringUtilities").replaceNull(arguments.filterConfig.get("allowableResourcesRoot"), 
+		instance.allowableResourcesRoot = newJava("org.owasp.esapi.StringUtilities").replaceNull(arguments.filterConfig.get("allowableResourcesRoot"), 
 	                                                                                                       instance.allowableResourcesRoot);
 	
 		// define custom resourceDirectory - condition to only perform this once otherwise it will force a config reload
 		local.resourceDirectory = arguments.filterConfig.get("resourceDirectory");
-		if(!isNull(local.resourceDirectory) && local.resourceDirectory != instance.ESAPI.securityConfiguration().getResourceDirectory()) {
+		if(!isNull(local.resourceDirectory)) {
 			instance.ESAPI.securityConfiguration().setResourceDirectory(local.resourceDirectory);
 		}
 	
@@ -74,8 +74,7 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 		// I don't think RailoCF is liking this - perhaps the cookie is not set yet at this point?
 		// Where would be a better place to check this?
 		//if(!local.secureRequest.isRequestedSessionIdValid()) {
-		//	cfex = new cfesapi.org.owasp.esapi.errors.ConfigurationException("J2EE sessions must be turned on.");
-		//	throw(type=cfex.getType(), message=cfex.getMessage());
+		//	throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("J2EE sessions must be turned on."));
 		//}
 		return true;
 	}

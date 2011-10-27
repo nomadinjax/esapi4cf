@@ -15,11 +15,9 @@
 	* @created 2011
 	*/
 	--->
-<cfcomponent output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-
 		instance.checked = false;
     	instance.unlimited = false;
     </cfscript>
@@ -38,20 +36,20 @@
 	<cffunction access="private" returntype="boolean" name="checkCrypto" output="false">
 		<cfscript>
 	        try {
-	            local.keyGen = createObject("java", "javax.crypto.KeyGenerator").getInstance("AES");
+	            local.keyGen = newJava("javax.crypto.KeyGenerator").getInstance("AES");
 	            local.keyGen.init(256);   // Max sym key size is 128 unless unlimited
 	                                // strength jurisdiction policy files installed.
 	            local.skey = local.keyGen.generateKey();
 	            local.raw = local.skey.getEncoded();
-	            local.skeySpec = createObject("java", "javax.crypto.spec.SecretKeySpec").init(local.raw, "AES");
-	            local.cipher = createObject("java", "javax.crypto.Cipher").getInstance("AES/ECB/NoPadding");
+	            local.skeySpec = newJava("javax.crypto.spec.SecretKeySpec").init(local.raw, "AES");
+	            local.cipher = newJava("javax.crypto.Cipher").getInstance("AES/ECB/NoPadding");
 
 	                // This usually will throw InvalidKeyException unless the
 	                // unlimited jurisdiction policy files are installed. However,
 	                // it can succeed even if it's not a provider chooses to use
 	                // an exemption mechanism such as key escrow, key recovery, or
 	                // key weakening for this cipher instead.
-	            local.cipher.init(createObject("java", "javax.crypto.Cipher").ENCRYPT_MODE, local.skeySpec);
+	            local.cipher.init(newJava("javax.crypto.Cipher").ENCRYPT_MODE, local.skeySpec);
 
 	                // Try the encryption on dummy string to make sure it works.
 	                // Not using padding so # bytes must be multiple of AES cipher
@@ -60,17 +58,17 @@
 	            assert(!isNull(local.encrypted), "Encryption of test string failed!");
 	            local.em = local.cipher.getExemptionMechanism();
 	            if ( !isNull(local.em) ) {
-	                System.out.println("Cipher uses exemption mechanism " & local.em.getName());
+	                newJava("java.lang.System").out.println("Cipher uses exemption mechanism " & local.em.getName());
 	                return false;   // This is actually an indeterminate case, but
 	                                // we can't bank on it at least for this
 	                                // (default) provider.
 	            }
 	        } catch( java.security.InvalidKeyException ikex ) {
-	            System.out.println("Invalid key size - unlimited strength crypto NOT installed!");
+	            newJava("java.lang.System").out.println("Invalid key size - unlimited strength crypto NOT installed!");
 	            return false;
 	        } catch( java.lang.Exception ex ) {
-	            System.out.println("Caught unexpected exception: " & ex);
-	            ex.printStackTrace(System.out);
+	            newJava("java.lang.System").out.println("Caught unexpected exception: " & ex);
+	            ex.printStackTrace(newJava("java.lang.System").out);
 	            return false;
 	        }
 	        return true;

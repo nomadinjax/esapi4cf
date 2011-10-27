@@ -29,11 +29,10 @@
 
 			local.algorithm = instance.ESAPI.securityConfiguration().getRandomAlgorithm();
 	        try {
-	            instance.secureRandom = createObject("java", "java.security.SecureRandom").getInstance(local.algorithm);
+	            instance.secureRandom = newJava("java.security.SecureRandom").getInstance(local.algorithm);
 	        } catch (java.security.NoSuchAlgorithmException e) {
 	            // Can't throw an exception from the constructor, but this will get it logged and tracked
-	            cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Error creating randomizer", "Can't find random algorithm " & local.algorithm, e);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	            throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, "Error creating randomizer", "Can't find random algorithm " & local.algorithm, e));
 	        }
 
 	        return this;
@@ -44,7 +43,7 @@
 	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
 		<cfargument type="numeric" name="len" required="true">
 		<cfscript>
-			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder = newJava("java.lang.StringBuilder").init();
 			StringBuilder.setLength(arguments.len);
 			return StringBuilder.toString().getBytes();
 		</cfscript> 
@@ -55,7 +54,7 @@
 		<cfargument type="numeric" name="length" required="true">
 		<cfargument type="Array" name="characterSet" required="true">
 		<cfscript>
-	    	local.sb = createObject("java", "java.lang.StringBuilder").init();
+	    	local.sb = newJava("java.lang.StringBuilder").init();
 	        for (local.loop = 1; local.loop <= arguments.length; local.loop++) {
 	            local.index = instance.secureRandom.nextInt(arrayLen(arguments.characterSet) - 1) + 1;	// we are using Java SecureRandom so account for index difference
 	            local.sb.append(arguments.characterSet[local.index]);
@@ -102,8 +101,8 @@
 	<cffunction access="public" returntype="String" name="getRandomFilename" output="false">
 		<cfargument type="String" name="extension" required="true">
 		<cfscript>
-	        local.fn = getRandomString(12, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & "." & arguments.extension;
-	        instance.logger.debug(createObject("java", "org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated new random filename: " & local.fn );
+	        local.fn = getRandomString(12, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & "." & arguments.extension;
+	        instance.logger.debug(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated new random filename: " & local.fn );
 	        return local.fn;
     	</cfscript> 
 	</cffunction>
@@ -111,7 +110,7 @@
 
 	<cffunction access="public" returntype="String" name="getRandomGUID" output="false">
 		<cfscript>
-    		return createObject("java", "java.util.UUID").randomUUID().toString();
+    		return newJava("java.util.UUID").randomUUID().toString();
     	</cfscript> 
 	</cffunction>
 

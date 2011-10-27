@@ -18,10 +18,7 @@
  * always a real user, the ANONYMOUS user is better than using null to represent
  * this.
  */
-component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
-
-	// imports
-	RuntimeException = createObject("java", "java.lang.RuntimeException");
+component ANONYMOUS extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.User" {
 
 	instance.ESAPI = "";
 
@@ -39,7 +36,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function addRole(required String role) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -47,7 +44,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function addRoles(required Array newRoles) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -57,7 +54,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	public void function changePassword(required String oldPassword, 
 	                                    required String newPassword1,
 	                                    required String newPassword2) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -65,7 +62,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function disable() {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -73,7 +70,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function enable() {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -201,7 +198,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function incrementFailedLoginCount() {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -273,7 +270,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function lock() {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -281,7 +278,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function loginWithPassword(cfesapi.org.owasp.esapi.HttpServletRequest request, required String password) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -289,7 +286,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function logout() {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -297,7 +294,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function removeRole(required String role) throws AuthenticationException {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -305,7 +302,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public String function resetCSRFToken() {
-		instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
+		instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 		return instance.csrfToken;
 	}
 	
@@ -314,7 +311,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function setAccountName(required String accountName) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -322,7 +319,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function setExpirationTime(required Date expirationTime) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -330,7 +327,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function setRoles(required Array roles) throws AuthenticationException {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -338,7 +335,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function setScreenName(required String screenName) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -346,7 +343,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function unlock() {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -354,7 +351,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public boolean function verifyPassword(required String password) throws EncryptionException {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -362,7 +359,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function setLastFailedLoginTime(required Date lastFailedLoginTime) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -370,7 +367,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function setLastLoginTime(required Date lastLoginTime) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -378,7 +375,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public void function setLastHostAddress(required String remoteHost) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -386,7 +383,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	*/
 	
 	public void function setLastPasswordChangeTime(required Date lastPasswordChangeTime) {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**
@@ -394,7 +391,7 @@ component ANONYMOUS implements="cfesapi.org.owasp.esapi.User" {
 	 */
 	
 	public Struct function getEventMap() {
-		throw(object=RuntimeException.init("Invalid operation for the anonymous user"));
+		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
 	/**

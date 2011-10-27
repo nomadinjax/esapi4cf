@@ -40,7 +40,7 @@
 
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest" name="initialValue" output="false">
 		<cfscript>
-            return createObject("component", "cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest").init(instance.ESAPI, getPageContext().getRequest());
+            return new cfesapi.org.owasp.esapi.filters.SecurityWrapperRequest(instance.ESAPI, getPageContext().getRequest());
         </cfscript> 
 	</cffunction>
 

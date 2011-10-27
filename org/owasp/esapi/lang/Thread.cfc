@@ -13,9 +13,9 @@
  * @author Damon Miller
  * @created 2011
  */
-component Thread {
+component Thread extends="cfesapi.org.owasp.esapi.lang.Object" {
 
-	instance.thread = createObject("java", "java.lang.Thread").init();
+	instance.thread = newJava("java.lang.Thread").init();
 
 	public void function start() {
 		instance.thread.start();

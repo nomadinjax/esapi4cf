@@ -89,7 +89,7 @@ component CipherSpec extends="cfesapi.org.owasp.esapi.lang.Object" {
 	}
 	
 	private binary function newByte(required numeric len) {
-		StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+		StringBuilder = newJava("java.lang.StringBuilder").init();
 		StringBuilder.setLength(arguments.len);
 		return StringBuilder.toString().getBytes();
 	}
@@ -110,9 +110,8 @@ component CipherSpec extends="cfesapi.org.owasp.esapi.lang.Object" {
 	
 	public CipherSpec function setCipherTransformation(required String cipherXform, 
 	                                                   boolean fromCipher=false) {
-		IllegalArgumentException = createObject("java", "java.lang.IllegalArgumentException");
-		if(!createObject("java", "org.owasp.esapi.StringUtilities").notNullOrEmpty(arguments.cipherXform, true)) {// Yes, really want '!' here.
-			throwError(IllegalArgumentException.init("Cipher transformation may not be null or empty string (after trimming whitespace)."));
+		if(!newJava("org.owasp.esapi.StringUtilities").notNullOrEmpty(arguments.cipherXform, true)) {// Yes, really want '!' here.
+			throwError(newJava("java.lang.IllegalArgumentException").init("Cipher transformation may not be null or empty string (after trimming whitespace)."));
 		}
 		local.parts = arrayLen(arguments.cipherXform.split("/"));
 		assert((!arguments.fromCipher ? (local.parts == 3) : true), "Malformed cipherXform (" & arguments.cipherXform & '); must have form: "alg/mode/paddingscheme"');
@@ -133,11 +132,11 @@ component CipherSpec extends="cfesapi.org.owasp.esapi.lang.Object" {
 			}
 			else {
 				// Should never happen unless Cipher implementation is totally screwed up.
-				throwError(IllegalArgumentException.init('Cipher transformation "' & arguments.cipherXform & '" must have form "alg/mode/paddingscheme"'));
+				throwError(newJava("java.lang.IllegalArgumentException").init('Cipher transformation "' & arguments.cipherXform & '" must have form "alg/mode/paddingscheme"'));
 			}
 		}
 		else if(!arguments.fromCipher && local.parts != 3) {
-			throwError(IllegalArgumentException.init("Malformed cipherXform (" & arguments.cipherXform & '); must have form: "alg/mode/paddingscheme"'));
+			throwError(newJava("java.lang.IllegalArgumentException").init("Malformed cipherXform (" & arguments.cipherXform & '); must have form: "alg/mode/paddingscheme"'));
 		}
 		assert(arrayLen(arguments.cipherXform.split("/")) == 3, "Implementation error setCipherTransformation()");
 		this.cipher_xform_ = arguments.cipherXform;
@@ -273,7 +272,7 @@ component CipherSpec extends="cfesapi.org.owasp.esapi.lang.Object" {
 	//@Override
 	
 	public String function toString() {
-		local.sb = createObject("java", "java.lang.StringBuilder").init("CipherSpec: ");
+		local.sb = newJava("java.lang.StringBuilder").init("CipherSpec: ");
 		local.sb.append(getCipherTransformation()).append("; keysize= ").append(javaCast("int", getKeySize()));
 		local.sb.append(" bits; blocksize= ").append(javaCast("int", getBlockSize())).append(" bytes");
 		local.iv = getIV();
@@ -303,7 +302,7 @@ component CipherSpec extends="cfesapi.org.owasp.esapi.lang.Object" {
 			return false;
 		}
 		if(isInstanceOf(arguments.other, "cfesapi.org.owasp.esapi.crypto.CipherSpec")) {
-			NullSafe = createObject("java", "org.owasp.esapi.util.NullSafe");
+			NullSafe = newJava("org.owasp.esapi.util.NullSafe");
 			local.that = arguments.other;
 			local.result = (local.that.canEqual(this) && NullSafe.equals(this.cipher_xform_, local.that.cipher_xform_) 
 		&& this.keySize_ == local.that.keySize_ && this.blockSize_ == local.that.blockSize_ 
@@ -318,8 +317,7 @@ component CipherSpec extends="cfesapi.org.owasp.esapi.lang.Object" {
 	// @Override
 	
 	public int function hashCode() {
-		JavaString = createObject("java", "java.lang.String");
-		local.sb = createObject("java", "java.lang.StringBuilder").init();
+		local.sb = newJava("java.lang.StringBuilder").init();
 		local.sb.append(getCipherTransformation());
 		local.sb.append("" & getKeySize());
 		local.sb.append("" & getBlockSize());
@@ -327,12 +325,12 @@ component CipherSpec extends="cfesapi.org.owasp.esapi.lang.Object" {
 		if(!isNull(local.iv) && local.iv.length > 0) {
 			local.ivStr = "";
 			try {
-				local.ivStr = JavaString.init(local.iv, "UTF-8");
+				local.ivStr = newJava("java.lang.String").init(local.iv, "UTF-8");
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
 				// Should never happen as UTF-8 encode supported by rt.jar,
 				// but it it does, just use default encoding.
-				local.ivStr = JavaString.init(local.iv);
+				local.ivStr = newJava("java.lang.String").init(local.iv);
 			}
 			local.sb.append(local.ivStr);
 		}

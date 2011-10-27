@@ -18,8 +18,6 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false" hint="Class to provide some convenience methods for encryption, decryption, etc.">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-		
 		instance.ESAPI = "";
 		instance.logger = "";
 	</cfscript>
@@ -38,7 +36,7 @@
 	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
 		<cfargument type="numeric" name="len" required="true">
 		<cfscript>
-			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder = newJava("java.lang.StringBuilder").init();
 			StringBuilder.setLength(arguments.len);
 			return StringBuilder.toString().getBytes();
 		</cfscript> 
@@ -61,12 +59,11 @@
 			    if ( local.cipherAlg.toUpperCase().startsWith("PBEWITH") ) {
 			        local.cipherAlg = "PBE";
 			    }
-				local.kgen = createObject("java", "javax.crypto.KeyGenerator").getInstance( local.cipherAlg );
+				local.kgen = newJava("javax.crypto.KeyGenerator").getInstance( local.cipherAlg );
 				local.kgen.init(arguments.keySize);
 				return local.kgen.generateKey();
 			} catch (java.security.NoSuchAlgorithmException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Failed to generate random secret key", "Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, "Failed to generate random secret key", "Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e));
 			}
 		</cfscript> 
 	</cffunction>
@@ -92,8 +89,7 @@
 			try {
 				local.inputBytes = arguments.purpose.getBytes("UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.EncryptionException").init(instance.ESAPI, "Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.message, e);
-           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, "Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.message, e));
 			}
 
 			// Note that keyDerivationKey is going to be some SecretKey like an AES or
@@ -102,15 +98,15 @@
 			// that doesn't really matter though as the SecretKeySpec CTOR on
 			// the following line still returns the appropriate sized key for
 			// HmacSHA1.
-			local.sk = createObject("java", "javax.crypto.spec.SecretKeySpec").init(arguments.keyDerivationKey.getEncoded(), "HmacSHA1");
+			local.sk = newJava("javax.crypto.spec.SecretKeySpec").init(arguments.keyDerivationKey.getEncoded(), "HmacSHA1");
 			local.mac = "";
 
 			try {
-				local.mac = createObject("java", "javax.crypto.Mac").getInstance("HmacSHA1");
+				local.mac = newJava("javax.crypto.Mac").getInstance("HmacSHA1");
 				local.mac.init(local.sk);
 			} catch( InvalidKeyException ex ) {
-				instance.logger.error(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Created HmacSHA1 Mac but SecretKey sk has alg " & local.sk.getAlgorithm(), ex);
-				throw(object=ex);
+				instance.logger.error(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Created HmacSHA1 Mac but SecretKey sk has alg " & local.sk.getAlgorithm(), ex);
+				throwError(ex);
 			}
 
 			// Repeatedly call of HmacSHA1 hash until we've collected enough bits
@@ -133,13 +129,13 @@
 				} else {
 					local.len = min(arrayLen(local.tmpKey), arguments.keySize - local.totalCopied);
 				}
-				System.arraycopy(local.tmpKey, 0, local.derivedKey, local.destPos, local.len);
+				newJava("java.lang.System").arraycopy(local.tmpKey, 0, local.derivedKey, local.destPos, local.len);
 				local.inputBytes = local.tmpKey;
 				local.totalCopied += arrayLen(local.tmpKey);
 				local.destPos += local.len;
 			} while( local.totalCopied < arguments.keySize );
 
-			return createObject("java", "javax.crypto.spec.SecretKeySpec").init(local.derivedKey, arguments.keyDerivationKey.getAlgorithm());
+			return newJava("javax.crypto.spec.SecretKeySpec").init(local.derivedKey, arguments.keyDerivationKey.getAlgorithm());
 		</cfscript> 
 	</cffunction>
 
@@ -194,7 +190,7 @@
 	                // Error on side of security. If this fails and can't verify MAC
 	                // assume it is invalid. Note that CipherText.toString() does not
 	                // print the actual ciphertext.
-	                instance.logger.warning(createObject("java", "org.owasp.esapi.Logger").SECURITY_FAILURE, "Unable to validate MAC for ciphertext " & arguments.ct, ex);
+	                instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Unable to validate MAC for ciphertext " & arguments.ct, ex);
 	                return false;
 	            }
 	        }
@@ -207,7 +203,7 @@
 		<cfargument type="binary" name="bytes" required="true" hint="The byte array to be overwritten.">
 		<cfargument type="String" name="x" required="false" default="*" hint="The byte array bytes is overwritten with this byte.">
 		<cfscript>
-			createObject("java", "java.util.Arrays").fill(arguments.bytes, javaCast("byte", asc(arguments.x)));
+			newJava("java.util.Arrays").fill(arguments.bytes, javaCast("byte", asc(arguments.x)));
 		</cfscript> 
 	</cffunction>
 
@@ -218,11 +214,11 @@
 		<cfargument type="numeric" name="length" required="false" default="#arrayLen(arguments.src)#" hint="the number of array elements to be copied.">
 		<cfscript>
 			try {
-				System.arraycopy(arguments.src, 0, arguments.dest, 0, arguments.length);
+				newJava("java.lang.System").arraycopy(arguments.src, 0, arguments.dest, 0, arguments.length);
 			} catch(java.lang.ArrayIndexOutOfBoundsException e) {
-				throw(object=e);
+				throwError(e);
 			} catch(java.lang.NullPointerException e) {
-				throw(object=e);
+				throwError(e);
 			}
 		</cfscript> 
 	</cffunction>

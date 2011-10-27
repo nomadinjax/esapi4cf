@@ -18,11 +18,11 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.HttpServletRequest" output="false">
 
 	<cfscript>
-		static.HDR_CONTENT_TYPE = "Content-Type";
-		//static.EMPTY_STRING_ARRAY = new String[0];
+		instance.HDR_CONTENT_TYPE = "Content-Type";
+		//instance.EMPTY_STRING_ARRAY = new String[0];
 
 		/* The requestDispatcher */
-		instance.requestDispatcher = createObject("component", "MockRequestDispatcher");
+		instance.requestDispatcher = new MockRequestDispatcher();
 
 		/* The session. */
 		instance.session = "";
@@ -161,7 +161,7 @@
 		<cfargument type="String" name="name" required="true">
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
-			local.c = createObject("java", "javax.servlet.http.Cookie").init( arguments.name, arguments.value );
+			local.c = newJava("javax.servlet.http.Cookie").init( arguments.name, arguments.value );
 			instance.cookies.add( local.c );
 		</cfscript> 
 	</cffunction>
@@ -304,7 +304,7 @@
 
 	<cffunction access="public" returntype="any" name="getRequestURL" output="false" hint="java.lang.StringBuffer">
 		<cfscript>
-			return createObject("java", "java.lang.StringBuffer").init( getScheme() & "://" & getServerName() & getRequestURI() & "?" & getQueryString() );
+			return newJava("java.lang.StringBuffer").init( getScheme() & "://" & getServerName() & getRequestURI() & "?" & getQueryString() );
 		</cfscript> 
 	</cffunction>
 
@@ -328,9 +328,9 @@
 		<cfscript>
 			if (structKeyExists(arguments, "create")) {
 				if (!isObject(instance.session) && arguments.create) {
-					instance.session = createObject("component", "MockHttpSession").init();
+					instance.session = new MockHttpSession();
 				} else if (isObject(instance.session) && instance.session.getInvalidated()) {
-					instance.session = createObject("component", "MockHttpSession").init();
+					instance.session = new MockHttpSession();
 				}
 				return instance.session;	// may return empty string or cfesapi.org.owasp.esapi.HttpSession
 			}
@@ -413,7 +413,7 @@
 
 	<cffunction access="public" returntype="String" name="getContentType" output="false">
 		<cfscript>
-			return getHeader(static.HDR_CONTENT_TYPE);
+			return getHeader(instance.HDR_CONTENT_TYPE);
 		</cfscript> 
 	</cffunction>
 
@@ -421,7 +421,7 @@
 	<cffunction access="public" returntype="void" name="setContentType" output="false">
 		<cfargument type="String" name="value" required="true">
 		<cfscript>
-			this.setHeader(static.HDR_CONTENT_TYPE, arguments.value);
+			this.setHeader(instance.HDR_CONTENT_TYPE, arguments.value);
 		</cfscript> 
 	</cffunction>
 
@@ -659,8 +659,8 @@
 
 	<cffunction access="public" returntype="boolean" name="isMultipartContent" output="false">
 		<cfscript>
-			if (structKeyExists(instance.headers, static.HDR_CONTENT_TYPE)) {
-				local.contentTypes = instance.headers.get(static.HDR_CONTENT_TYPE);
+			if (structKeyExists(instance.headers, instance.HDR_CONTENT_TYPE)) {
+				local.contentTypes = instance.headers.get(instance.HDR_CONTENT_TYPE);
 			}
 			if (!isNull(local.contentTypes)) {
 				for (local.i=1; local.i<=arrayLen(local.contentTypes); i++) {

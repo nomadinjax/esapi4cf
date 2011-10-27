@@ -40,16 +40,16 @@ component Exception extends="Object" {
 				// RAILO CF exceptions do not extend java.lang.Exception
 				// ? is there a better way ? I hope so...
 				else if(isStruct(arguments.cause)) {
-					local.cause = createObject("java", "java.lang.Throwable").init(arguments.cause.message);
+					local.cause = newJava("java.lang.Exception").init(arguments.cause.message);
 				}
-				instance.exception = createObject("java", "java.lang.Exception").init(arguments.message, local.cause);
+				instance.exception = newJava("java.lang.Exception").init(arguments.message, local.cause);
 			}
 			else {
-				instance.exception = createObject("java", "java.lang.Exception").init(arguments.message);
+				instance.exception = newJava("java.lang.Exception").init(arguments.message);
 			}
 		}
 		else {
-			instance.exception = createObject("java", "java.lang.Exception").init();
+			instance.exception = newJava("java.lang.Exception").init();
 		}
 	
 		setType();

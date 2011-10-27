@@ -46,17 +46,17 @@
 				//instance.delegateMethod = local.delegateClass.getMethod(local.methodName, local.parameterClasses);
 				instance.delegateMethod = local.methodName;
 			} catch (java.lang.SecurityException e) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(e.message & ' delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" must be public.', e));
+				throwError(newJava("java.lang.IllegalArgumentException").init(e.message & ' delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" must be public.', e));
 			} catch (java.lang.NoSuchMethodException e) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(e.message & ' delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" does not exist.', e));
+				throwError(newJava("java.lang.IllegalArgumentException").init(e.message & ' delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" does not exist.', e));
 			}
 
 			try {
 				instance.delegateInstance = local.delegateClass;
 			} catch (java.lang.InstantiationException ex) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(' Delegate class "' & local.delegateClassName & '" must be concrete, because method ' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ") is not static.", ex));
+				throwError(newJava("java.lang.IllegalArgumentException").init(' Delegate class "' & local.delegateClassName & '" must be concrete, because method ' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ") is not static.", ex));
 			} catch (java.lang.IllegalAccessException ex) {
-				createObject("java", "java.lang.IllegalArgumentException").init(' Delegate class "' & local.delegateClassName & '" must must have a zero-argument constructor, because method delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" is not static.', ex);
+				newJava("java.lang.IllegalArgumentException").init(' Delegate class "' & local.delegateClassName & '" must must have a zero-argument constructor, because method delegateClass.delegateMethod(parameterClasses): "' & local.delegateClassName & "." & local.methodName & "(" & local.parameterClassNames & ')" is not static.', ex);
 			}
 		</cfscript> 
 	</cffunction>
@@ -87,11 +87,11 @@
 			        local.theClass = createObject("component", arguments.className).init(ESAPI=instance.ESAPI);
 				}
 				else {
-					local.theClass = createObject("java", arguments.className).init();
+					local.theClass = newJava(arguments.className).init();
 				}
 		        return local.theClass;
 		    } catch ( Application ex ) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init(ex.message & " " & arguments.purpose & " Class " & arguments.className & " must be in the classpath", ex));
+				throwError(newJava("java.lang.IllegalArgumentException").init(ex.message & " " & arguments.purpose & " Class " & arguments.className & " must be in the classpath", ex));
 		    }
 		</cfscript> 
 	</cffunction>

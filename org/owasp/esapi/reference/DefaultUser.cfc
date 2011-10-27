@@ -23,10 +23,6 @@
  */
 component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.User" {
 
-	// imports
-	Logger = createObject("java", "org.owasp.esapi.Logger");
-	JavaDate = createObject("java", "java.util.Date");
-
 	instance.ESAPI = "";
 
 	/** The idle timeout length specified in the ESAPI config file. */
@@ -66,16 +62,16 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	instance.lastHostAddress = "";
 
 	/** The last password change time for this user. */
-	instance.lastPasswordChangeTime = JavaDate.init(javaCast("long", 0));
+	instance.lastPasswordChangeTime = newJava("java.util.Date").init(javaCast("long", 0));
 
 	/** The last login time for this user. */
-	instance.lastLoginTime = JavaDate.init(javaCast("long", 0));
+	instance.lastLoginTime = newJava("java.util.Date").init(javaCast("long", 0));
 
 	/** The last failed login time for this user. */
-	instance.lastFailedLoginTime = JavaDate.init(javaCast("long", 0));
+	instance.lastFailedLoginTime = newJava("java.util.Date").init(javaCast("long", 0));
 
 	/** The expiration date/time for this user's account. */
-	instance.expirationTime = JavaDate.init(javaCast("long", createObject("java", "java.lang.Long").MAX_VALUE));
+	instance.expirationTime = newJava("java.util.Date").init(javaCast("long", newJava("java.lang.Long").MAX_VALUE));
 
 	/** The sessions this user is associated with */
 	instance.sessions = [];
@@ -128,7 +124,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 		local.roleName = arguments.role.toLowerCase();
 		if(instance.ESAPI.validator().isValidInput("addRole", local.roleName, "RoleName", instance.MAX_ROLE_LENGTH, false)) {
 			instance.roles.add(local.roleName);
-			instance.logger.info(Logger.SECURITY_SUCCESS, "Role " & local.roleName & " added to " & getAccountName());
+			instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Role " & local.roleName & " added to " & getAccountName());
 		}
 		else {
 			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Add role failed", "Attempt to add invalid role " & local.roleName & " to " & getAccountName()) );
@@ -161,7 +157,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function disable() {
 		instance.enabled = false;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Account disabled: " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account disabled: " & getAccountName());
 	}
 	
 	/**
@@ -170,7 +166,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function enable() {
 		instance.enabled = true;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Account enabled: " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account enabled: " & getAccountName());
 	}
 	
 	/**
@@ -350,7 +346,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 		// If expiration should happen automatically or based on lastPasswordChangeTime?
 		//long from = lastPasswordChangeTime.getTime();
-		//long to = JavaDate.init().getTime();
+		//long to = newJava("java.util.Date").init().getTime();
 		//double difference = to - from;
 		//long days = Math.round((difference / (1000 * 60 * 60 * 24)));
 		//return days > 60;
@@ -389,7 +385,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 		if(!isObject(local.session)) {
 			return true;
 		}
-		local.deadline = JavaDate.init(javaCast("long", local.session.getCreationTime() + this.ABSOLUTE_TIMEOUT_LENGTH));
+		local.deadline = newJava("java.util.Date").init(javaCast("long", local.session.getCreationTime() + this.ABSOLUTE_TIMEOUT_LENGTH));
 		local.now = now();
 		return local.now.after(local.deadline);
 	}
@@ -403,7 +399,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 		if(!isObject(local.session)) {
 			return true;
 		}
-		local.deadline = JavaDate.init(javaCast("long", local.session.getLastAccessedTime() + this.IDLE_TIMEOUT_LENGTH));
+		local.deadline = newJava("java.util.Date").init(javaCast("long", local.session.getLastAccessedTime() + this.IDLE_TIMEOUT_LENGTH));
 		local.now = now();
 		return local.now.after(local.deadline);
 	}
@@ -414,7 +410,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function lock() {
 		instance.locked = true;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Account locked: " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account locked: " & getAccountName());
 	}
 	
 	/**
@@ -458,7 +454,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 			instance.ESAPI.authenticator().setCurrentUser(this);
 			setLastLoginTime(now());
 			setLastHostAddress(arguments.request.getRemoteAddr());
-			instance.logger.trace(Logger.SECURITY_SUCCESS, "User logged in: " & getAccountName());
+			instance.logger.trace(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User logged in: " & getAccountName());
 		}
 		else {
 			instance.loggedIn = false;
@@ -487,7 +483,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 		// I do not believe destroying the JSESSIONID cookie is currently working
 		instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), instance.ESAPI.securityConfiguration().getHttpSessionIdName());
 		instance.loggedIn = false;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Logout successful");
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Logout successful");
 		instance.ESAPI.authenticator().setCurrentUser(new cfesapi.org.owasp.esapi.User$ANONYMOUS(instance.ESAPI));
 	}
 	
@@ -497,7 +493,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function removeRole(required String role) {
 		instance.roles.remove(arguments.role.toLowerCase());
-		instance.logger.trace(Logger.SECURITY_SUCCESS, "Role " & arguments.role & " removed from " & getAccountName());
+		instance.logger.trace(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Role " & arguments.role & " removed from " & getAccountName());
 	}
 	
 	/**
@@ -516,7 +512,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	public String function resetCSRFToken() {
 		// user.csrfToken = instance.ESAPI.encryptor().hash( session.getId(),user.name );
 		// user.csrfToken = instance.ESAPI.encryptor().encrypt( address & ":" & instance.ESAPI.encryptor().getTimeStamp();
-		instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+		instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		return instance.csrfToken;
 	}
 	
@@ -539,7 +535,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 			if(local.old.equals("")) {
 				local.old = "[nothing]";
 			}
-			instance.logger.info(Logger.SECURITY_SUCCESS, "Account name changed from " & local.old & " to " & getAccountName());
+			instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account name changed from " & local.old & " to " & getAccountName());
 		}
 	}
 	
@@ -548,8 +544,8 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 */
 	
 	public void function setExpirationTime(required Date expirationTime) {
-		instance.expirationTime = JavaDate.init(javaCast("long", arguments.expirationTime.getTime()));
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Account expiration time set to " & arguments.expirationTime & " for " & getAccountName());
+		instance.expirationTime = newJava("java.util.Date").init(javaCast("long", arguments.expirationTime.getTime()));
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account expiration time set to " & arguments.expirationTime & " for " & getAccountName());
 	}
 	
 	/**
@@ -558,7 +554,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function setLastFailedLoginTime(required Date lastFailedLoginTime) {
 		instance.lastFailedLoginTime = arguments.lastFailedLoginTime;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Set last failed login time to " & arguments.lastFailedLoginTime & " for " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Set last failed login time to " & arguments.lastFailedLoginTime & " for " & getAccountName());
 	}
 	
 	/**
@@ -579,7 +575,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function setLastLoginTime(required Date lastLoginTime) {
 		instance.lastLoginTime = arguments.lastLoginTime;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Set last successful login time to " & arguments.lastLoginTime & " for " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Set last successful login time to " & arguments.lastLoginTime & " for " & getAccountName());
 	}
 	
 	/**
@@ -588,7 +584,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function setLastPasswordChangeTime(required Date lastPasswordChangeTime) {
 		instance.lastPasswordChangeTime = arguments.lastPasswordChangeTime;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Set last password change time to " & arguments.lastPasswordChangeTime & " for " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Set last password change time to " & arguments.lastPasswordChangeTime & " for " & getAccountName());
 	}
 	
 	/**
@@ -598,7 +594,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	public void function setRoles(required Array roles) {
 		instance.roles = [];
 		addRoles(arguments.roles);
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Adding roles " & arrayToList(arguments.roles) & " to " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Adding roles " & arrayToList(arguments.roles) & " to " & getAccountName());
 	}
 	
 	/**
@@ -607,7 +603,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	
 	public void function setScreenName(required String screenName) {
 		instance.screenName = arguments.screenName;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "ScreenName changed to " & arguments.screenName & " for " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "ScreenName changed to " & arguments.screenName & " for " & getAccountName());
 	}
 	
 	/**
@@ -627,7 +623,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	public void function unlock() {
 		instance.locked = false;
 		instance.failedLoginCount = 0;
-		instance.logger.info(Logger.SECURITY_SUCCESS, "Account unlocked: " & getAccountName());
+		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Account unlocked: " & getAccountName());
 	}
 	
 	/**

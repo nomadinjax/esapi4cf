@@ -15,7 +15,7 @@
 	* @created 2011
 	*/
 	--->
-<cfcomponent implements="cfesapi.org.owasp.esapi.AccessControlRule" output="false" hint="Abstract Class; do not directly instantiate">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.AccessControlRule" output="false" hint="Abstract Class; do not directly instantiate">
 
 	<cfscript>
 		instance.policyParameters = "";

@@ -18,10 +18,6 @@
  */
 component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	
-	// import
-	System = createObject("java", "java.lang.System");
-	JavaFile = createObject("java", "java.io.File");
-	
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	instance.origConfig = "";
 
@@ -32,16 +28,16 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	 *             the exception
 	 */
 	public void function testExecuteWindowsSystemCommand() {
-		System.out.println("executeWindowsSystemCommand");
+		newJava("java.lang.System").out.println("executeWindowsSystemCommand");
 
-		if ( System.getProperty("os.name").indexOf("Windows") == -1 ) {
-			System.out.println("testExecuteWindowsSystemCommand - on non-Windows platform, exiting");
+		if ( newJava("java.lang.System").getProperty("os.name").indexOf("Windows") == -1 ) {
+			newJava("java.lang.System").out.println("testExecuteWindowsSystemCommand - on non-Windows platform, exiting");
 			return;	// Not windows, not going to execute this path
 		}
-		local.tmpDir = JavaFile.init(System.getProperty("java.io.tmpdir")).getCanonicalFile();
-		local.sysRoot = JavaFile.init(System.getenv("SystemRoot")).getCanonicalFile();
-		local.sys32 = JavaFile.init(local.sysRoot,"system32").getCanonicalFile();
-		local.cmd = JavaFile.init(local.sys32,"cmd.exe").getCanonicalFile();
+		local.tmpDir = newJava("java.io.File").init(newJava("java.lang.System").getProperty("java.io.tmpdir")).getCanonicalFile();
+		local.sysRoot = newJava("java.io.File").init(newJava("java.lang.System").getenv("SystemRoot")).getCanonicalFile();
+		local.sys32 = newJava("java.io.File").init(local.sysRoot,"system32").getCanonicalFile();
+		local.cmd = newJava("java.io.File").init(local.sys32,"cmd.exe").getCanonicalFile();
 		instance.ESAPI.override(
 			new ExecutorTest$Conf(
 				instance.ESAPI.securityConfiguration(),
@@ -50,40 +46,40 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			)
 		);
 
-		local.codec = createObject("java", "org.owasp.esapi.codecs.WindowsCodec").init();
-		System.out.println("executeSystemCommand");
+		local.codec = newJava("org.owasp.esapi.codecs.WindowsCodec").init();
+		newJava("java.lang.System").out.println("executeSystemCommand");
 		local.executor = instance.ESAPI.executor();
 		local.params = [];
 		try {
 			local.params.add("/C");
 			local.params.add("dir");
 			local.result = local.executor.executeSystemCommand(local.cmd, local.params);
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 			assertTrue(local.result.getOutput().length() > 0);
 		} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
 			e.printStackTrace();
 			fail("");
 		}
 		try {
-			local.exec2 = JavaFile.init( local.cmd.getPath() & ";inject.exe" );
+			local.exec2 = newJava("java.io.File").init( local.cmd.getPath() & ";inject.exe" );
 			local.result = local.executor.executeSystemCommand(local.exec2, local.params);
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 			fail("");
 		} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
 			// expected
 		}
 		try {
-			local.exec2 = JavaFile.init( local.cmd.getPath() & "\..\cmd.exe" );
+			local.exec2 = newJava("java.io.File").init( local.cmd.getPath() & "\..\cmd.exe" );
 			local.result = local.executor.executeSystemCommand(local.exec2, local.params);
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 			fail("");
 		} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
 			// expected
 		}
 		try {
-			local.workdir = JavaFile.init( "c:\ridiculous" );
+			local.workdir = newJava("java.io.File").init( "c:\ridiculous" );
 			local.result = local.executor.executeSystemCommand(local.cmd, local.params, local.workdir, local.codec, false, false );
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 			fail("");
 		} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
 			// expected
@@ -91,7 +87,7 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		try {
 			local.params.add("&dir");
 			local.result = local.executor.executeSystemCommand(local.cmd, local.params);
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 		} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
 			fail("");
 		}
@@ -99,7 +95,7 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		try {
 			local.params.set( local.params.size()-1, "c:\autoexec.bat" );
 			local.result = local.executor.executeSystemCommand(local.cmd, local.params);
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 		} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
 			fail("");
 		}
@@ -107,7 +103,7 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		try {
 			local.params.set( local.params.size()-1, "c:\autoexec.bat c:\config.sys" );
 			local.result = local.executor.executeSystemCommand(local.cmd, local.params);
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 		} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
 			fail("");
 		}
@@ -120,24 +116,24 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	 *             the exception
 	 */
 	public void function testExecuteUnixSystemCommand() {
-		System.out.println("executeUnixSystemCommand");
+		newJava("java.lang.System").out.println("executeUnixSystemCommand");
 
-		if ( System.getProperty("os.name").indexOf("Windows") != -1 ) {
-			System.out.println("executeUnixSystemCommand - on Windows platform, exiting");
+		if ( newJava("java.lang.System").getProperty("os.name").indexOf("Windows") != -1 ) {
+			newJava("java.lang.System").out.println("executeUnixSystemCommand - on Windows platform, exiting");
 			return;
 		}
 
 		// FIXME: need more test cases to use this codec
-		local.codec = createObject("java", "org.owasp.esapi.codecs.UnixCodec");
+		local.codec = newJava("org.owasp.esapi.codecs.UnixCodec");
 
 		// make sure we have what /bin/sh is pointing at in the allowed exes for the test
 		// and a usable working dir
-		local.binSh = JavaFile.init("/bin/sh").getCanonicalFile();
+		local.binSh = newJava("java.io.File").init("/bin/sh").getCanonicalFile();
 		instance.ESAPI.override(
 			new Conf(
 				instance.ESAPI.securityConfiguration(),
 				Collections.singletonList(local.binSh.getPath()),
-				JavaFile.init("/tmp")
+				newJava("java.io.File").init("/tmp")
 			)
 		);
 
@@ -149,23 +145,23 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			local.params.add("ls");
 			local.params.add("/");
 			local.result = local.executor.executeSystemCommand(local.executable, new ArrayList(local.params) );
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 			assertTrue(local.result.getOutput().length() > 0);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
 		try {
-			local.exec2 = JavaFile.init( local.executable.getPath() & ";./inject" );
+			local.exec2 = newJava("java.io.File").init( local.executable.getPath() & ";./inject" );
 			local.result = local.executor.executeSystemCommand(local.exec2, new ArrayList(local.params) );
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 			fail();
 		} catch (Exception e) {
 			// expected
 		}
 		try {
-			local.exec2 = JavaFile.init( local.executable.getPath() & "/../bin/sh" );
+			local.exec2 = newJava("java.io.File").init( local.executable.getPath() & "/../bin/sh" );
 			local.result = local.executor.executeSystemCommand(local.exec2, new ArrayList(local.params) );
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 			fail();
 		} catch (Exception e) {
 			// expected
@@ -173,16 +169,16 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		try {
 			local.params.add(";ls");
 			local.result = local.executor.executeSystemCommand(local.executable, new ArrayList(local.params) );
-			System.out.println( "RESULT: " & local.result );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result );
 		} catch (Exception e) {
 			fail();
 		}
 
 		try {
-			local.cwd = JavaFile.init(".");
+			local.cwd = newJava("java.io.File").init(".");
 			local.script = File.createTempFile("ESAPI-ExecutorTest", "sh", local.cwd);
 			local.script.deleteOnExit();
-			local.output = createObject("java", "java.io.FileWriter").init(local.script);
+			local.output = newJava("java.io.FileWriter").init(local.script);
 			try {
 				local.output.write("i=0\nwhile [ $i -lt 8192 ]\ndo\necho stdout data\necho stderr data >&2\ni=$((i+1))\ndone\n");
 			} finally {
@@ -191,7 +187,7 @@ component ExecutorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			local.deadlockParams = new ArrayList();
 			local.deadlockParams.add(local.script.getName());
 			local.result = local.executor.executeSystemCommand(local.executable, local.deadlockParams, local.cwd, local.codec, true, false);
-			System.out.println( "RESULT: " & local.result.getExitValue() );
+			newJava("java.lang.System").out.println( "RESULT: " & local.result.getExitValue() );
 			assertEquals(0, local.result.getExitValue());
 		} catch (Exception e) {
 			fail();

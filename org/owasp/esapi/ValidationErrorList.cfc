@@ -85,7 +85,7 @@ component ValidationErrorList extends="cfesapi.org.owasp.esapi.lang.Object" {
 	public void function addError(required String context, 
 	                              required vex) {
 		if(!isNull(getError(arguments.context))) {
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Context (" & arguments.context & ") already exists, must be unique"));
+			throwError(newJava("java.lang.RuntimeException").init("Context (" & arguments.context & ") already exists, must be unique"));
 		}
 		instance.errorList.put(arguments.context, arguments.vex);
 	}
@@ -97,7 +97,7 @@ component ValidationErrorList extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 */
 	
 	public Array function errors() {
-		return createObject("java", "java.util.ArrayList").init(instance.errorList.values());
+		return newJava("java.util.ArrayList").init(instance.errorList.values());
 	}
 	
 	/**

@@ -34,7 +34,7 @@
 	<cffunction access="public" returntype="void" name="run" output="false">
 		<cfscript>
 			while( true ) {
-				local.nonce = instance.ESAPI.randomizer().getRandomString( 20, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS );
+				local.nonce = instance.ESAPI.randomizer().getRandomString( 20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS );
 				local.result = javaScriptEncode( local.nonce );
 				// randomize the threads
 				try {
@@ -51,7 +51,7 @@
 	<cffunction access="public" returntype="String" name="javaScriptEncode" output="false">
 		<cfargument type="String" name="str" required="true">
 		<cfscript>
-			local.encoder = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder").init(instance.ESAPI);
+			local.encoder = new cfesapi.org.owasp.esapi.reference.DefaultEncoder(instance.ESAPI);
 			return local.encoder.encodeForJavaScript(arguments.str);
 		</cfscript> 
 	</cffunction>

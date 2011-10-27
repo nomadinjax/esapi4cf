@@ -16,7 +16,7 @@
 /**
  * Utilities to help with tests that involve files or directories.
  */
-component FileTestUtils {
+component FileTestUtils extends="cfesapi.org.owasp.esapi.lang.Object" {
 
 	// imports
 	instance.CLASS = getMetaData(this);
@@ -42,8 +42,8 @@ component FileTestUtils {
 	    entropy is collected (this is why moving the mouse speeds
 	    up unit tests).
 	*/
-	instance.secRand = createObject("java", "java.security.SecureRandom").init();
-	instance.rand = createObject("java", "java.util.Random").init(instance.secRand.nextLong());
+	instance.secRand = newJava("java.security.SecureRandom").init();
+	instance.rand = newJava("java.util.Random").init(instance.secRand.nextLong());
 
 	/**
 	 * Convert a long to it's hex representation. Unlike
@@ -56,11 +56,11 @@ component FileTestUtils {
 		local.initial = "";
 		local.sb = "";
 	
-		local.initial = createObject("java", "java.lang.Long").toHexString(arguments.l);
+		local.initial = newJava("java.lang.Long").toHexString(arguments.l);
 		if(local.initial.length() == 16) {
 			return local.initial;
 		}
-		local.sb = createObject("java", "java.lang.StringBuffer").init(javaCast("int", 16));
+		local.sb = newJava("java.lang.StringBuffer").init(javaCast("int", 16));
 		local.sb.append(local.initial);
 		while(local.sb.length() < 16) {
 			local.sb.insert(0, '0');
@@ -83,8 +83,6 @@ component FileTestUtils {
 	 */
 	
 	public function createTmpDirectory(parent, String prefix, String suffix) {
-		JavaFile = createObject("java", "java.io.File");
-	
 		local.name = "";
 		local.dir = "";
 	
@@ -101,12 +99,12 @@ component FileTestUtils {
 			arguments.suffix = "." & arguments.suffix;
 		}
 		if(isNull(arguments.parent)) {
-			arguments.parent = JavaFile.init(createObject("java", "java.lang.System").getProperty("java.io.tmpdir"));
+			arguments.parent = newJava("java.io.File").init(newJava("java.lang.System").getProperty("java.io.tmpdir"));
 		}
 		local.name = arguments.prefix & toHexString(instance.rand.nextLong()) & arguments.suffix;
-		local.dir = JavaFile.init(arguments.parent, local.name);
+		local.dir = newJava("java.io.File").init(arguments.parent, local.name);
 		if(!local.dir.mkdir()) {
-			throwError(createObject("java", "java.io.IOException").init("Unable to create temporary directory " & local.dir));
+			throwError(newJava("java.io.IOException").init("Unable to create temporary directory " & local.dir));
 		}
 		return local.dir.getCanonicalFile();
 	}
@@ -165,7 +163,7 @@ component FileTestUtils {
 			return;
 		}
 		if(!arguments.file.delete()) {
-			throwError(createObject("java", "java.io.IOException").init("Unable to delete file " & arguments.file.getAbsolutePath()));
+			throwError(newJava("java.io.IOException").init("Unable to delete file " & arguments.file.getAbsolutePath()));
 		}
 	}
 	

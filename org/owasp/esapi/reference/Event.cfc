@@ -15,12 +15,12 @@
 	* @created 2011
 	*/
 	--->
-<cfcomponent output="false">
+<cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
 		instance.key = "";
-	    instance.times = createObject("java", "java.util.Stack").init();
+	    instance.times = newJava("java.util.Stack").init();
     </cfscript>
  
 	<cffunction access="public" returntype="Event" name="init" output="false">
@@ -41,7 +41,7 @@
 		<cfscript>
 	    	if (instance.ESAPI.securityConfiguration().getDisableIntrusionDetection()) return;
 
-	        local.now = createObject("java", "java.util.Date").init();
+	        local.now = newJava("java.util.Date").init();
 	        instance.times.add( 0, local.now );
 	        while ( instance.times.size() > arguments.count ) {
 	       		instance.times.remove( instance.times.size()-1 );
@@ -51,8 +51,7 @@
 	            local.plong = local.past.getTime();
 	            local.nlong = local.now.getTime();
 	            if ( local.nlong - local.plong < arguments.interval * 1000 ) {
-	                cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.IntrusionException").init(instance.ESAPI, "Threshold exceeded", "Exceeded threshold for " & instance.key );
-	           		throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+	                throwError(new cfesapi.org.owasp.esapi.errors.IntrusionException(instance.ESAPI, "Threshold exceeded", "Exceeded threshold for " & instance.key ));
 	            }
 	        }
     	</cfscript> 

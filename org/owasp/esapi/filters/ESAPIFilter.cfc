@@ -13,14 +13,14 @@
  * @author Damon Miller
  * @created 2011
  */
-component implements="cfesapi.org.owasp.esapi.lang.Filter" {
+component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.lang.Filter" {
 
 	instance.ESAPI = "";
 	instance.logger = "";
 	instance.obfuscate = ["password"];
 	instance.response = "";
-	instance.loginPath = "WEB-INF/login.jsp";
-	instance.unauthorizedPath = "WEB-INF/index.jsp";
+	instance.loginPath = "WEB-INF/login.cfm";
+	instance.unauthorizedPath = "WEB-INF/index.cfm";
 
 	/**
 	 * Called by the web container to indicate to a filter that it is being
@@ -31,18 +31,17 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 	 * @param filterConfig configuration object
 	 */
 	
-	public ESAPIFilter function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required Struct filterConfig) {
+	public ESAPIFilter function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
+	                                 required Struct filterConfig) {
 		instance.ESAPI = arguments.ESAPI;
 		instance.logger = instance.ESAPI.getLogger("ESAPIFilter");
 	
-		StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
-		instance.loginPath = StringUtilities.replaceNull(arguments.filterConfig.get("loginPath"), instance.loginPath);
-		instance.unauthorizedPath = StringUtilities.replaceNull(arguments.filterConfig.get("unauthorizedPath"), 
-	                                                         instance.unauthorizedPath);
+		instance.loginPath = newJava("org.owasp.esapi.StringUtilities").replaceNull(arguments.filterConfig.get("loginPath"), instance.loginPath);
+		instance.unauthorizedPath = newJava("org.owasp.esapi.StringUtilities").replaceNull(arguments.filterConfig.get("unauthorizedPath"), instance.unauthorizedPath);
 	
 		return this;
 	}
-	
+		
 	/**
 	 * The doFilter method of the Filter is called by the container each time a
 	 * request/response pair is passed through the chain due to a client request

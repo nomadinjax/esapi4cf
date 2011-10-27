@@ -30,7 +30,7 @@
 			instance.ESAPI = arguments.ESAPI;
 			instance.logger = instance.ESAPI.getLogger("DefaultAccessController");
 
-			local.policyDescriptor = createObject("component", "cfesapi.org.owasp.esapi.reference.accesscontrol.policyloader.ACRPolicyFileLoader").init(instance.ESAPI);
+			local.policyDescriptor = new cfesapi.org.owasp.esapi.reference.accesscontrol.policyloader.ACRPolicyFileLoader(instance.ESAPI);
 			local.policyDTO = local.policyDescriptor.load();
 			instance.ruleMap = local.policyDTO.getAccessControlRules();
 
@@ -46,8 +46,7 @@
 			try {
 				local.rule = instance.ruleMap.get(arguments.key);
 				if (isNull(local.rule)) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access Denied", "AccessControlRule was not found for key: " & arguments.key);
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.AccessControlException(instance.ESAPI, "Access Denied", "AccessControlRule was not found for key: " & arguments.key));
 				}
 				if (instance.logger.isDebugEnabled()){
 					instance.logger.debug(Logger.EVENT_SUCCESS, 'Evaluating Authorization Rule "' & arguments.key & '" Using class: ' & local.rule.getClass().getCanonicalName());
@@ -57,8 +56,7 @@
 				try {
 					//Log the exception by throwing and then catching it.
 					//TODO figure out what which string goes where.
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access Denied", "An unhandled Exception was caught, so access is denied.", e);
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.AccessControlException(instance.ESAPI, "Access Denied", "An unhandled Exception was caught, so access is denied.", e));
 				} catch(cfesapi.org.owasp.esapi.errors.AccessControlException ace) {
 					//the exception was just logged. There's nothing left to do.
 				}
@@ -75,8 +73,7 @@
 			try {
 				local.rule = instance.ruleMap.get(arguments.key);
 				if(isNull(local.rule)) {
-					cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access Denied", "AccessControlRule was not found for key: " & arguments.key);
-					throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+					throwError(new cfesapi.org.owasp.esapi.errors.AccessControlException(instance.ESAPI, "Access Denied", "AccessControlRule was not found for key: " & arguments.key));
 				}
 				if(instance.logger.isDebugEnabled()) {
 					instance.logger.debug(Logger.EVENT_SUCCESS, 'Asserting Authorization Rule "' & arguments.key & '" Using class: ' & rule.getClass().getCanonicalName());
@@ -84,12 +81,10 @@
 				local.isAuthorized = local.rule.isAuthorized(arguments.runtimeParameter);
 			} catch(Exception e) {
 				//TODO figure out what which string goes where.
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access Denied", "An unhandled Exception was caught, so access is denied. AccessControlException.", e);
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.AccessControlException(instance.ESAPI, "Access Denied", "An unhandled Exception was caught, so access is denied. AccessControlException.", e));
 			}
 			if(!local.isAuthorized) {
-				cfex = createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access Denied", "Access Denied for key: " & arguments.key & " runtimeParameter: " & arguments.runtimeParameter.toString());
-				throw(type=cfex.getType(), message=cfex.getUserMessage(), detail=cfex.getLogMessage());
+				throwError(new cfesapi.org.owasp.esapi.errors.AccessControlException(instance.ESAPI, "Access Denied", "Access Denied for key: " & arguments.key & " runtimeParameter: " & arguments.runtimeParameter.toString()));
 			}
 		</cfscript> 
 	</cffunction>

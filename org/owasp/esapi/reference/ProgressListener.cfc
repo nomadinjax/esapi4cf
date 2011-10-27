@@ -55,7 +55,7 @@
 			instance.megaBytes = local.mBytes;
 			instance.progress = (arguments.pBytesRead / arguments.pContentLength) * 100;
 			if ( !isNull(instance.session) ) {
-			    instance.session.setAttribute("progress", createObject("java", "java.lang.Long").toString(instance.progress));
+			    instance.session.setAttribute("progress", newJava("java.lang.Long").toString(instance.progress));
 			}
 			// instance.logger.logSuccess(Logger.SECURITY, "   Item " & arguments.pItems & " (" & instance.progress & "% of " & arguments.pContentLength & " bytes]");
 		</cfscript> 

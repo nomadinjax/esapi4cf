@@ -23,7 +23,7 @@
  
 	<cffunction access="public" returntype="DynaBeanACRParameter" name="init" output="false">
 		<cfscript>
-			instance.policyProperties = createObject("java", "org.apache.commons.beanutils.LazyDynaMap").init();
+			instance.policyProperties = newJava("org.apache.commons.beanutils.LazyDynaMap").init();
 
 			return this;
 		</cfscript> 
@@ -98,7 +98,7 @@
 
 	<cffunction access="public" returntype="String" name="toString" output="false">
 		<cfscript>
-			local.sb = createObject("java", "java.lang.StringBuilder").init();
+			local.sb = newJava("java.lang.StringBuilder").init();
 			local.keys = instance.policyProperties.getMap().keySet().iterator();
 			local.currentKey = "";
 			while(local.keys.hasNext()) {

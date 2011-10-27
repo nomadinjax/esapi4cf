@@ -62,7 +62,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 11 failures + 5 errors + 257 successes
+- 12 failures + 5 errors + 256 successes
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar

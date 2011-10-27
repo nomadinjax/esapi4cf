@@ -18,8 +18,6 @@
 <cfcomponent extends="cfesapi.org.owasp.esapi.lang.Object" output="false">
 
 	<cfscript>
-		System = createObject("java", "java.lang.System");
-		
 		instance.ESAPI = "";
 		instance.logger = "";
 
@@ -38,7 +36,7 @@
 				assert(!isNull(arguments.str), "Byte array representing plaintext cannot be null.");
 				// Make copy so mutable byte array str can't change PlainText.
 				instance.rawBytes = newByte( arrayLen(arguments.str) );
-				System.arraycopy(arguments.str, 0, instance.rawBytes, 0, arrayLen(arguments.str));
+				newJava("java.lang.System").arraycopy(arguments.str, 0, instance.rawBytes, 0, arrayLen(arguments.str));
 			}
 			else if (isSimpleValue(arguments.str)) {
 				try {
@@ -46,8 +44,8 @@
 					instance.rawBytes = arguments.str.getBytes("UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					// Should never happen.
-					instance.logger.error(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "PlainText(String) CTOR failed: Can't find UTF-8 byte-encoding!", e);
-					throw(object=createObject("java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
+					instance.logger.error(newJava("org.owasp.esapi.Logger").EVENT_FAILURE, "PlainText(String) CTOR failed: Can't find UTF-8 byte-encoding!", e);
+					throwError(createObject("java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
 				}
 			}
 
@@ -59,7 +57,7 @@
 	<cffunction access="private" returntype="binary" name="newByte" outuput="false">
 		<cfargument type="numeric" name="len" required="true">
 		<cfscript>
-			StringBuilder = createObject("java", "java.lang.StringBuilder").init();
+			StringBuilder = newJava("java.lang.StringBuilder").init();
 			StringBuilder.setLength(arguments.len);
 			return StringBuilder.toString().getBytes();
 		</cfscript> 
@@ -69,11 +67,11 @@
 	<cffunction access="public" returntype="String" name="toString" output="false" hint="Convert the PlainText object to a UTF-8 encoded String.">
 		<cfscript>
 			try {
-				return createObject("java", "java.lang.String").init(instance.rawBytes, "UTF-8");
+				return newJava("java.lang.String").init(instance.rawBytes, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				// Should never happen.
-				instance.logger.error(createObject("java", "org.owasp.esapi.Logger").EVENT_FAILURE, "PlainText.toString() failed: Can't find UTF-8 byte-encoding!", e);
-				throw(object=createObject("java", "java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
+				instance.logger.error(newJava("org.owasp.esapi.Logger").EVENT_FAILURE, "PlainText.toString() failed: Can't find UTF-8 byte-encoding!", e);
+				throwError(newJava("java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
 			}
 		</cfscript> 
 	</cffunction>
@@ -95,7 +93,7 @@
 
 	<cffunction access="public" returntype="void" name="overwrite" output="false">
 		<cfscript>
-			createObject("component", "cfesapi.org.owasp.esapi.crypto.CryptoHelper").init(instance.ESAPI).overwrite( instance.rawBytes );
+			new cfesapi.org.owasp.esapi.crypto.CryptoHelper(instance.ESAPI).overwrite( instance.rawBytes );
 		</cfscript> 
 	</cffunction>
 

@@ -45,7 +45,7 @@ component SafeRequestTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	 */
 	
 	public void function testGetRequestParameters() {
-		createObject("java", "java.lang.System").out.println("getRequestParameters");
+		newJava("java.lang.System").out.println("getRequestParameters");
 		local.request = new cfesapi.test.org.owasp.esapi.http.MockHttpServletRequest();
 		local.request.addParameter("one", "1");
 		local.request.addParameter("two", "2");

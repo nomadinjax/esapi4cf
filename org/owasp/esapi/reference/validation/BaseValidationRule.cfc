@@ -143,7 +143,7 @@
 		<cfargument type="String" name="input" required="true" hint="String to be sanitized">
 		<cfargument type="Array" name="list" required="true" hint="allowed characters">
 		<cfscript>
-			local.stripped = createObject("java", "java.lang.StringBuilder").init();
+			local.stripped = newJava("java.lang.StringBuilder").init();
 			for (local.i = 1; local.i <= len(arguments.input); local.i++) {
 				local.c = mid(arguments.input, local.i, 1);
 				if (arrayFind(arguments.list, local.c)) {
