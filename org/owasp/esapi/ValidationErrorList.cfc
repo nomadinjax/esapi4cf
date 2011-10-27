@@ -82,8 +82,13 @@ component ValidationErrorList extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 * @param vex    A {@code ValidationException}.
 	 */
 	
-	public void function addError(required String context, 
-	                              required vex) {
+	public void function addError(required String context, required vex) {
+		if(arguments.context == "") {
+			throwError(newJava("java.lang.RuntimeException").init("Context for cannot be empty: " & arguments.vex.getLogMessage(), arguments.vex.getCause()));
+		}
+		if(!isObject(arguments.vex)) {
+			throwError(newJava("java.lang.RuntimeException").init("Context (" & arguments.context & ") cannot be empty"));
+		}
 		if(!isNull(getError(arguments.context))) {
 			throwError(newJava("java.lang.RuntimeException").init("Context (" & arguments.context & ") already exists, must be unique"));
 		}
@@ -108,6 +113,9 @@ component ValidationErrorList extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 */
 	
 	public function getError(required String context) {
+		if(arguments.context == "") {
+			return "";
+		}
 		if(structKeyExists(instance.errorList, arguments.context)) {
 			return instance.errorList.get(arguments.context);
 		}

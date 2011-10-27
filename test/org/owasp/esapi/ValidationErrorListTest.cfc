@@ -17,30 +17,50 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Exception
+	 */
+	
+	public void function setUp() {
+		// none
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Exception
+	 */
+	
+	public void function tearDown() {
+		// none
+	}
+	
 	public void function testAddError() throws Exception {
 		newJava("java.lang.System").out.println("testAddError");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		local.vex = createValidationException();
-		local.vel.addError("context", vex);
+		local.vel.addError("context", local.vex);
 		try {
-			local.vel.addError("", vex);
+			local.vel.addError("", local.vex);
 			fail("");
 		}
-		catch(any e) {
+		catch(java.lang.RuntimeException e) {
 			// expected
 		}
 		try {
 			local.vel.addError("context1", "");
 			fail("");
 		}
-		catch(any e) {
+		catch(java.lang.RuntimeException e) {
 			// expected
 		}
 		try {
 			local.vel.addError("context", local.vex);// add the same context again
 			fail("");
 		}
-		catch(any e) {
+		catch(java.lang.RuntimeException e) {
 			// expected
 		}
 	}
