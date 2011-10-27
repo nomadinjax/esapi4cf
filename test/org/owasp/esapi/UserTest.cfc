@@ -17,17 +17,15 @@ component UserTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws Exception
-	 */
-	
 	public void function setUp() {
 		cleanUpUsers();
 	}
-	
-	public void function testAllMethods() {
+
+	public void function tearDown() {
+		// none
+	}
+
+	public void function testAllMethods() throws Exception {
 		// create a user to test Anonymous
 		local.accountName = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.authenticator = instance.ESAPI.authenticator();

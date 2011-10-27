@@ -17,6 +17,7 @@
 component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
+
 	instance.dfltAESCipher = "";
 	instance.dfltECBCipher = "";// will be "AES/ECB/NoPadding";
 	instance.dfltOtherCipher = "";
@@ -44,6 +45,7 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	
 	// @After 
 	public void function tearDown() {
+		// none
 	}
 	
 	/** Test CipherSpec(String cipherXform, int keySize, int blockSize, final byte[] iv) */
@@ -104,7 +106,7 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	public void function testCipherSpec() {
 		instance.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipher=instance.dfltECBCipher);
 		assertTrue(instance.cipherSpec.getCipherTransformation() == "AES/ECB/NoPadding");
-		assertTrue(!len(instance.cipherSpec.getIV()));
+		assertTrue(!arrayLen(instance.cipherSpec.getIV()));
 	
 		instance.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipher=instance.dfltOtherCipher);
 		assertTrue(instance.cipherSpec.getCipherMode() == "OFB8");
@@ -120,7 +122,7 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		try {
 			// Don't use null here as compiling JUnit tests disables assertion
 			// checking so we get a NullPointerException here instead.
-			instance.cipherSpec.setCipherTransformation("");// Throws IllegalArgumentException
+			instance.cipherSpec.setCipherTransformation(""); // Throws IllegalArgumentException
 		}
 		catch(java.lang.IllegalArgumentException e) {
 			assertTrue(true);// Doesn't work w/ @Test(expected=IllegalArgumentException.class)

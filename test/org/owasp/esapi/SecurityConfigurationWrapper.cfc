@@ -474,7 +474,7 @@ component SecurityConfigurationWrapper implements="cfesapi.org.owasp.esapi.Secur
 	 */
 	// @Override
 	
-	public function getResourceStream(required String filename) {
+	public function getResourceStream(required String filename) throws IOException {
 		return instance.wrapped.getResourceStream(arguments.filename);
 	}
 	

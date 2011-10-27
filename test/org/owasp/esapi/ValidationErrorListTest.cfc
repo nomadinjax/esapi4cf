@@ -42,20 +42,22 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		local.vex = createValidationException();
 		local.vel.addError("context", local.vex);
+		/* NULL test not valid in CF
 		try {
-			local.vel.addError("", local.vex);
+			local.vel.addError(null, local.vex);
 			fail("");
 		}
 		catch(java.lang.RuntimeException e) {
 			// expected
-		}
+		}*/
+		/* NULL test not valid in CF
 		try {
-			local.vel.addError("context1", "");
+			local.vel.addError("context1", null);
 			fail("");
 		}
 		catch(java.lang.RuntimeException e) {
 			// expected
-		}
+		} */
 		try {
 			local.vel.addError("context", local.vex);// add the same context again
 			fail("");
