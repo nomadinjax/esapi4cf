@@ -40,6 +40,16 @@ component extends="mxunit.framework.TestCase" {
 	}
 	
 	/**
+	 * Return an empty byte array with specified length
+	 */
+	
+	private binary function newByte(required numeric len) {
+		StringBuilder = newJava("java.lang.StringBuilder").init();
+		StringBuilder.setLength(arguments.len);
+		return StringBuilder.toString().getBytes();
+	}
+	
+	/**
 	 * Deletes the users.txt file from the User's Home directory.
 	 * This prevents the file from getting too large and causing the test cases to take an extremely long time to run.
 	 */
