@@ -88,8 +88,7 @@ interface {
 	 *             if the credentials are not verified, or if the account is disabled, locked, expired, or timed out
 	 */
 	
-	public cfesapi.org.owasp.esapi.User function login(cfesapi.org.owasp.esapi.HttpServletRequest request, 
-	                                                   cfesapi.org.owasp.esapi.HttpServletResponse response);
+	public cfesapi.org.owasp.esapi.User function login(cfesapi.org.owasp.esapi.HttpServletRequest request, cfesapi.org.owasp.esapi.HttpServletResponse response);
 	
 	/**
 	 * Verify that the supplied password matches the password for this user. Password should
@@ -107,8 +106,7 @@ interface {
 	 *         true, if the password is correct for the specified user
 	 */
 	
-	public boolean function verifyPassword(required cfesapi.org.owasp.esapi.User user, 
-	                                       required String password);
+	public boolean function verifyPassword(required cfesapi.org.owasp.esapi.User user, required String password);
 	
 	/**
 	 * Logs out the current user.
@@ -141,9 +139,7 @@ interface {
 	 *         if user creation fails due to any of the qualifications listed in this method's description
 	 */
 	
-	public cfesapi.org.owasp.esapi.User function createUser(required String accountName, 
-	                                                        required String password1,
-	                                                        required String password2);
+	public cfesapi.org.owasp.esapi.User function createUser(required String accountName, required String password1, required String password2);
 	
 	/**
 	 * No Arguments:
@@ -165,8 +161,7 @@ interface {
 	 *         a password with strong password strength
 	 */
 	
-	public String function generateStrongPassword(cfesapi.org.owasp.esapi.User user, 
-	                                              String oldPassword);
+	public String function generateStrongPassword(cfesapi.org.owasp.esapi.User user, String oldPassword);
 	
 	/**
 	 * Changes the password for the specified user. This requires the current password, as well as 
@@ -186,10 +181,7 @@ interface {
 	 *         if any errors occur
 	 */
 	
-	public void function changePassword(required cfesapi.org.owasp.esapi.User user, 
-	                                    required String currentPassword,
-	                                    required String newPassword,
-	                                    required String newPassword2);
+	public void function changePassword(required cfesapi.org.owasp.esapi.User user, required String currentPassword, required String newPassword, required String newPassword2);
 	
 	/**
 	 * Returns the User matching the provided accountId.  If the accoundId is not found, an Anonymous
@@ -199,10 +191,11 @@ interface {
 	 *            the account id
 	 * 
 	 * @return 
-	 * 		the matching User object, or the Anonymous User if no match exists
+	 *         the matching User object, or the Anonymous User if no match exists
 	 */
+	
 	public function getUserByAccountId(required numeric accountId);
-		
+	
 	/**
 	 * Returns the User matching the provided accountName.  If the accoundId is not found, an Anonymous
 	 * User or null may be returned.
@@ -211,8 +204,9 @@ interface {
 	 *            the account name
 	 * 
 	 * @return 
-	 * 		the matching User object, or the Anonymous User if no match exists
+	 *         the matching User object, or the Anonymous User if no match exists
 	 */
+	
 	public function getUserByAccountName(required String accountName);
 	
 	/**
@@ -261,8 +255,7 @@ interface {
 	 * @throws EncryptionException
 	 */
 	
-	public String function hashPassword(required String password, 
-	                                    required String accountName);
+	public String function hashPassword(required String password, required String accountName);
 	
 	/**
 	 * Removes the account of the specified accountName.
@@ -307,9 +300,7 @@ interface {
 	 *                if newPassword is too similar to oldPassword or if newPassword does not meet complexity requirements
 	 */
 	
-	public void function verifyPasswordStrength(String oldPassword, 
-	                                            required String newPassword,
-	                                            required cfesapi.org.owasp.esapi.User user);
+	public void function verifyPasswordStrength(String oldPassword, required String newPassword, required cfesapi.org.owasp.esapi.User user);
 	
 	/**
 	 * Determine if the account exists.
