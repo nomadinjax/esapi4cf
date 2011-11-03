@@ -109,8 +109,7 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 *         and existing account, or hashed password does not match user's hashed password.
 	 */
 	
-	private function getUserFromRememberToken(cfesapi.org.owasp.esapi.HttpServletRequest request=instance.ESAPI.currentRequest(), 
-	                                          cfesapi.org.owasp.esapi.HttpServletResponse response=instance.ESAPI.currentResponse()) {
+	private function getUserFromRememberToken(cfesapi.org.owasp.esapi.HttpServletRequest request=instance.ESAPI.currentRequest(), cfesapi.org.owasp.esapi.HttpServletResponse response=instance.ESAPI.currentResponse()) {
 		try {
 			local.token = instance.ESAPI.httpUtilities().getCookie(arguments.request, instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 			if(local.token == "") {
@@ -172,11 +171,13 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 			if(local.username == "") {
 				local.username = "unspecified user";
 			}
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Authentication failed", "Authentication failed for " & local.username & " because of blank username or password"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Authentication failed", "Authentication failed for " & local.username & " because of blank username or password");
+			throwError(local.exception);
 		}
 		local.user = getUserByAccountName(local.username);
 		if(!isObject(local.user)) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Authentication failed", "Authentication failed because user " & local.username & " doesn't exist"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Authentication failed", "Authentication failed because user " & local.username & " doesn't exist");
+			throwError(local.exception);
 		}
 		local.user.loginWithPassword(arguments.request, local.password);
 	
@@ -188,11 +189,11 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 	 * {@inheritDoc}
 	 */
 	
-	public cfesapi.org.owasp.esapi.User function login(cfesapi.org.owasp.esapi.HttpServletRequest request=instance.ESAPI.currentRequest(), 
-	                                                   cfesapi.org.owasp.esapi.HttpServletResponse response=instance.ESAPI.currentResponse()) {
+	public cfesapi.org.owasp.esapi.User function login(cfesapi.org.owasp.esapi.HttpServletRequest request=instance.ESAPI.currentRequest(), cfesapi.org.owasp.esapi.HttpServletResponse response=instance.ESAPI.currentResponse()) {
 	
 		if(isNull(arguments.request) || isNull(arguments.response)) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid request", "Request or response objects were null"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid request", "Request or response objects were null");
+			throwError(local.exception);
 		}
 	
 		// if there's a user in the session then use that
@@ -206,25 +207,29 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 		// else try to verify credentials - throws exception if login fails
 		if(isNull(local.user) || !isInstanceOf(local.user, "cfesapi.org.owasp.esapi.reference.DefaultUser")) {
 			local.user = loginWithUsernameAndPassword(arguments.request);
-
-	        // warn if this authentication request was not POST or non-SSL connection, exposing credentials or session id
-	        try {
-	            instance.ESAPI.httpUtilities().assertSecureRequest(arguments.request);
-	        } catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
-	            throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Attempt to login with an insecure request", e.detail, e));
-	        }
+		
+			// warn if this authentication request was not POST or non-SSL connection, exposing credentials or session id
+			try {
+				instance.ESAPI.httpUtilities().assertSecureRequest(arguments.request);
+			}
+			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+				local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Attempt to login with an insecure request", e.detail, e);
+				throwError(local.exception);
+			}
 		}
-
-        // if we have a user, verify we are on SSL (POST not required)
-        else {
-        	        
-	        // warn if this authentication request was non-SSL connection, exposing session id
-	        try {
-	            instance.ESAPI.httpUtilities().assertSecureChannel(arguments.request);
-	        } catch (cfesapi.org.owasp.esapi.errors.AccessControlException e) {
-	            throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Attempt to access secure content with an insecure request", e.detail, e));
-	        }
-        }        
+		
+		// if we have a user, verify we are on SSL (POST not required)
+		else {
+		
+			// warn if this authentication request was non-SSL connection, exposing session id
+			try {
+				instance.ESAPI.httpUtilities().assertSecureChannel(arguments.request);
+			}
+			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+				local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Attempt to access secure content with an insecure request", e.detail, e);
+				throwError(local.exception);
+			}
+		}
 	
 		// set last host address
 		local.user.setLastHostAddress(arguments.request.getRemoteAddr());
@@ -232,47 +237,53 @@ component AbstractAuthenticator extends="cfesapi.org.owasp.esapi.lang.Object" {
 		// don't let anonymous user log in
 		if(local.user.isAnonymous()) {
 			local.user.logout();
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Anonymous user cannot be set to current user. User: " & local.user.getAccountName()));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Anonymous user cannot be set to current user. User: " & local.user.getAccountName());
+			throwError(local.exception);
 		}
 	
 		// don't let disabled users log in
 		if(!local.user.isEnabled()) {
 			local.user.logout();
 			local.user.incrementFailedLoginCount();
-			local.user.setLastFailedLoginTime(now());
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & local.user.getAccountName()));
+			local.user.setLastFailedLoginTime(newJava("java.util.Date").init());
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & local.user.getAccountName());
+			throwError(local.exception);
 		}
 	
 		// don't let locked users log in
 		if(local.user.isLocked()) {
 			local.user.logout();
 			local.user.incrementFailedLoginCount();
-			local.user.setLastFailedLoginTime();
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & local.user.getAccountName()));
+			local.user.setLastFailedLoginTime(newJava("java.util.Date").init());
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & local.user.getAccountName());
+			throwError(local.exception);
 		}
 	
 		// don't let expired users log in
 		if(local.user.isExpired()) {
 			local.user.logout();
 			local.user.incrementFailedLoginCount();
-			local.user.setLastFailedLoginTime(now());
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException("Login failed", "Expired user cannot be set to current user. User: " & local.user.getAccountName()));
+			local.user.setLastFailedLoginTime(newJava("java.util.Date").init());
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException("Login failed", "Expired user cannot be set to current user. User: " & local.user.getAccountName());
+			throwError(local.exception);
 		}
 	
 		// check session inactivity timeout
 		if(local.user.isSessionTimeout()) {
 			local.user.logout();
 			local.user.incrementFailedLoginCount();
-			local.user.setLastFailedLoginTime(now());
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Session inactivity timeout: " & local.user.getAccountName()));
+			local.user.setLastFailedLoginTime(newJava("java.util.Date").init());
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Session inactivity timeout: " & local.user.getAccountName());
+			throwError(local.exception);
 		}
 	
 		// check session absolute timeout
 		if(local.user.isSessionAbsoluteTimeout()) {
 			local.user.logout();
 			local.user.incrementFailedLoginCount();
-			local.user.setLastFailedLoginTime(now());
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Session absolute timeout: " & local.user.getAccountName()));
+			local.user.setLastFailedLoginTime(newJava("java.util.Date").init());
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Session absolute timeout: " & local.user.getAccountName());
+			throwError(local.exception);
 		}
 	
 		//set Locale to the user object in the session from request
