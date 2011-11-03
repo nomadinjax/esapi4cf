@@ -17,8 +17,7 @@
     --->
 <cfsetting showdebugoutput="false" requesttimeout="120"/>
 <cfset startTime = getTickCount()/>
-<cfinvoke component="mxunit.runner.DirectoryTestSuite" method="run" 
-          directory="#expandPath('.')#" componentpath="cfesapi.test" 
+<cfinvoke component="mxunit.runner.DirectoryTestSuite" method="run" directory="#expandPath('.')#" componentpath="cfesapi.test"
           recurse="true" returnvariable="results"/>
 <cfoutput>
 	#results.getResultsOutput('html')#
