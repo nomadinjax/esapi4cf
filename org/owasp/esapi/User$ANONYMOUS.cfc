@@ -51,9 +51,7 @@ component ANONYMOUS extends="cfesapi.org.owasp.esapi.lang.Object" implements="cf
 	 * {@inheritDoc}
 	 */
 	
-	public void function changePassword(required String oldPassword, 
-	                                    required String newPassword1,
-	                                    required String newPassword2) {
+	public void function changePassword(required String oldPassword, required String newPassword1, required String newPassword2) {
 		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
@@ -293,7 +291,7 @@ component ANONYMOUS extends="cfesapi.org.owasp.esapi.lang.Object" implements="cf
 	 * {@inheritDoc}
 	 */
 	
-	public void function removeRole(required String role) throws AuthenticationException {
+	public void function removeRole(required String role) {
 		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
@@ -326,7 +324,7 @@ component ANONYMOUS extends="cfesapi.org.owasp.esapi.lang.Object" implements="cf
 	 * {@inheritDoc}
 	 */
 	
-	public void function setRoles(required Array roles) throws AuthenticationException {
+	public void function setRoles(required Array roles) {
 		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
@@ -350,7 +348,7 @@ component ANONYMOUS extends="cfesapi.org.owasp.esapi.lang.Object" implements="cf
 	 * {@inheritDoc}
 	 */
 	
-	public boolean function verifyPassword(required String password) throws EncryptionException {
+	public boolean function verifyPassword(required String password) {
 		throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 	
