@@ -30,9 +30,7 @@ component ExecutorException extends="EnterpriseSecurityException" {
 	 *            the cause
 	 */
 	
-	public ExecutorException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                       String userMessage,String logMessage, 
-	                                       cause) {
+	public ExecutorException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		super.init(argumentCollection=arguments);
 		return this;
 	}

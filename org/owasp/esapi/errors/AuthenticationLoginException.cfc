@@ -28,9 +28,7 @@ component AuthenticationLoginException extends="AuthenticationException" {
 	 * @param cause the cause
 	 */
 	
-	public AuthenticationLoginException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                                  String userMessage,
-	                                                  String logMessage,cause) {
+	public AuthenticationLoginException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		super.init(argumentCollection=arguments);
 		return this;
 	}

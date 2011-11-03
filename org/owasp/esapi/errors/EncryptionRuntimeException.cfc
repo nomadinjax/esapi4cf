@@ -30,9 +30,7 @@ component EncryptionRuntimeException extends="EnterpriseSecurityRuntimeException
 	 *            the cause
 	 */
 	
-	public EncryptionRuntimeException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                                String userMessage,
-	                                                String logMessage,cause) {
+	public EncryptionRuntimeException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		super.init(argumentCollection=arguments);
 		return this;
 	}

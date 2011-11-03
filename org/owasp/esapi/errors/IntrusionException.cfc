@@ -40,9 +40,7 @@ component IntrusionException extends="cfesapi.org.owasp.esapi.lang.RuntimeExcept
 	 *              the cause
 	 */
 	
-	public IntrusionException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                        required String userMessage,
-	                                        required String logMessage,cause) {
+	public IntrusionException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required String userMessage, required String logMessage, cause) {
 		instance.ESAPI = arguments.ESAPI;
 		instance.logger = instance.ESAPI.getLogger("IntrusionException");
 	

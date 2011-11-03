@@ -51,10 +51,7 @@ component EnterpriseSecurityRuntimeException extends="cfesapi.org.owasp.esapi.la
 	 * @param cause the cause
 	 */
 	
-	public EnterpriseSecurityRuntimeException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                                        required String userMessage,
-	                                                        required String logMessage,
-	                                                        cause) {
+	public EnterpriseSecurityRuntimeException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required String userMessage, required String logMessage, cause) {
 		if(structKeyExists(arguments, "cause")) {
 			super.init(userMessage, cause);
 		}

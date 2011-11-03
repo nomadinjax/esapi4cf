@@ -25,9 +25,7 @@ component ValidationAvailabilityException extends="ValidationException" {
 	 *               the cause
 	 */
 	
-	public ValidationAvailabilityException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                                     String userMessage,
-	                                                     String logMessage,cause) {
+	public ValidationAvailabilityException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		super.init(argumentCollection=arguments);
 		return this;
 	}

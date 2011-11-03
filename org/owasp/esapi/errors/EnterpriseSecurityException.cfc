@@ -52,9 +52,7 @@ component EnterpriseSecurityException extends="cfesapi.org.owasp.esapi.lang.Exce
 	 * @param cause the cause
 	 */
 	
-	public EnterpriseSecurityException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                                 String userMessage,
-	                                                 String logMessage,cause) {
+	public EnterpriseSecurityException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		if(structKeyExists(arguments, "userMessage") && structKeyExists(arguments, "logMessage")) {
 			if(structKeyExists(arguments, "cause")) {
 				super.init(arguments.userMessage, arguments.cause);

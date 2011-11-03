@@ -30,9 +30,7 @@ component AvailabilityException extends="EnterpriseSecurityException" {
 	 * @param cause the cause
 	 */
 	
-	public AvailabilityException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                           String userMessage,
-	                                           String logMessage,cause) {
+	public AvailabilityException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		super.init(argumentCollection=arguments);
 		return this;
 	}

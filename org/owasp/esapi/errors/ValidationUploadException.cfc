@@ -26,9 +26,7 @@ component ValidationUploadException extends="ValidationException" {
 	 *               the cause
 	 */
 	
-	public ValidationUploadException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                               String userMessage,
-	                                               String logMessage,cause) {
+	public ValidationUploadException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		super.init(argumentCollection=arguments);
 		return this;
 	}

@@ -28,9 +28,7 @@ component AuthenticationException extends="EnterpriseSecurityException" {
 	 * @param cause the root cause
 	 */
 	
-	public AuthenticationException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                             String userMessage,
-	                                             String logMessage,cause) {
+	public AuthenticationException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		super.init(argumentCollection=arguments);
 		return this;
 	}

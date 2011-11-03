@@ -27,9 +27,7 @@ component AuthenticationHostException extends="AuthenticationException" {
 	 * @param cause the cause
 	 */
 	
-	public AuthenticationHostException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                                 String userMessage,
-	                                                 String logMessage,cause) {
+	public AuthenticationHostException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
 		super.init(argumentCollection=arguments);
 		return this;
 	}

@@ -36,9 +36,7 @@ component ValidationException extends="EnterpriseSecurityException" {
 	 *            the source that caused this exception
 	 */
 	
-	public ValidationException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                         String userMessage,String logMessage, 
-	                                         cause,String context) {
+	public ValidationException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause, String context) {
 		if(structKeyExists(arguments, "cause")) {
 			super.init(arguments.ESAPI, arguments.userMessage, arguments.logMessage, arguments.cause);
 		}
