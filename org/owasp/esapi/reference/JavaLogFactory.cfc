@@ -18,7 +18,7 @@
  * log message with the currently logged in user and the word "SECURITY" for security related events. See the 
  * <a href="JavaLogFactory.JavaLogger.html">JavaLogFactory.JavaLogger</a> Javadocs for the details on the JavaLogger reference implementation.
  */
-component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.LogFactory" {
+component JavaLogFactory extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.LogFactory" {
 	instance.ESAPI = "";
 	instance.loggersMap = {};
 
