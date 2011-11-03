@@ -37,7 +37,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 		// none
 	}
 	
-	public void function testAddError() throws Exception {
+	public void function testAddError() {
 		newJava("java.lang.System").out.println("testAddError");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		local.vex = createValidationException();
@@ -67,7 +67,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 		}
 	}
 	
-	public void function testErrors() throws Exception {
+	public void function testErrors() {
 		newJava("java.lang.System").out.println("testErrors");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		local.vex = createValidationException();
@@ -75,7 +75,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 		assertTrue(local.vel.errors().get(0).toString() == local.vex.toString());
 	}
 	
-	public void function testGetError() throws Exception {
+	public void function testGetError() {
 		newJava("java.lang.System").out.println("testGetError");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		local.vex = createValidationException();
@@ -84,7 +84,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 		assertTrue(isNull(local.vel.getError("ridiculous")));
 	}
 	
-	public void function testIsEmpty() throws Exception {
+	public void function testIsEmpty() {
 		newJava("java.lang.System").out.println("testIsEmpty");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		assertTrue(local.vel.isEmpty());
@@ -93,7 +93,7 @@ component ValidationErrorListTest extends="cfesapi.test.org.owasp.esapi.lang.Tes
 		assertFalse(local.vel.isEmpty());
 	}
 	
-	public void function testSize() throws Exception {
+	public void function testSize() {
 		newJava("java.lang.System").out.println("testSize");
 		local.vel = new cfesapi.org.owasp.esapi.ValidationErrorList();
 		assertTrue(local.vel.size() == 0);
