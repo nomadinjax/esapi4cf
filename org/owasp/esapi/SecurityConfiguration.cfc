@@ -307,8 +307,8 @@ interface  {
 	public String function getPreferredJCEProvider();
 	
 	// TODO - DISCUSS: Where should this web page (below) go? Maybe with the Javadoc? But where?
-	//               Think it makes more sense as part of the release notes, but OTOH, I
-	//               really don't want to rewrite this as a Wiki page either.
+	//           Think it makes more sense as part of the release notes, but OTOH, I
+	//           really don't want to rewrite this as a Wiki page either.
 	/**
 	 * Determines whether the {@code CipherText} should be used with a Message
 	 * Authentication Code (MAC). Generally this makes for a more robust cryptographic
