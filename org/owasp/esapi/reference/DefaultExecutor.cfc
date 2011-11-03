@@ -38,7 +38,7 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 	public DefaultExecutor function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI) {
 		instance.ESAPI = arguments.ESAPI;
 		instance.logger = instance.ESAPI.getLogger("Executor");
-		
+	
 		if(newJava("java.lang.System").getProperty("os.name").indexOf("Windows") != -1) {
 			instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Using WindowsCodec for Executor. If this is not running on Windows this could allow injection");
 			instance.codec = newJava("org.owasp.esapi.codecs.WindowsCodec").init();
@@ -47,7 +47,7 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 			instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Using UnixCodec for Executor. If this is not running on Unix this could allow injection");
 			instance.codec = newJava("org.owasp.esapi.codecs.UnixCodec").init();
 		}
-		
+	
 		return this;
 	}
 	
@@ -61,32 +61,31 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 	 * you are going to invoke this interface with confidential information.
 	 */
 	
-	public function executeSystemCommand(required executable, 
-                                         required Array params,
-                                         workdir=instance.ESAPI.securityConfiguration().getWorkingDirectory(),
-                                         codec=instance.codec,
-                                         boolean logParams=false,
-                                         boolean redirectErrorStream=false) {
+	public function executeSystemCommand(required executable, required Array params, workdir=instance.ESAPI.securityConfiguration().getWorkingDirectory(), codec=instance.codec, boolean logParams=false, boolean redirectErrorStream=false) {
 		try {
 			// executable must exist
 			if(!arguments.executable.exists()) {
-				throwError( new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "No such executable: " & arguments.executable) );
+				local.exception = new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "No such executable: " & arguments.executable);
+				throwError(local.exception);
 			}
 		
 			// executable must use canonical path
 			if(!arguments.executable.isAbsolute()) {
-				throwError( new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-absolute path: " & arguments.executable) );
+				local.exception = new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-absolute path: " & arguments.executable);
+				throwError(local.exception);
 			}
 		
 			// executable must use canonical path
 			if(!arguments.executable.getPath() == arguments.executable.getCanonicalPath()) {
-				throwError( new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-canonical path: " & arguments.executable) );
+				local.exception = new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Attempt to invoke an executable using a non-canonical path: " & arguments.executable);
+				throwError(local.exception);
 			}
 		
 			// exact, absolute, canonical path to executable must be listed in ESAPI configuration
 			local.approved = instance.ESAPI.securityConfiguration().getAllowedExecutables();
 			if(!local.approved.contains(arguments.executable.getPath())) {
-				throwError( new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Attempt to invoke executable that is not listed as an approved executable in ESAPI configuration: " & arguments.executable.getPath() & " not listed in " & local.approved) );
+				local.exception = new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Attempt to invoke executable that is not listed as an approved executable in ESAPI configuration: " & arguments.executable.getPath() & " not listed in " & local.approved);
+				throwError(local.exception);
 			}
 		
 			// escape any special characters in the parameters
@@ -97,7 +96,8 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 		
 			// working directory must exist
 			if(!arguments.workdir.exists()) {
-				throwError( new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath()) );
+				local.exception = new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath());
+				throwError(local.exception);
 			}
 		
 			// set the command into the list and create command array
@@ -119,7 +119,7 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 			else {
 				instance.logger.warning(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Initiating executable: " & arguments.executable & " [sensitive parameters obscured] in " & arguments.workdir);
 			}
-			
+		
 			local.outputBuffer = newJava("java.lang.StringBuilder").init();
 			local.errorsBuffer = newJava("java.lang.StringBuilder").init();
 			local.process = local.pb.start();
@@ -143,7 +143,8 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 			}
 			catch(java.lang.Throwable e) {
 				local.process.destroy();
-				throwError( new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e) );
+				local.exception = new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
+				throwError(local.exception);
 			}
 			
 			local.output = local.outputBuffer.toString();
@@ -165,7 +166,8 @@ component DefaultExecutor extends="cfesapi.org.owasp.esapi.lang.Object" implemen
 			return newJava("org.owasp.esapi.ExecuteResult").init(local.exitValue, local.output, local.errors);
 		}
 		catch(java.io.IOException e) {
-			throwError( new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e) );
+			local.exception = new cfesapi.org.owasp.esapi.errors.ExecutorException(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e);
+			throwError(local.exception);
 		}
 	}
 	

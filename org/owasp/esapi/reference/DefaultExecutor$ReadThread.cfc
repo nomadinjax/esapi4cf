@@ -18,8 +18,7 @@ component ReadThread extends="cfesapi.org.owasp.esapi.lang.Thread" {
 	instance.stream = "";
 	instance.buffer = "";
 
-	public DefaultExecutor$ReadThread function init(required stream, 
-	                                                required buffer) {
+	public DefaultExecutor$ReadThread function init(required stream, required buffer) {
 		instance.stream = arguments.stream;
 		instance.buffer = arguments.buffer;
 		return this;
@@ -31,7 +30,7 @@ component ReadThread extends="cfesapi.org.owasp.esapi.lang.Thread" {
 		try {
 			readStream(instance.stream, instance.buffer);
 		}
-		catch(IOException e) {
+		catch(java.io.IOException e) {
 			this.exception = e;
 		}
 	}

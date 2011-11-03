@@ -17,8 +17,7 @@ component Conf extends="cfesapi.test.org.owasp.esapi.SecurityConfigurationWrappe
 	instance.allowedExes = "";
 	instance.workingDir = "";
 
-	public ExecutorTest$Conf function init(required cfesapi.org.owasp.esapi.SecurityConfiguration orig, 
-	                          required Array allowedExes,required workingDir) {
+	public ExecutorTest$Conf function init(required cfesapi.org.owasp.esapi.SecurityConfiguration orig, required Array allowedExes, required workingDir) {
 		super.init(arguments.orig);
 		instance.allowedExes = arguments.allowedExes;
 		instance.workingDir = arguments.workingDir;
