@@ -19,7 +19,7 @@
 component SafeRequestTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
-	
+
 	/**
 	 * {@inheritDoc}
 	 *
