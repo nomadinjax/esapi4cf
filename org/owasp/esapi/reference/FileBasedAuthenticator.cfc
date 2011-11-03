@@ -74,8 +74,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * @param hash the hash to store in the user's password hash list
 	 */
 	
-	private void function setHashedPassword(required cfesapi.org.owasp.esapi.User user, 
-	                                        required String hash) {
+	private void function setHashedPassword(required cfesapi.org.owasp.esapi.User user, required String hash) {
 		local.hashes = getAllHashedPasswords(arguments.user, true);
 		arrayPrepend(local.hashes, arguments.hash);
 		if(local.hashes.size() > instance.ESAPI.securityConfiguration().getMaxOldPasswordHashes()) {
@@ -94,7 +93,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	
 	public String function getHashedPassword(required cfesapi.org.owasp.esapi.User user) {
 		local.hashes = getAllHashedPasswords(arguments.user, false);
-		if (arrayLen(local.hashes)) {
+		if(arrayLen(local.hashes)) {
 			return local.hashes[1];
 		}
 		return "";
@@ -107,13 +106,12 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * @param oldHashes a list of the User's old password hashes     *
 	 */
 	
-	public void function setOldPasswordHashes(required cfesapi.org.owasp.esapi.User user, 
-	                                          required Array oldHashes) {
+	public void function setOldPasswordHashes(required cfesapi.org.owasp.esapi.User user, required Array oldHashes) {
 		local.hashes = getAllHashedPasswords(arguments.user, true);
 		if(local.hashes.size() > 1) {
 			local.hashes.removeAll(local.hashes.subList(1, local.hashes.size() - 1));
 		}
-		for (local.i=1; local.i<=arrayLen(arguments.oldHashes); local.i++) {
+		for(local.i = 1; local.i <= arrayLen(arguments.oldHashes); local.i++) {
 			arrayAppend(local.hashes, arguments.oldHashes[local.i]);
 		}
 		instance.passwordMap.put(arguments.user.getAccountId(), local.hashes);
@@ -131,8 +129,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * @return a List containing all of the specified User's password hashes
 	 */
 	
-	public Array function getAllHashedPasswords(required cfesapi.org.owasp.esapi.User user, 
-	                                            required boolean create) {
+	public Array function getAllHashedPasswords(required cfesapi.org.owasp.esapi.User user, required boolean create) {
 		local.hashes = instance.passwordMap.get(arguments.user.getAccountId());
 		if(!isNull(local.hashes)) {
 			return local.hashes;
@@ -173,21 +170,22 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * {@inheritDoc}
 	 */
 	
-	public cfesapi.org.owasp.esapi.User function createUser(required String accountName, 
-	                                                        required String password1,
-	                                                        required String password2) {
+	public cfesapi.org.owasp.esapi.User function createUser(required String accountName, required String password1, required String password2) {
 		loadUsersIfNecessary();
 		if(trim(arguments.accountName) == "") {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Account creation failed", "Attempt to create user with blank accountName"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Account creation failed", "Attempt to create user with blank accountName");
+			throwError(local.exception);
 		}
 		if(isObject(getUserByAccountName(arguments.accountName))) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName);
+			throwError(local.exception);
 		}
 	
 		verifyAccountNameStrength(arguments.accountName);
 	
 		if(trim(arguments.password1) == "") {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a blank password"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a blank password");
+			throwError(local.exception);
 		}
 	
 		local.user = new DefaultUser(instance.ESAPI, arguments.accountName);
@@ -195,14 +193,16 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		verifyPasswordStrength(newPassword=arguments.password1, user=local.user);
 	
 		if(!arguments.password1.equals(arguments.password2)) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match");
+			throwError(local.exception);
 		}
 	
 		try {
 			setHashedPassword(local.user, hashPassword(arguments.password1, arguments.accountName));
 		}
 		catch(cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee);
+			throwError(local.exception);
 		}
 		instance.userMap.put(local.user.getAccountId(), local.user);
 		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "New user created: " & arguments.accountName);
@@ -235,25 +235,25 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * {@inheritDoc}
 	 */
 	
-	public void function changePassword(required cfesapi.org.owasp.esapi.User user, 
-	                                    required String currentPassword,
-	                                    required String newPassword,
-	                                    required String newPassword2) {
+	public void function changePassword(required cfesapi.org.owasp.esapi.User user, required String currentPassword, required String newPassword, required String newPassword2) {
 		local.accountName = arguments.user.getAccountName();
 		try {
 			local.currentHash = getHashedPassword(arguments.user);
 			local.verifyHash = hashPassword(arguments.currentPassword, local.accountName);
 			if(!local.currentHash.equals(local.verifyHash)) {
-				throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Password change failed", "Authentication failed for password change on user: " & local.accountName));
+				local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Password change failed", "Authentication failed for password change on user: " & local.accountName);
+				throwError(local.exception);
 			}
 			if(arguments.newPassword == "" || arguments.newPassword2 == "" || !arguments.newPassword.equals(arguments.newPassword2)) {
-				throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & local.accountName));
+				local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & local.accountName);
+				throwError(local.exception);
 			}
 			verifyPasswordStrength(arguments.currentPassword, arguments.newPassword, arguments.user);
-			arguments.user.setLastPasswordChangeTime(now());
+			arguments.user.setLastPasswordChangeTime(newJava("java.util.Date").init());
 			local.newHash = hashPassword(arguments.newPassword, local.accountName);
 			if(arrayFind(getOldPasswordHashes(arguments.user), local.newHash)) {
-				throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Password change failed", "Password change matches a recent password for user: " & local.accountName));
+				local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Password change failed", "Password change matches a recent password for user: " & local.accountName);
+				throwError(local.exception);
 			}
 			setHashedPassword(arguments.user, local.newHash);
 			instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password changed for user: " & local.accountName);
@@ -261,7 +261,8 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			saveUsers();
 		}
 		catch(cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Password change failed", "Encryption exception changing password for " & local.accountName, ee));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Password change failed", "Encryption exception changing password for " & local.accountName, ee);
+			throwError(local.exception);
 		}
 	}
 	
@@ -269,14 +270,13 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * {@inheritDoc}
 	 */
 	
-	public boolean function verifyPassword(required cfesapi.org.owasp.esapi.User user, 
-	                                       required String password) {
+	public boolean function verifyPassword(required cfesapi.org.owasp.esapi.User user, required String password) {
 		local.accountName = arguments.user.getAccountName();
 		try {
 			local.hash = hashPassword(arguments.password, local.accountName);
 			local.currentHash = getHashedPassword(arguments.user);
 			if(local.hash.equals(local.currentHash)) {
-				arguments.user.setLastLoginTime(now());
+				arguments.user.setLastLoginTime(newJava("java.util.Date").init());
 				arguments.user.setFailedLoginCount(0);
 				instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Password verified for " & local.accountName);
 				return true;
@@ -293,9 +293,8 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * {@inheritDoc}
 	 */
 	
-	public String function generateStrongPassword(cfesapi.org.owasp.esapi.User user, 
-	                                              String oldPassword) {
-		if (structKeyExists(arguments, "user") && structKeyExists(arguments, "oldPassword")) {
+	public String function generateStrongPassword(cfesapi.org.owasp.esapi.User user, String oldPassword) {
+		if(structKeyExists(arguments, "user") && structKeyExists(arguments, "oldPassword")) {
 			local.newPassword = _generateStrongPassword(arguments.oldPassword);
 			if(!isNull(local.newPassword)) {
 				instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Generated strong password for " & arguments.user.getAccountName());
@@ -308,49 +307,49 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	}
 	
 	/**
-     * {@inheritDoc}
-     */
-     
-    public function getUserByAccountId(required numeric accountId) {
-        if (arguments.accountId == 0) {
-            return new cfesapi.org.owasp.esapi.User$ANONYMOUS(instanceESAPI);
-        }
-        loadUsersIfNecessary();
-        if (structKeyExists(instance.userMap, arguments.accountId)) {
-	        return instance.userMap.get(arguments.accountId);
-        }
-        return "";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-	 
-    public function getUserByAccountName(required String accountName) {
-        if (arguments.accountName == "") {
-            return new cfesapi.org.owasp.esapi.User$ANONYMOUS(instanceESAPI);
-        }
-        loadUsersIfNecessary();
-        for (local.u in instance.userMap) {
-            if (instance.userMap[local.u].getAccountName().equalsIgnoreCase(arguments.accountName)) {
-                return instance.userMap[local.u];
-            }
-        }
-        return "";
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-     
-    public Array function getUserNames() {
-        loadUsersIfNecessary();
-        local.results = [];
-        for (local.u in instance.userMap) {
-            local.results.add(instance.userMap[local.u].getAccountName());
-        }
-        return local.results;
-    }
+	 * {@inheritDoc}
+	 */
+	
+	public function getUserByAccountId(required numeric accountId) {
+		if(arguments.accountId == 0) {
+			return new cfesapi.org.owasp.esapi.User$ANONYMOUS(instanceESAPI);
+		}
+		loadUsersIfNecessary();
+		if(structKeyExists(instance.userMap, arguments.accountId)) {
+			return instance.userMap.get(arguments.accountId);
+		}
+		return "";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	
+	public function getUserByAccountName(required String accountName) {
+		if(arguments.accountName == "") {
+			return new cfesapi.org.owasp.esapi.User$ANONYMOUS(instanceESAPI);
+		}
+		loadUsersIfNecessary();
+		for(local.u in instance.userMap) {
+			if(instance.userMap[local.u].getAccountName().equalsIgnoreCase(arguments.accountName)) {
+				return instance.userMap[local.u];
+			}
+		}
+		return "";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	
+	public Array function getUserNames() {
+		loadUsersIfNecessary();
+		local.results = [];
+		for(local.u in instance.userMap) {
+			local.results.add(instance.userMap[local.u].getAccountName());
+		}
+		return local.results;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -358,8 +357,7 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * @throws EncryptionException
 	 */
 	
-	public String function hashPassword(required String password, 
-	                                    required String accountName) {
+	public String function hashPassword(required String password, required String accountName) {
 		local.salt = arguments.accountName.toLowerCase();
 		return instance.ESAPI.encryptor().hash(arguments.password, local.salt);
 	}
@@ -466,8 +464,8 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		setHashedPassword(local.user, local.password);
 	
 		local.roles = local.parts[4].toLowerCase().split(" *, *");
-		for (local.i = 1; local.i <= arrayLen(local.roles); local.i++) {
-		        local.role = local.roles[local.i];
+		for(local.i = 1; local.i <= arrayLen(local.roles); local.i++) {
+			local.role = local.roles[local.i];
 			if("" != local.role) {
 				local.user.addRole(local.role);
 			}
@@ -503,7 +501,8 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		loadUsersIfNecessary();
 		local.user = getUserByAccountName(arguments.accountName);
 		if(!isObject(local.user)) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName);
+			throwError(local.exception);
 		}
 		instance.userMap.remove(local.user.getAccountId());
 		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Removing user " & local.user.getAccountName());
@@ -531,7 +530,8 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		}
 		catch(java.io.IOException e) {
 			instance.logger.fatal(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Internal Error", "Problem saving user file " & instance.userDB.getAbsolutePath(), e));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationException(instance.ESAPI, "Internal Error", "Problem saving user file " & instance.userDB.getAbsolutePath(), e);
+			throwError(local.exception);
 		}
 		finally
 		{
@@ -557,7 +557,8 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 				arguments.writer.println(save(local.u));
 			}
 			else {
-				throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Problem saving user", "Skipping save of user " & local.accountName));
+				local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Problem saving user", "Skipping save of user " & local.accountName);
+				throwError(local.exception);
 			}
 		}
 	}
@@ -610,10 +611,12 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	
 	public void function verifyAccountNameStrength(required String accountName) {
 		if(arguments.accountName == "") {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid account name", "Attempt to create account with a null account name"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid account name", "Attempt to create account with a null account name");
+			throwError(local.exception);
 		}
 		if(!instance.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.accountName, "AccountName", instance.MAX_ACCOUNT_NAME_LENGTH, false)) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName);
+			throwError(local.exception);
 		}
 	}
 	
@@ -625,11 +628,10 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 	 * jtm - 11/16/2010 - added check to verify pw != username (fix for http://code.google.com/p/owasp-esapi-java/issues/detail?id=108)
 	 */
 	
-	public void function verifyPasswordStrength(String oldPassword, 
-	                                            required String newPassword,
-	                                            required cfesapi.org.owasp.esapi.User user) {
+	public void function verifyPasswordStrength(String oldPassword, required String newPassword, required cfesapi.org.owasp.esapi.User user) {
 		if(isNull(arguments.newPassword)) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid password", "New password cannot be null"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid password", "New password cannot be null");
+			throwError(local.exception);
 		}
 	
 		// can't change to a password that contains any 3 character substring of old password
@@ -638,11 +640,12 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 			for(local.i = 0; local.i < local.length - 2; local.i++) {
 				local.sub = arguments.oldPassword.substring(local.i, local.i + 3);
 				if(arguments.newPassword.indexOf(local.sub) > -1) {
-					throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid password", "New password cannot contain pieces of old password"));
+					local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid password", "New password cannot contain pieces of old password");
+					throwError(local.exception);
 				}
 			}
 		}
-		
+	
 		// new password must have enough character sets and length
 		local.charsets = 0;
 		for(local.i = 0; local.i < arguments.newPassword.length(); local.i++) {
@@ -673,7 +676,8 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		// calculate and verify password strength
 		local.strength = arguments.newPassword.length() * local.charsets;
 		if(local.strength < 16) {
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid password", "New password is not long and complex enough"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid password", "New password is not long and complex enough");
+			throwError(local.exception);
 		}
 	
 		local.accountName = arguments.user.getAccountName();
@@ -681,7 +685,8 @@ component FileBasedAuthenticator extends="AbstractAuthenticator" implements="cfe
 		//jtm - 11/3/2010 - fix for bug http://code.google.com/p/owasp-esapi-java/issues/detail?id=108
 		if(local.accountName.equalsIgnoreCase(arguments.newPassword)) {
 			//password can't be account name
-			throwError(new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid password", "Password matches account name, irrespective of case"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException(instance.ESAPI, "Invalid password", "Password matches account name, irrespective of case");
+			throwError(local.exception);
 		}
 	}
 	
