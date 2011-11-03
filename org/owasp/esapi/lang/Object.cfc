@@ -36,8 +36,7 @@ component  {
 		return instance.javaCache[arguments.classpath];
 	}
 	
-	private void function assert(required boolean boolean_expression, 
-	                             String string_expression) {
+	private void function assert(required boolean boolean_expression, String string_expression) {
 		if(!arguments.boolean_expression) {
 			throw(object=newJava("java.lang.AssertionError").init(arguments.string_expression));
 		}
