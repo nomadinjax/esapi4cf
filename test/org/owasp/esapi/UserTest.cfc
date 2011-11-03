@@ -16,16 +16,16 @@
 component UserTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
-	
+
 	public void function setUp() {
 		cleanUpUsers();
 	}
-
+	
 	public void function tearDown() {
 		// none
 	}
-
-	public void function testAllMethods() throws Exception {
+	
+	public void function testAllMethods() {
 		// create a user to test Anonymous
 		local.accountName = instance.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 		local.authenticator = instance.ESAPI.authenticator();
@@ -233,7 +233,7 @@ component UserTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		catch(java.lang.RuntimeException e) {
 		}
 		try {
-			User.ANONYMOUS.setExpirationTime(now());
+			User.ANONYMOUS.setExpirationTime(newJava("java.util.Date").init());
 			fail("");
 		}
 		catch(java.lang.RuntimeException e) {
@@ -263,13 +263,13 @@ component UserTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		catch(java.lang.RuntimeException e) {
 		}
 		try {
-			User.ANONYMOUS.setLastFailedLoginTime(now());
+			User.ANONYMOUS.setLastFailedLoginTime(newJava("java.util.Date").init());
 			fail("");
 		}
 		catch(java.lang.RuntimeException e) {
 		}
 		try {
-			User.ANONYMOUS.setLastLoginTime(now());
+			User.ANONYMOUS.setLastLoginTime(newJava("java.util.Date").init());
 			fail("");
 		}
 		catch(java.lang.RuntimeException e) {
@@ -281,7 +281,7 @@ component UserTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		catch(java.lang.RuntimeException e) {
 		}
 		try {
-			User.ANONYMOUS.setLastPasswordChangeTime(now());
+			User.ANONYMOUS.setLastPasswordChangeTime(newJava("java.util.Date").init());
 			fail("");
 		}
 		catch(java.lang.RuntimeException e) {
