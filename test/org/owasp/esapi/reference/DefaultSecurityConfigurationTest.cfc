@@ -17,8 +17,7 @@ component DefaultSecurityConfigurationTest extends="cfesapi.test.org.owasp.esapi
 
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 
-	private cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration function createWithProperty(required String key, 
-	                                                                                                   required String val) {
+	private cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration function createWithProperty(required String key, required String val) {
 		local.properties = newJava("java.util.Properties").init();
 		local.properties.setProperty(javaCast("string", arguments.key), javaCast("string", arguments.val));
 		return new cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration(instance.ESAPI, local.properties);
