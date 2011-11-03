@@ -541,7 +541,7 @@
 	<cffunction access="public" returntype="void" name="testSetExpirationTime" output="false" hint="Test of setExpirationTime method, of class org.owasp.esapi.User.">
 		<cfscript>
 			local.longAgo = newJava("java.util.Date").init(javaCast("long", 0));
-			local.now = now();
+			local.now = newJava("java.util.Date").init();
 			assertTrue(longAgo.before(local.now), "new Date(0) returned " & local.longAgo & " which is considered before new Date() " & local.now & ". Please report this output to the email list or as a issue");
 			local.password = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			local.user = createTestUser(local.password);
