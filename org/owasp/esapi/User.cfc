@@ -82,9 +82,7 @@ interface extends="cfesapi.org.owasp.esapi.lang.Principal" {
 	 * @throws EncryptionException 
 	 */
 	
-	public void function changePassword(required String oldPassword, 
-	                             required String newPassword1,
-	                             required String newPassword2);
+	public void function changePassword(required String oldPassword, required String newPassword1, required String newPassword2);
 	
 	/**
 	 * Disable this user's account.
