@@ -26,8 +26,7 @@ component implements="cfesapi.org.owasp.esapi.lang.Filter" {
 	 *                     to pass information to a filter during initialization. 
 	 */
 	
-	public ClickjackFilter function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                     required Struct filterConfig) {
+	public ClickjackFilter function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required Struct filterConfig) {
 		instance.ESAPI = arguments.ESAPI;
 	
 		if(structKeyExists(arguments.filterConfig, "mode")) {

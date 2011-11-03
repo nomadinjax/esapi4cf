@@ -31,8 +31,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	 * @param filterConfig configuration object
 	 */
 	
-	public ESAPIFilter function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                 required Struct filterConfig) {
+	public ESAPIFilter function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required Struct filterConfig) {
 		instance.ESAPI = arguments.ESAPI;
 		instance.logger = instance.ESAPI.getLogger("ESAPIFilter");
 	
@@ -41,7 +40,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	
 		return this;
 	}
-		
+	
 	/**
 	 * The doFilter method of the Filter is called by the container each time a
 	 * request/response pair is passed through the chain due to a client request
@@ -137,7 +136,6 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	
 		// check for CSRF attacks
 		// instance.ESAPI.httpUtilities().checkCSRFToken();
-		
 		return true;
 	}
 	

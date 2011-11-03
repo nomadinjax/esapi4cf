@@ -38,8 +38,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 	public SecurityWrapper function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required Struct filterConfig) {
 		instance.ESAPI = arguments.ESAPI;
 	
-		instance.allowableResourcesRoot = newJava("org.owasp.esapi.StringUtilities").replaceNull(arguments.filterConfig.get("allowableResourcesRoot"), 
-	                                                                                                       instance.allowableResourcesRoot);
+		instance.allowableResourcesRoot = newJava("org.owasp.esapi.StringUtilities").replaceNull(arguments.filterConfig.get("allowableResourcesRoot"), instance.allowableResourcesRoot);
 	
 		// define custom resourceDirectory - condition to only perform this once otherwise it will force a config reload
 		local.resourceDirectory = arguments.filterConfig.get("resourceDirectory");
@@ -48,7 +47,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 		}
 	
 		instance.logger = instance.ESAPI.getLogger("SecurityWrapper");
-
+	
 		return this;
 	}
 	
@@ -74,7 +73,7 @@ component extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.
 		// I don't think RailoCF is liking this - perhaps the cookie is not set yet at this point?
 		// Where would be a better place to check this?
 		//if(!local.secureRequest.isRequestedSessionIdValid()) {
-		//	throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("J2EE sessions must be turned on."));
+		//    throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("J2EE sessions must be turned on."));
 		//}
 		return true;
 	}
