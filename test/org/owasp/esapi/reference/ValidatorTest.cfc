@@ -98,7 +98,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(local.errors.size() == 4);
 	}
 	
-	public void function testGetValidDate() throws Exception {
+	public void function testGetValidDate() {
 		newJava("java.lang.System").out.println("getValidDate");
 		local.validator = instance.ESAPI.validator();
 		local.errors = new cfesapi.org.owasp.esapi.ValidationErrorList();
@@ -143,7 +143,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		}
 	}
 	
-	public void function testGetValidDirectoryPath() throws Exception {
+	public void function testGetValidDirectoryPath() {
 		newJava("java.lang.System").out.println("getValidDirectoryPath");
 		local.validator = instance.ESAPI.validator();
 		local.errors = new cfesapi.org.owasp.esapi.ValidationErrorList();
@@ -197,7 +197,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertEquals(1, local.errors.size());
 	}
 	
-	public void function testGetValidFileName() throws Exception {
+	public void function testGetValidFileName() {
 		newJava("java.lang.System").out.println("getValidFileName");
 		local.validator = instance.ESAPI.validator();
 		local.errors = new cfesapi.org.owasp.esapi.ValidationErrorList();
@@ -240,7 +240,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		// local.validator.getValidRedirectLocation(String, String, boolean, ValidationErrorList)
 	}
 	
-	public void function testGetValidSafeHTML() throws Exception {
+	public void function testGetValidSafeHTML() {
 		newJava("java.lang.System").out.println("getValidSafeHTML");
 		local.validator = instance.ESAPI.validator();
 		local.errors = new cfesapi.org.owasp.esapi.ValidationErrorList();
@@ -303,7 +303,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(local.errors.size() == 2);
 	}
 	
-	public void function testIsValidDirectoryPath() throws IOException {
+	public void function testIsValidDirectoryPath() {
 		newJava("java.lang.System").out.println("isValidDirectoryPath");
 	
 		// get an encoder with a special list of codecs and make a validator out of it
@@ -505,7 +505,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(local.errors.size() == 0);
 	}
 	
-	public void function testIsValidFileUpload() throws IOException {
+	public void function testIsValidFileUpload() {
 		newJava("java.lang.System").out.println("isValidFileUpload");
 		local.filepath = newJava("java.io.File").init(newJava("java.lang.System").getProperty("user.dir")).getCanonicalPath();
 		local.filename = "aspect.jar";
