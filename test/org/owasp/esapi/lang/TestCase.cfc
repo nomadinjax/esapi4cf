@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  */
-component extends="mxunit.framework.TestCase" {
+component TestCase extends="mxunit.framework.TestCase" {
 
 	/*
 	 * All CFESAPI test cases extend this component. If your MXUnit path is different, you can change it here to affect all tests.
