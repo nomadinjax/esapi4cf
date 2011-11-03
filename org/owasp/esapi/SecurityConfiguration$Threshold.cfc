@@ -50,10 +50,7 @@ component Threshold {
 	 * @param actions The list of actions to take if the threshold is met.
 	 */
 	
-	public SecurityConfiguration$Threshold function init(required String name, 
-	                                                     required numeric count,
-	                                                     required numeric interval,
-	                                                     required Array actions) {
+	public SecurityConfiguration$Threshold function init(required String name, required numeric count, required numeric interval, required Array actions) {
 		this.name = arguments.name;
 		this.count = arguments.count;
 		this.interval = arguments.interval;
