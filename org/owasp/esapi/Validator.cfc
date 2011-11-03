@@ -36,8 +36,8 @@ interface {
 	 * Calls isValidInput and returns true if no exceptions are thrown.
 	 */
 	
-	public boolean function isValidInput(required String context, required String input, required String type, required numeric maxLength, required boolean allowNull, boolean canonicalize, cfesapi.org.owasp.esapi.ValidationErrorList errorList) throws IntrusionException;
-
+	public boolean function isValidInput(required String context, required String input, required String type, required numeric maxLength, required boolean allowNull, boolean canonicalize, cfesapi.org.owasp.esapi.ValidationErrorList errorList);
+	
 	/**
 	 * Returns validated input as a String with optional canonicalization. Invalid input will generate a descriptive ValidationException,
 	 * and input that is clearly an attack will generate a descriptive IntrusionException.
