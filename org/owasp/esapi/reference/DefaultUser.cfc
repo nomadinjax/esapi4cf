@@ -96,8 +96,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 *         The name of this user's account.
 	 */
 	
-	public DefaultUser function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, 
-	                                 required String accountName) {
+	public DefaultUser function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required String accountName) {
 		instance.ESAPI = arguments.ESAPI;
 		this.IDLE_TIMEOUT_LENGTH = instance.ESAPI.securityConfiguration().getSessionIdleTimeoutLength();
 		this.ABSOLUTE_TIMEOUT_LENGTH = instance.ESAPI.securityConfiguration().getSessionAbsoluteTimeoutLength();
@@ -127,7 +126,8 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 			instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Role " & local.roleName & " added to " & getAccountName());
 		}
 		else {
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Add role failed", "Attempt to add invalid role " & local.roleName & " to " & getAccountName()) );
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException(instance.ESAPI, "Add role failed", "Attempt to add invalid role " & local.roleName & " to " & getAccountName());
+			throwError(local.exception);
 		}
 	}
 	
@@ -136,7 +136,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 */
 	
 	public void function addRoles(required Array newRoles) {
-		for (local.i=1; local.i<=arrayLen(arguments.newRoles); local.i++) {
+		for(local.i = 1; local.i <= arrayLen(arguments.newRoles); local.i++) {
 			addRole(arguments.newRoles[local.i]);
 		}
 	}
@@ -145,9 +145,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 * {@inheritDoc}
 	 */
 	
-	public void function changePassword(required String oldPassword, 
-	                                    required String newPassword1,
-	                                    required String newPassword2) {
+	public void function changePassword(required String oldPassword, required String newPassword1, required String newPassword2) {
 		instance.ESAPI.authenticator().changePassword(this, arguments.oldPassword, arguments.newPassword1, arguments.newPassword2);
 	}
 	
@@ -286,7 +284,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 */
 	
 	public void function addSession(required s) {
-		if (isInstanceOf(arguments.s, "cfesapi.org.owasp.esapi.HttpSession")) {
+		if(isInstanceOf(arguments.s, "cfesapi.org.owasp.esapi.HttpSession")) {
 			instance.sessions.add(arguments.s);
 		}
 	}
@@ -296,7 +294,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 */
 	
 	public void function removeSession(required s) {
-		if (isInstanceOf(arguments.s, "cfesapi.org.owasp.esapi.HttpSession")) {
+		if(isInstanceOf(arguments.s, "cfesapi.org.owasp.esapi.HttpSession")) {
 			instance.sessions.remove(arguments.s);
 		}
 	}
@@ -342,7 +340,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 */
 	
 	public boolean function isExpired() {
-		return getExpirationTime().before(now());
+		return getExpirationTime().before(newJava("java.util.Date").init());
 	
 		// If expiration should happen automatically or based on lastPasswordChangeTime?
 		//long from = lastPasswordChangeTime.getTime();
@@ -386,7 +384,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 			return true;
 		}
 		local.deadline = newJava("java.util.Date").init(javaCast("long", local.session.getCreationTime() + this.ABSOLUTE_TIMEOUT_LENGTH));
-		local.now = now();
+		local.now = newJava("java.util.Date").init();
 		return local.now.after(local.deadline);
 	}
 	
@@ -400,7 +398,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 			return true;
 		}
 		local.deadline = newJava("java.util.Date").init(javaCast("long", local.session.getLastAccessedTime() + this.IDLE_TIMEOUT_LENGTH));
-		local.now = now();
+		local.now = newJava("java.util.Date").init();
 		return local.now.after(local.deadline);
 	}
 	
@@ -417,33 +415,36 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 * {@inheritDoc}
 	 */
 	
-	public void function loginWithPassword(cfesapi.org.owasp.esapi.HttpServletRequest request=instance.ESAPI.currentRequest(),
-										   required String password) {
+	public void function loginWithPassword(cfesapi.org.owasp.esapi.HttpServletRequest request=instance.ESAPI.currentRequest(), required String password) {
 		if(arguments.password == "") {
-			setLastFailedLoginTime(now());
+			setLastFailedLoginTime(newJava("java.util.Date").init());
 			incrementFailedLoginCount();
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Missing password: " & getAccountName()) );
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Missing password: " & getAccountName());
+			throwError(local.exception);
 		}
 	
 		// don't let disabled users log in
 		if(!isEnabled()) {
-			setLastFailedLoginTime(now());
+			setLastFailedLoginTime(newJava("java.util.Date").init());
 			incrementFailedLoginCount();
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Disabled user attempt to login: " & getAccountName()) );
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Disabled user attempt to login: " & getAccountName());
+			throwError(local.exception);
 		}
 	
 		// don't let locked users log in
 		if(isLocked()) {
-			setLastFailedLoginTime(now());
+			setLastFailedLoginTime(newJava("java.util.Date").init());
 			incrementFailedLoginCount();
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Locked user attempt to login: " & getAccountName()) );
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Locked user attempt to login: " & getAccountName());
+			throwError(local.exception);
 		}
 	
 		// don't let expired users log in
 		if(isExpired()) {
-			setLastFailedLoginTime(now());
+			setLastFailedLoginTime(newJava("java.util.Date").init());
 			incrementFailedLoginCount();
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Expired user attempt to login: " & getAccountName()) );
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Expired user attempt to login: " & getAccountName());
+			throwError(local.exception);
 		}
 	
 		logout();
@@ -452,18 +453,19 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 			instance.loggedIn = true;
 			instance.ESAPI.httpUtilities().changeSessionIdentifier(arguments.request);
 			instance.ESAPI.authenticator().setCurrentUser(this);
-			setLastLoginTime(now());
+			setLastLoginTime(newJava("java.util.Date").init());
 			setLastHostAddress(arguments.request.getRemoteAddr());
 			instance.logger.trace(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "User logged in: " & getAccountName());
 		}
 		else {
 			instance.loggedIn = false;
-			setLastFailedLoginTime(now());
+			setLastFailedLoginTime(newJava("java.util.Date").init());
 			incrementFailedLoginCount();
 			if(getFailedLoginCount() >= instance.ESAPI.securityConfiguration().getAllowedLoginAttempts()) {
 				this.lock();
 			}
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Incorrect password provided for " & getAccountName()) );
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationLoginException(instance.ESAPI, "Login failed", "Incorrect password provided for " & getAccountName());
+			throwError(local.exception);
 		}
 	}
 	
@@ -484,7 +486,8 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 		instance.ESAPI.httpUtilities().killCookie(instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), instance.ESAPI.securityConfiguration().getHttpSessionIdName());
 		instance.loggedIn = false;
 		instance.logger.info(newJava("org.owasp.esapi.Logger").SECURITY_SUCCESS, "Logout successful");
-		instance.ESAPI.authenticator().setCurrentUser(new cfesapi.org.owasp.esapi.User$ANONYMOUS(instance.ESAPI));
+		local.anonymous = new cfesapi.org.owasp.esapi.User$ANONYMOUS(instance.ESAPI);
+		instance.ESAPI.authenticator().setCurrentUser(local.anonymous);
 	}
 	
 	/**
@@ -564,7 +567,8 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	public void function setLastHostAddress(required String remoteHost) {
 		if(instance.lastHostAddress != "" && !instance.lastHostAddress.equals(arguments.remoteHost)) {
 			// returning remote address not remote hostname to prevent DNS lookup
-			throwError( new cfesapi.org.owasp.esapi.errors.AuthenticationHostException(instance.ESAPI, "Host change", "User session just jumped from " & instance.lastHostAddress & " to " & arguments.remoteHost) );
+			local.exception = new cfesapi.org.owasp.esapi.errors.AuthenticationHostException(instance.ESAPI, "Host change", "User session just jumped from " & instance.lastHostAddress & " to " & arguments.remoteHost);
+			throwError(local.exception);
 		}
 		instance.lastHostAddress = arguments.remoteHost;
 	}
@@ -641,7 +645,7 @@ component DefaultUser extends="cfesapi.org.owasp.esapi.lang.Object" implements="
 	 */
 	
 	public function clone() {
-		throwError( new java.lang.CloneNotSupportedException() );
+		throwError(newJava("java.lang.CloneNotSupportedException"));
 	}
 	
 	/**
