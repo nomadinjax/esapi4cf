@@ -22,20 +22,22 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.PREFERRED_ENCODING = "UTF-8";
 
-    /**
-     * {@inheritDoc}
-     *
-     * @throws Exception
-     */
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Exception
+	 */
+	
 	public void function setUp() {
 		structClear(request);
 	}
 	
-    /**
-     * {@inheritDoc}
-     *
-     * @throws Exception
-     */
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws Exception
+	 */
+	
 	public void function tearDown() {
 		structClear(request);
 	}
@@ -47,18 +49,18 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertEquals(local.rule, local.validator.getRule("ridiculous"));
 	}
 	
-    public void function testAssertValidFileUpload() {
-        //		assertValidFileUpload(String, String, String, byte[], int, boolean, ValidationErrorList)
-    }
-
-    public void function testGetPrintable1() {
-        //		getValidPrintable(String, char[], int, boolean, ValidationErrorList)
-    }
-
-    public void function testGetPrintable2() {
-        //		getValidPrintable(String, String, int, boolean, ValidationErrorList)
-    }
-
+	public void function testAssertValidFileUpload() {
+		//assertValidFileUpload(String, String, String, byte[], int, boolean, ValidationErrorList)
+	}
+	
+	public void function testGetPrintable1() {
+		//getValidPrintable(String, char[], int, boolean, ValidationErrorList)
+	}
+	
+	public void function testGetPrintable2() {
+		//getValidPrintable(String, String, int, boolean, ValidationErrorList)
+	}
+	
 	public void function testGetRule() {
 		local.validator = instance.ESAPI.validator();
 		local.rule = new cfesapi.org.owasp.esapi.reference.validation.StringValidationRule(instance.ESAPI, "rule");
@@ -106,13 +108,14 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	
 		// TODO: This test case fails due to an apparent bug in SimpleDateFormat
 		// Note: This seems to be fixed in JDK 6. Will leave it commented out since
-		//         we only require JDK 5. -kww
+		// we only require JDK 5. -kww
 		local.validator.getValidDate("test", "June 32, 2008", newJava("java.text.DateFormat").getDateInstance(), false, local.errors);
 		// assertEquals( 2, local.errors.size() );
 	}
 	
-    // FIXME: Should probably use SecurityConfigurationWrapper and force
-    //		  Validator.AcceptLenientDates to be false.
+	// FIXME: Should probably use SecurityConfigurationWrapper and force
+	//  Validator.AcceptLenientDates to be false.
+	
 	public void function testLenientDate() {
 		newJava("java.lang.System").out.println("testLenientDate");
 		local.acceptLenientDates = instance.ESAPI.securityConfiguration().getLenientDatesAccepted();
@@ -322,13 +325,12 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			assertFalse(local.validator.isValidDirectoryPath("test", "c:\temp\..\etc", local.parent, false));
 		
 			// Windows paths
-			assertTrue(local.validator.isValidDirectoryPath("test", "C:\", local.parent, false));                        // Windows root directory
-			assertTrue(local.validator.isValidDirectoryPath("test", local.sysRoot, local.parent, false));                  // Windows always exist directory
-			assertFalse(local.validator.isValidDirectoryPath("test", local.sysRoot & "\System32\cmd.exe", local.parent, false));      // Windows command shell
-
+			assertTrue(local.validator.isValidDirectoryPath("test", "C:\", local.parent, false));// Windows root directory
+			assertTrue(local.validator.isValidDirectoryPath("test", local.sysRoot, local.parent, false));// Windows always exist directory
+			assertFalse(local.validator.isValidDirectoryPath("test", local.sysRoot & "\System32\cmd.exe", local.parent, false));// Windows command shell
 			// Unix specific paths should not pass
-			assertFalse(local.validator.isValidDirectoryPath("test", "/tmp", local.parent, false));      // Unix Temporary directory
-			assertFalse(local.validator.isValidDirectoryPath("test", "/bin/sh", local.parent, false));   // Unix Standard shell
+			assertFalse(local.validator.isValidDirectoryPath("test", "/tmp", local.parent, false));// Unix Temporary directory
+			assertFalse(local.validator.isValidDirectoryPath("test", "/bin/sh", local.parent, false));// Unix Standard shell
 			assertFalse(local.validator.isValidDirectoryPath("test", "/etc/config", parent, false));
 		
 			// Unix specific paths that should not exist or work
@@ -343,17 +345,17 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			assertTrue(local.errors.size() == 3);
 		
 			// Windows paths
-			assertTrue(local.validator.isValidDirectoryPath("test4", "C:\", local.parent, false, local.errors));                        // Windows root directory
+			assertTrue(local.validator.isValidDirectoryPath("test4", "C:\", local.parent, false, local.errors));// Windows root directory
 			assertTrue(local.errors.size() == 3);
-			assertTrue(local.validator.isValidDirectoryPath("test5", sysRoot, local.parent, false, local.errors));                  // Windows always exist directory
+			assertTrue(local.validator.isValidDirectoryPath("test5", sysRoot, local.parent, false, local.errors));// Windows always exist directory
 			assertTrue(local.errors.size() == 3);
-			assertFalse(local.validator.isValidDirectoryPath("test6", sysRoot & "\System32\cmd.exe", local.parent, false, local.errors));      // Windows command shell
+			assertFalse(local.validator.isValidDirectoryPath("test6", sysRoot & "\System32\cmd.exe", local.parent, false, local.errors));// Windows command shell
 			assertTrue(local.errors.size() == 4);
 		
 			// Unix specific paths should not pass
-			assertFalse(local.validator.isValidDirectoryPath("test7", "/tmp", local.parent, false, local.errors));      // Unix Temporary directory
+			assertFalse(local.validator.isValidDirectoryPath("test7", "/tmp", local.parent, false, local.errors));// Unix Temporary directory
 			assertTrue(local.errors.size() == 5);
-			assertFalse(local.validator.isValidDirectoryPath("test8", "/bin/sh", local.parent, false, local.errors));   // Unix Standard shell
+			assertFalse(local.validator.isValidDirectoryPath("test8", "/bin/sh", local.parent, false, local.errors));// Unix Standard shell
 			assertTrue(local.errors.size() == 6);
 			assertFalse(local.validator.isValidDirectoryPath("test9", "/etc/config", local.parent, false, local.errors));
 			assertTrue(local.errors.size() == 7);
@@ -370,16 +372,14 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			assertFalse(local.validator.isValidDirectoryPath("test", "c:\temp\..\etc", local.parent, false));
 		
 			// Standard Windows locations should fail
-			assertFalse(local.validator.isValidDirectoryPath("test", "c:\", local.parent, false));                        // Windows root directory
-			assertFalse(local.validator.isValidDirectoryPath("test", "c:\Windows\temp", local.parent, false));               // Windows temporary directory
-			assertFalse(local.validator.isValidDirectoryPath("test", "c:\Windows\System32\cmd.exe", local.parent, false));   // Windows command shell
-
+			assertFalse(local.validator.isValidDirectoryPath("test", "c:\", local.parent, false));// Windows root directory
+			assertFalse(local.validator.isValidDirectoryPath("test", "c:\Windows\temp", local.parent, false));// Windows temporary directory
+			assertFalse(local.validator.isValidDirectoryPath("test", "c:\Windows\System32\cmd.exe", local.parent, false));// Windows command shell
 			// Unix specific paths should pass
-			assertTrue(local.validator.isValidDirectoryPath("test", "/", local.parent, false));         // Root directory
-			assertTrue(local.validator.isValidDirectoryPath("test", "/bin", local.parent, false));      // Always exist directory
-
+			assertTrue(local.validator.isValidDirectoryPath("test", "/", local.parent, false));// Root directory
+			assertTrue(local.validator.isValidDirectoryPath("test", "/bin", local.parent, false));// Always exist directory
 			// Unix specific paths that should not exist or work
-			assertFalse(local.validator.isValidDirectoryPath("test", "/bin/sh", local.parent, false));   // Standard shell, not dir
+			assertFalse(local.validator.isValidDirectoryPath("test", "/bin/sh", local.parent, false));// Standard shell, not dir
 			assertFalse(local.validator.isValidDirectoryPath("test", "/etc/ridiculous", local.parent, false));
 			assertFalse(local.validator.isValidDirectoryPath("test", "/tmp/../etc", local.parent, false));
 		
@@ -390,21 +390,21 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			assertTrue(local.errors.size() == 2);
 		
 			// Standard Windows locations should fail
-			assertFalse(local.validator.isValidDirectoryPath("test3", "c:\", local.parent, false, local.errors));                        // Windows root directory
+			assertFalse(local.validator.isValidDirectoryPath("test3", "c:\", local.parent, false, local.errors));// Windows root directory
 			assertTrue(local.errors.size() == 3);
-			assertFalse(local.validator.isValidDirectoryPath("test4", "c:\Windows\temp", local.parent, false, local.errors));               // Windows temporary directory
+			assertFalse(local.validator.isValidDirectoryPath("test4", "c:\Windows\temp", local.parent, false, local.errors));// Windows temporary directory
 			assertTrue(local.errors.size() == 4);
-			assertFalse(local.validator.isValidDirectoryPath("test5", "c:\Windows\System32\cmd.exe", local.parent, false, local.errors));   // Windows command shell
+			assertFalse(local.validator.isValidDirectoryPath("test5", "c:\Windows\System32\cmd.exe", local.parent, false, local.errors));// Windows command shell
 			assertTrue(local.errors.size() == 5);
 		
 			// Unix specific paths should pass
-			assertTrue(local.validator.isValidDirectoryPath("test6", "/", local.parent, false, local.errors));         // Root directory
+			assertTrue(local.validator.isValidDirectoryPath("test6", "/", local.parent, false, local.errors));// Root directory
 			assertTrue(local.errors.size() == 5);
-			assertTrue(local.validator.isValidDirectoryPath("test7", "/bin", local.parent, false, local.errors));      // Always exist directory
+			assertTrue(local.validator.isValidDirectoryPath("test7", "/bin", local.parent, false, local.errors));// Always exist directory
 			assertTrue(local.errors.size() == 5);
 		
 			// Unix specific paths that should not exist or work
-			assertFalse(local.validator.isValidDirectoryPath("test8", "/bin/sh", local.parent, false, local.errors));   // Standard shell, not dir
+			assertFalse(local.validator.isValidDirectoryPath("test8", "/bin/sh", local.parent, false, local.errors));// Standard shell, not dir
 			assertTrue(local.errors.size() == 6);
 			assertFalse(local.validator.isValidDirectoryPath("test9", "/etc/ridiculous", local.parent, false, local.errors));
 			assertTrue(local.errors.size() == 7);
@@ -413,11 +413,11 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		}
 	}
 	
-    /* declared twice
-    public void function TestIsValidDirectoryPath() {
-        // isValidDirectoryPath(String, String, boolean)
-    } */
-
+	/* declared twice
+	public void function TestIsValidDirectoryPath() {
+	    // isValidDirectoryPath(String, String, boolean)
+	} */
+	
 	public void function testIsValidDouble() {
 		// isValidDouble(String, String, double, double, boolean)
 		local.validator = instance.ESAPI.validator();
@@ -537,7 +537,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	public void function testIsValidHTTPRequestParameterSet() {
-		//        isValidHTTPRequestParameterSet(String, Set, Set)
+		//isValidHTTPRequestParameterSet(String, Set, Set)
 	}
 	
 	public void function testIsValidInput() {
@@ -572,7 +572,6 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		// null tests not valid for CF
 		//assertTrue(local.validator.isValidInput("test", null, "Email", 100, true));
 		//assertFalse(local.validator.isValidInput("test", null, "Email", 100, false));
-
 		local.errors = new cfesapi.org.owasp.esapi.ValidationErrorList();
 	
 		assertTrue(local.validator.isValidInput(context="test1", input="jeff.williams@aspectsecurity.com", type="Email", maxLength=100, allowNull=false, errorList=local.errors));
@@ -618,7 +617,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(local.validator.isValidInput(context="test21", input="jeff .-/+=@_ WILLIAMS", type="HTTPParameterValue", maxLength=100, allowNull=false, errorList=local.errors));
 		assertTrue(local.errors.size() == 10);
 		// Removed per Issue 116 - The '*' character is valid as a parameter character
-		//        assertFalse(instance.isValidInput(context="test", input="jeff*WILLIAMS", type="HTTPParameterValue", maxLength=100, allowNull=false, errorList=local.errors));
+		//assertFalse(instance.isValidInput(context="test", input="jeff*WILLIAMS", type="HTTPParameterValue", maxLength=100, allowNull=false, errorList=local.errors));
 		assertFalse(local.validator.isValidInput(context="test22", input="jeff^WILLIAMS", type="HTTPParameterValue", maxLength=100, allowNull=false, errorList=local.errors));
 		assertTrue(local.errors.size() == 11);
 		assertFalse(local.validator.isValidInput(context="test23", input="jeff\\WILLIAMS", type="HTTPParameterValue", maxLength=100, allowNull=false, errorList=local.errors));
@@ -719,7 +718,6 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(local.errors.size() == 15);
 		assertFalse(local.validator.isValidInteger("test23", "-1e-6", -999999999, 999999999, false, local.errors));
 		assertTrue(local.errors.size() == 16);
-
 	}
 	
 	public void function testIsValidListItem() {
@@ -868,7 +866,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		local.validator = instance.ESAPI.validator();
 		assertTrue(local.validator.isValidPrintable("name", "abcDEF", 100, false));
 		assertTrue(local.validator.isValidPrintable("name", "!@##R()*$;><()", 100, false));
-		local.chars = [inputBaseN("60", 16), inputBaseN("FF", 16), inputBaseN("10", 16),inputBaseN("25", 16)];
+		local.chars = [inputBaseN("60", 16), inputBaseN("FF", 16), inputBaseN("10", 16), inputBaseN("25", 16)];
 		assertFalse(local.validator.isValidPrintable("name", local.chars, 100, false));
 		assertFalse(local.validator.isValidPrintable("name", [inputBaseN("08", 16)], 100, false));
 	
@@ -884,7 +882,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	public void function testIsValidRedirectLocation() {
-		//        isValidRedirectLocation(String, String, boolean)
+		//isValidRedirectLocation(String, String, boolean)
 	}
 	
 	public void function testIsValidSafeHTML() {
@@ -1026,7 +1024,7 @@ component ValidatorTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			}
 			catch(java.lang.NullPointerException npe) {
 				//the test is this block SHOULD fail. a NPE is an acceptable failure state
-				local.testResult = false; //redundant, just being descriptive here
+				local.testResult = false;//redundant, just being descriptive here
 			}
 			assertFalse(local.testResult);
 		}
