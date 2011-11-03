@@ -24,7 +24,8 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	instance.cipherSpec = "";
 	instance.myIV = "";
 
-	// @Before 
+	// @Before
+	
 	public void function setUp() {
 		// This will throw ConfigurationException if IV type is not set to
 		// 'fixed', which it's not. (We have it set to 'random'.)
@@ -43,13 +44,14 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(!isNull(instance.cipherSpec));
 	}
 	
-	// @After 
+	// @After
+	
 	public void function tearDown() {
 		// none
 	}
 	
 	/** Test CipherSpec(String cipherXform, int keySize, int blockSize, final byte[] iv) */
-	// @Test 
+	// @Test
 	
 	public void function testCipherSpecStringIntIntByteArray() {
 		instance.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipherXform="AES/CBC/NoPadding", keySize=128, blockSize=8, iv=instance.myIV);
@@ -76,7 +78,8 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	/** CipherSpec(final Cipher cipher, int keySize) */
-	// @Test 
+	// @Test
+	
 	public void function testCipherSpecCipherInt() {
 		instance.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipher=instance.dfltOtherCipher, keySize=112);
 		assertTrue(!isNull(instance.cipherSpec));
@@ -92,7 +95,8 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	/** Test CipherSpec(final byte[] iv) */
-	// @Test 
+	// @Test
+	
 	public void function testCipherSpecByteArray() {
 		assertTrue(!isNull(instance.myIV));
 		assertTrue(len(instance.myIV) > 0);
@@ -102,7 +106,8 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	/** Test CipherSpec() */
-	// @Test 
+	// @Test
+	
 	public void function testCipherSpec() {
 		instance.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipher=instance.dfltECBCipher);
 		assertTrue(instance.cipherSpec.getCipherTransformation() == "AES/ECB/NoPadding");
@@ -113,7 +118,8 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	/** Test setCipherTransformation(String cipherXform) */
-	// @Test 
+	// @Test
+	
 	public void function testSetCipherTransformation() {
 		instance.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI);
 		instance.cipherSpec.setCipherTransformation("AlgName/Mode/Padding");
@@ -122,7 +128,7 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		try {
 			// Don't use null here as compiling JUnit tests disables assertion
 			// checking so we get a NullPointerException here instead.
-			instance.cipherSpec.setCipherTransformation(""); // Throws IllegalArgumentException
+			instance.cipherSpec.setCipherTransformation("");// Throws IllegalArgumentException
 		}
 		catch(java.lang.IllegalArgumentException e) {
 			assertTrue(true);// Doesn't work w/ @Test(expected=IllegalArgumentException.class)
@@ -130,25 +136,29 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	/** Test getCipherTransformation() */
-	// @Test 
+	// @Test
+	
 	public void function testGetCipherTransformation() {
 		assertTrue(new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI).getCipherTransformation() == "AES/CBC/PKCS5Padding");
 	}
 	
 	/** Test setKeySize() */
-	// @Test 
+	// @Test
+	
 	public void function testSetKeySize() {
 		assertTrue(new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI).setKeySize(56).getKeySize() == 56);
 	}
 	
 	/** Test getKeySize() */
-	// @Test 
+	// @Test
+	
 	public void function testGetKeySize() {
 		assertTrue(new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI).getKeySize() == instance.ESAPI.securityConfiguration().getEncryptionKeyLength());
 	}
 	
 	/** Test setBlockSize() */
-	// @Test 
+	// @Test
+	
 	public void function testSetBlockSize() {
 		try {
 			instance.cipherSpec.setBlockSize(0);// Throws AssertionError
@@ -166,31 +176,36 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	/** Test getBlockSize() */
-	// @Test 
+	// @Test
+	
 	public void function testGetBlockSize() {
 		assertTrue(instance.cipherSpec.getBlockSize() == 8);
 	}
 	
 	/** Test getCipherAlgorithm() */
-	// @Test 
+	// @Test
+	
 	public void function testGetCipherAlgorithm() {
 		assertTrue(instance.cipherSpec.getCipherAlgorithm() == "Blowfish");
 	}
 	
 	/** Test getCipherMode */
-	// @Test 
+	// @Test
+	
 	public void function testGetCipherMode() {
 		assertTrue(instance.cipherSpec.getCipherMode() == "OFB8");
 	}
 	
 	/** Test getPaddingScheme() */
-	// @Test 
+	// @Test
+	
 	public void function testGetPaddingScheme() {
 		assertTrue(instance.cipherSpec.getPaddingScheme() == "PKCS5Padding");
 	}
 	
 	/** Test setIV() */
-	// @Test 
+	// @Test
+	
 	public void function testSetIV() {
 		try {
 			// Test that ECB mode allows a null IV
@@ -213,7 +228,8 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	/** Test requiresIV() */
-	// @Test 
+	// @Test
+	
 	public void function testRequiresIV() {
 		assertTrue(new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipher=instance.dfltECBCipher).requiresIV() == false);
 		instance.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipher=instance.dfltAESCipher);
@@ -223,7 +239,8 @@ component CipherSpecTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 	}
 	
 	/** Test serialization */
-	// @Test 
+	// @Test
+	
 	public void function testSerialization() {
 		local.filename = "cipherspec.ser";
 		local.serializedFile = newJava("java.io.File").init(local.filename);
