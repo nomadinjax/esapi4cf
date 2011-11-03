@@ -27,7 +27,7 @@
  *
  * <p>The reference implementation does all of the above.</p>
  */
-interface  {
+interface {
 
 	/**
 	 * Executes a system command after checking that the executable exists and
@@ -52,10 +52,6 @@ interface  {
 	 *             the service exception
 	 */
 	
-	public function executeSystemCommand(required executable, 
-	                                     required Array params,
-	                                     workdir,codec, 
-	                                     boolean logParams,
-	                                     boolean redirectErrorStream);
+	public function executeSystemCommand(required executable, required Array params, workdir, codec, boolean logParams, boolean redirectErrorStream);
 	
 }
