@@ -166,12 +166,12 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	 * Absolute path to the user.home. No longer includes the ESAPI portion as it used to.
 	 */
 	instance.userHome = newJava("java.lang.System").getProperty("user.home");
-	
+
 	/*
 	 * Absolute path to the customDirectory
 	 */
 	instance.configurationDirectory = expandPath("\cfesapi\esapi\configuration\esapi\");
-	
+
 	/*
 	 * Relative path to the resourceDirectory. Relative to the classpath.
 	 * Specifically, ClassLoader.getResource(resourceDirectory + filename) will
@@ -179,7 +179,6 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	 */
 	instance.resourceDirectory = ".esapi";// For backward compatibility (vs. "esapi")
 	//instance.lastModified = -1;
-	
 	/**
 	 * Instantiates a new configuration with the supplied properties.
 	 * 
@@ -191,7 +190,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	
 	public DefaultSecurityConfiguration function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, properties) {
 		instance.ESAPI = arguments.ESAPI;
-
+	
 		if(structKeyExists(arguments, "properties")) {
 			super.init();
 			instance.properties = arguments.properties;
@@ -205,7 +204,8 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 			}
 			catch(java.io.IOException e) {
 				logSpecial("Failed to load security configuration", e);
-				throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("Failed to load security configuration", e));
+				local.exception = new cfesapi.org.owasp.esapi.errors.ConfigurationException("Failed to load security configuration", e);
+				throwError(local.exception);
 			}
 		}
 	
@@ -316,7 +316,8 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	public binary function getMasterKey() {
 		local.key = getESAPIPropertyEncoded(this.MASTER_KEY, toBinary(""));
 		if(isNull(local.key) || !isBinary(local.key) || arrayLen(local.key) == 0) {
-			throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("Property '" & this.MASTER_KEY & "' missing or empty in ESAPI.properties file."));
+			local.exception = new cfesapi.org.owasp.esapi.errors.ConfigurationException("Property '" & this.MASTER_KEY & "' missing or empty in ESAPI.properties file.");
+			throwError(local.exception);
 		}
 		return local.key;
 	}
@@ -327,7 +328,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	
 	public void function setResourceDirectory(required String dir) {
 		// check whether we are changing this so we do not reload configuration unless we have to
-		if (instance.resourceDirectory != arguments.dir) {
+		if(instance.resourceDirectory != arguments.dir) {
 			instance.resourceDirectory = arguments.dir;
 			logSpecial("Reset resource directory to: " & arguments.dir);
 		
@@ -352,7 +353,8 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	public binary function getMasterSalt() {
 		local.salt = getESAPIPropertyEncoded(this.MASTER_SALT, toBinary(""));
 		if(isNull(local.salt) || !isBinary(local.salt) || arrayLen(local.salt) == 0) {
-			throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("Property '" & this.MASTER_SALT & "' missing or empty in ESAPI.properties file."));
+			local.exception = new cfesapi.org.owasp.esapi.errors.ConfigurationException("Property '" & this.MASTER_SALT & "' missing or empty in ESAPI.properties file.");
+			throwError(local.exception);
 		}
 		return local.salt;
 	}
@@ -426,7 +428,8 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 			}
 			catch(java.lang.Exception e) {
 				logSpecial(this.RESOURCE_FILE & " could not be loaded by any means. Fail.", e);
-				throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException(this.RESOURCE_FILE & " could not be loaded by any means. Fail.", e));
+				local.exception = new cfesapi.org.owasp.esapi.errors.ConfigurationException(this.RESOURCE_FILE & " could not be loaded by any means. Fail.", e);
+				throwError(local.exception);
 			}
 		}
 		
@@ -542,7 +545,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		else {
 			logSpecial("Not found in SystemResource Directory/resourceDirectory: " & local.fileLocation);
 		}
-		
+	
 		// second, try immediately under user's home directory first in
 		//userHome & "/.esapi"and secondly under
 		//userHome & "/esapi"
@@ -569,7 +572,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 				logSpecial("Not found in 'user.home' (" & homeDir & ") directory: " & local.f.getAbsolutePath());
 			}
 		}
-
+	
 		// third, fallback to the default configuration directory
 		local.f = newJava("java.io.File").init(instance.configurationDirectory, arguments.filename);
 		if(!isNull(instance.configurationDirectory) && local.f.canRead()) {
@@ -595,9 +598,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		local.in = "";
 	
 		local.loaders = newJava("java.lang.ClassLoader").init(Thread.currentThread().getContextClassLoader(), newJava("java.lang.ClassLoader").getSystemClassLoader(), getClass().getClassLoader());
-		local.classLoaderNames = ["current thread context class loader", 
-	                            "system class loader",
-	                            "class loader for DefaultSecurityConfiguration class"];
+		local.classLoaderNames = ["current thread context class loader", "system class loader", "class loader for DefaultSecurityConfiguration class"];
 	
 		local.currentLoader = "";
 		for(local.i = 0; local.i < local.loaders.length; local.i++) {
@@ -764,12 +765,14 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 			// that for a given key, any particular IV is *NEVER* reused. For
 			// now, we will assume that generating a random IV is usually going
 			// to be sufficient to prevent this.
-			throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("'" & this.IV_TYPE & "=specified' is not yet implemented. Use 'fixed' or 'random'"));
+			local.exception = new cfesapi.org.owasp.esapi.errors.ConfigurationException("'" & this.IV_TYPE & "=specified' is not yet implemented. Use 'fixed' or 'random'");
+			throwError(local.exception);
 		}
 		else {
 			// TODO: Once 'specified' is legal, adjust exception msg, below.
 			// DISCUSS: Could just log this and then silently return "random" instead.
-			throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException(value & " is illegal value for " & this.IV_TYPE & ". Use 'random' (preferred) or 'fixed'."));
+			local.exception = new cfesapi.org.owasp.esapi.errors.ConfigurationException(value & " is illegal value for " & this.IV_TYPE & ". Use 'random' (preferred) or 'fixed'.");
+			throwError(local.exception);
 		}
 	}
 	
@@ -781,14 +784,16 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		if(getIVType().equalsIgnoreCase("fixed")) {
 			local.ivAsHex = getESAPIProperty(this.FIXED_IV, "");// No default
 			if(isNull(local.ivAsHex) || local.ivAsHex.trim() == "") {
-				throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("Fixed IV requires property " & this.FIXED_IV & " to be set, but it is not."));
+				local.exception = new cfesapi.org.owasp.esapi.errors.ConfigurationException("Fixed IV requires property " & this.FIXED_IV & " to be set, but it is not.");
+				throwError(local.exception);
 			}
 			return local.ivAsHex;// We do no further checks here as we have no context.
 		}
 		else {
 			// DISCUSS: Should we just log a warning here and return null instead?
 			//If so, may cause NullPointException somewhere later.
-			throwError(new cfesapi.org.owasp.esapi.errors.ConfigurationException("IV type not 'fixed' (set to '" & getIVType() & "'), so no fixed IV applicable."));
+			local.exception = new cfesapi.org.owasp.esapi.errors.ConfigurationException("IV type not 'fixed' (set to '" & getIVType() & "'), so no fixed IV applicable.");
+			throwError(local.exception);
 		}
 	}
 	
@@ -1105,15 +1110,17 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 	public function getValidationPattern(required String key) {
 		local.value = getESAPIProperty("Validator." & arguments.key, "");
 		// check cache
-		if (structKeyExists(instance.patternCache, local.value)) {
+		if(structKeyExists(instance.patternCache, local.value)) {
 			local.p = instance.patternCache.get(local.value);
 		}
-		if(!isNull(local.p))
+		if(!isNull(local.p)) {
 			return local.p;
+		}
 	
 		// compile a new pattern
-		if(isNull(local.value) || local.value.equals(""))
+		if(isNull(local.value) || local.value.equals("")) {
 			return "";
+		}
 		try {
 			local.q = newJava("java.util.regex.Pattern").compile(local.value);
 			instance.patternCache.put(local.value, local.q);
@@ -1224,7 +1231,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 			}
 		}
 		// String
-		else if (isSimpleValue(arguments.def)) {
+		else if(isSimpleValue(arguments.def)) {
 			local.value = instance.properties.getProperty(arguments.key);
 			if(isNull(local.value)) {
 				logSpecial("SecurityConfiguration for " & arguments.key & " not found in ESAPI.properties. Using default: " & arguments.def);
@@ -1234,8 +1241,7 @@ component DefaultSecurityConfiguration extends="cfesapi.org.owasp.esapi.lang.Obj
 		}
 	}
 	
-	private binary function getESAPIPropertyEncoded(required String key, 
-	                                                required binary def) {
+	private binary function getESAPIPropertyEncoded(required String key, required binary def) {
 		local.property = instance.properties.getProperty(arguments.key);
 		if(isNull(local.property)) {
 			logSpecial("SecurityConfiguration for " & arguments.key & " not found in ESAPI.properties. Using default: " & arguments.def.toString());
