@@ -13,11 +13,13 @@
  * @author Damon Miller
  * @created 2011
  */
-component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
+component CryptoHelperTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
 	CryptoHelper = new cfesapi.org.owasp.esapi.crypto.CryptoHelper(instance.ESAPI);
 
+	// @Test
+	
 	public void function testGenerateSecretKeySunnyDay() {
 		try {
 			local.key = CryptoHelper.generateSecretKey("AES", 128);
@@ -30,6 +32,8 @@ component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		}
 	}
 	
+	// @Test(expected = EncryptionException.class)
+	
 	public void function testGenerateSecretKeyEncryptionException() {
 		try {
 			local.key = CryptoHelper.generateSecretKey("NoSuchAlg", 128);
@@ -40,6 +44,8 @@ component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		}
 	}
 	
+	// @Test
+	
 	public void function testOverwriteByteArrayByte() {
 		local.secret = newJava("java.lang.String").init("secret password").getBytes();
 		local.len = arrayLen(local.secret);
@@ -47,6 +53,8 @@ component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(arrayLen(local.secret) == local.len);// Length unchanged
 		assertTrue(checkByteArray(local.secret, "x"));// Filled with 'x'
 	}
+	
+	// @Test
 	
 	public void function testCopyByteArraySunnyDay() {
 		local.src = newByte(20);
@@ -58,16 +66,21 @@ component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		assertTrue(checkByteArray(local.dest, "A"));// Now filled with 'B'
 	}
 	
-	/* NULL tests invalid for CF
+	/* NULL tests not valid in CF
+	// @Test(expected = NullPointerException.class)
+	
 	public void function testCopyByteArraySrcNullPointerException() {
 	    local.ba = newByte(16);
 	    CryptoHelper.copyByteArray(null, local.ba, arrayLen(local.ba));
 	} */
-	/* NULL tests invalid for CF
+	/* NULL tests not valid in CF
+	// @Test(expected = NullPointerException.class)
+	
 	public void function testCopyByteArrayDestNullPointerException() {
 	    local.ba = newByte(16);
 	    CryptoHelper.copyByteArray(local.ba, null, arrayLen(local.ba));
 	} */
+	// @Test(expected = IndexOutOfBoundsException.class)
 	
 	public void function testCopyByteArrayIndexOutOfBoundsException() {
 		try {
@@ -75,10 +88,12 @@ component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 			local.ba16 = newByte(16);
 			CryptoHelper.copyByteArray(local.ba8, local.ba16, arrayLen(local.ba16));
 		}
-		catch (java.lang.ArrayIndexOutOfBoundsException e) {
+		catch(java.lang.ArrayIndexOutOfBoundsException e) {
 			// expected
 		}
 	}
+	
+	// @Test
 	
 	public void function testArrayCompare() {
 		local.ba1 = newByte(32);
