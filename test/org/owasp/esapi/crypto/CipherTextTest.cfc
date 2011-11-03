@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  */
-component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
+component CryptoTextTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.POST_CLEANUP = true;
 
