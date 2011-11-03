@@ -19,7 +19,7 @@
 component extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 
 	instance.ESAPI = new cfesapi.org.owasp.esapi.ESAPI();
-	
+
 	/**
 	 * Test of update method, of class org.owasp.esapi.AccessReferenceMap.
 	 * @throws Exception
