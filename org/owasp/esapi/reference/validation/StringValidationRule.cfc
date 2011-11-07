@@ -59,7 +59,8 @@
 				try {
 					instance.whitelistPatterns.add( newJava("java.util.regex.Pattern").compile( arguments.pattern ) );
 				} catch( java.util.regex.PatternSyntaxException e ) {
-					throwError(newJava("java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
+					throwError(newJava("java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern ));
+					// RAILO ERROR: throwError(newJava("java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
 				}
 			}
 		</cfscript> 
@@ -82,7 +83,8 @@
 				try {
 					instance.blacklistPatterns.add( newJava("java.util.regex.Pattern").compile( arguments.pattern ) );
 				} catch( java.util.regex.PatternSyntaxException e ) {
-					throwError(newJava("java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
+					throwError(newJava("java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern ));
+					// RAILO ERROR: throwError(newJava("java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
 				}
 			}
 		</cfscript> 
