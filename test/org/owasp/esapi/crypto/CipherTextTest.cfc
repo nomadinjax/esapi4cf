@@ -205,7 +205,7 @@ component CryptoTextTest extends="cfesapi.test.org.owasp.esapi.lang.TestCase" {
 		local.serializedFile = newJava("java.io.File").init(local.filename);
 		local.serializedFile.delete();// Delete any old serialized file.
 		local.keySize = 128;
-		if(new cfesapi.test.org.owasp.esapi.reference.crypto.CryptoPolicy(instance.ESAPI).isUnlimitedStrengthCryptoAvailable()) {
+		if(new cfesapi.test.org.owasp.esapi.reference.crypto.CryptoPolicy().isUnlimitedStrengthCryptoAvailable()) {
 			local.keySize = 256;
 		}
 		local.cipherSpec = new cfesapi.org.owasp.esapi.crypto.CipherSpec(ESAPI=instance.ESAPI, cipher=instance.encryptor, keySize=local.keySize);
