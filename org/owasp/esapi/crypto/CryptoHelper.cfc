@@ -186,7 +186,7 @@
 	                local.authKey = computeDerivedKey( arguments.sk, arguments.ct.getKeySize(), "authenticity");
 	                local.validMAC = arguments.ct.validateMAC( local.authKey );
 	                return local.validMAC;
-	            } catch (Exception ex) {
+	            } catch (java.lang.Exception ex) {
 	                // Error on side of security. If this fails and can't verify MAC
 	                // assume it is invalid. Note that CipherText.toString() does not
 	                // print the actual ciphertext.

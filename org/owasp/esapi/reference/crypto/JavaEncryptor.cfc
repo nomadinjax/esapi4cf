@@ -495,7 +495,7 @@
 		        	break;
 		        }
 		        instance.logger.error(newJava("org.owasp.esapi.Logger").SECURITY_FAILURE, local.logMsg);
-		        throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(ESAPI=instance.ESAPI, cause=ex)); // Re-throw
+		        throwError(new cfesapi.org.owasp.esapi.errors.EncryptionException(instance.ESAPI, ex.message, ex.detail, ex)); // Re-throw
 		    }
 		    finally {
 		        if ( local.caughtException ) {
