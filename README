@@ -36,6 +36,9 @@ How:
 - Call the filters provided by CFESAPI to secure and authenticate each request.
 - See demos for examples
 
+Tips:
+- You can determine whether unlimited strength crypto is installed by running: /cfesapi/test/org/owasp/esapi/reference/crypto/CryptoPolicy.cfm
+
 Known Issues:
 - Windows Executor tests are finally working! - Unix Executor has not been tested - NEED TESTER!
 - When you receive Unauthorized msg in FBA Demo app, the Logout link does nothing - CAUSE: authorization check is before the logout check
@@ -62,7 +65,7 @@ Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 8 failures + 3 errors + 265 successes (approx 40-50s)
+- 9 failures + 3 errors + 264 successes (approx 40-50s)
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar
