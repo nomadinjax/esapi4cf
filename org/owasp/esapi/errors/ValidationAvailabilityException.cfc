@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,22 +12,22 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-component ValidationAvailabilityException extends="ValidationException" {
+ */ --->
+<cfcomponent displayname="ValidationAvailabilityException" extends="ValidationException" output="false">
 
-	/**
-	 * Create a new ValidationException
-	 * @param userMessage
-	 *            the message to display to users
-	 * @param logMessage
-	 *               the message logged
-	 * @param cause
-	 *               the cause
-	 */
+	<cffunction access="public" returntype="ValidationAvailabilityException" name="init" output="false"
+	            hint="Create a new ValidationException">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument type="String" name="userMessage" hint="the message to display to users"/>
+		<cfargument type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
 	
-	public ValidationAvailabilityException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
-		super.init(argumentCollection=arguments);
-		return this;
-	}
+		<cfscript>
+			super.init(argumentCollection=arguments);
+			return this;
+		</cfscript>
+		
+	</cffunction>
 	
-}
+
+</cfcomponent>

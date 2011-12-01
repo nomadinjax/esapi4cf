@@ -1,16 +1,16 @@
 <!---
 	/**
 	* OWASP Enterprise Security API (ESAPI)
-	* 
+	*
 	* This file is part of the Open Web Application Security Project (OWASP)
 	* Enterprise Security API (ESAPI) project. For details, please see
 	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
 	*
 	* Copyright (c) 2011 - The OWASP Foundation
-	* 
+	*
 	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
 	* LICENSE before you use, modify, and/or redistribute this software.
-	* 
+	*
 	* @author Damon Miller
 	* @created 2011
 	*/
@@ -45,7 +45,7 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpSession" name="changeSessionIdentifier" output="false" hint="Invalidate the existing session after copying all of its contents to a newly created session with a new session id. Note that this is different from logging out and creating a new session identifier that does not contain the existing session contents. Care should be taken to use this only when the existing session does not contain hazardous contents.">
+	<cffunction access="public" name="changeSessionIdentifier" output="false" hint="Invalidate the existing session after copying all of its contents to a newly created session with a new session id. Note that this is different from logging out and creating a new session identifier that does not contain the existing session contents. Care should be taken to use this only when the existing session does not contain hazardous contents.">
 		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false">
 	</cffunction>
 
@@ -95,11 +95,11 @@
 	</cffunction>
 
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpServletRequest" name="getCurrentRequest" output="false" hint="Retrieves the current HttpServletRequest">
+	<cffunction access="public" name="getCurrentRequest" output="false" hint="Retrieves the current HttpServletRequest">
 	</cffunction>
 
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpServletResponse" name="getCurrentResponse" output="false" hint="Retrieves the current HttpServletResponse">
+	<cffunction access="public" name="getCurrentResponse" output="false" hint="Retrieves the current HttpServletResponse">
 	</cffunction>
 
 
@@ -129,8 +129,8 @@
 
 
 	<cffunction access="public" returntype="void" name="killCookie" output="false" hint="Kills the specified cookie by setting a new cookie that expires immediately. Note that this method does not delete new cookies that are being set by the application for this response.">
-		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" required="false">
-		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" required="false">
+		<cfargument name="request" required="false">
+		<cfargument name="response" required="false">
 		<cfargument type="String" name="name" required="true">
 	</cffunction>
 

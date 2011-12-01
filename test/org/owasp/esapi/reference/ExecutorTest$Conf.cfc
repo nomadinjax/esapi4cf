@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,29 +12,43 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-component Conf extends="cfesapi.test.org.owasp.esapi.SecurityConfigurationWrapper" {
-	instance.allowedExes = "";
-	instance.workingDir = "";
-
-	public ExecutorTest$Conf function init(required cfesapi.org.owasp.esapi.SecurityConfiguration orig, required Array allowedExes, required workingDir) {
-		super.init(arguments.orig);
-		instance.allowedExes = arguments.allowedExes;
-		instance.workingDir = arguments.workingDir;
+ */ --->
+<cfcomponent displayname="Conf" extends="cfesapi.test.org.owasp.esapi.SecurityConfigurationWrapper" output="false">
 	
-		return this;
-	}
+	<cfscript>
+		instance.allowedExes = "";
+		instance.workingDir = "";
+	</cfscript>
 	
-	// @Override
+	<cffunction access="public" returntype="ExecutorTest$Conf" name="init" output="false">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.SecurityConfiguration" name="orig"/>
+		<cfargument required="true" type="Array" name="allowedExes"/>
+		<cfargument required="true" name="workingDir"/>
 	
-	public Array function getAllowedExecutables() {
-		return instance.allowedExes;
-	}
+		<cfscript>
+			super.init(arguments.orig);
+			instance.allowedExes = arguments.allowedExes;
+			instance.workingDir = arguments.workingDir;
+		
+			return this;
+		</cfscript>
+		
+	</cffunction>
 	
-	// @Override
+	<cffunction access="public" returntype="Array" name="getAllowedExecutables" output="false">
+		
+		<cfscript>
+			return instance.allowedExes;
+		</cfscript>
+		
+	</cffunction>
 	
-	public function getWorkingDirectory() {
-		return instance.workingDir;
-	}
+	<cffunction access="public" name="getWorkingDirectory" output="false">
+		
+		<cfscript>
+			return instance.workingDir;
+		</cfscript>
+		
+	</cffunction>
 	
-}
+</cfcomponent>

@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,15 +12,19 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-component  {
+ */ --->
+<cfcomponent output="false">
 
-	// CFESAPI only requires that sessionManagement be on
-	this.name = "CFESAPITestingSuite" & hash(getCurrentTemplatePath());
-	this.sessionManagement = true;
-	this.sessionTimeout = createTimeSpan(0, 0, 30, 0);
+	<cfscript>
+		// CFESAPI only requires that sessionManagement be on
+		this.name = "CFESAPITestingSuite" & hash(getCurrentTemplatePath());
+		this.sessionManagement = true;
+		this.sessionTimeout = createTimeSpan(0, 0, 30, 0);
+	
+		// CFESAPI does not use CFID/CFTOKEN
+		this.clientManagement = false;
+		this.setClientCookies = false;
+	</cfscript>
+	
 
-	// CFESAPI does not use CFID/CFTOKEN
-	this.clientManagement = false;
-	this.setClientCookies = false;
-}
+</cfcomponent>

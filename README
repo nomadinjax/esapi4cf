@@ -9,9 +9,10 @@ https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdF
 *** SETUP/USAGE ***
 
 Setup:
-1. The cfesapi folder should sit at the webroot level.
-2. Copy /cfesapi/esapi/esapi-2.0.1.jar and selected files from /cfesapi/esapi/libs/ to your lib folder (see compatibility below).
-3. Restart ColdFusion.
+1. Ensure that J2EE session variables be enabled! You will not be able to authenticate if this is disabled.
+2. The cfesapi folder should sit at the webroot level.
+3. Copy /cfesapi/esapi/esapi-2.0.1.jar and selected files from /cfesapi/esapi/libs/ to your lib folder (see compatibility below).
+4. Restart ColdFusion.
 NOTE: there are folders included with CFESAPI that you will want to exclude from your production environment
 
 Tests:
@@ -39,33 +40,26 @@ How:
 Tips:
 - You can determine whether unlimited strength crypto is installed by running: /cfesapi/test/org/owasp/esapi/reference/crypto/CryptoPolicy.cfm
 
-Known Issues:
+Todo:
 - Windows Executor tests are finally working! - Unix Executor has not been tested - NEED TESTER!
-- When you receive Unauthorized msg in FBA Demo app, the Logout link does nothing - CAUSE: authorization check is before the logout check
-- FBA Demo app does not persist user after initial login (Railo only) - CAUSE: unknown
+- modification of JSESSIONID cookie not working for HttpOnly, Secure, and reset (killCookie) - fix this! - this causes problems when the J2EE session expires; if killCookie worked would resolve this - right now, you have manually delete the JSESSIONID cookie from browser to get around this
+- AccessReferenceMap interface, implementing components, and tests
+- Web Application Firewall (WAF) - none of this currently exists
+- determine better way to implement Filters
 - What to do about version conflicts with JAR's?  Solution: add version object under ESAPI storing required versions and actuals??? Log issues?
+- Railo 3.3 compatibility
+
+Known Issues:
+- When you receive Unauthorized msg in FBA Demo app, the Logout link does nothing - CAUSE: authorization check is before the logout check
 
 
 *** COMPATIBILITY ***
 
 **************************
-* Adobe ColdFusion 9.0.1 *
-**************************
-MXUnit Test Results
- - 9 failures + 2 errors + 265 successes (approx 65-75s)
-
-Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
-- ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
-- antisamy.jar
-- batik-css.jar
-- batik-util.jar
-- commons-configuration.jar
-
-**************************
 * Railo ColdFusion 3.2.3 *
 **************************
 MXUnit Test Results
-- 9 failures + 3 errors + 264 successes (approx 40-50s)
+- 10 failures + 1 errors + 264 successes (55-65s)
 
 Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - ESAPI.jar
@@ -76,3 +70,33 @@ Dependencies (place in [webroot]\WEB-INF\railo\lib)
 - commons-configuration.jar
 - nekohtml.jar
 - xercesImpl.jar
+
+**************************
+* Adobe ColdFusion 9.0.1 *
+**************************
+MXUnit Test Results
+ - 10 failures + 0 errors + 265 successes (60-70s)
+
+Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
+- ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
+- antisamy.jar
+- batik-css.jar
+- batik-util.jar
+- commons-configuration.jar
+
+**************************
+* Adobe ColdFusion 8.0.1 *
+**************************
+MXUnit Test Results
+ - 9 failures + 1 errors + 265 successes (70-80s)
+
+Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
+- ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
+- antisamy.jar
+- batik-css.jar
+- batik-util.jar
+- commons-beanutils.jar
+- commons-collections.jar (ACF8 has 2.1 but 3.2 is required)
+- commons-configuration.jar
+- commons-lang.jar
+- nekohtml.jar

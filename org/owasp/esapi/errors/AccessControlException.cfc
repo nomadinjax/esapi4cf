@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,24 +12,22 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-/**
- * An AccessControlException should be thrown when a user attempts to access a
- * resource that they are not authorized for.
- */
-component AccessControlException extends="EnterpriseSecurityException" {
+ */ --->
+<cfcomponent displayname="AccessControlException" extends="EnterpriseSecurityException" output="false" hint="An AccessControlException should be thrown when a user attempts to access a resource that they are not authorized for.">
 
-	/**
-	 * Instantiates a new access control exception.
-	 * 
-	 * @param userMessage the message displayed to the user
-	 * @param logMessage the message logged
-	 * @param cause the root cause
-	 */
+	<cffunction access="public" returntype="AccessControlException" name="init" output="false"
+	            hint="Instantiates a new access control exception.">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument type="String" name="userMessage" hint="the message displayed to the user"/>
+		<cfargument type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the root cause"/>
 	
-	public AccessControlException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
-		super.init(argumentCollection=arguments);
-		return this;
-	}
+		<cfscript>
+			super.init(argumentCollection=arguments);
+			return this;
+		</cfscript>
+		
+	</cffunction>
 	
-}
+
+</cfcomponent>

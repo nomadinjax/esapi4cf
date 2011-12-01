@@ -1,73 +1,73 @@
 <cfscript>
 	currentUser = ESAPI().authenticator().getCurrentUser();
-</cfscript> 
+</cfscript>
 <cfoutput>
 	<ul>
 		<li>
-			AccountId: #encodeForHTML(currentUser.getAccountId())# 
+			AccountId: #encodeForHTML(currentUser.getAccountId())#
 		</li>
 		<li>
-			AccountName: #encodeForHTML(currentUser.getAccountName())# 
+			AccountName: #encodeForHTML(currentUser.getAccountName())#
 		</li>
 		<li>
-			CSRFToken: #encodeForHTML(currentUser.getCSRFToken())# 
+			CSRFToken: #encodeForHTML(currentUser.getCSRFToken())#
 		</li>
 		<li>
-			ExpirationTime: #encodeForHTML(currentUser.getExpirationTime())# 
+			ExpirationTime: #encodeForHTML(currentUser.getExpirationTime())#
 		</li>
 		<li>
-			FailedLoginCount: #encodeForHTML(currentUser.getFailedLoginCount())# 
+			FailedLoginCount: #encodeForHTML(currentUser.getFailedLoginCount())#
 		</li>
 		<li>
-			LastFailedLoginTime: #encodeForHTML(currentUser.getLastFailedLoginTime())# 
+			LastFailedLoginTime: #encodeForHTML(currentUser.getLastFailedLoginTime())#
 		</li>
 		<li>
-			LastHostAddress: #encodeForHTML(currentUser.getLastHostAddress())# 
+			LastHostAddress: #encodeForHTML(currentUser.getLastHostAddress())#
 		</li>
 		<li>
-			LastLoginTime: #encodeForHTML(currentUser.getLastLoginTime())# 
+			LastLoginTime: #encodeForHTML(currentUser.getLastLoginTime())#
 		</li>
 		<li>
-			LastPasswordChangeTime: #encodeForHTML(currentUser.getLastPasswordChangeTime())# 
+			LastPasswordChangeTime: #encodeForHTML(currentUser.getLastPasswordChangeTime())#
 		</li>
 		<li>
-			Roles: #encodeForHTML(arrayToList(currentUser.getRoles()))# 
+			Roles: #encodeForHTML(arrayToList(currentUser.getRoles()))#
 		</li>
 		<li>
-			ScreenName: #encodeForHTML(currentUser.getScreenName())# 
+			ScreenName: #encodeForHTML(currentUser.getScreenName())#
 		</li>
 		<li>
-			isAnonymous: #encodeForHTML(currentUser.isAnonymous())# 
+			isAnonymous: #encodeForHTML(currentUser.isAnonymous())#
 		</li>
 		<li>
-			isEnabled: #encodeForHTML(currentUser.isEnabled())# 
+			isEnabled: #encodeForHTML(currentUser.isEnabled())#
 		</li>
 		<li>
-			isExpired: #encodeForHTML(currentUser.isExpired())# 
+			isExpired: #encodeForHTML(currentUser.isExpired())#
 		</li>
 		<li>
-			isInRole(user): #encodeForHTML(currentUser.isInRole("user"))# 
+			isInRole(user): #encodeForHTML(currentUser.isInRole("user"))#
 		</li>
 		<li>
-			isInRole(admin): #encodeForHTML(currentUser.isInRole("admin"))# 
+			isInRole(admin): #encodeForHTML(currentUser.isInRole("admin"))#
 		</li>
 		<li>
-			isLocked: #encodeForHTML(currentUser.isLocked())# 
+			isLocked: #encodeForHTML(currentUser.isLocked())#
 		</li>
 		<li>
-			isLoggedIn: #encodeForHTML(currentUser.isLoggedIn())# 
+			isLoggedIn: #encodeForHTML(currentUser.isLoggedIn())#
 		</li>
 		<li>
-			isSessionAbsoluteTimeout: #encodeForHTML(currentUser.isSessionAbsoluteTimeout())# 
+			isSessionAbsoluteTimeout: #encodeForHTML(currentUser.isSessionAbsoluteTimeout())#
 		</li>
 		<li>
-			isSessionTimeout: #encodeForHTML(currentUser.isSessionTimeout())# 
+			isSessionTimeout: #encodeForHTML(currentUser.isSessionTimeout())#
 		</li>
 		<li>
-			toString: #encodeForHTML(currentUser.toString())# 
+			toStringESAPI: #encodeForHTML(currentUser.toStringESAPI())#
 		</li>
 		<li>
-			Locale: #encodeForHTML(currentUser.getLocale())# 
+			LocaleESAPI: #encodeForHTML(currentUser.getLocaleESAPI())#
 		</li>
 	</ul>
 </cfoutput>

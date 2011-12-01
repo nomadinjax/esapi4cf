@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,27 +12,38 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-component ReadThread extends="cfesapi.org.owasp.esapi.lang.Thread" {
-	this.exception = "";
-	instance.stream = "";
-	instance.buffer = "";
-
-	public DefaultExecutor$ReadThread function init(required stream, required buffer) {
-		instance.stream = arguments.stream;
-		instance.buffer = arguments.buffer;
-		return this;
-	}
+ */ --->
+<cfcomponent displayname="ReadThread" extends="cfesapi.org.owasp.esapi.lang.Thread" output="false">
 	
-	//@Override
+	<cfscript>
+		this.exception = "";
+		instance.stream = "";
+		instance.buffer = "";
+	</cfscript>
 	
-	public void function run() {
-		try {
-			readStream(instance.stream, instance.buffer);
-		}
-		catch(java.io.IOException e) {
-			this.exception = e;
-		}
-	}
+	<cffunction access="public" returntype="DefaultExecutor$ReadThread" name="init" output="false">
+		<cfargument required="true" name="stream"/>
+		<cfargument required="true" name="buffer"/>
 	
-}
+		<cfscript>
+			instance.stream = arguments.stream;
+			instance.buffer = arguments.buffer;
+			return this;
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="void" name="run" output="false">
+		
+		<cfscript>
+			try {
+				readStream(instance.stream, instance.buffer);
+			}
+			catch(java.io.IOException e) {
+				this.exception = e;
+			}
+		</cfscript>
+		
+	</cffunction>
+	
+</cfcomponent>

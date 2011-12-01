@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,639 +12,574 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-/**
- * Simple wrapper implementation of {@link SecurityConfiguration}. 
- * This allows for easy subclassing and property fixups for unit tests.
- *
- * Note that there are some compilers have issues with Override
- * attributes on methods implementing a interface method with some
- * compilers. Technically Override on such methods is a 1.6 feature so
- * they are commented out here.
- */
-component SecurityConfigurationWrapper implements="cfesapi.org.owasp.esapi.SecurityConfiguration" {
-
-	instance.wrapped = "";
-
-	/**
-	 * Constructor wrapping the given configuration.
-	 * @param wrapped The configuration to wrap.
-	 */
+ */ --->
+<cfcomponent displayname="SecurityConfigurationWrapper" implements="cfesapi.org.owasp.esapi.SecurityConfiguration" output="false" hint="Simple wrapper implementation of {@link SecurityConfiguration}. This allows for easy subclassing and property fixups for unit tests. Note that there are some compilers have issues with Override attributes on methods implementing a interface method with some compilers. Technically Override on such methods is a 1.6 feature so they are commented out here.">
 	
-	public SecurityConfigurationWrapper function init(required cfesapi.org.owasp.esapi.SecurityConfiguration wrapped) {
-		instance.wrapped = arguments.wrapped;
+	<cfscript>
+		instance.wrapped = "";
+	</cfscript>
+	
+	<cffunction access="public" returntype="SecurityConfigurationWrapper" name="init" output="false"
+	            hint="Constructor wrapping the given configuration.">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.SecurityConfiguration" name="wrapped" hint="The configuration to wrap."/>
+	
+		<cfscript>
+			instance.wrapped = arguments.wrapped;
 		
-		return this;
-	}
-	
-	/**
-	 * Access the wrapped configuration.
-	 * @return The wrapped configuration.
-	 */
-	
-	public SecurityConfiguration function getWrappedSecurityConfiguration() {
-		return instance.wrapped;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getApplicationName() {
-		return instance.wrapped.getApplicationName();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getLogImplementation() {
-		return instance.wrapped.getLogImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getAuthenticationImplementation() {
-		return instance.wrapped.getAuthenticationImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getEncoderImplementation() {
-		return instance.wrapped.getEncoderImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getAccessControlImplementation() {
-		return instance.wrapped.getAccessControlImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getIntrusionDetectionImplementation() {
-		return instance.wrapped.getIntrusionDetectionImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getRandomizerImplementation() {
-		return instance.wrapped.getRandomizerImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getEncryptionImplementation() {
-		return instance.wrapped.getEncryptionImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getValidationImplementation() {
-		return instance.wrapped.getValidationImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public function getValidationPattern(required String key) {
-		return instance.wrapped.getValidationPattern(arguments.key);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getExecutorImplementation() {
-		return instance.wrapped.getExecutorImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getHTTPUtilitiesImplementation() {
-		return instance.wrapped.getHTTPUtilitiesImplementation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public binary function getMasterKey() {
-		return instance.wrapped.getMasterKey();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public function getUploadDirectory() {
-		return instance.wrapped.getUploadDirectory();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public function getUploadTempDirectory() {
-		return instance.wrapped.getUploadTempDirectory();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getEncryptionKeyLength() {
-		return instance.wrapped.getEncryptionKeyLength();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public binary function getMasterSalt() {
-		return instance.wrapped.getMasterSalt();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public Array function getAllowedExecutables() {
-		return instance.wrapped.getAllowedExecutables();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public Array function getAllowedFileExtensions() {
-		return instance.wrapped.getAllowedFileExtensions();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getAllowedFileUploadSize() {
-		return instance.wrapped.getAllowedFileUploadSize();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getPasswordParameterName() {
-		return instance.wrapped.getPasswordParameterName();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getUsernameParameterName() {
-		return instance.wrapped.getUsernameParameterName();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getEncryptionAlgorithm() {
-		return instance.wrapped.getEncryptionAlgorithm();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getCipherTransformation() {
-		return instance.wrapped.getCipherTransformation();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function setCipherTransformation(required String cipherXform) {
-		return instance.wrapped.setCipherTransformation(arguments.cipherXform);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function useMACforCipherText() {
-		return instance.wrapped.useMACforCipherText();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function overwritePlainText() {
-		return instance.wrapped.overwritePlainText();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getIVType() {
-		return instance.wrapped.getIVType();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getFixedIV() {
-		return instance.wrapped.getFixedIV();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getHashAlgorithm() {
-		return instance.wrapped.getHashAlgorithm();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getHashIterations() {
-		return instance.wrapped.getHashIterations();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getCharacterEncoding() {
-		return instance.wrapped.getCharacterEncoding();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getAllowMultipleEncoding() {
-		return instance.wrapped.getAllowMultipleEncoding();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getAllowMixedEncoding() {
-		return instance.wrapped.getAllowMixedEncoding();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public Array function getDefaultCanonicalizationCodecs() {
-		return instance.wrapped.getDefaultCanonicalizationCodecs();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getDigitalSignatureAlgorithm() {
-		return instance.wrapped.getDigitalSignatureAlgorithm();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getDigitalSignatureKeyLength() {
-		return instance.wrapped.getDigitalSignatureKeyLength();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getRandomAlgorithm() {
-		return instance.wrapped.getRandomAlgorithm();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getAllowedLoginAttempts() {
-		return instance.wrapped.getAllowedLoginAttempts();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getMaxOldPasswordHashes() {
-		return instance.wrapped.getMaxOldPasswordHashes();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public function getQuota(required String eventName) {
-		return instance.wrapped.getQuota(arguments.eventName);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public function getResourceFile(required String filename) {
-		return instance.wrapped.getResourceFile(arguments.filename);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getForceHttpOnlySession() {
-		return instance.wrapped.getForceHttpOnlySession();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getForceSecureSession() {
-		return instance.wrapped.getForceSecureSession();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getForceHttpOnlyCookies() {
-		return instance.wrapped.getForceHttpOnlyCookies();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getForceSecureCookies() {
-		return instance.wrapped.getForceSecureCookies();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getMaxHttpHeaderSize() {
-		return instance.wrapped.getMaxHttpHeaderSize();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public function getResourceStream(required String filename) throws IOException {
-		return instance.wrapped.getResourceStream(arguments.filename);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public void function setResourceDirectory(required String dir) {
-		instance.wrapped.setResourceDirectory(arguments.dir);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getResponseContentType() {
-		return instance.wrapped.getResponseContentType();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getHttpSessionIdName() {
-		return instance.wrapped.getHttpSessionIdName();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getRememberTokenDuration() {
-		return instance.wrapped.getRememberTokenDuration();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getSessionIdleTimeoutLength() {
-		return instance.wrapped.getSessionIdleTimeoutLength();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getSessionAbsoluteTimeoutLength() {
-		return instance.wrapped.getSessionAbsoluteTimeoutLength();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getLogEncodingRequired() {
-		return instance.wrapped.getLogEncodingRequired();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getLogApplicationName() {
-		return instance.wrapped.getLogApplicationName();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getLogServerIP() {
-		return instance.wrapped.getLogServerIP();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getLogLevel() {
-		return instance.wrapped.getLogLevel();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getLogFileName() {
-		return instance.wrapped.getLogFileName();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public numeric function getMaxLogFileSize() {
-		return instance.wrapped.getMaxLogFileSize();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public function getWorkingDirectory() {
-		return instance.wrapped.getWorkingDirectory();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public Array function getAdditionalAllowedCipherModes() {
-		return instance.wrapped.getAdditionalAllowedCipherModes();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public Array function getCombinedCipherModes() {
-		return instance.wrapped.getCombinedCipherModes();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	
-	public String function getPreferredJCEProvider() {
-		return instance.wrapped.getPreferredJCEProvider();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public boolean function getDisableIntrusionDetection() {
-		return instance.wrapped.getDisableIntrusionDetection();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	// @Override
-	
-	public String function getKDFPseudoRandomFunction() {
-		return instance.wrapped.getKDFPseudoRandomFunction();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	
-	public boolean function getLenientDatesAccepted() {
-		return instance.wrapped.getLenientDatesAccepted();
-	}
-	
-}
+			return this;
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="SecurityConfiguration" name="getWrappedSecurityConfiguration" output="false"
+	            hint="Access the wrapped configuration. The wrapped configuration.">
+		
+		<cfscript>
+			return instance.wrapped;
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getApplicationName" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getApplicationName();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getLogImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getLogImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getAuthenticationImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAuthenticationImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getEncoderImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getEncoderImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getAccessControlImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAccessControlImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getIntrusionDetectionImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getIntrusionDetectionImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getRandomizerImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getRandomizerImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getEncryptionImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getEncryptionImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getValidationImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getValidationImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" name="getValidationPattern" output="false">
+		<cfargument required="true" type="String" name="key"/>
+	
+		<cfscript>
+			return instance.wrapped.getValidationPattern(arguments.key);
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getExecutorImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getExecutorImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getHTTPUtilitiesImplementation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getHTTPUtilitiesImplementation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="binary" name="getMasterKey" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getMasterKey();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" name="getUploadDirectory" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getUploadDirectory();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" name="getUploadTempDirectory" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getUploadTempDirectory();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getEncryptionKeyLength" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getEncryptionKeyLength();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="binary" name="getMasterSalt" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getMasterSalt();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="Array" name="getAllowedExecutables" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAllowedExecutables();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="Array" name="getAllowedFileExtensions" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAllowedFileExtensions();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getAllowedFileUploadSize" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAllowedFileUploadSize();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getPasswordParameterName" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getPasswordParameterName();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getUsernameParameterName" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getUsernameParameterName();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getEncryptionAlgorithm" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getEncryptionAlgorithm();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getCipherTransformation" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getCipherTransformation();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="setCipherTransformation" output="false">
+		<cfargument required="true" type="String" name="cipherXform"/>
+	
+		<cfscript>
+			return instance.wrapped.setCipherTransformation(arguments.cipherXform);
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="useMACforCipherText" output="false">
+		
+		<cfscript>
+			return instance.wrapped.useMACforCipherText();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="overwritePlainText" output="false">
+		
+		<cfscript>
+			return instance.wrapped.overwritePlainText();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getIVType" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getIVType();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getFixedIV" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getFixedIV();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getHashAlgorithm();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getHashIterations" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getHashIterations();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getCharacterEncoding();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getAllowMultipleEncoding" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAllowMultipleEncoding();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getAllowMixedEncoding" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAllowMixedEncoding();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="Array" name="getDefaultCanonicalizationCodecs" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getDefaultCanonicalizationCodecs();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getDigitalSignatureAlgorithm();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getDigitalSignatureKeyLength" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getDigitalSignatureKeyLength();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getRandomAlgorithm" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getRandomAlgorithm();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getAllowedLoginAttempts" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAllowedLoginAttempts();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getMaxOldPasswordHashes" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getMaxOldPasswordHashes();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" name="getQuota" output="false">
+		<cfargument required="true" type="String" name="eventName"/>
+	
+		<cfscript>
+			return instance.wrapped.getQuota(arguments.eventName);
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" name="getResourceFile" output="false">
+		<cfargument required="true" type="String" name="filename"/>
+	
+		<cfscript>
+			return instance.wrapped.getResourceFile(arguments.filename);
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getForceHttpOnlySession" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getForceHttpOnlySession();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getForceSecureSession" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getForceSecureSession();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getForceHttpOnlyCookies" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getForceHttpOnlyCookies();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getForceSecureCookies" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getForceSecureCookies();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getMaxHttpHeaderSize" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getMaxHttpHeaderSize();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" name="getResourceStream" output="false">
+		<cfargument required="true" type="String" name="filename"/>
+	
+		<cfscript>
+			return instance.wrapped.getResourceStream(arguments.filename);
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="void" name="setResourceDirectory" output="false">
+		<cfargument required="true" type="String" name="dir"/>
+	
+		<cfscript>
+			instance.wrapped.setResourceDirectory(arguments.dir);
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getResponseContentType" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getResponseContentType();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getHttpSessionIdName" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getHttpSessionIdName();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getRememberTokenDuration();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getSessionIdleTimeoutLength();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getSessionAbsoluteTimeoutLength" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getSessionAbsoluteTimeoutLength();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getLogEncodingRequired" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getLogEncodingRequired();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getLogApplicationName" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getLogApplicationName();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getLogServerIP" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getLogServerIP();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getLogLevel" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getLogLevel();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getLogFileName" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getLogFileName();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="numeric" name="getMaxLogFileSize" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getMaxLogFileSize();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" name="getWorkingDirectory" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getWorkingDirectory();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="Array" name="getAdditionalAllowedCipherModes" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getAdditionalAllowedCipherModes();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="Array" name="getCombinedCipherModes" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getCombinedCipherModes();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getPreferredJCEProvider" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getPreferredJCEProvider();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getDisableIntrusionDetection" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getDisableIntrusionDetection();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="String" name="getKDFPseudoRandomFunction" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getKDFPseudoRandomFunction();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="getLenientDatesAccepted" output="false">
+		
+		<cfscript>
+			return instance.wrapped.getLenientDatesAccepted();
+		</cfscript>
+		
+	</cffunction>
+	
+</cfcomponent>

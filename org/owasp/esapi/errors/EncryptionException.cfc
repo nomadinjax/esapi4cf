@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,27 +12,22 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-/**
- * An EncryptionException should be thrown for any problems related to
- * encryption, hashing, or digital signatures.
- */
-component EncryptionException extends="EnterpriseSecurityException" {
+ */ --->
+<cfcomponent displayname="EncryptionException" extends="EnterpriseSecurityException" output="false" hint="An EncryptionException should be thrown for any problems related to encryption, hashing, or digital signatures.">
 
-	/**
-	 * Instantiates a new EncryptionException.
-	 * 
-	 * @param userMessage
-	 *            the message displayed to the user
-	 * @param logMessage
-	 *               the message logged
-	 * @param cause
-	 *            the cause
-	 */
+	<cffunction access="public" returntype="EncryptionException" name="init" output="false"
+	            hint="Instantiates a new EncryptionException.">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument type="String" name="userMessage" hint="the message displayed to the user"/>
+		<cfargument type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
 	
-	public EncryptionException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
-		super.init(argumentCollection=arguments);
-		return this;
-	}
+		<cfscript>
+			super.init(argumentCollection=arguments);
+			return this;
+		</cfscript>
+		
+	</cffunction>
 	
-}
+
+</cfcomponent>

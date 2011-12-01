@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,26 +12,46 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-component ThreadLocalUser extends="cfesapi.org.owasp.esapi.lang.ThreadLocal" {
+ */ --->
+<cfcomponent displayname="ThreadLocalUser" extends="cfesapi.org.owasp.esapi.lang.ThreadLocal" output="false">
 
-	instance.ESAPI = "";
-
-	public AbstractAuthenticator$ThreadLocalUser function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI) {
-		instance.ESAPI = arguments.ESAPI;
-		return this;
-	}
+	<cfscript>
+		instance.ESAPI = "";
+	</cfscript>
 	
-	public cfesapi.org.owasp.esapi.User function initialValue() {
-		return new cfesapi.org.owasp.esapi.User$ANONYMOUS(instance.ESAPI);
-	}
+	<cffunction access="public" returntype="AbstractAuthenticator$ThreadLocalUser" name="init" output="false">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
 	
-	public cfesapi.org.owasp.esapi.User function getUser() {
-		return super.get();
-	}
+		<cfscript>
+			instance.ESAPI = arguments.ESAPI;
+			return this;
+		</cfscript>
+		
+	</cffunction>
 	
-	public void function setUser(required cfesapi.org.owasp.esapi.User newUser) {
-		super.set(arguments.newUser);
-	}
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="initialValue" output="false">
+		
+		<cfscript>
+			return newComponent("cfesapi.org.owasp.esapi.User$ANONYMOUS").init(instance.ESAPI);
+		</cfscript>
+		
+	</cffunction>
 	
-}
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="getUser" output="false">
+		
+		<cfscript>
+			return super.get();
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="public" returntype="void" name="setUser" output="false">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="newUser"/>
+	
+		<cfscript>
+			super.set(arguments.newUser);
+		</cfscript>
+		
+	</cffunction>
+	
+</cfcomponent>

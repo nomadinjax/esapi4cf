@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,25 +12,22 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-/**
- * An AuthenticationException should be thrown when anything goes wrong during
- * login or logout. They are also appropriate for any problems related to
- * identity management.
- */
-component AuthenticationAccountsException extends="AuthenticationException" {
+ */ --->
+<cfcomponent displayname="AuthenticationAccountsException" extends="AuthenticationException" output="false" hint="An AuthenticationException should be thrown when anything goes wrong during login or logout. They are also appropriate for any problems related to identity management.">
 
-	/**
-	 * Instantiates a new authentication exception.
-	 * 
-	 * @param userMessage the message displayed to the user
-	 * @param logMessage the message logged
-	 * @param cause the root cause
-	 */
+	<cffunction access="public" type="AuthenticationAccountsException" name="init" output="false"
+	            hint="Instantiates a new authentication exception.">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument type="String" name="userMessage" hint="the message displayed to the user"/>
+		<cfargument type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the root cause"/>
 	
-	public AuthenticationAccountsException function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, String userMessage, String logMessage, cause) {
-		super.init(argumentCollection=arguments);
-		return this;
-	}
+		<cfscript>
+			super.init(argumentCollection=arguments);
+			return this;
+		</cfscript>
+		
+	</cffunction>
 	
-}
+
+</cfcomponent>

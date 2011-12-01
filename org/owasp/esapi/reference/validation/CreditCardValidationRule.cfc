@@ -1,20 +1,20 @@
 <!---
-	/**
-	* OWASP Enterprise Security API (ESAPI)
-	* 
-	* This file is part of the Open Web Application Security Project (OWASP)
-	* Enterprise Security API (ESAPI) project. For details, please see
-	* <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
-	*
-	* Copyright (c) 2011 - The OWASP Foundation
-	* 
-	* The ESAPI is published by OWASP under the BSD license. You should read and accept the
-	* LICENSE before you use, modify, and/or redistribute this software.
-	* 
-	* @author Damon Miller
-	* @created 2011
-	*/
-	--->
+    /**
+    * OWASP Enterprise Security API (ESAPI)
+    *
+    * This file is part of the Open Web Application Security Project (OWASP)
+    * Enterprise Security API (ESAPI) project. For details, please see
+    * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+    *
+    * Copyright (c) 2011 - The OWASP Foundation
+    *
+    * The ESAPI is published by OWASP under the BSD license. You should read and accept the
+    * LICENSE before you use, modify, and/or redistribute this software.
+    *
+    * @author Damon Miller
+    * @created 2011
+    */
+    --->
 <cfcomponent extends="BaseValidationRule" output="false">
 
 	<cfscript>
@@ -25,15 +25,17 @@
 
 		instance.ccrule = "";
 	</cfscript>
- 
-	<cffunction access="public" returntype="CreditCardValidationRule" name="init" output="false" hint="Creates a CreditCardValidator using the rule found in security configuration">
-		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true">
-		<cfargument type="String" name="typeName" required="true">
-		<cfargument type="cfesapi.org.owasp.esapi.Encoder" name="encoder" required="true">
-		<cfargument type="StringValidationRule" name="validationRule" required="false">
+
+	<cffunction access="public" returntype="CreditCardValidationRule" name="init" output="false"
+	            hint="Creates a CreditCardValidator using the rule found in security configuration">
+		<cfargument type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI" required="true"/>
+		<cfargument type="String" name="typeName" required="true"/>
+		<cfargument type="cfesapi.org.owasp.esapi.Encoder" name="encoder" required="true"/>
+		<cfargument type="StringValidationRule" name="validationRule" required="false"/>
+
 		<cfscript>
-			super.init( arguments.ESAPI, arguments.typeName, arguments.encoder );
-			if (structKeyExists(arguments, "validationRule")) {
+			super.init(arguments.ESAPI, arguments.typeName, arguments.encoder);
+			if(structKeyExists(arguments, "validationRule")) {
 				instance.ccrule = arguments.validationRule;
 			}
 			else {
@@ -41,62 +43,72 @@
 			}
 
 			return this;
-		</cfscript> 
-	</cffunction>
+		</cfscript>
 
+	</cffunction>
 
 	<cffunction access="private" returntype="StringValidationRule" name="readDefaultCreditCardRule" output="false">
+		<cfset var local = {}/>
+
 		<cfscript>
-			local.p = instance.ESAPI.securityConfiguration().getValidationPattern( instance.CREDIT_CARD_VALIDATOR_KEY );
-			local.ccr = new StringValidationRule( instance.ESAPI, "ccrule", instance.encoder, local.p.pattern() );
+			local.p = instance.ESAPI.securityConfiguration().getValidationPattern(instance.CREDIT_CARD_VALIDATOR_KEY);
+			local.ccr = newComponent("cfesapi.org.owasp.esapi.reference.validation.StringValidationRule").init(instance.ESAPI, "ccrule", instance.encoder, local.p.pattern());
 			local.ccr.setMaximumLength(getMaxCardLength());
-			local.ccr.setAllowNull( false );
+			local.ccr.setAllowNull(false);
 			return local.ccr;
-		</cfscript> 
+		</cfscript>
+
 	</cffunction>
 
-
 	<cffunction access="public" returntype="any" name="getValid" output="false">
-		<cfargument type="String" name="context" required="true">
-		<cfargument type="String" name="input" required="true">
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false">
+		<cfargument type="String" name="context" required="true"/>
+		<cfargument type="String" name="input" required="true"/>
+		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" required="false"/>
+
+		<cfset var local = {}/>
+
 		<cfscript>
-			if (structKeyExists(arguments, "errorList")) {
+			if(structKeyExists(arguments, "errorList")) {
 				return super.getValid(argumentCollection=arguments);
 			}
 
 			try {
 				// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-			    if ( newJava("org.owasp.esapi.StringUtilities").isEmpty(arguments.input) ) {
-					if (allowNull) {
+				if(newJava("org.owasp.esapi.StringUtilities").isEmpty(arguments.input)) {
+					if(instance.allowNull) {
 						return "";
 					}
-	       			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input credit card required", logMessage="Input credit card required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
-			    }
+					throwError(newComponent("cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Input credit card required", logMessage="Input credit card required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
+				}
 
-			   	local.canonical = instance.ccrule.getValid( arguments.context, arguments.input );
+				local.canonical = instance.ccrule.getValid(arguments.context, arguments.input);
 
-				if( ! validCreditCardFormat(local.canonical)) {
-	       			throwError(new cfesapi.org.owasp.esapi.errors.ValidationException( ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid credit card input", logMessage="Invalid credit card input: context=" & arguments.context, context=arguments.context ));
+				if(!validCreditCardFormat(local.canonical)) {
+					throwError(newComponent("cfesapi.org.owasp.esapi.errors.ValidationException").init(ESAPI=instance.ESAPI, userMessage=arguments.context & ": Invalid credit card input", logMessage="Invalid credit card input: context=" & arguments.context, context=arguments.context));
 				}
 
 				return local.canonical;
 			}
-			catch (cfesapi.org.owasp.esapi.errors.ValidationException e) {
-				throw(message=e.message, type=e.type);
+			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+				local.exception = {message=e.message, type=e.type};
+				throwError(local.exception);
 			}
-		</cfscript> 
+		</cfscript>
+
 	</cffunction>
 
+	<cffunction access="package" returntype="boolean" name="validCreditCardFormat" output="false"
+	            hint="Performs additional validation on the card nummber. This implementation performs Luhn algorithm checking">
+		<cfargument type="String" name="ccNum" required="true" hint="number to be validated"/>
 
-	<cffunction access="package" returntype="boolean" name="validCreditCardFormat" output="false" hint="Performs additional validation on the card nummber. This implementation performs Luhn algorithm checking">
-		<cfargument type="String" name="ccNum" required="true" hint="number to be validated">
+		<cfset var local = {}/>
+
 		<cfscript>
-		    local.digitsOnly = newJava("java.lang.StringBuilder").init();
+			local.digitsOnly = newComponent("cfesapi.org.owasp.esapi.lang.StringBuilder").init();
 			local.c = "";
-			for (local.i = 0; local.i < arguments.ccNum.length(); local.i++) {
+			for(local.i = 0; local.i < arguments.ccNum.length(); local.i++) {
 				local.c = arguments.ccNum.charAt(local.i);
-				if (newJava("java.lang.Character").isDigit(local.c)) {
+				if(newJava("java.lang.Character").isDigit(local.c)) {
 					local.digitsOnly.append(local.c);
 				}
 			}
@@ -106,15 +118,16 @@
 			local.addend = 0;
 			local.timesTwo = false;
 
-			for (local.i = local.digitsOnly.length() - 1; local.i >= 0; local.i--) {
+			for(local.i = local.digitsOnly.length() - 1; local.i >= 0; local.i--) {
 				// guaranteed to be an int
 				local.digit = newJava("java.lang.Integer").valueOf(local.digitsOnly.substring(local.i, local.i + 1));
-				if (local.timesTwo) {
+				if(local.timesTwo) {
 					local.addend = local.digit * 2;
-					if (local.addend > 9) {
+					if(local.addend > 9) {
 						local.addend -= 9;
 					}
-				} else {
+				}
+				else {
 					local.addend = local.digit;
 				}
 				local.sum += local.addend;
@@ -122,47 +135,52 @@
 			}
 
 			return local.sum % 10 == 0;
-		</cfscript> 
-	</cffunction>
+		</cfscript>
 
+	</cffunction>
 
 	<cffunction access="public" returntype="String" name="sanitize" output="false">
-		<cfargument type="String" name="context" required="true">
-		<cfargument type="String" name="input" required="true">
-		<cfscript>
-			return whitelist( arguments.input, newJava("org.owasp.esapi.EncoderConstants").CHAR_DIGITS );
-		</cfscript> 
-	</cffunction>
+		<cfargument type="String" name="context" required="true"/>
+		<cfargument type="String" name="input" required="true"/>
 
+		<cfscript>
+			return whitelist(arguments.input, newJava("org.owasp.esapi.EncoderConstants").CHAR_DIGITS);
+		</cfscript>
+
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setStringValidatorRule" output="false">
-		<cfargument type="cfesapi.org.owasp.esapi.reference.validation.StringValidationRule" name="ccrule" required="true" hint="the ccrule to set">
+		<cfargument type="cfesapi.org.owasp.esapi.reference.validation.StringValidationRule" name="ccrule" required="true" hint="the ccrule to set"/>
+
 		<cfscript>
 			instance.ccrule = arguments.ccrule;
-		</cfscript> 
-	</cffunction>
+		</cfscript>
 
+	</cffunction>
 
 	<cffunction access="public" returntype="StringValidationRule" name="getStringValidatorRule" output="false">
+
 		<cfscript>
 			return instance.ccrule;
-		</cfscript> 
-	</cffunction>
+		</cfscript>
 
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setMaxCardLength" output="false">
-		<cfargument type="numeric" name="maxCardLength" required="true" hint="the maxCardLength to set">
+		<cfargument type="numeric" name="maxCardLength" required="true" hint="the maxCardLength to set"/>
+
 		<cfscript>
 			instance.maxCardLength = arguments.maxCardLength;
-		</cfscript> 
-	</cffunction>
+		</cfscript>
 
+	</cffunction>
 
 	<cffunction access="public" returntype="numeric" name="getMaxCardLength" output="false">
+
 		<cfscript>
 			return instance.maxCardLength;
-		</cfscript> 
-	</cffunction>
+		</cfscript>
 
+	</cffunction>
 
 </cfcomponent>

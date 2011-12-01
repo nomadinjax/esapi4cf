@@ -1,4 +1,4 @@
-/**
+<!--- /**
  * OWASP Enterprise Security API (ESAPI)
  * 
  * This file is part of the Open Web Application Security Project (OWASP)
@@ -12,101 +12,118 @@
  * 
  * @author Damon Miller
  * @created 2011
- */
-component UnitTestSecurityConfiguration extends="cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration" {
+ */ --->
+<cfcomponent displayname="UnitTestSecurityConfiguration" extends="cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration">
 
-	public cfesapi.org.owasp.esapi.SecurityConfiguration function init(required cfesapi.org.owasp.esapi.ESAPI ESAPI, required cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration cfg) {
-		super.init(arguments.ESAPI, arguments.cfg.getESAPIProperties());
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.SecurityConfiguration" name="init" output="false">
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration" name="cfg"/>
 	
-		return this;
-	}
+		<cfscript>
+			super.init(arguments.ESAPI, arguments.cfg.getESAPIProperties());
+		
+			return this;
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-     * {@inheritDoc}
-     */
+	<cffunction access="public" returntype="void" name="setApplicationName" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setApplicationName(required String v) {
-		getESAPIProperties().setProperty(this.APPLICATION_NAME, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.APPLICATION_NAME, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setLogImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setLogImplementation(required String v) {
-		getESAPIProperties().setProperty(this.LOG_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.LOG_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setAuthenticationImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setAuthenticationImplementation(required String v) {
-		getESAPIProperties().setProperty(this.AUTHENTICATION_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.AUTHENTICATION_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setEncoderImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setEncoderImplementation(required String v) {
-		getESAPIProperties().setProperty(this.ENCODER_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.ENCODER_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setAccessControlImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setAccessControlImplementation(required String v) {
-		getESAPIProperties().setProperty(this.ACCESS_CONTROL_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.ACCESS_CONTROL_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setEncryptionImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setEncryptionImplementation(required String v) {
-		getESAPIProperties().setProperty(this.ENCRYPTION_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.ENCRYPTION_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setIntrusionDetectionImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setIntrusionDetectionImplementation(required String v) {
-		getESAPIProperties().setProperty(this.INTRUSION_DETECTION_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.INTRUSION_DETECTION_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setRandomizerImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setRandomizerImplementation(required String v) {
-		getESAPIProperties().setProperty(this.RANDOMIZER_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.RANDOMIZER_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setExecutorImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setExecutorImplementation(required String v) {
-		getESAPIProperties().setProperty(this.EXECUTOR_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.EXECUTOR_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setHTTPUtilitiesImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setHTTPUtilitiesImplementation(required String v) {
-		getESAPIProperties().setProperty(this.HTTP_UTILITIES_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.HTTP_UTILITIES_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	<cffunction access="public" returntype="void" name="setValidationImplementation" output="false">
+		<cfargument required="true" type="String" name="v"/>
 	
-	public void function setValidationImplementation(required String v) {
-		getESAPIProperties().setProperty(this.VALIDATOR_IMPLEMENTATION, arguments.v);
-	}
+		<cfscript>
+			getESAPIProperties().setProperty(this.VALIDATOR_IMPLEMENTATION, arguments.v);
+		</cfscript>
+		
+	</cffunction>
 	
-}
+</cfcomponent>
