@@ -20,7 +20,7 @@ Tests:
 - You can run the MXUnit tests using: /cfesapi/test/TestSuite.cfm
 
 Demos:
-- See the /cfesapi/demo/ for basic examples of implementation.
+- See the /cfesapi/demo/ for basic examples of implementation. It is a shell for adding your specific code to the existing methods.
 
 Implementation:
 - You can extend any of the default implementations to overwrite the methods you need
@@ -39,19 +39,6 @@ How:
 
 Tips:
 - You can determine whether unlimited strength crypto is installed by running: /cfesapi/test/org/owasp/esapi/reference/crypto/CryptoPolicy.cfm
-
-Todo:
-- Windows Executor tests are finally working! - Unix Executor has not been tested - NEED TESTER!
-- modification of JSESSIONID cookie not working for HttpOnly, Secure, and reset (killCookie) - fix this! - this causes problems when the J2EE session expires; if killCookie worked would resolve this - right now, you have manually delete the JSESSIONID cookie from browser to get around this
-- AccessReferenceMap interface, implementing components, and tests
-- Web Application Firewall (WAF) - none of this currently exists
-- determine better way to implement Filters
-- What to do about version conflicts with JAR's?  Solution: add version object under ESAPI storing required versions and actuals??? Log issues?
-- Railo 3.3 compatibility
-
-Known Issues:
-- When you receive Unauthorized msg in FBA Demo app, the Logout link does nothing - CAUSE: authorization check is before the logout check
-
 
 *** COMPATIBILITY ***
 
