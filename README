@@ -20,7 +20,7 @@ Tests:
 - You can run the MXUnit tests using: /cfesapi/test/TestSuite.cfm
 
 Demos:
-- See the /cfesapi/demo/ for basic examples of implementation. It is a shell for adding your specific code to the existing methods.
+- See the /cfesapi/demo/ for basic examples of implementation. **Be sure to have https setup else you can't login.**
 
 Implementation:
 - You can extend any of the default implementations to overwrite the methods you need
