@@ -1,26 +1,47 @@
-<!--- /**
+﻿<!---
  * OWASP Enterprise Security API (ESAPI)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2007 - The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Damon Miller
- * @created 2011
- */ --->
-<cfinterface displayname="User" extends="cfesapi.org.owasp.esapi.lang.Principal" hint="The User interface represents an application user or user account. There is quite a lot of information that an application must store for each user in order to enforce security properly. There are also many rules that govern authentication and identity management. A user account can be in one of several states. When first created, a User should be disabled, not expired, and unlocked. To start using the account, an administrator should enable the account. The account can be locked for a number of reasons, most commonly because they have failed login for too many times. Finally, the account can expire after the expiration date has been reached. The User must be enabled, not expired, and unlocked in order to pass authentication.">
+ * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
+ * @created 2007
+ --->
+<!---
+ * The User interface represents an application user or user account. There is quite a lot of information that an
+ * application must store for each user in order to enforce security properly. There are also many rules that govern
+ * authentication and identity management.
+ * <P>
+ * <img src="doc-files/Authenticator.jpg">
+ * <P>
+ * A user account can be in one of several states. When first created, a User should be disabled, not expired, and
+ * unlocked. To start using the account, an administrator should enable the account. The account can be locked for a
+ * number of reasons, most commonly because they have failed login for too many times. Finally, the account can expire
+ * after the expiration date has been reached. The User must be enabled, not expired, and unlocked in order to pass
+ * authentication.
+ *
+ * @author <a href="mailto:jeff.williams@aspectsecurity.com?subject=ESAPI question">Jeff Williams</a> at <a
+ * href="http://www.aspectsecurity.com">Aspect Security</a>
+ * @since June 1, 2007
+ --->
+<cfinterface extends="cfesapi.org.owasp.esapi.util.Principal">
+	<!---
+	import java.security.Principal;
+	import java.util.Date;
+	import java.util.HashSet;
+	import java.util.Set;
 
-	<cffunction access="public" name="getLocaleESAPI" output="false" hint="the locale"/>
+	import javax.servlet.http.HttpSession;
 
-	<cffunction access="public" returntype="void" name="setLocaleESAPI" output="false">
-		<cfargument required="true" name="locale" hint="the locale to set"/>
-
-	</cffunction>
+	import org.owasp.esapi.errors.AuthenticationException;
+	import org.owasp.esapi.errors.EncryptionException;
+	--->
 
 	<cffunction access="public" returntype="void" name="addRole" output="false"
 	            hint="Adds a role to this user's account.">
@@ -43,39 +64,56 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="disable" output="false"
-	            hint="Disable this user's account."/>
+	            hint="Disable this user's account.">
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="enable" output="false"
-	            hint="Enable this user's account."/>
+	            hint="Enable this user's account.">
+	</cffunction>
 
 	<cffunction access="public" returntype="numeric" name="getAccountId" output="false"
-	            hint="Gets this user's account id number."/>
+	            hint="Gets this user's account id number.">
+	</cffunction>
 
 	<cffunction access="public" returntype="String" name="getAccountName" output="false"
-	            hint="Gets this user's account name."/>
+	            hint="Gets this user's account name.">
+	</cffunction>
 
 	<cffunction access="public" returntype="String" name="getCSRFToken" output="false"
-	            hint="Gets the CSRF token for this user's current sessions."/>
+	            hint="Gets the CSRF token for this user's current sessions.">
+	</cffunction>
 
-	<cffunction access="public" name="getExpirationTime" output="false" hint="Returns the date that this user's account will expire."/>
+	<cffunction access="public" returntype="Date" name="getExpirationTime" output="false"
+	            hint="Returns the date that this user's account will expire.">
+	</cffunction>
 
 	<cffunction access="public" returntype="numeric" name="getFailedLoginCount" output="false"
-	            hint="Returns the number of failed login attempts since the last successful login for an account. This method is intended to be used as a part of the account lockout feature, to help protect against brute force attacks. However, the implementor should be aware that lockouts can be used to prevent access to an application by a legitimate user, and should consider the risk of denial of service."/>
+	            hint="Returns the number of failed login attempts since the last successful login for an account. This method is intended to be used as a part of the account lockout feature, to help protect against brute force attacks. However, the implementor should be aware that lockouts can be used to prevent access to an application by a legitimate user, and should consider the risk of denial of service.">
+	</cffunction>
 
 	<cffunction access="public" returntype="String" name="getLastHostAddress" output="false"
-	            hint="Returns the last host address used by the user. This will be used in any log messages generated by the processing of this request."/>
+	            hint="Returns the last host address used by the user. This will be used in any log messages generated by the processing of this request.">
+	</cffunction>
 
-	<cffunction access="public" name="getLastFailedLoginTime" output="false" hint="Returns the date of the last failed login time for a user. This date should be used in a message to users after a successful login, to notify them of potential attack activity on their account."/>
+	<cffunction access="public" returntype="Date" name="getLastFailedLoginTime" output="false"
+	            hint="Returns the date of the last failed login time for a user. This date should be used in a message to users after a successful login, to notify them of potential attack activity on their account.">
+	</cffunction>
 
-	<cffunction access="public" name="getLastLoginTime" output="false" hint="Returns the date of the last successful login time for a user. This date should be used in a message to users after a successful login, to notify them of potential attack activity on their account."/>
+	<cffunction access="public" returntype="Date" name="getLastLoginTime" output="false"
+	            hint="Returns the date of the last successful login time for a user. This date should be used in a message to users after a successful login, to notify them of potential attack activity on their account.">
+	</cffunction>
 
-	<cffunction access="public" name="getLastPasswordChangeTime" output="false" hint="Gets the date of user's last password change."/>
+	<cffunction access="public" returntype="Date" name="getLastPasswordChangeTime" output="false"
+	            hint="Gets the date of user's last password change.">
+	</cffunction>
 
 	<cffunction access="public" returntype="Array" name="getRoles" output="false"
-	            hint="Gets the roles assigned to a particular account."/>
+	            hint="Gets the roles assigned to a particular account.">
+	</cffunction>
 
 	<cffunction access="public" returntype="String" name="getScreenName" output="false"
-	            hint="Gets the screen name (alias) for the current user."/>
+	            hint="Gets the screen name (alias) for the current user.">
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="addSession" output="false"
 	            hint="Adds a session for this User.">
@@ -90,19 +128,24 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="Array" name="getSessions" output="false"
-	            hint="Returns the list of sessions associated with this User."/>
+	            hint="Returns the list of sessions associated with this User.">
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="incrementFailedLoginCount" output="false"
-	            hint="Increment failed login count."/>
+	            hint="Increment failed login count.">
+	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isAnonymous" output="false"
-	            hint="Checks if user is anonymous."/>
+	            hint="Checks if user is anonymous.">
+	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isEnabled" output="false"
-	            hint="Checks if this user's account is currently enabled."/>
+	            hint="Checks if this user's account is currently enabled.">
+	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isExpired" output="false"
-	            hint="Checks if this user's account is expired."/>
+	            hint="Checks if this user's account is expired.">
+	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isInRole" output="false"
 	            hint="Checks if this user's account is assigned a particular role.">
@@ -111,35 +154,37 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isLocked" output="false"
-	            hint="Checks if this user's account is locked."/>
+	            hint="Checks if this user's account is locked.">
+	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isLoggedIn" output="false"
-	            hint="Tests to see if the user is currently logged in."/>
+	            hint="Tests to see if the user is currently logged in.">
+	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionAbsoluteTimeout" output="false"
 	            hint="Tests to see if this user's session has exceeded the absolute time out based on ESAPI's configuration settings.">
-		<cfargument name="request"/>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionTimeout" output="false"
-	            hint="Tests to see if the user's session has timed out from inactivity based on ESAPI's configuration settings. A session may timeout prior to ESAPI's configuration setting due to the servlet container setting for session-timeout in web.xml.">
-		<cfargument name="request"/>
+	            hint="Tests to see if the user's session has timed out from inactivity based on ESAPI's configuration settings. A session may timeout prior to ESAPI's configuration setting due to the servlet container setting for session-timeout in web.xml. The following is an example of a web.xml session-timeout set for one hour. <session-config> <session-timeout>60</session-timeout> </session-config>">
 
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="lock" output="false"
-	            hint="Lock this user's account."/>
+	            hint="Lock this user's account.">
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="loginWithPassword" output="false"
 	            hint="Login with password.">
-		<cfargument name="request"/>
 		<cfargument required="true" type="String" name="password" hint="the password"/>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="logout" output="false"
-	            hint="Logout this user."/>
+	            hint="Logout this user.">
+
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="removeRole" output="false"
 	            hint="Removes a role from this user's account.">
@@ -148,7 +193,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="String" name="resetCSRFToken" output="false"
-	            hint="Returns a token to be used as a prevention against CSRF attacks. This token should be added to all links and forms. The application should verify that all requests contain the token, or they may have been generated by a CSRF attack. It is generally best to perform the check in a centralized location, either a filter or controller. See the verifyCSRFToken method."/>
+	            hint="Returns a token to be used as a prevention against CSRF attacks. This token should be added to all links and forms. The application should verify that all requests contain the token, or they may have been generated by a CSRF attack. It is generally best to perform the check in a centralized location, either a filter or controller. See the verifyCSRFToken method.">
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setAccountName" output="false"
 	            hint="Sets this user's account name.">
@@ -175,7 +221,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="unlock" output="false"
-	            hint="Unlock this user's account."/>
+	            hint="Unlock this user's account.">
+	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="verifyPassword" output="false"
 	            hint="Verify that the supplied password matches the password for this user. This method is typically used for 'reauthentication' for the most sensitive functions, such as transactions, changing email address, and changing other account information.">
@@ -207,6 +254,4 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Struct" name="getEventMap" output="false"
-	            hint="Returns the hashmap used to store security events for this user. Used by the IntrusionDetector."/>
 </cfinterface>

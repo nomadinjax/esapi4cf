@@ -1,0 +1,46 @@
+/*defaults*/
+body 	{background:#2765AF url('images/body_bg.jpg') repeat-x 0 0; color:#000000; margin:20px 0; padding:0; font-family:"Trebuchet MS", verdana, arial, "Times New Roman", serif; font-size:90%; }
+p		{margin:0; padding:0 0 15px 0; }
+a		{color:#000000; text-decoration:underline; }
+a:hover	{color:#225799; text-decoration:none;}
+
+
+/*structural elements*/
+body		{text-align=center}
+#container	{margin:0px auto; text-align:center; width:760px; }
+#holder		{width:100%; padding:5px 20px 15px 20px; background:#FFFFFF; text-align:left; }
+#logo		{border-bottom:1px solid #DADADA; margin: 0px 0px; padding:0px 0px 5px 0px; }
+#navigation	{padding:10px 0; }
+#header		{background:#DADADA url('images/header_home.jpg') no-repeat 10px 10px; padding:10px; height:200px; }
+#content	{float:left; width:490px; padding:20px 10px 0 0; line-height:160%; }
+#news		{float:right; width:250px; padding:20px 0; line-height:140%; text-align:justify; }
+.newsItem	{padding:20px 20px 5px 20px; background:#FEFFD5; border:1px solid #FFEB70; font-size:90%; margin-bottom:20px; }
+#footer		{clear:both; width:100%; font-size:80%; background:#DADADA; padding:20px; text-align:left; border-top:2px solid #2765AF; }
+#copyright	{float:right; }
+
+
+/*headings*/
+.newsItem h1	{color:#225799; margin:0 0 10px 0; padding:0; font-size:130%; font-weight:normal; }
+#content h1		{font-size:170%; font-weight:normal; line-height:130%; margin:0; padding:0 0 20px 0; }
+#logo h1		{font-weight:normal; font-size:170%; margin:0; padding:0; color:#225799; }
+
+
+/*navigation*/
+#navigation ul 		{margin:0; padding:0; }
+#navigation li 		{margin:0; padding:0; list-style:none; display:inline; }
+#navigation a		{color:#225799; padding:0 20px 0 0; text-decoration:none; }
+#navigation a:hover	{color:#000000; }
+
+#footer ul 		{margin:0; padding:0; }
+#footer li 		{margin:0; padding:0; list-style:none; display:inline; }
+#footer a		{color:#000000; font-weight:bold; padding:0 5px 0 0; text-decoration:underline; }
+#footer a:hover	{color:#000000; text-decoration:none; }
+
+
+/*shamelessly borrowed styles from http://www.positioniseverything.net/easyclearing.html*/
+.clearfix:after {content:"."; display:block; height:0; clear:both; visibility:hidden; }
+.clearfix {display:inline-block; }
+/* Hides from IE-mac \*/
+* html .clearfix {height:1%; }
+.clearfix {display:block; }
+/* End hide from IE-mac */

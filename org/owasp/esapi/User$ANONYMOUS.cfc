@@ -1,33 +1,17 @@
-<!--- /**
- * OWASP Enterprise Security API (ESAPI)
- *
- * This file is part of the Open Web Application Security Project (OWASP)
- * Enterprise Security API (ESAPI) project. For details, please see
- * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
- *
- * Copyright (c) 2011 - The OWASP Foundation
- *
- * The ESAPI is published by OWASP under the BSD license. You should read and accept the
- * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
- */ --->
-<cfcomponent displayname="ANONYMOUS" extends="cfesapi.org.owasp.esapi.lang.Object" implements="cfesapi.org.owasp.esapi.User" output="false">
+﻿<cfcomponent implements="User" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="The ANONYMOUS user is used to represent an unidentified user. Since there is always a real user, the ANONYMOUS user is better than using null to represent this.">
 
 	<cfscript>
 		instance.ESAPI = "";
-
 		instance.csrfToken = "";
-		instance.sessions = [];
-		instance.locale = "";
+		instance.sessions = {};
 	</cfscript>
 
-	<cffunction access="public" name="init" output="false">
+	<cffunction access="public" returntype="User$ANONYMOUS" name="init" output="false">
 		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
 			instance.ESAPI = arguments.ESAPI;
+
 			return this;
 		</cfscript>
 
@@ -37,7 +21,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -46,7 +30,7 @@
 		<cfargument required="true" type="Array" name="newRoles"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -57,7 +41,7 @@
 		<cfargument required="true" type="String" name="newPassword2"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -65,7 +49,7 @@
 	<cffunction access="public" returntype="void" name="disable" output="false">
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -73,7 +57,7 @@
 	<cffunction access="public" returntype="void" name="enable" output="false">
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -111,10 +95,10 @@
 
 	</cffunction>
 
-	<cffunction access="public" name="getExpirationTime" output="false">
+	<cffunction access="public" returntype="Date" name="getExpirationTime" output="false">
 
 		<cfscript>
-			return "";
+			return null;
 		</cfscript>
 
 	</cffunction>
@@ -127,10 +111,10 @@
 
 	</cffunction>
 
-	<cffunction access="public" name="getLastFailedLoginTime" output="false">
+	<cffunction access="public" returntype="Date" name="getLastFailedLoginTime" output="false">
 
 		<cfscript>
-			return "";
+			return null;
 		</cfscript>
 
 	</cffunction>
@@ -143,28 +127,26 @@
 
 	</cffunction>
 
-	<cffunction access="public" name="getLastLoginTime" output="false">
+	<cffunction access="public" returntype="Date" name="getLastLoginTime" output="false">
 
 		<cfscript>
-			return "";
+			return null;
 		</cfscript>
 
 	</cffunction>
 
-	<cffunction access="public" name="getLastPasswordChangeTime" output="false">
+	<cffunction access="public" returntype="Date" name="getLastPasswordChangeTime" output="false">
 
 		<cfscript>
-			return "";
+			return null;
 		</cfscript>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="Array" name="getRoles" output="false">
-		<cfset var local = {}/>
 
 		<cfscript>
-			local.empty = [];
-			return local.empty;
+			return arrayNew( 1 );
 		</cfscript>
 
 	</cffunction>
@@ -204,7 +186,7 @@
 	<cffunction access="public" returntype="void" name="incrementFailedLoginCount" output="false">
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -259,7 +241,6 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionAbsoluteTimeout" output="false">
-		<cfargument name="request"/>
 
 		<cfscript>
 			return false;
@@ -268,7 +249,6 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionTimeout" output="false">
-		<cfargument name="request"/>
 
 		<cfscript>
 			return false;
@@ -279,17 +259,16 @@
 	<cffunction access="public" returntype="void" name="lock" output="false">
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="loginWithPassword" output="false">
-		<cfargument name="request"/>
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -297,7 +276,7 @@
 	<cffunction access="public" returntype="void" name="logout" output="false">
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -306,7 +285,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -314,7 +293,7 @@
 	<cffunction access="public" returntype="String" name="resetCSRFToken" output="false">
 
 		<cfscript>
-			instance.csrfToken = instance.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
+			instance.csrfToken = instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.Encoder" ).CHAR_ALPHANUMERICS );
 			return instance.csrfToken;
 		</cfscript>
 
@@ -324,7 +303,7 @@
 		<cfargument required="true" type="String" name="accountName"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -333,7 +312,7 @@
 		<cfargument required="true" type="Date" name="expirationTime"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -342,7 +321,7 @@
 		<cfargument required="true" type="Array" name="roles"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -351,7 +330,7 @@
 		<cfargument required="true" type="String" name="screenName"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -359,7 +338,7 @@
 	<cffunction access="public" returntype="void" name="unlock" output="false">
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -368,7 +347,7 @@
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -377,7 +356,7 @@
 		<cfargument required="true" type="Date" name="lastFailedLoginTime"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -386,7 +365,7 @@
 		<cfargument required="true" type="Date" name="lastLoginTime"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -395,7 +374,7 @@
 		<cfargument required="true" type="String" name="remoteHost"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>
@@ -404,62 +383,7 @@
 		<cfargument required="true" type="Date" name="lastPasswordChangeTime"/>
 
 		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="Struct" name="getEventMap" output="false">
-
-		<cfscript>
-			throwError(newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" name="getLocaleESAPI" output="false" hint="the locale">
-
-		<cfscript>
-			return instance.locale;
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="void" name="setLocaleESAPI" output="false">
-		<cfargument required="true" name="locale" hint="the locale to set"/>
-
-		<cfscript>
-			if(isInstanceOf(arguments.locale, "java.util.Locale")) {
-				instance.locale = arguments.locale;
-			}
-			else {
-				instance.locale = "";
-			}
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="String" name="toStringESAPI" output="false">
-
-		<cfscript>
-			return "USER:" & getAccountName();
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="boolean" name="equalsESAPI" output="false">
-		<cfargument required="true" name="another"/>
-
-		<cfscript>
-			// TODO
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="numeric" name="hashCodeESAPI" output="false">
-
-		<cfscript>
-			// TODO
+			throwException( getJava( "java.lang.RuntimeException" ).init( "Invalid operation for the anonymous user" ) );
 		</cfscript>
 
 	</cffunction>

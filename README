@@ -5,85 +5,30 @@ Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
 License: BSD license
 https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML
 
+TODO: move the below information to the github wiki
 
-*** SETUP/USAGE ***
+===Adobe ColdFusion===
 
-Setup:
-1. Ensure that J2EE session variables be enabled! You will not be able to authenticate if this is disabled.
-2. The cfesapi folder should sit at the webroot level.
-3. Copy /cfesapi/esapi/esapi-2.0.1.jar and selected files from /cfesapi/esapi/libs/ to your lib folder (see compatibility below).
-4. Restart ColdFusion.
-NOTE: there are folders included with CFESAPI that you will want to exclude from your production environment
+ColdFusion 10: ESAPI-2.0.1.jar
+Additional JAR dependencies:
+- TODO
 
-Tests:
-- You will need to create an 'esapi' folder under your User Home directory so the users.txt file can be written to disk i.e. C:\Users\myusername\esapi\
-- You can run the MXUnit tests using: /cfesapi/test/TestSuite.cfm
+ColdFusion 9.0.2: ESAPI-2.0_rc10.jar
+Additional JAR dependencies:
+- antisamy-1.3-20091014.183120-2.jar
+- nekohtml-1.9.11.jar
 
-Demos:
-- See the /cfesapi/demo/ for basic examples of implementation. **Be sure to have https setup else you can't login.**
+ColdFusion 8.0.1: ESAPI-1.4.4.jar
+NOTE: requires Hot Fix http://helpx.adobe.com/coldfusion/kb/coldfusion-security-hotfix-apsb11-14.html
+Additional JAR dependencies:
+- nekohtml-1.9.11.jar
 
-Implementation:
-- You can extend any of the default implementations to overwrite the methods you need
- and/or
-- You can create new implementations that implement the provided interfaces
+===Railo===
 
-How:
-- Copy the /cfesapi/esapi/configuration/esapi/ folder to a location within your CF application and make changes to your copy of the config files
-- ESAPI.properties
-	- IMPORTANT: Run /cfesapi/org/owasp/esapi/reference/crypto/JavaEncryptor.cfm to calculate your *own* Encryptor.MasterKey and Encryptor.MasterSalt values
-	- Update the component paths with the location of your implementation components
-	- Modify other configs as needed
-- Include the /cfesapi/helpers/ESAPI.cfm in your application
-- Call the filters provided by CFESAPI to secure and authenticate each request.
-- See demos for examples
-
-Tips:
-- You can determine whether unlimited strength crypto is installed by running: /cfesapi/test/org/owasp/esapi/reference/crypto/CryptoPolicy.cfm
-
-*** COMPATIBILITY ***
-
-**************************
-* Railo ColdFusion 3.2.3 *
-**************************
-MXUnit Test Results
-- 10 failures + 1 errors + 264 successes (55-65s)
-
-Dependencies (place in [webroot]\WEB-INF\railo\lib)
-- ESAPI.jar
-- antisamy.jar
-- batik-css.jar
-- batik-util.jar
-- commons-beanutils.jar
-- commons-configuration.jar
-- nekohtml.jar
-- xercesImpl.jar
-
-**************************
-* Adobe ColdFusion 9.0.1 *
-**************************
-MXUnit Test Results
- - 10 failures + 0 errors + 265 successes (60-70s)
-
-Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
-- ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
-- antisamy.jar
-- batik-css.jar
-- batik-util.jar
-- commons-configuration.jar
-
-**************************
-* Adobe ColdFusion 8.0.1 *
-**************************
-MXUnit Test Results
- - 9 failures + 1 errors + 265 successes (70-80s)
-
-Dependencies (place in [webroot]\WEB-INF\cfusion\lib)
-- ESAPI.jar (http://kb2.adobe.com/cps/907/cpsid_90784.html adds version esapi-2.0_rc10.jar which may conflict with our jar - SOLUTION?)
-- antisamy.jar
-- batik-css.jar
-- batik-util.jar
-- commons-beanutils.jar
-- commons-collections.jar (ACF8 has 2.1 but 3.2 is required)
-- commons-configuration.jar
-- commons-lang.jar
-- nekohtml.jar
+Railo 3.3.4.003
+ESAPI.jar versions are not included with Railo
+- antisamy-1.3-20091014.183120-2.jar
+- batik-css-1.6-1.jar
+- commons-fileupload-1.2.jar
+- ESAPI-1.4.4.jar
+- nekohtml-1.9.11.jar
