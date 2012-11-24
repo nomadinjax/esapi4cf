@@ -11,7 +11,8 @@ body		{text-align=center}
 #holder		{width:100%; padding:5px 20px 15px 20px; background:#FFFFFF; text-align:left; }
 #logo		{border-bottom:1px solid #DADADA; margin: 0px 0px; padding:0px 0px 5px 0px; }
 #navigation	{padding:10px 0; }
-#header		{background:#DADADA url('images/header_home.jpg') no-repeat 10px 10px; padding:10px; height:200px; }
+#header		{background:#FFFFFF url('images/header_home.jpg') no-repeat 10px 10px; padding:10px; height:140px;
+	text-align: center; background-position:center; }
 #content	{float:left; width:490px; padding:20px 10px 0 0; line-height:160%; }
 #news		{float:right; width:250px; padding:20px 0; line-height:140%; text-align:justify; }
 .newsItem	{padding:20px 20px 5px 20px; background:#FEFFD5; border:1px solid #FFEB70; font-size:90%; margin-bottom:20px; }
@@ -28,7 +29,7 @@ body		{text-align=center}
 /*navigation*/
 #navigation ul 		{margin:0; padding:0; }
 #navigation li 		{margin:0; padding:0; list-style:none; display:inline; }
-#navigation a		{color:#225799; padding:0 20px 0 0; text-decoration:none; }
+#navigation a		{color:#225799; padding:0 8px 0 0; text-decoration:none; }
 #navigation a:hover	{color:#000000; }
 
 #footer ul 		{margin:0; padding:0; }
