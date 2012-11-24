@@ -15,6 +15,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+settings.xml
 
 # External tool builders
 .externalToolBuilders/
@@ -165,9 +166,9 @@ pip-log.txt
 ############
 ## SVN
 ############
-.svn
+.svn/
 
 ############
 ## demo (temp) - not ready yet
 ############
-demo
+demo/
