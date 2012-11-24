@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <!---
  * The AccessController interface defines a set of methods that can be used in a wide variety of applications to
@@ -59,7 +59,7 @@
  * &lt;% } %&gt;
  * </pre>
  *
- * @author Jeff Williams (jeff.williams@aspectsecurity.com)
+ * @author Damon Miller
  --->
 <cfinterface>
 

@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <!---
  * EnterpriseSecurityException is the base class for all security related exceptions. You should pass in the root cause
@@ -27,7 +27,7 @@
  * ALL EnterpriseSecurityExceptions are also sent to the IntrusionDetector for use in detecting anomolous patterns of
  * application usage.
  * <P>
- * @author Jeff Williams (jeff.williams@aspectsecurity.com)
+ * @author Damon Miller
  --->
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Exception" output="false">
 

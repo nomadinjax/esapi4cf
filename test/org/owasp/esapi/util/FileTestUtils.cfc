@@ -61,6 +61,7 @@
 		<cfargument type="String" name="suffix" hint="The suffix for the directory's name. If this is null, '.tmp' is used."/>
 
 		<cfscript>
+			var local = {};
 			local.name = "";
 			local.dir = "";
 
@@ -73,7 +74,7 @@
 			else if(!arguments.suffix.startsWith( "." ))
 				arguments.suffix = "." & arguments.suffix;
 			if(!structKeyExists( arguments, "parent"))
-				arguments.parent = getJava( "java.io.File" ).init( getJava("java.lang.System").getProperty( "java.io.tmpdir" ) );
+				arguments.parent = getJava( "java.io.File" ).init( System.getProperty( "java.io.tmpdir" ) );
 			local.name = arguments.prefix & toHexString( instance.rand.nextLong() ) & arguments.suffix;
 			local.dir = getJava( "java.io.File" ).init( arguments.parent, local.name );
 			if(!local.dir.mkdir())
@@ -89,18 +90,19 @@
 		<cfargument required="true" name="child" hint="The child to check"/>
 
 		<cfscript>
+			var local = {};
 			local.childsParent = "";
 
-			if(arguments.child == null)
+			if(!isObject(arguments.child))
 				throwException( getJava( "java.lang.NullPointerException" ).init( "child argument is null" ) );
 			if(!arguments.child.isDirectory())
 				return false;
-			if(arguments.parent == null)
+			if(!isObject(arguments.parent))
 				throwException( getJava( "java.lang.NullPointerException" ).init( "parent argument is null" ) );
 			arguments.parent = arguments.parent.getCanonicalFile();
 			arguments.child = arguments.child.getCanonicalFile();
 			local.childsParent = arguments.child.getParentFile();
-			if(local.childsParent == null)
+			if(local.childsParent == "")
 				return false;// sym link to /?
 			local.childsParent = local.childsParent.getCanonicalFile();// just in case...
 			if(!arguments.parent.equals( local.childsParent ))
@@ -115,7 +117,7 @@
 		<cfargument required="true" name="file" hint="The file to delete"/>
 
 		<cfscript>
-			if(arguments.file == null || !arguments.file.exists())
+			if(!isObject(arguments.file) || !arguments.file.exists())
 				return;
 			if(!arguments.file.delete())
 				throwException( getJava( "java.io.IOException" ).init( "Unable to delete file " & arguments.file.getAbsolutePath() ) );
@@ -128,14 +130,15 @@
 		<cfargument required="true" name="file" hint="The file or directory to be deleted"/>
 
 		<cfscript>
+			var local = {};
 			local.children = "";
 			local.child = "";
 
-			if(arguments.file == null || !arguments.file.exists())
+			if(!isObject(arguments.file) || !arguments.file.exists())
 				return;// already deleted?
 			if(arguments.file.isDirectory()) {
 				local.children = arguments.file.listFiles();
-				for(local.i = 0; local.i < arrayLen(local.children); local.i++) {
+				for(local.i = 1; local.i <= arrayLen(local.children); local.i++) {
 					local.child = local.children[local.i];
 					if(isChildSubDirectory( arguments.file, local.child ))
 						deleteRecursively( local.child );

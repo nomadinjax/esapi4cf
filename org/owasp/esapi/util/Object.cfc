@@ -1,5 +1,11 @@
 ﻿<cfcomponent output="false">
 
+	<cfscript>
+		instance.javaCache = {};
+
+		System = getJava( "java.lang.System" );
+	</cfscript>
+
 	<cffunction access="public" name="init" output="false" hint="Default constructor">
 
 		<cfscript>
@@ -7,10 +13,6 @@
 		</cfscript>
 
 	</cffunction>
-
-	<cfscript>
-		instance.javaCache = {};
-	</cfscript>
 
 	<cffunction access="private" name="getJava" output="false">
 		<cfargument required="true" type="String" name="classpath"/>

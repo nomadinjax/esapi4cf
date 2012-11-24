@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <!---
  * The User interface represents an application user or user account. There is quite a lot of information that an
@@ -26,8 +26,7 @@
  * after the expiration date has been reached. The User must be enabled, not expired, and unlocked in order to pass
  * authentication.
  *
- * @author <a href="mailto:jeff.williams@aspectsecurity.com?subject=ESAPI question">Jeff Williams</a> at <a
- * href="http://www.aspectsecurity.com">Aspect Security</a>
+ * @author Damon Miller
  * @since June 1, 2007
  --->
 <cfinterface extends="cfesapi.org.owasp.esapi.util.Principal">

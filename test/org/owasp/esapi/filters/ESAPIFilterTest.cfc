@@ -10,31 +10,13 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
 
-<!---
-import javax.servlet.http.HttpSession;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Authenticator;
-import org.owasp.esapi.User;
-import org.owasp.esapi.errors.AuthenticationException;
-import org.owasp.esapi.http.TestFilterChain;
-import org.owasp.esapi.http.TestHttpServletRequest;
-import org.owasp.esapi.http.TestHttpServletResponse;
-import org.owasp.esapi.reference.DefaultEncoder;
---->
-
 	<cfscript>
 		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
-		System = getJava( "java.lang.System" );
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testFilter" output="false">

@@ -1,203 +1,192 @@
-package org.owasp.esapi;
+<cfcomponent implements="cfesapi.org.owasp.esapi.SecurityConfiguration" output="false" hint="Simple wrapper implementation of {@link SecurityConfiguration}. This allows for easy subclassing and property fixups for unit tests. This has been changed to be concrete instead of abstract so problems caused by changes to the interface will show up here (ie, not abstract not implementing...) instead of versions inheriting from it.">
 
-import java.io.File;
-import java.util.List;
+	<cfscript>
+		instance.wrapped = "";
+	</cfscript>
 
-/**
- * Simple wrapper implementation of {@link SecurityConfiguration}. 
- * This allows for easy subclassing and property fixups for unit tests.
- *
- * This has been changed to be concrete instead of abstract so problems
- * caused by changes to the interface will show up here (ie, not abstract
- * not implementing...) instead of versions inheriting from it.
- */
-public class SecurityConfigurationWrapper implements SecurityConfiguration
-{
-	private SecurityConfiguration wrapped;
+	<cffunction access="public" returntype="SecurityConfigurationWrapper" name="init" output="false" hint="Constructor wrapping the given configuration.">
+		<cfargument required="true" type="SecurityConfiguration" name="wrapped" hint="The configuration to wrap.">
+		<cfscript>
+			instance.wrapped = wrapped;
 
-	/**
-	 * Constructor wrapping the given configuration.
-	 * @param wrapped The configuration to wrap.
-	 */
-	public SecurityConfigurationWrapper(SecurityConfiguration wrapped)
-	{
-		this.wrapped = wrapped;
-	}
+			return this;
+		</cfscript>
+	</cffunction>
 
-	/**
-	 * Access the wrapped configuration.
-	 * @return The wrapped configuration.
-	 */
-	public SecurityConfiguration getWrappedSecurityConfiguration()
-	{
-		return wrapped;
-	}
+	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.SecurityConfiguration" name="getWrappedSecurityConfiguration" output="false" hint="Access the wrapped configuration.">
+		<cfscript>
+			return instance.wrapped;
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getApplicationName()
-	{
-		return wrapped.getApplicationName();
-	}
-	
-	/** {@inheritDoc} */
-	public char[] getMasterPassword()
-	{
-		return wrapped.getMasterPassword();
-	}
+	<cffunction access="public" returntype="String" name="getApplicationName" output="false">
+		<cfscript>
+			return instance.wrapped.getApplicationName();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public File getKeystore()
-	{
-		return wrapped.getKeystore();
-	}
+	<cffunction access="public" returntype="Array" name="getMasterPassword" output="false">
+		<cfscript>
+			return instance.wrapped.getMasterPassword();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public byte[] getMasterSalt()
-	{
-		return wrapped.getMasterSalt();
-	}
+	<cffunction access="public" name="getKeystore" output="false">
+		<cfscript>
+			return instance.wrapped.getKeystore();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public List getAllowedFileExtensions()
-	{
-		return wrapped.getAllowedFileExtensions();
-	}
+	<cffunction access="public" returntype="binary" name="getMasterSalt" output="false">
+		<cfscript>
+			return instance.wrapped.getMasterSalt();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public int getAllowedFileUploadSize()
-	{
-		return wrapped.getAllowedFileUploadSize();
-	}
+	<cffunction access="public" returntype="Array" name="getAllowedFileExtensions" output="false">
+		<cfscript>
+			return instance.wrapped.getAllowedFileExtensions();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getPasswordParameterName()
-	{
-		return wrapped.getPasswordParameterName();
-	}
+	<cffunction access="public" returntype="numeric" name="getAllowedFileUploadSize" output="false">
+		<cfscript>
+			return instance.wrapped.getAllowedFileUploadSize();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getUsernameParameterName()
-	{
-		return wrapped.getUsernameParameterName();
-	}
+	<cffunction access="public" returntype="String" name="getPasswordParameterName" output="false">
+		<cfscript>
+			return instance.wrapped.getPasswordParameterName();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getEncryptionAlgorithm()
-	{
-		return wrapped.getEncryptionAlgorithm();
-	}
+	<cffunction access="public" returntype="String" name="getUsernameParameterName" output="false">
+		<cfscript>
+			return instance.wrapped.getUsernameParameterName();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getHashAlgorithm()
-	{
-		return wrapped.getHashAlgorithm();
-	}
+	<cffunction access="public" returntype="String" name="getEncryptionAlgorithm" output="false">
+		<cfscript>
+			return instance.wrapped.getEncryptionAlgorithm();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getCharacterEncoding()
-	{
-		return wrapped.getCharacterEncoding();
-	}
+	<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false">
+		<cfscript>
+			return instance.wrapped.getHashAlgorithm();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getDigitalSignatureAlgorithm()
-	{
-		return wrapped.getDigitalSignatureAlgorithm();
-	}
+	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false">
+		<cfscript>
+			return instance.wrapped.getCharacterEncoding();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getRandomAlgorithm()
-	{
-		return wrapped.getRandomAlgorithm();
-	}
+	<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false">
+		<cfscript>
+			return instance.wrapped.getDigitalSignatureAlgorithm();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public int getAllowedLoginAttempts()
-	{
-		return wrapped.getAllowedLoginAttempts();
-	}
+	<cffunction access="public" returntype="String" name="getRandomAlgorithm" output="false">
+		<cfscript>
+			return instance.wrapped.getRandomAlgorithm();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public int getMaxOldPasswordHashes()
-	{
-		return wrapped.getMaxOldPasswordHashes();
-	}
+	<cffunction access="public" returntype="numeric" name="getAllowedLoginAttempts" output="false">
+		<cfscript>
+			return instance.wrapped.getAllowedLoginAttempts();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public Threshold getQuota(String eventName)
-	{
-		return wrapped.getQuota(eventName);
-	}
+	<cffunction access="public" returntype="numeric" name="getMaxOldPasswordHashes" output="false">
+		<cfscript>
+			return instance.wrapped.getMaxOldPasswordHashes();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getResourceDirectory()
-	{
-		return wrapped.getResourceDirectory();
-	}
+	<cffunction access="public" name="getQuota" output="false">
+		<cfargument required="true" type="String" name="eventName">
+		<cfscript>
+			return instance.wrapped.getQuota(arguments.eventName);
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public void setResourceDirectory(String dir)
-	{
-		wrapped.setResourceDirectory(dir);
-	}
+	<cffunction access="public" returntype="String" name="getResourceDirectory" output="false">
+		<cfscript>
+			return instance.wrapped.getResourceDirectory();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getResponseContentType()
-	{
-		return wrapped.getResponseContentType();
-	}
+	<cffunction access="public" returntype="void" name="setResourceDirectory" output="false">
+		<cfargument required="true" type="String" name="dir">
+		<cfscript>
+			instance.wrapped.setResourceDirectory(arguments.dir);
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public long getRememberTokenDuration()
-	{
-		return wrapped.getRememberTokenDuration();
-	}
+	<cffunction access="public" returntype="String" name="getResponseContentType" output="false">
+		<cfscript>
+			return instance.wrapped.getResponseContentType();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public int getSessionIdleTimeoutLength()
-	{
-		return wrapped.getSessionIdleTimeoutLength();
-	}
+	<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false">
+		<cfscript>
+			return instance.wrapped.getRememberTokenDuration();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public int getSessionAbsoluteTimeoutLength()
-	{
-		return wrapped.getSessionAbsoluteTimeoutLength();
-	}
+	<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false">
+		<cfscript>
+			return instance.wrapped.getSessionIdleTimeoutLength();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public boolean getLogEncodingRequired()
-	{
-		return wrapped.getLogEncodingRequired();
-	}
+	<cffunction access="public" returntype="numeric" name="getSessionAbsoluteTimeoutLength" output="false">
+		<cfscript>
+			return instance.wrapped.getSessionAbsoluteTimeoutLength();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public boolean getLogDefaultLog4J()
-	{
-		return wrapped.getLogDefaultLog4J();
-	}
+	<cffunction access="public" returntype="boolean" name="getLogEncodingRequired" output="false">
+		<cfscript>
+			return instance.wrapped.getLogEncodingRequired();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public int getLogLevel()
-	{
-		return wrapped.getLogLevel();
-	}
+	<cffunction access="public" returntype="boolean" name="getLogDefaultLog4J" output="false">
+		<cfscript>
+			return instance.wrapped.getLogDefaultLog4J();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public String getLogFileName()
-	{
-		return wrapped.getLogFileName();
-	}
+	<cffunction access="public" returntype="numeric" name="getLogLevel" output="false">
+		<cfscript>
+			return instance.wrapped.getLogLevel();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public int getMaxLogFileSize()
-	{
-		return wrapped.getMaxLogFileSize();
-	}
+	<cffunction access="public" returntype="String" name="getLogFileName" output="false">
+		<cfscript>
+			return instance.wrapped.getLogFileName();
+		</cfscript>
+	</cffunction>
 
-	/** {@inheritDoc} */
-	public boolean getDisableIntrusionDetection()
-	{
-		return wrapped.getDisableIntrusionDetection();
-	}
-}
+	<cffunction access="public" returntype="numeric" name="getMaxLogFileSize" output="false">
+		<cfscript>
+			return instance.wrapped.getMaxLogFileSize();
+		</cfscript>
+	</cffunction>
+
+	<cffunction access="public" returntype="boolean" name="getDisableIntrusionDetection" output="false">
+		<cfscript>
+			return instance.wrapped.getDisableIntrusionDetection();
+		</cfscript>
+	</cffunction>
+
+</cfcomponent>

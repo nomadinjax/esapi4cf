@@ -1,4 +1,4 @@
-﻿<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+﻿<cfcomponent extends="Object" output="false">
 
 	<cffunction access="public" name="get" output="false">
 

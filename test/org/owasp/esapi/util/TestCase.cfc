@@ -2,7 +2,23 @@
 
 	<cfscript>
 		instance.javaCache = {};
+
+		System = getJava( "java.lang.System" );
+
+		// The following property must be set in order for the tests to find the resources directory
+		System.setProperty( "cfesapi.org.owasp.esapi.resources", "/cfesapi/test/resources" );
+		System.setProperty( "basedir", expandPath("../../../../") );
 	</cfscript>
+
+	<cffunction access="private" returntype="void" name="clearUserFile" output="false">
+		<!--- clear the User file to prep for tests --->
+		<cfset filePath = instance.ESAPI.securityConfiguration().getResourceDirectory() & "users.txt"/>
+		<cfset writer = ""/>
+		<cfset writer &= "## This is the user file associated with the ESAPI library from http://www.owasp.org" & chr( 13 ) & chr( 10 )/>
+		<cfset writer &= "## accountName | hashedPassword | roles | locked | enabled | rememberToken | csrfToken | oldPasswordHashes | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount" & chr( 13 ) & chr( 10 )/>
+		<cfset writer &= chr( 13 ) & chr( 10 )/>
+		<cffile action="write" file="#expandPath(filePath)#" output="#writer#"/>
+	</cffunction>
 
 	<cffunction access="private" name="getJava" output="false">
 		<cfargument required="true" type="String" name="classpath"/>
@@ -21,14 +37,15 @@
 		<cfargument required="true" type="String" name="type"/>
 
 		<cfscript>
-			var logger = getJava( "org.owasp.esapi.Logger" );
+			var local = {};
+			local.logger = getJava( "org.owasp.esapi.Logger" );
 			// ESAPI 1.4.4
-			if(structKeyExists( logger, "SECURITY" )) {
-				return logger.SECURITY;
+			if(structKeyExists( local.logger, "SECURITY" )) {
+				return local.logger.SECURITY;
 			}
 			// ESAPI 2.0_rc10
 			else {
-				return logger[arguments.type];
+				return local.logger[arguments.type];
 			}
 		</cfscript>
 

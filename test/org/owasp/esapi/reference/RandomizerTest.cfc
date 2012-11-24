@@ -10,33 +10,21 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		System = getJava( "java.lang.System" );
 		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
 	</cfscript>
-
-	<!---
-	import java.util.ArrayList;
-
-	import junit.framework.Test;
-	import junit.framework.TestCase;
-	import junit.framework.TestSuite;
-
-	import org.owasp.esapi.ESAPI;
-	import org.owasp.esapi.Randomizer;
-	import org.owasp.esapi.errors.EncryptionException;
-	--->
 
 	<cffunction access="public" returntype="void" name="testGetRandomString" output="false"
 	            hint="Test of getRandomString method, of class org.owasp.esapi.Randomizer.">
 
 		<cfscript>
 			var local = {};
+
 			System.out.println( "getRandomString" );
 			local.length = 20;
 			local.randomizer = instance.ESAPI.randomizer();
@@ -58,6 +46,7 @@
 
 		<cfscript>
 			var local = {};
+
 			System.out.println( "getRandomInteger" );
 			local.min = -20;
 			local.max = 100;
@@ -81,6 +70,7 @@
 
 		<cfscript>
 			var local = {};
+
 			System.out.println( "getRandomReal" );
 			local.min = getJava( "java.lang.Float" ).init( "-20.5234F" ).floatValue();
 			local.max = getJava( "java.lang.Float" ).init( "100.12124F" ).floatValue();
@@ -104,6 +94,7 @@
 
 		<cfscript>
 			var local = {};
+
 			System.out.println( "getRandomGUID" );
 			local.randomizer = instance.ESAPI.randomizer();
 			local.list = getJava( "java.util.ArrayList" ).init();

@@ -10,23 +10,21 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent implements="cfesapi.org.owasp.esapi.SecurityConfiguration" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="The SecurityConfiguration manages all the settings used by the ESAPI in a single place. Initializing the Configuration is critically important to getting the ESAPI working properly. You must set a system property before invoking any part of the ESAPI. You may have to add this to the batch script that starts your web server. For example, in the 'catalina' script that starts Tomcat, you can set the JAVA_OPTS variable to the -D string above. Once the Configuration is initialized with a resource directory, you can edit it to set things like master keys and passwords, logging locations, error thresholds, and allowed file extensions.">
 
 	<cfscript>
-		System = getJava("java.lang.System");
-	
 		/** The properties. */
 		instance.properties = getJava("java.util.Properties").init();
-	
+
 		/** The name of the ESAPI property file */
 		this.RESOURCE_FILE = "ESAPI.properties";
-	
+
 		/** The location of the Resources directory used by ESAPI. */
 		this.RESOURCE_DIRECTORY = "cfesapi.org.owasp.esapi.resources";
-	
+
 		// private
 		instance.ALLOWED_LOGIN_ATTEMPTS = "AllowedLoginAttempts";
 		instance.APPLICATION_NAME = "ApplicationName";
@@ -52,11 +50,11 @@
 		instance.MAX_LOG_FILE_SIZE = "MaxLogFileSize";
 		instance.LOG_ENCODING_REQUIRED = "LogEncodingRequired";
 		instance.LOG_DEFAULT_LOG4J = "LogDefaultLog4J";
-	
+
 		//protected
 		instance.MAX_REDIRECT_LOCATION = 1000;
 		instance.MAX_FILE_NAME_LENGTH = 1000;
-	
+
 		/**
 		 * Load properties from properties file. Set this with setResourceDirectory
 		 * from your web application or ESAPI filter. For test and non-web
@@ -68,22 +66,22 @@
 		 * where 'path' references the appropriate directory in your system.
 		 */
 		instance.resourceDirectory = System.getProperty(this.RESOURCE_DIRECTORY);
-	
+
 		/*
 		 * Absolute path to the customDirectory
 		 */
 		instance.customDirectory = System.getProperty("cfesapi.org.owasp.esapi.resources");
-	
+
 		/*
 		 * Absolute path to the userDirectory
 		 */
 		instance.userDirectory = System.getProperty("user.home") & getJava("java.io.File").separator & ".esapi";
 	</cfscript>
-	
+
 	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.SecurityConfiguration" name="init" output="false"
 	            hint="Instantiates a new configuration.">
 		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
-	
+
 		<cfscript>
 			try {
 				loadConfiguration();
@@ -91,38 +89,38 @@
 			catch(java.io.FileNotFoundException e) {
 				logSpecial("Failed to load security configuration", e);
 			}
-		
+
 			return this;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getApplicationName" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.APPLICATION_NAME, "AppNameNotSpecified");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="Array" name="getMasterPassword" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.MASTER_PASSWORD).toCharArray();
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" name="getKeystore" output="false">
-	
+
 		<cfscript>
 			return getJava("java.io.File").init(getResourceDirectory(), "keystore");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getResourceDirectory" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			if (!structKeyExists(instance, "resourceDirectory")) {
@@ -134,16 +132,16 @@
 			}
 			return instance.resourceDirectory;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="setResourceDirectory" output="false">
 		<cfargument required="true" type="String" name="dir"/>
-	
+
 		<cfscript>
 			instance.resourceDirectory = arguments.dir;
 			logSpecial("Reset resource directory to: " & arguments.dir, "");
-		
+
 			// reload configuration if necessary
 			try {
 				loadConfiguration();
@@ -152,41 +150,41 @@
 				logSpecial("Failed to load security configuration from " & arguments.dir, e);
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="binary" name="getMasterSalt" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.MASTER_SALT).getBytes();
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="Array" name="getAllowedFileExtensions" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.def = ".zip,.pdf,.tar,.gz,.xls,.properties,.txt,.xml";
 			local.extList = instance.properties.getProperty(instance.VALID_EXTENSIONS, local.def).split(",");
 			return local.extList;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="numeric" name="getAllowedFileUploadSize" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.bytes = instance.properties.getProperty(instance.MAX_UPLOAD_FILE_BYTES, "5000000");
 			return int(local.bytes);
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="void" name="loadConfiguration" output="false"
 	            hint="Load configuration. Never prints properties.">
-	
+
 		<cfscript>
 			try {
 				//first attempt file IO loading of properties
@@ -205,20 +203,20 @@
 				}
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="Properties" name="loadConfigurationFromClasspath" output="false">
 		<cfargument required="true" type="String" name="fileName"/>
-	
+
 		<cfscript>
 			var local = {};
-		
+
 			local.result = "";
 			local.input = "";
-		
+
 			local.loaders = [getJava("java.lang.Thread").currentThread().getContextClassLoader(), getJava("java.lang.ClassLoader").getSystemClassLoader(), getPageContext().getClass().getClassLoader()];
-		
+
 			local.currentLoader = "";
 			for(local.i = 1; local.i <= arrayLen(local.loaders); local.i++) {
 				if(isObject(local.loaders[local.i])) {
@@ -226,17 +224,17 @@
 					try {
 						// try root
 						local.input = local.loaders[local.i].getResourceAsStream(arguments.fileName);
-					
+
 						// try .esapi folder
 						if(!structKeyExists(local, "in")) {
 							local.in = local.currentLoader.getResourceAsStream(".esapi/" & arguments.fileName);
 						}
-					
+
 						// try resources folder
 						if(!structKeyExists(local, "in")) {
 							local.in = local.currentLoader.getResourceAsStream("resources/" & arguments.fileName);
 						}
-					
+
 						// now load the properties
 						if(structKeyExists(local, "in")) {
 							local.result = getJava("java.util.Properties").init();
@@ -256,105 +254,105 @@
 					}
 				}
 			}
-		
+
 			if(local.result == "") {
 				throwException(getJava("java.lang.IllegalArgumentException").init("[CFESAPI] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
 			}
-		
+
 			return local.result;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="void" name="logSpecial" output="false"
 	            hint="Used to log errors to the console during the loading of the properties file itself. Can't use standard logging in this case, since the Logger is not initialized yet.">
 		<cfargument required="true" type="String" name="message" hint="The message to send to the console."/>
 		<cfargument required="false" name="e" hint="The error that occured (this value is currently ignored)."/>
-	
+
 		<cfscript>
 			System.out.println("[CFESAPI] " & arguments.message);
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getPasswordParameterName" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.PASSWORD_PARAMETER_NAME, "password");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getUsernameParameterName" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.USERNAME_PARAMETER_NAME, "username");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getEncryptionAlgorithm" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.ENCRYPTION_ALGORITHM, "PBEWithMD5AndDES/CBC/PKCS5Padding");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.HASH_ALGORITHM, "SHA-512");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.CHARACTER_ENCODING, "UTF-8");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.DIGITAL_SIGNATURE_ALGORITHM, "SHAwithDSA");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getRandomAlgorithm" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.RANDOM_ALGORITHM, "SHA1PRNG");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="numeric" name="getAllowedLoginAttempts" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.attempts = instance.properties.getProperty(instance.ALLOWED_LOGIN_ATTEMPTS, "5");
 			return getJava("java.lang.Integer").parseInt(local.attempts);
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="numeric" name="getMaxOldPasswordHashes" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.max = instance.properties.getProperty(instance.MAX_OLD_PASSWORD_HASHES, "12");
 			return getJava("java.lang.Integer").parseInt(local.max);
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="boolean" name="getDisableIntrusionDetection" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.value = instance.properties.getProperty(instance.DISABLE_INTRUSION_DETECTION);
@@ -362,12 +360,12 @@
 				return true;
 			return false;// Default result
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" name="getQuota" output="false">
 		<cfargument required="true" type="String" name="eventName"/>
-	
+
 		<cfscript>
 			var local = {};
 			local.count = 0;
@@ -375,28 +373,28 @@
 			if(structKeyExists(local, "countString")) {
 				local.count = getJava("java.lang.Integer").parseInt(local.countString);
 			}
-		
+
 			local.interval = 0;
 			local.intervalString = instance.properties.getProperty(arguments.eventName & ".interval");
 			if(structKeyExists(local, "intervalString")) {
 				local.interval = getJava("java.lang.Integer").parseInt(local.intervalString);
 			}
-		
+
 			local.actions = [];
 			local.actionString = instance.properties.getProperty(arguments.eventName & ".actions");
 			if(structKeyExists(local, "actionString")) {
 				local.actionList = local.actionString.split(",");
 				local.actions = getJava("java.util.Arrays").asList(local.actionList);
 			}
-		
+
 			local.q = getJava("org.owasp.esapi.SecurityConfiguration$Threshold").init(javaCast("string", arguments.eventName), javaCast("int", local.count), javaCast("long", local.interval), local.actions);
 			return local.q;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="numeric" name="getLogLevel" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.level = instance.properties.getProperty(instance.LOG_LEVEL);
@@ -421,22 +419,22 @@
 				return getJava("org.owasp.esapi.Logger").TRACE;
 			if(local.level.equalsIgnoreCase("ALL"))
 				return getJava("org.owasp.esapi.Logger").ALL;
-		
+
 			// This error is NOT logged the normal way because the logger constructor calls getLogLevel() and if this error occurred it would cause an infinite loop.
 			logSpecial("The LOG-LEVEL property in the ESAPI properties file has the unrecognized value: " & local.level, "");
 			return getJava("org.owasp.esapi.Logger").WARNING;// Note: The default logging level is WARNING.
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getLogFileName" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.LOG_FILE_NAME, "ESAPI_logging_file");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cfscript>
 		/**
 		 * The default max log file size is set to 10,000,000 bytes (10 Meg). If the
@@ -447,16 +445,16 @@
 		 */
 		this.DEFAULT_MAX_LOG_FILE_SIZE = 10000000;
 	</cfscript>
-	
+
 	<cffunction access="public" returntype="numeric" name="getMaxLogFileSize" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			// The default is 10 Meg if the property is not specified
 			local.value = instance.properties.getProperty(instance.MAX_LOG_FILE_SIZE);
 			if(local.value == "")
 				return DEFAULT_MAX_LOG_FILE_SIZE;
-		
+
 			try {
 				return Integer.parseInt(value);
 			}
@@ -464,11 +462,11 @@
 				return DEFAULT_MAX_LOG_FILE_SIZE;
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="boolean" name="getLogDefaultLog4J" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.value = instance.properties.getProperty(instance.LOG_DEFAULT_LOG4J);
@@ -476,11 +474,11 @@
 				return true;
 			return false;// Default result
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="boolean" name="getLogEncodingRequired" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.value = instance.properties.getProperty(instance.LOG_ENCODING_REQUIRED);
@@ -488,19 +486,19 @@
 				return true;
 			return false;// Default result
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="String" name="getResponseContentType" output="false">
-	
+
 		<cfscript>
 			return instance.properties.getProperty(instance.RESPONSE_CONTENT_TYPE, "text/html; charset=UTF-8");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.value = instance.properties.getProperty(instance.REMEMBER_TOKEN_DURATION, "14");
@@ -508,11 +506,11 @@
 			local.duration = 1000 * 60 * 60 * 24 * local.days;
 			return local.duration;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.value = instance.properties.getProperty(instance.IDLE_TIMEOUT_DURATION, "20");
@@ -520,11 +518,11 @@
 			local.duration = 1000 * 60 * local.minutes;
 			return local.duration;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="numeric" name="getSessionAbsoluteTimeoutLength" output="false">
-	
+
 		<cfscript>
 			var local = {};
 			local.value = instance.properties.getProperty(instance.ABSOLUTE_TIMEOUT_DURATION, "120");
@@ -532,11 +530,11 @@
 			local.duration = 1000 * 60 * local.minutes;
 			return local.duration;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" name="getValidationPatternNames" output="false" hint="getValidationPattern names returns validator pattern names from ESAPI's global properties">
-	
+
 		<cfscript>
 			var local = {};
 			local.list = [];
@@ -549,12 +547,12 @@
 			}
 			return local.list.iterator();
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" name="getValidationPattern" output="false" hint="getValidationPattern returns a single pattern based upon key">
 		<cfargument required="true" type="String" name="key" hint="validation pattern name you'd like"/>
-	
+
 		<cfscript>
 			var local = {};
 			local.value = instance.properties.getProperty("Validator." & arguments.key);
@@ -563,13 +561,13 @@
 			local.pattern = getJava("java.util.regex.Pattern").compile(local.value);
 			return local.pattern;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" name="loadPropertiesFromStream" output="false">
 		<cfargument required="true" name="is"/>
 		<cfargument required="true" type="String" name="name"/>
-	
+
 		<cfscript>
 			var local = {};
 			local.config = getJava("java.util.Properties").init();
@@ -587,19 +585,19 @@
 				}
 			return local.config;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" name="getResourceStream" output="false" hint="Utility method to get a resource as an InputStream. The search looks for an 'esapi-resources' directory in the setResourceDirectory() location, then the System.getProperty( 'org.owasp.esapi.resources' ) location, then the System.getProperty( 'user.home' ) location, and then the classpath.">
 		<cfargument required="true" type="String" name="filename"/>
-	
+
 		<cfscript>
 			var local = {};
 			local.f = "";
 			if(arguments.filename == "") {
 				return "";
 			}
-		
+
 			try {
 				local.f = getResourceFile(arguments.filename);
 				if(isObject(local.f) && local.f.exists()) {
@@ -610,23 +608,23 @@
 			}
 			throwException(getJava("java.io.FileNotFoundException").init());
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" name="getResourceFile" output="false">
 		<cfargument required="true" type="String" name="filename"/>
-	
+
 		<cfscript>
 			var local = {};
 			local.fileSeparator = getJava("java.io.File").separator;
-		
+
 			logSpecial("Attempting to load " & arguments.filename & " via file io.");
-		
+
 			if(arguments.filename == "") {
 				logSpecial("Failed to load properties via FileIO. Filename is empty.");
 				return "";// not found.
 			}
-		
+
 			// first, allow command line overrides. -Dorg.owasp.esapi.resources
 			// directory
 			if(structKeyExists(instance, "customDirectory")) {
@@ -639,7 +637,7 @@
 					logSpecial("Not found in 'cfesapi.org.owasp.esapi.resources' directory or file not readable: " & local.f.getAbsolutePath());
 				}
 			}
-		
+
 			// if not found, then try the programatically set resource directory
 			// (this defaults to SystemResource directory/RESOURCE_FILE
 			if(structKeyExists(instance, "resourceDirectory")) {
@@ -658,7 +656,7 @@
 					logSpecial("Not found in SystemResource Directory/resourceDirectory: " & local.fileLocation);
 				}
 			}
-		
+
 			// if not found, then try the user's home directory
 			if(structKeyExists(instance, "userDirectory")) {
 				local.f = getJava("java.io.File").init(instance.userDirectory, arguments.filename);
@@ -670,11 +668,11 @@
 					logSpecial("Not found in 'user.home' directory: " & local.f.getAbsolutePath());
 				}
 			}
-		
+
 			// return empty if not found
 			return "";
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 </cfcomponent>

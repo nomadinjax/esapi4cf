@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent implements="cfesapi.org.owasp.esapi.HTTPUtilities" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the HTTPUtilities interface. This implementation uses the Apache Commons FileUploader library, which in turn uses the Apache Commons IO library. To simplify the interface, this class uses the current request and response that are tracked by ThreadLocal variables in the Authenticator. This means that you must have called ESAPI.authenticator().setCurrentHTTP(request, response) before calling these methods. Typically, this is done by calling the Authenticator.login() method, which calls setCurrentHTTP() automatically. However if you want to use these methods in another application, you should explicitly call setCurrentHTTP() in your own code.">
 
@@ -326,7 +326,7 @@
 			local.newFiles = [];
 			try {
 				local.session = arguments.request.getSession( false );
-				if(!getJava( "org.apache.commons.fileupload.servlet.ServletFileUpload" ).isMultipartContent( arguments.request )) {
+				if(!getJava( "org.apache.commons.fileupload.servlet.ServletFileUpload" ).isMultipartContent( arguments.request.getHttpServletRequest() )) {
 					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.ValidationUploadException" ).init( instance.ESAPI, "Upload failed", "Not a multipart request" ) );
 				}
 

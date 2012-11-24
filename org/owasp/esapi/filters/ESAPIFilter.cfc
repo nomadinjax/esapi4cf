@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
 
@@ -19,7 +19,7 @@
 		instance.ESAPI = "";
 		instance.logger = "";
 		instance.obfuscate = [ "password" ];
-		
+
 		instance.authenticationMessage = "Authentication failed";
 		instance.authenticationURL = "WEB-INF/login.cfm";
 		instance.authorizationMessage = "Unauthorized";
@@ -38,37 +38,37 @@
 			instance.logger = instance.ESAPI.getLogger("ESAPIFilter");
 
 			if (structKeyExists(arguments, "filterConfig")) {
-				
+
 				// resourceDirectory
 				if ( structKeyExists(arguments.filterConfig, "resourceDirectory") && instance.ESAPI.securityConfiguration().getResourceDirectory() == "" ) {
 					instance.ESAPI.securityConfiguration().setResourceDirectory( arguments.filterConfig.resourceDirectory );
 				}
-				
+
 				// authenticationMessage
 				if ( structKeyExists(arguments.filterConfig, "authenticationMessage") ) {
 					instance.authenticationMessage = arguments.filterConfig.authenticationMessage;
 				}
-				
+
 				// authenticationURL (must be within WEB-INF)
 				if ( structKeyExists(arguments.filterConfig, "authenticationURL") ) {
 					instance.authenticationURL = arguments.filterConfig.authenticationURL;
 				}
-				
+
 				// authorizationMessage
 				if ( structKeyExists(arguments.filterConfig, "authorizationMessage") ) {
 					instance.authorizationMessage = arguments.filterConfig.authorizationMessage;
 				}
-				
+
 				// authorizationURL (must be within WEB-INF)
 				if ( structKeyExists(arguments.filterConfig, "authorizationURL") ) {
 					instance.authorizationURL = arguments.filterConfig.authorizationURL;
 				}
-				
+
 				// validationMessage
 				if ( structKeyExists(arguments.filterConfig, "validationMessage") ) {
 					instance.validationMessage = arguments.filterConfig.validationMessage;
 				}
-				
+
 				// validationURL (must be within WEB-INF)
 				if ( structKeyExists(arguments.filterConfig, "validationURL") ) {
 					instance.validationURL = arguments.filterConfig.validationURL;
@@ -140,7 +140,7 @@
 				local.request.setAttribute("message", e.getMessage() );
 				return false;
 			}
-			
+
 			return true;
 		</cfscript>
 	</cffunction>
@@ -175,9 +175,9 @@
 			// some containers could possibly reuse this thread without clearing the User
 			instance.ESAPI.authenticator().clearCurrent();
 			instance.ESAPI.httpUtilities().setCurrentHTTP("", "");
-			
+
 			return true;
 		</cfscript>
 	</cffunction>
-	
+
 </cfcomponent>

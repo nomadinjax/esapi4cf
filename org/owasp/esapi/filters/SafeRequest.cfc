@@ -7,9 +7,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and
  * accept the LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect
- *         Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent implements="cfesapi.org.owasp.esapi.HttpServletRequest" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="This request wrapper simply overrides unsafe methods in the HttpServletRequest API with safe versions that return canonicalized data where possible. The wrapper returns a safe value when a validation error is detected, including stripped or empty strings.">
 

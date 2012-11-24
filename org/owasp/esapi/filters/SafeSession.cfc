@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent implements="cfesapi.org.owasp.esapi.HttpSession" extends="cfesapi.org.owasp.esapi.util.Object" output="false">
 
@@ -158,7 +158,7 @@
 			*     instance.session[local.applicationName].setMaxInterval(javaCast("long", 1)); -- throws CF exception 'setMaxInterval' undefined
 			*
 			* Are there any better (or more secure) ways to handle this???
-			* 
+			*
 			* CF10 has a sessionInvalidate() method.  Will this work and can we mimic this in CF8/9?
 			*/
 			local.applicationName = instance.ESAPI.httpUtilities().getApplicationName();

@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent extends="EnterpriseSecurityException" output="false" hint="A ValidationException should be thrown to indicate that the data provided by the user or from some other external source does not match the validation rules that have been specified for that data.">
 

@@ -10,12 +10,9 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @created 2010
+ * @author Damon Miller
+ * @created 2011
  --->
-<!---
-import java.io.FileNotFoundException;
-import java.io.IOException;
---->
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>

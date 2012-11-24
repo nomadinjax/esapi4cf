@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfsetting requesttimeout="60">
 <cfscript>
@@ -20,20 +20,6 @@
 
 	System.out.println( "INITIALIZING ALL TESTS" );
 
-	// The following property must be set in order for the tests to find the resources directory
-	System.setProperty( "cfesapi.org.owasp.esapi.resources", "/cfesapi/test/resources" );
-	System.setProperty( "basedir", expandPath("../../../../") );
-</cfscript>
-
-<!--- clear the User file to prep for tests --->
-<cfset filePath = instance.ESAPI.securityConfiguration().getResourceDirectory() & "users.txt"/>
-<cfset writer = ""/>
-<cfset writer &= "## This is the user file associated with the ESAPI library from http://www.owasp.org" & chr( 13 ) & chr( 10 )/>
-<cfset writer &= "## accountName | hashedPassword | roles | locked | enabled | rememberToken | csrfToken | oldPasswordHashes | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount" & chr( 13 ) & chr( 10 )/>
-<cfset writer &= chr( 13 ) & chr( 10 )/>
-<cffile action="write" file="#expandPath(filePath)#" output="#writer#"/>
-
-<cfscript>
 	suite = createObject( "component", "mxunit.framework.TestSuite" ).TestSuite();
 	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.DefaultSecurityConfigurationTest" );
 	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.LoggerTest" );
@@ -54,7 +40,7 @@
 	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.AuthenticatorTest" );
 
 	// exceptions
-	suite.addAll( "cfesapi.test.org.owasp.esapi.errors.EnterpriseSecurityExceptionTest" );
+	// TODO: suite.addAll( "cfesapi.test.org.owasp.esapi.errors.EnterpriseSecurityExceptionTest" );
 
 	// filters
 	suite.addAll( "cfesapi.test.org.owasp.esapi.filters.ESAPIFilterTest" );
@@ -63,10 +49,5 @@
 
 	results = suite.run();
 	writeOutput( results.getResultsOutput( "html" ) );
-
-	// Unset these properties so they do not interfere with other Unit Tests
-	System.setProperty( "cfesapi.org.owasp.esapi.resources", "" );
-	System.setProperty( "basedir", "" );
-
 	writeOutput( "<p>Total Test Time: #(getTickCount() - startTestSuiteRunTime) / 1000# seconds</p><br/>" );
 </cfscript>

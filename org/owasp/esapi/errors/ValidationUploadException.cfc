@@ -10,9 +10,9 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
- --->
+ * @author Damon Miller
+ * @created 2011
+--->
 <cfcomponent extends="ValidationException" output="false">
 
 	<cffunction access="public" returntype="ValidationUploadException" name="init" output="false"

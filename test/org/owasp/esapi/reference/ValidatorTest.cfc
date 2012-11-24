@@ -10,13 +10,12 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		System = getJava( "java.lang.System" );
 		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
 	</cfscript>
 
@@ -32,6 +31,8 @@
 	            hint="Test of isValidCreditCard method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidCreditCard" );
 			local.validator = instance.ESAPI.validator();
 			assertTrue( local.validator.isValidCreditCard( "test", "1234 9876 0000 0008", false ) );
@@ -46,6 +47,8 @@
 	            hint="Test of isValidEmailAddress method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidInput" );
 			local.validator = instance.ESAPI.validator();
 			assertTrue( local.validator.isValidInput( "test", "jeff.williams@aspectsecurity.com", "Email", 100, false ) );
@@ -78,6 +81,8 @@
 	            hint="Test of isValidSafeHTML method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidSafeHTML" );
 			local.validator = instance.ESAPI.validator();
 
@@ -96,6 +101,8 @@
 	            hint="Test of getValidSafeHTML method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "getValidSafeHTML" );
 			local.validator = instance.ESAPI.validator();
 			local.test1 = "<b>Jeff</b>";
@@ -123,6 +130,8 @@
 	            hint="Test of isValidListItem method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidListItem" );
 			local.validator = instance.ESAPI.validator();
 			local.list = [];
@@ -138,6 +147,8 @@
 	            hint="Test of isValidNumber method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidNumber" );
 			local.validator = instance.ESAPI.validator();
 			//testing negative range
@@ -179,6 +190,8 @@
 	            hint="">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidInteger" );
 			local.validator = instance.ESAPI.validator();
 			//testing negative range
@@ -221,6 +234,8 @@
 	            hint="Test of getValidDate method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "getValidDate" );
 			local.validator = instance.ESAPI.validator();
 			assertTrue( local.validator.getValidDate( "test", "June 23, 1967", getJava( "java.text.DateFormat" ).getDateInstance( getJava( "java.text.DateFormat" ).MEDIUM, getJava( "java.util.Locale" ).US ), false ) != "" );
@@ -247,6 +262,8 @@
 	            hint="Test of isValidFileName method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidFileName" );
 			local.validator = instance.ESAPI.validator();
 			assertTrue( local.validator.isValidFileName( "test", "aspect.jar", false ) );
@@ -265,6 +282,8 @@
 	            hint="Test of isValidDirectoryPath method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidDirectoryPath" );
 
 			local.isWindows = iif( System.getProperty( "os.name" ).indexOf( "Windows" ) != -1, de( true ), de( false ) );
@@ -316,6 +335,8 @@
 	            hint="">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidPrintable" );
 			local.validator = instance.ESAPI.validator();
 			assertTrue( local.validator.isValidPrintable( "name", "abcDEF", 100, false ) );
@@ -331,6 +352,8 @@
 	            hint="Test of isValidFileContent method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidFileContent" );
 			local.content = getJava( "java.lang.String" ).init( "This is some file content" ).getBytes();
 			local.validator = instance.ESAPI.validator();
@@ -343,6 +366,8 @@
 	            hint="Test of isValidFileUpload method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidFileUpload" );
 
 			local.isWindows = iif( System.getProperty( "os.name" ).indexOf( "Windows" ) != -1, de( true ), de( false ) );
@@ -378,6 +403,8 @@
 	            hint="Test of isValidParameterSet method, of class org.owasp.esapi.Validator.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "isValidParameterSet" );
 
 			local.requiredNames = [];
@@ -410,6 +437,8 @@
 	            hint="Test safe read line.">
 
 		<cfscript>
+			var local = {};
+
 			System.out.println( "safeReadLine" );
 
 			local.s = getJava( "java.io.ByteArrayInputStream" ).init( getJava( "java.lang.String" ).init( "testString" ).getBytes() );

@@ -10,21 +10,10 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
-<!---
- * The Randomizer interface defines a set of methods for creating
- * cryptographically random numbers and strings. Implementers should be sure to
- * use a strong cryptographic implementation, such as the JCE or BouncyCastle.
- * Weak sources of randomness can undermine a wide variety of security
- * mechanisms. The specific algorithm used is configurable in ESAPI.properties.
- *
- * @author Jeff Williams (jeff.williams .at. aspectsecurity.com) <a
- *         href="http://www.aspectsecurity.com">Aspect Security</a>
- * @since June 1, 2007
- --->
-<cfinterface>
+<cfinterface hint="The Randomizer interface defines a set of methods for creating cryptographically random numbers and strings. Implementers should be sure to use a strong cryptographic implementation, such as the JCE or BouncyCastle. Weak sources of randomness can undermine a wide variety of security mechanisms. The specific algorithm used is configurable in ESAPI.properties.">
 
 	<cffunction access="public" returntype="String" name="getRandomString" output="false"
 

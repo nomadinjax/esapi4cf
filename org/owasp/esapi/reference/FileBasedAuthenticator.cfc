@@ -10,8 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  *
- * @author Jeff Williams <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @created 2007
+ * @author Damon Miller
+ * @created 2011
  --->
 <!---
  * Reference implementation of the Authenticator interface. This reference implementation is backed by a simple text
@@ -31,8 +31,7 @@
  *
  * </PRE>
  *
- * @author <a href="mailto:jeff.williams@aspectsecurity.com?subject=ESAPI question">Jeff Williams</a> at <a
- * href="http://www.aspectsecurity.com">Aspect Security</a>
+ * @author Damon Miller
  * @since June 1, 2007
  * @see org.owasp.esapi.Authenticator
  --->
@@ -492,7 +491,7 @@
 			}
 
 			// We only check at most every checkInterval milliseconds
-			local.now = getJava( "java.lang.System" ).currentTimeMillis();
+			local.now = System.currentTimeMillis();
 			if(local.now - instance.lastChecked < instance.checkInterval) {
 				return;
 			}
@@ -530,7 +529,7 @@
 					local.line = local.reader.readLine();
 				}
 				instance.userMap = local.map;
-				instance.lastModified = getJava( "java.lang.System" ).currentTimeMillis();
+				instance.lastModified = System.currentTimeMillis();
 				instance.logger.trace( getSecurity("SECURITY_SUCCESS"), true, "User file reloaded: " & local.map.size() );
 			}
 			catch(java.lang.Exception e) {
@@ -645,7 +644,7 @@
 				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName ) );
 			}
 			instance.userMap.remove( getJava( "java.lang.Long" ).init( local.user.getAccountId() ) );
-			getJava( "java.lang.System" ).out.println( "Removing user " & local.user.getAccountName() );
+			System.out.println( "Removing user " & local.user.getAccountName() );
 			instance.passwordMap.remove( local.user.getAccountId() );
 			saveUsers();
 		</cfscript>

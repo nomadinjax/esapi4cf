@@ -5,8 +5,8 @@
  * filter out any sensitive data specific to the current application or organization, such as credit
  * cards, social security numbers, etc.
  *
- * @author Jeff Williams (jeff.williams .at. aspectsecurity.com) <a href="http://www.aspectsecurity.com">Aspect Security</a>
- * @since June 1, 2007
+ * @author Damon Miller
+ * @created 2011
  * @see org.owasp.esapi.LogFactory
  --->
 <cfcomponent implements="cfesapi.org.owasp.esapi.Logger" extends="cfesapi.org.owasp.esapi.util.Object" output="false">
