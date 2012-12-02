@@ -251,10 +251,10 @@
 	</cffunction>
 
 
+	<!--- NULL test not valid for CFML
 	<cffunction access="public" returntype="void" name="testCreateFileNameNull" output="false">
 		<cfscript>
 			var local = {};
-
 			try
 			{
 				createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file" & chr(0) & ".txt");
@@ -265,7 +265,7 @@
 				// expected
 			}
 		</cfscript>
-	</cffunction>
+	</cffunction> --->
 
 
 	<cffunction access="public" returntype="void" name="testCreateFileHighByte" output="false">

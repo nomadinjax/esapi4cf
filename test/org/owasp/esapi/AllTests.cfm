@@ -40,7 +40,7 @@
 	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.AuthenticatorTest" );
 
 	// exceptions
-	// TODO: suite.addAll( "cfesapi.test.org.owasp.esapi.errors.EnterpriseSecurityExceptionTest" );
+	suite.addAll( "cfesapi.test.org.owasp.esapi.errors.EnterpriseSecurityExceptionTest" );
 
 	// filters
 	suite.addAll( "cfesapi.test.org.owasp.esapi.filters.ESAPIFilterTest" );

@@ -1,45 +1,60 @@
 <!---
  * Fail safe main program to add or update an account in an emergency.
- * <P>
+ *
  * Warning: this method does not perform the level of validation and checks
  * generally required in ESAPI, and can therefore be used to create a username and password that do not comply
  * with the username and password strength requirements.
- * <P>
- * Example: Use this to add the alice account with the admin role to the users file:
- * <PRE>
- *
- * java -Dorg.owasp.esapi.resources="/path/resources" -classpath esapi.jar org.owasp.esapi.Authenticator alice password admin
- *
- * </PRE>
- *
- * @param args
- * 		the arguments (username, password, role)
- * @throws Exception
- * 		the exception
  --->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>FileBasedAuthenticator Fail Safe</title>
+</head>
+<body>
+<p>Fail safe main program to add or update an account in an emergency.</p>
+<p>Warning: this method does not perform the level of validation and checks generally required in ESAPI, and can therefore be used to create a username and password that do not comply with the username and password strength requirements.</p>
+<cfscript>
+	if (cgi.request_method == "post") {
+		ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI").init();
+		ESAPI.securityConfiguration().setResourceDirectory(expandPath("../../../../test/resources/"));
 
-    public static void main(String[] args) throws Exception {
-        if (args.length != 3) {
-            System.out.println("Usage: Authenticator accountname password role");
-            return;
-        }
-        FileBasedAuthenticator auth = new FileBasedAuthenticator();
-        String accountName = args[0].toLowerCase();
-        String password = args[1];
-        String role = args[2];
-        DefaultUser user = (DefaultUser) auth.getUser(args[0]);
-        if (user == null) {
-            user = new DefaultUser(accountName);
-    		String newHash = auth.hashPassword(password, accountName);
-    		auth.setHashedPassword(user, newHash);
-            user.addRole(role);
-            user.enable();
-            user.unlock();
-            auth.userMap.put(new Long(user.getAccountId()), user);
-            System.out.println("New user created: " + accountName);
-            auth.saveUsers();
-            System.out.println("User account " + user.getAccountName() + " updated");
-        } else {
-        	System.err.println("User account " + user.getAccountName() + " already exists!");
-        }
-    }
+		if (listLen(form.fieldNames) != 3) {
+		    writeOutput("<p>Usage: Authenticator accountname password role</p>");
+		    return;
+		}
+		auth = ESAPI.authenticator();
+		accountName = form.accountName.toLowerCase();
+		password = form.password;
+		role = form.role;
+		user = auth.getUserByAccountName(form.accountName);
+		if (!isObject(user)) {
+		    user = createObject("component", "DefaultUser").init(ESAPI, accountName);
+			newHash = auth.hashPassword(password, accountName);
+			auth.setHashedPassword(user, newHash);
+		    user.addRole(role);
+		    user.enable();
+		    user.unlock();
+		    auth.userMap.put(javaCast("long", user.getAccountId()), user);
+		    writeOutput("<p>New user created: " & accountName & "</p>");
+		    auth.saveUsers();
+		    writeOutput("<p>User account " & user.getAccountName() & " updated</p>");
+		} else {
+			writeOutput("<p>User account " & user.getAccountName() & " already exists!</p>");
+		}
+	}
+</cfscript>
+<form method="post">
+	<label for="accountName">Account Name</label>
+	<input type="text" id="accountName" name="accountName" required="required" />
+	<br />
+	<label for="password">Password</label>
+	<input type="password" id="password" name="password" required="required" />
+	<br />
+	<label for="role">Role</label>
+	<input type="text" id="role" name="role" required="required" />
+	<br />
+	<button type="submit">Submit</button>
+</form>
+</body>
+</html>

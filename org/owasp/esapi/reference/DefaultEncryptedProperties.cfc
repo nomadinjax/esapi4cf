@@ -14,23 +14,6 @@
  * @created 2011
 --->
 <cfcomponent implements="cfesapi.org.owasp.esapi.EncryptedProperties" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the EncryptedProperties interface. This implementation wraps a normal properties file, and creates surrogates for the getProperty and setProperty methods that perform encryption and decryption based on the Encryptor. A very simple main program is provided that can be used to create an encrypted properties file. A better approach would be to allow unencrypted properties in the file and to encrypt them the first time the file is accessed.">
-<!---
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.Logger;
-import org.owasp.esapi.errors.EncryptionException;
---->
 
 	<cfscript>
 		instance.ESAPI = "";

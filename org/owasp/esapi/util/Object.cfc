@@ -1,6 +1,8 @@
 ﻿<cfcomponent output="false">
 
 	<cfscript>
+		this.VERSION = "1.4.4";	// all CESAPI CFC's will have this
+
 		instance.javaCache = {};
 
 		System = getJava( "java.lang.System" );
@@ -18,6 +20,12 @@
 		<cfargument required="true" type="String" name="classpath"/>
 
 		<cfscript>
+			// StringBuffer causes performance issues in Railo
+			// will this fix hurt CF8? - if it does, consider using server scope version for logic here
+			if (arguments.classpath == "java.lang.StringBuffer") {
+				arguments.classpath = "java.lang.StringBuilder";
+			}
+
 			if(!structKeyExists( instance.javaCache, arguments.classpath )) {
 				instance.javaCache[arguments.classpath] = createObject( "java", arguments.classpath );
 			}

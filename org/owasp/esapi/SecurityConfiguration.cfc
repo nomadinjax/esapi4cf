@@ -13,27 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<!---
- * The SecurityConfiguration interface stores all configuration information
- * that directs the behavior of the ESAPI implementation.
- * <br><br>
- * Protection of this configuration information is critical to the secure
- * operation of the application using the ESAPI. You should use operating system
- * access controls to limit access to wherever the configuration information is
- * stored.
- * <br><br>
- * Please note that adding another layer of encryption does not make the
- * attackers job much more difficult. Somewhere there must be a master "secret"
- * that is stored unencrypted on the application platform. Creating another
- * layer of indirection doesn't provide any real additional security. Its up to the
- * reference implementation to decide whether this file should be encrypted or not.
- * The ESAPI reference implementation (DefaultSecurityConfiguration.java) does not encrypt
- * its properties file.
- *
- * @author Damon Miller
- * @since June 1, 2007
- --->
-<cfinterface>
+<cfinterface hint="The SecurityConfiguration interface stores all configuration information that directs the behavior of the ESAPI implementation. Protection of this configuration information is critical to the secure operation of the application using the ESAPI. You should use operating system access controls to limit access to wherever the configuration information is stored. Please note that adding another layer of encryption does not make the attackers job much more difficult. Somewhere there must be a master 'secret' that is stored unencrypted on the application platform. Creating another layer of indirection doesn't provide any real additional security. Its up to the reference implementation to decide whether this file should be encrypted or not. The ESAPI reference implementation (DefaultSecurityConfiguration.java) does not encrypt its properties file.">
 
 	<cffunction access="public" returntype="String" name="getApplicationName" output="false"
 	            hint="Gets the application name, used for logging">

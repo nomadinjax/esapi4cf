@@ -13,29 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<!---
- * Reference implementation of the Authenticator interface. This reference implementation is backed by a simple text
- * file that contains serialized information about users. Many organizations will want to create their own
- * implementation of the methods provided in the Authenticator interface backed by their own user repository. This
- * reference implementation captures information about users in a simple text file format that contains user information
- * separated by the pipe "|" character. Here's an example of a single line from the users.txt file:
- *
- * <PRE>
- *
- * account id | account name | hashed password | roles | lockout | status | old password hashes | last
- * hostname | last change | last login | last failed | expiration | failed
- * ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- * 1203123710837 | mitch | 44k/NAzQUlrCq9musTGGkcMNmdzEGJ8w8qZTLzpxLuQ= | admin,user | unlocked | enabled |
- * u10dW4vTo3ZkoM5xP+blayWCz7KdPKyKUojOn9GJobg= | 192.168.1.255 | 1187201000926 | 1187200991568 | 1187200605330 |
- * 2187200605330 | 1
- *
- * </PRE>
- *
- * @author Damon Miller
- * @since June 1, 2007
- * @see org.owasp.esapi.Authenticator
- --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.Authenticator" extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent implements="cfesapi.org.owasp.esapi.Authenticator" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Authenticator interface. This reference implementation is backed by a simple text file that contains serialized information about users. Many organizations will want to create their own implementation of the methods provided in the Authenticator interface backed by their own user repository. This reference implementation captures information about users in a simple text file format that contains user information separated by the pipe '|' character.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -61,7 +39,7 @@
 		instance.MAX_ACCOUNT_NAME_LENGTH = 250;
 	</cfscript>
 
-	<cffunction access="private" returntype="void" name="setHashedPassword" output="false"
+	<cffunction access="public" returntype="void" name="setHashedPassword" output="false"
 	            hint="Add a hash to a User's hashed password list.  This method is used to store a user's old password hashes to be sure that any new passwords are not too similar to old passwords.">
 		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="the user to associate with the new hash"/>
 		<cfargument required="true" type="String" name="hash" hint="the hash to store in the user's password hash list"/>
@@ -149,7 +127,7 @@
 
 	<cfscript>
 		/** The user map. */
-		instance.userMap = {};
+		this.userMap = {};
 
 		// Map<User, List<String>>, where the strings are password hashes, with the current hash in entry 0
 		instance.passwordMap = {};
@@ -220,7 +198,7 @@
 			catch(cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
 				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee ) );
 			}
-			instance.userMap.put( local.user.getAccountId(), local.user );
+			this.userMap.put( local.user.getAccountId(), local.user );
 			instance.logger.info( getSecurity("SECURITY_SUCCESS"), true, "New user created: " & arguments.accountName );
 			saveUsers();
 			return local.user;
@@ -363,8 +341,8 @@
 				return createObject( "component", "cfesapi.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI );
 			}
 			loadUsersIfNecessary();
-			if(structKeyExists( instance.userMap, arguments.accountId )) {
-				return instance.userMap.get( arguments.accountId );
+			if(structKeyExists( this.userMap, arguments.accountId )) {
+				return this.userMap.get( arguments.accountId );
 			}
 			return "";
 		</cfscript>
@@ -381,9 +359,9 @@
 				return createObject( "component", "cfesapi.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI );
 			}
 			loadUsersIfNecessary();
-			for(local.u in instance.userMap) {
-				if(instance.userMap[local.u].getAccountName().equalsIgnoreCase( arguments.accountName ))
-					return instance.userMap[local.u];
+			for(local.u in this.userMap) {
+				if(this.userMap[local.u].getAccountName().equalsIgnoreCase( arguments.accountName ))
+					return this.userMap[local.u];
 			}
 			return "";
 		</cfscript>
@@ -459,8 +437,8 @@
 
 			loadUsersIfNecessary();
 			local.results = [];
-			for(local.u in instance.userMap) {
-				local.results.add( instance.userMap[local.u].getAccountName() );
+			for(local.u in this.userMap) {
+				local.results.add( this.userMap[local.u].getAccountName() );
 			}
 			return local.results;
 		</cfscript>
@@ -528,7 +506,7 @@
 					}
 					local.line = local.reader.readLine();
 				}
-				instance.userMap = local.map;
+				this.userMap = local.map;
 				instance.lastModified = System.currentTimeMillis();
 				instance.logger.trace( getSecurity("SECURITY_SUCCESS"), true, "User file reloaded: " & local.map.size() );
 			}
@@ -643,7 +621,7 @@
 			if(!isObject( local.user )) {
 				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName ) );
 			}
-			instance.userMap.remove( getJava( "java.lang.Long" ).init( local.user.getAccountId() ) );
+			this.userMap.remove( getJava( "java.lang.Long" ).init( local.user.getAccountId() ) );
 			System.out.println( "Removing user " & local.user.getAccountName() );
 			instance.passwordMap.remove( local.user.getAccountId() );
 			saveUsers();
