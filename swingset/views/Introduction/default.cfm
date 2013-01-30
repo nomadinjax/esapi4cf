@@ -1,7 +1,9 @@
+<cfoutput>
 <div id="navigation">
-<a href="main">Home</a> |
-<b><a href="main?function=InitialSetup">Introduction</a></b>
+	<a href="#buildURL('')#">Home</a> |
+	<b><a href="#buildURL('Introduction')#">Introduction</a></b>
 </div>
+</cfoutput>
 <div id="header"></div>
 <p>
 <hr>

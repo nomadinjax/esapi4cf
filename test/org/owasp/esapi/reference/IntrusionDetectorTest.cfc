@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 		clearUserFile();
 	</cfscript>
 
@@ -35,10 +35,10 @@
 			var local = {};
 
 			System.out.println( "addException" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
-			instance.ESAPI.intrusionDetector().addException( createObject( "component", "cfesapi.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "user message", "log message" ) );
+			instance.ESAPI.intrusionDetector().addException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "user message", "log message" ) );
 			local.username = instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS );
 			local.auth = instance.ESAPI.authenticator();
 			local.user = local.auth.createUser( local.username, "addException", "addException" );
@@ -46,9 +46,9 @@
 			local.user.loginWithPassword( password="addException" );
 
 			// Now generate some exceptions to disable account
-			for(local.i = 1; local.i <= instance.ESAPI.securityConfiguration().getQuota( "cfesapi.org.owasp.esapi.errors.IntegrityException" ).count; local.i++) {
+			for(local.i = 1; local.i <= instance.ESAPI.securityConfiguration().getQuota( "esapi4cf.org.owasp.esapi.errors.IntegrityException" ).count; local.i++) {
 				// EnterpriseSecurityExceptions are added to IntrusionDetector automatically
-				createObject( "component", "cfesapi.org.owasp.esapi.errors.IntegrityException" ).init( instance.ESAPI, "IntegrityException " & local.i, "IntegrityException " & local.i );
+				createObject( "component", "esapi4cf.org.owasp.esapi.errors.IntegrityException" ).init( instance.ESAPI, "IntegrityException " & local.i, "IntegrityException " & local.i );
 			}
 			assertFalse( local.user.isLoggedIn() );
 		</cfscript>
@@ -66,8 +66,8 @@
 			local.auth = instance.ESAPI.authenticator();
 			local.user = local.auth.createUser( local.username, "addEvent", "addEvent" );
 			local.user.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.user.loginWithPassword( password="addEvent" );
 

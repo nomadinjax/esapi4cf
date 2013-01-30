@@ -1,4 +1,4 @@
-﻿<cfinterface extends="cfesapi.org.owasp.esapi.util.ServletResponse">
+﻿<cfinterface extends="esapi4cf.org.owasp.esapi.util.ServletResponse">
 
 	<cffunction access="public" returntype="void" name="addCookie" output="false">
 		<cfargument required="true" name="cookie"/>

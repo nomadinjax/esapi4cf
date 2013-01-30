@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 		instance.testLogger = instance.ESAPI.getLogger( "test" );
 	</cfscript>
 
@@ -35,8 +35,8 @@
 			var local = {};
 			System.out.println( "logHTTPRequest" );
 			local.ignore = ["password", "ssn", "ccn"];
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.logger = instance.ESAPI.getLogger( "logger" );
 			instance.ESAPI.httpUtilities().logHTTPRequest( instance.ESAPI.currentRequest(), local.logger, local.ignore );

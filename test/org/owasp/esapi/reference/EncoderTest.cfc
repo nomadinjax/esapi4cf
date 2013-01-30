@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->`
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testCanonicalize" output="false">
@@ -28,7 +28,7 @@
 			local.list = getJava( "java.util.ArrayList" ).init();
 			local.list.add( getJava( "org.owasp.esapi.codecs.HTMLEntityCodec" ).init() );
 			local.list.add( getJava( "org.owasp.esapi.codecs.PercentCodec" ).init() );
-			local.encoder = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder" ).init( instance.ESAPI, local.list );
+			local.encoder = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultEncoder" ).init( instance.ESAPI, local.list );
 
 			/* NULL test not valid in CF
 			// Test null paths
@@ -142,7 +142,7 @@
 			// javascript escape syntax
 			local.js = getJava( "java.util.ArrayList" ).init();
 			local.js.add( getJava( "org.owasp.esapi.codecs.JavaScriptCodec" ).init() );
-			local.encoder = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder" ).init( instance.ESAPI, local.js );
+			local.encoder = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultEncoder" ).init( instance.ESAPI, local.js );
 			System.out.println( "JavaScript Decoding" );
 
 			/* NULL test not valid in CF
@@ -172,7 +172,7 @@
 			// be careful because some codecs see \0 as null byte
 			local.css = getJava( "java.util.ArrayList" ).init();
 			local.css.add( getJava( "org.owasp.esapi.codecs.CSSCodec" ).init() );
-			local.encoder = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder" ).init( instance.ESAPI, local.css );
+			local.encoder = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultEncoder" ).init( instance.ESAPI, local.css );
 			System.out.println( "CSS Decoding" );
 			assertEquals( "<", local.encoder.canonicalize( "\3c" ) );// add strings to prevent null byte
 			assertEquals( "<", local.encoder.canonicalize( "\03c" ) );
@@ -232,20 +232,20 @@
 			try {
 				assertEquals( "< < < < < < <", local.encoder.canonicalize( "%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B" ) );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.IntrusionException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.IntrusionException e) {
 				// expected
 			}
 
 			try {
 				assertEquals( "<script", local.encoder.canonicalize( "%253Cscript" ) );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.IntrusionException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.IntrusionException e) {
 				// expected
 			}
 			try {
 				assertEquals( "<script", local.encoder.canonicalize( "&##37;3Cscript" ) );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.IntrusionException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.IntrusionException e) {
 				// expected
 			}
 		</cfscript>

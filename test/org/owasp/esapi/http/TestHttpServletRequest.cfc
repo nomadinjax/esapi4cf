@@ -13,8 +13,8 @@
  * @author Damon Miller
  * @created 2011
  --->
-<!---  implements="cfesapi.org.owasp.esapi.HttpServletRequest" --->
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<!---  implements="esapi4cf.org.owasp.esapi.HttpServletRequest" --->
+<cfcomponent extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
 		/** The requestDispatcher */
@@ -292,10 +292,10 @@
 		<cfscript>
 			if(structKeyExists( arguments, "create" )) {
 				if(!isObject( instance.session ) && arguments.create) {
-					instance.session = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpSession" ).init();
+					instance.session = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession" ).init();
 				}
 				else if(isObject( instance.session ) && instance.session.getInvalidated()) {
-					instance.session = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpSession" ).init();
+					instance.session = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession" ).init();
 				}
 				return instance.session;// may return empty string or TestHttpSession
 			}

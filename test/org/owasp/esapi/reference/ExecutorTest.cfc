@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
 --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 
 		instance.origConfig = "";
 	</cfscript>
@@ -66,7 +66,7 @@
 				local.result = local.executor.executeSystemCommand(local.exec2, local.params, local.working, local.codec);
 				System.out.println( "RESULT: " & local.result );
 				fail("");
-			} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
+			} catch (esapi4cf.org.owasp.esapi.errors.ExecutorException e) {
 				// expected
 			}
 			try {
@@ -74,7 +74,7 @@
 				local.result = local.executor.executeSystemCommand(local.exec2, local.params, local.working, local.codec);
 				System.out.println( "RESULT: " & result );
 				fail("");
-			} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
+			} catch (esapi4cf.org.owasp.esapi.errors.ExecutorException e) {
 				// expected
 			}
 			try {
@@ -82,7 +82,7 @@
 				local.result = local.executor.executeSystemCommand(local.executable, local.params, local.workdir, local.codec);
 				System.out.println( "RESULT: " & local.result );
 				fail("");
-			} catch (cfesapi.org.owasp.esapi.errors.ExecutorException e) {
+			} catch (esapi4cf.org.owasp.esapi.errors.ExecutorException e) {
 				// expected
 			}
 			try {

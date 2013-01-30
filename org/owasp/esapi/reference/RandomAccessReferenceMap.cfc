@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
 --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.AccessReferenceMap" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the AccessReferenceMap interface. This implementation generates random 6 character alphanumeric strings for indirect references. It is possible to use simple integers as indirect references, but the random string approach provides a certain level of protection from CSRF attacks, because an attacker would have difficulty guessing the indirect reference.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.AccessReferenceMap" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the AccessReferenceMap interface. This implementation generates random 6 character alphanumeric strings for indirect references. It is possible to use simple integers as indirect references, but the random string approach provides a certain level of protection from CSRF attacks, because an attacker would have difficulty guessing the indirect reference.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -29,7 +29,7 @@
 	</cfscript>
 
 	<cffunction access="public" returntype="RandomAccessReferenceMap" name="init" output="false" hint="This AccessReferenceMap implementation uses short random strings to create a layer of indirection. Other possible implementations would use simple integers as indirect references.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI">
 		<cfargument type="Array" name="directReferences" hint="Instantiates a new access reference map with a set of direct references.">
 		<cfscript>
 			instance.ESAPI = arguments.ESAPI;
@@ -143,7 +143,7 @@
 			if (instance.itod.containsKey(arguments.indirectReference)) {
 				return instance.itod.get(arguments.indirectReference);
 			}
-			throwException(createObject("component", "cfesapi.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access denied", "Request for invalid indirect reference: " & arguments.indirectReference));
+			throwException(createObject("component", "esapi4cf.org.owasp.esapi.errors.AccessControlException").init(instance.ESAPI, "Access denied", "Request for invalid indirect reference: " & arguments.indirectReference));
 		</cfscript>
 	</cffunction>
 

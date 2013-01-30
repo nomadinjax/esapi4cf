@@ -9,7 +9,7 @@
  * @created 2011
  * @see org.owasp.esapi.LogFactory
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.Logger" extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.Logger" extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -30,7 +30,7 @@
 
 	<cffunction access="public" returntype="JavaLogger" name="init" output="false"
 	            hint="Public constructor should only ever be called via the appropriate LogFactory">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="applicationName" hint="the application name"/>
 		<cfargument required="true" type="String" name="moduleName" hint="the module name"/>
 
@@ -251,7 +251,7 @@
 				local.msg = arguments.type & "-" & iif( arguments.success, de( "SUCCESS" ), de( "FAILURE" ) ) & " " & local.user.getAccountName() & "@" & local.user.getLastHostAddress() & ":" & local.userSessionIDforLogging & " -- " & local.clean;
 			}
 
-			instance.jlogger.logp( arguments.level, instance.applicationName, instance.moduleName, "[CFESAPI] " & local.msg );
+			instance.jlogger.logp( arguments.level, instance.applicationName, instance.moduleName, "[ESAPI4CF] " & local.msg );
 		</cfscript>
 
 	</cffunction>

@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
 --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 <!---
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,7 +26,7 @@ import junit.framework.TestSuite;
 import org.owasp.esapi.errors.EncryptionException;
 --->
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testGetProperty" output="false">
@@ -34,7 +34,7 @@ import org.owasp.esapi.errors.EncryptionException;
 			var local = {};
 
 			System.out.println("getProperty");
-			local.dep = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
+			local.dep = createObject("component", "esapi4cf.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
 			local.name = "name";
 			local.value = "value";
 			local.dep.setProperty(local.name, local.value);
@@ -49,7 +49,7 @@ import org.owasp.esapi.errors.EncryptionException;
 			var local = {};
 
 			System.out.println("setProperty");
-			local.dep = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
+			local.dep = createObject("component", "esapi4cf.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
 			local.name = "name";
 			local.value = "value";
 			local.dep.setProperty(local.name, local.value);
@@ -59,7 +59,7 @@ import org.owasp.esapi.errors.EncryptionException;
 			try {
 				local.dep.setProperty(null, null);
 				fail("");
-			} catch( cfesapi.org.owasp.esapi.errors.EncryptionException e ) {
+			} catch( esapi4cf.org.owasp.esapi.errors.EncryptionException e ) {
 				// expected
 			} */
 		</cfscript>
@@ -69,7 +69,7 @@ import org.owasp.esapi.errors.EncryptionException;
 		<cfscript>
 			var local = {};
 
-			local.dep = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
+			local.dep = createObject("component", "esapi4cf.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
 			assertTrue(local.dep.getProperty("not.there") == "");
 		</cfscript>
 	</cffunction>
@@ -82,7 +82,7 @@ import org.owasp.esapi.errors.EncryptionException;
 			local.sawOne = false;
 
 			System.out.println("keySet");
-			local.dep = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
+			local.dep = createObject("component", "esapi4cf.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
 			local.dep.setProperty("one", "two");
 			local.dep.setProperty("two", "three");
 			local.i = local.dep.keySet().iterator();
@@ -113,14 +113,14 @@ import org.owasp.esapi.errors.EncryptionException;
 		<cfscript>
 			var local = {};
 
-			local.toStore = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
-			local.toLoad = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
+			local.toStore = createObject("component", "esapi4cf.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
+			local.toLoad = createObject("component", "esapi4cf.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
 			local.baos = getJava("java.io.ByteArrayOutputStream").init();
 			local.bais = "";
 			local.sawOne = false;
 			local.sawTwo = false;
 
-			local.toStore = createObject("component", "cfesapi.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
+			local.toStore = createObject("component", "esapi4cf.org.owasp.esapi.reference.DefaultEncryptedProperties").init(instance.ESAPI);
 			local.toStore.setProperty("one", "two");
 			local.toStore.setProperty("two", "three");
 			local.toStore.store(local.baos, "testStore");

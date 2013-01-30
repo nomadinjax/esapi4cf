@@ -8,7 +8,7 @@
  * @see org.owasp.esapi.LogFactory
  * @see org.owasp.esapi.reference.JavaLogFactory.JavaLogger
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.LogFactory" extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.LogFactory" extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -17,9 +17,9 @@
 		instance.loggersMap = {};
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.LogFactory" name="init" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.LogFactory" name="init" output="false"
 	            hint="Constructor for this implementation of the LogFactory interface.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="applicationName" hint="The name of this application this logger is being constructed for."/>
 
 		<cfscript>
@@ -30,7 +30,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Logger" name="getLogger" output="false">
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.Logger" name="getLogger" output="false">
 		<cfargument required="true" type="String" name="moduleName"/>
 
 		<cfscript>

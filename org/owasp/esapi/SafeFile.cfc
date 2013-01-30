@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
 --->
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.File" hint="Extension to java.io.File to prevent against null byte injections and other unforeseen problems resulting from unprintable characters causing problems in path lookups. This does _not_ prevent against directory traversal attacks.">
+<cfcomponent extends="esapi4cf.org.owasp.esapi.util.File" hint="Extension to java.io.File to prevent against null byte injections and other unforeseen problems resulting from unprintable characters causing problems in path lookups. This does _not_ prevent against directory traversal attacks.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -24,7 +24,7 @@
 	</cfscript>
 
 	<cffunction access="public" returntype="SafeFile" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument type="String" name="pathname">
 		<cfargument name="parent">
 		<cfargument type="String" name="child">
@@ -47,17 +47,17 @@
 
 			local.m1 = instance.DIR_BLACKLIST_PAT.matcher( arguments.path );
 			if ( local.m1.find() ) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & local.m1.group() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & local.m1.group() ) );
 			}
 
 			local.m2 = instance.PERCENTS_PAT.matcher( arguments.path );
 			if ( local.m2.find() ) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains encoded characters: " & local.m2.group() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains encoded characters: " & local.m2.group() ) );
 			}
 
 			local.ch = containsUnprintableCharacters(arguments.path);
 			if (local.ch != -1) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains unprintable character: " & local.ch) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains unprintable character: " & local.ch) );
 			}
 		</cfscript>
 	</cffunction>
@@ -69,17 +69,17 @@
 
 			local.m1 = instance.FILE_BLACKLIST_PAT.matcher( arguments.path );
 			if ( local.m1.find() ) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & local.m1.group() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & local.m1.group() ) );
 			}
 
 			local.m2 = instance.PERCENTS_PAT.matcher( arguments.path );
 			if ( local.m2.find() ) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains encoded characters: " & local.m2.group() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains encoded characters: " & local.m2.group() ) );
 			}
 
 			local.ch = containsUnprintableCharacters(arguments.path);
 			if (local.ch != -1) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains unprintable character: " & local.ch) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.ValidationException" ).init( instance.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains unprintable character: " & local.ch) );
 			}
 		</cfscript>
 	</cffunction>

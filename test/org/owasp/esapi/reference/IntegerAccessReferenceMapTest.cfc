@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
 --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 		clearUserFile();
 	</cfscript>
 
@@ -34,7 +34,7 @@
 			var local = {};
 
 	        System.out.println("update");
-	    	local.arm = createObject("component", "cfesapi.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI );
+	    	local.arm = createObject("component", "esapi4cf.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI );
 	    	local.auth = instance.ESAPI.authenticator();
 
 	    	local.pass = local.auth.generateStrongPassword();
@@ -64,7 +64,7 @@
 			var local = {};
 
 	        System.out.println("iterator");
-	    	local.arm = createObject("component", "cfesapi.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI );
+	    	local.arm = createObject("component", "esapi4cf.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI );
 	        local.auth = instance.ESAPI.authenticator();
 
 			local.arm.update(local.auth.getUserNames());
@@ -89,7 +89,7 @@
 	        local.list.add( "123" );
 	        local.list.add( directReference );
 	        local.list.add( "345" );
-	        local.arm = createObject("component", "cfesapi.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI, local.list );
+	        local.arm = createObject("component", "esapi4cf.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI, local.list );
 
 	        local.expResult = local.directReference;
 	        local.result = local.arm.getIndirectReference(local.directReference);
@@ -108,7 +108,7 @@
 	        local.list.add( "123" );
 	        local.list.add( local.directReference );
 	        local.list.add( "345" );
-	        local.arm = createObject("component", "cfesapi.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI, local.list );
+	        local.arm = createObject("component", "esapi4cf.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI, local.list );
 
 	        local.ind = local.arm.getIndirectReference(local.directReference);
 	        local.dir = local.arm.getDirectReference(local.ind);
@@ -116,7 +116,7 @@
 	        try {
 	        	local.arm.getDirectReference("invalid");
 	        	fail("");
-	        } catch( cfesapi.org.owasp.esapi.errors.AccessControlException e ) {
+	        } catch( esapi4cf.org.owasp.esapi.errors.AccessControlException e ) {
 	        	// success
 	        }
 	    </cfscript>
@@ -133,7 +133,7 @@
 	        local.list.add( "123" );
 	        local.list.add( local.directReference );
 	        local.list.add( "345" );
-	        local.arm = createObject("component", "cfesapi.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI, local.list );
+	        local.arm = createObject("component", "esapi4cf.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI, local.list );
 
 	        local.newDirect = local.arm.addDirectReference("newDirect");
 	        assertFalse( local.newDirect == "");
@@ -156,7 +156,7 @@
 	        local.list.add( "123" );
 	        local.list.add( local.directReference );
 	        local.list.add( "345" );
-	        local.arm = createObject("component", "cfesapi.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI, local.list );
+	        local.arm = createObject("component", "esapi4cf.org.owasp.esapi.reference.RandomAccessReferenceMap").init( instance.ESAPI, local.list );
 
 	        local.indirect = local.arm.getIndirectReference(local.directReference);
 	        assertFalse(local.indirect == "");

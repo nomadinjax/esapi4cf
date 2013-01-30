@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
 --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.Executor" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Executor interface. This implementation is very restrictive. Commands must exactly equal the canonical path to an executable on the system. Valid characters for parameters are codec dependent, but will usually only include alphanumeric, forward-slash, and dash.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.Executor" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Executor interface. This implementation is very restrictive. Commands must exactly equal the canonical path to an executable on the system. Valid characters for parameters are codec dependent, but will usually only include alphanumeric, forward-slash, and dash.">
 <!---
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,8 +36,8 @@ import org.owasp.esapi.errors.ExecutorException;
 		//instance.MAX_SYSTEM_COMMAND_LENGTH = 2500;
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Executor" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.Executor" name="init" output="false">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
 			instance.ESAPI = arguments.ESAPI;
@@ -62,10 +62,10 @@ import org.owasp.esapi.errors.ExecutorException;
 	            // command must exactly match the canonical path and must actually exist on the file system
 	            // using equalsIgnoreCase for Windows, although this isn't quite as strong as it should be
 	            if (!arguments.executable.getCanonicalPath().equalsIgnoreCase(arguments.executable.getPath())) {
-	                throwException(createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Invalid path to executable file: " & arguments.executable));
+	                throwException(createObject("component", "esapi4cf.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Invalid path to executable file: " & arguments.executable));
 	            }
 	            if (!arguments.executable.exists()) {
-	                throwException(createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such executable: " & arguments.executable));
+	                throwException(createObject("component", "esapi4cf.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such executable: " & arguments.executable));
 	            }
 
 	            // escape any special characters in the parameters
@@ -76,7 +76,7 @@ import org.owasp.esapi.errors.ExecutorException;
 
 	            // working directory must exist
 	            if (!arguments.workdir.exists()) {
-	                throwException(createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath()));
+	                throwException(createObject("component", "esapi4cf.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath()));
 	            }
 
 	            arguments.params.add(0, arguments.executable.getCanonicalPath());
@@ -100,7 +100,7 @@ import org.owasp.esapi.errors.ExecutorException;
 	            instance.logger.warning(getSecurity("SECURITY"), true, "System command complete: " & arrayToList(arguments.params));
 	            return local.output;
 	        } catch (java.lang.Exception e) {
-	            throwException(createObject("component", "cfesapi.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e));
+	            throwException(createObject("component", "esapi4cf.org.owasp.esapi.errors.ExecutorException").init(instance.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e));
 	        }
     	</cfscript>
 	</cffunction>

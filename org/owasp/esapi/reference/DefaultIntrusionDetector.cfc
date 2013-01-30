@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.IntrusionDetector" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the IntrusionDetector interface. This implementation monitors EnterpriseSecurityExceptions to see if any user exceeds a configurable threshold in a configurable time period. For example, it can monitor to see if a user exceeds 10 input validation issues in a 1 minute period. Or if there are more than 3 authentication problems in a 10 second period. More complex implementations are certainly possible, such as one that establishes a baseline of expected behavior, and then detects deviations from that baseline.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.IntrusionDetector" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the IntrusionDetector interface. This implementation monitors EnterpriseSecurityExceptions to see if any user exceeds a configurable threshold in a configurable time period. For example, it can monitor to see if a user exceeds 10 input validation issues in a 1 minute period. Or if there are more than 3 authentication problems in a 10 second period. More complex implementations are certainly possible, such as one that establishes a baseline of expected behavior, and then detects deviations from that baseline.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -23,8 +23,8 @@
 		instance.userEvents = {};
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.IntrusionDetector" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.IntrusionDetector" name="init" output="false">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
 			instance.ESAPI = arguments.ESAPI;
@@ -36,14 +36,14 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="addException" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.util.Exception" name="exception"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.util.Exception" name="exception"/>
 
 		<cfscript>
 			var local = {};
 			if(instance.ESAPI.securityConfiguration().getDisableIntrusionDetection())
 				return;
 
-			if(isInstanceOf( arguments.exception, "cfesapi.org.owasp.esapi.errors.EnterpriseSecurityException" )) {
+			if(isInstanceOf( arguments.exception, "esapi4cf.org.owasp.esapi.errors.EnterpriseSecurityException" )) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, arguments.exception.getLogMessage(), arguments.exception );
 			}
 			else {
@@ -54,7 +54,7 @@
 			local.user = instance.ESAPI.authenticator().getCurrentUser();
 			local.eventName = getMetaData( arguments.exception ).name;
 
-			if(isInstanceOf( arguments.exception, "cfesapi.org.owasp.esapi.errors.IntrusionException" )) {
+			if(isInstanceOf( arguments.exception, "esapi4cf.org.owasp.esapi.errors.IntrusionException" )) {
 				return;
 			}
 
@@ -62,7 +62,7 @@
 			try {
 				addSecurityEvent( local.user, local.eventName );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.IntrusionException ex) {
+			catch(esapi4cf.org.owasp.esapi.errors.IntrusionException ex) {
 				local.quota = instance.ESAPI.securityConfiguration().getQuota( local.eventName );
 				for(local.i = 1; local.i <= arrayLen( local.quota.actions ); local.i++) {
 					local.action = local.quota.actions[local.i];
@@ -90,7 +90,7 @@
 			try {
 				addSecurityEvent( local.user, "event." & arguments.eventName );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.IntrusionException ex) {
+			catch(esapi4cf.org.owasp.esapi.errors.IntrusionException ex) {
 				local.quota = instance.ESAPI.securityConfiguration().getQuota( "event." & arguments.eventName );
 				for(local.i = 1; local.i <= arrayLen( local.quota.actions ); local.i++) {
 					local.action = local.quota.actions[local.i];
@@ -116,7 +116,7 @@
 				instance.logger.fatal( getSecurity("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.message );
 			}
 			local.user = instance.ESAPI.authenticator().getCurrentUser();
-			if(isInstanceOf( local.user, "cfesapi.org.owasp.esapi.User$ANONYMOUS" ))
+			if(isInstanceOf( local.user, "esapi4cf.org.owasp.esapi.User$ANONYMOUS" ))
 				return;
 			if(arguments.action.equals( "disable" )) {
 				local.user.disable();
@@ -130,7 +130,7 @@
 
 	<cffunction access="private" returntype="void" name="addSecurityEvent" output="false"
 	            hint="Adds a security event to the user.  These events are used to check that the user has not reached the security thresholds set in the properties file.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="The user that caused the event."/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user" hint="The user that caused the event."/>
 		<cfargument required="true" type="String" name="eventName" hint="The name of the event that occurred."/>
 
 		<cfscript>

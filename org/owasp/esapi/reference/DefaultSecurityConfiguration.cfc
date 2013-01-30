@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.SecurityConfiguration" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="The SecurityConfiguration manages all the settings used by the ESAPI in a single place. Initializing the Configuration is critically important to getting the ESAPI working properly. You must set a system property before invoking any part of the ESAPI. You may have to add this to the batch script that starts your web server. For example, in the 'catalina' script that starts Tomcat, you can set the JAVA_OPTS variable to the -D string above. Once the Configuration is initialized with a resource directory, you can edit it to set things like master keys and passwords, logging locations, error thresholds, and allowed file extensions.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.SecurityConfiguration" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="The SecurityConfiguration manages all the settings used by the ESAPI in a single place. Initializing the Configuration is critically important to getting the ESAPI working properly. You must set a system property before invoking any part of the ESAPI. You may have to add this to the batch script that starts your web server. For example, in the 'catalina' script that starts Tomcat, you can set the JAVA_OPTS variable to the -D string above. Once the Configuration is initialized with a resource directory, you can edit it to set things like master keys and passwords, logging locations, error thresholds, and allowed file extensions.">
 
 	<cfscript>
 		/** The properties. */
@@ -23,7 +23,7 @@
 		this.RESOURCE_FILE = "ESAPI.properties";
 
 		/** The location of the Resources directory used by ESAPI. */
-		this.RESOURCE_DIRECTORY = "cfesapi.org.owasp.esapi.resources";
+		this.RESOURCE_DIRECTORY = "esapi4cf.org.owasp.esapi.resources";
 
 		// private
 		instance.ALLOWED_LOGIN_ATTEMPTS = "AllowedLoginAttempts";
@@ -70,7 +70,7 @@
 		/*
 		 * Absolute path to the customDirectory
 		 */
-		instance.customDirectory = System.getProperty("cfesapi.org.owasp.esapi.resources");
+		instance.customDirectory = System.getProperty("esapi4cf.org.owasp.esapi.resources");
 
 		/*
 		 * Absolute path to the userDirectory
@@ -78,9 +78,9 @@
 		instance.userDirectory = System.getProperty("user.home") & getJava("java.io.File").separator & ".esapi";
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.SecurityConfiguration" name="init" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.SecurityConfiguration" name="init" output="false"
 	            hint="Instantiates a new configuration.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
 			try {
@@ -256,7 +256,7 @@
 			}
 
 			if(local.result == "") {
-				throwException(getJava("java.lang.IllegalArgumentException").init("[CFESAPI] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
+				throwException(getJava("java.lang.IllegalArgumentException").init("[ESAPI4CF] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
 			}
 
 			return local.result;
@@ -270,7 +270,7 @@
 		<cfargument required="false" name="e" hint="The error that occured (this value is currently ignored)."/>
 
 		<cfscript>
-			System.out.println("[CFESAPI] " & arguments.message);
+			System.out.println("[ESAPI4CF] " & arguments.message);
 		</cfscript>
 
 	</cffunction>
@@ -630,11 +630,11 @@
 			if(structKeyExists(instance, "customDirectory")) {
 				local.f = getJava("java.io.File").init(expandPath(instance.customDirectory), arguments.filename);
 				if(instance.customDirectory != "" && local.f.canRead()) {
-					logSpecial("Found in 'cfesapi.org.owasp.esapi.resources' directory: " & local.f.getAbsolutePath());
+					logSpecial("Found in 'esapi4cf.org.owasp.esapi.resources' directory: " & local.f.getAbsolutePath());
 					return local.f;
 				}
 				else {
-					logSpecial("Not found in 'cfesapi.org.owasp.esapi.resources' directory or file not readable: " & local.f.getAbsolutePath());
+					logSpecial("Not found in 'esapi4cf.org.owasp.esapi.resources' directory or file not readable: " & local.f.getAbsolutePath());
 				}
 			}
 

@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.Randomizer" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Randomizer interface. This implementation builds on the JCE provider to provide a cryptographically strong source of entropy. The specific algorithm used is configurable in ESAPI.properties.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.Randomizer" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Randomizer interface. This implementation builds on the JCE provider to provide a cryptographically strong source of entropy. The specific algorithm used is configurable in ESAPI.properties.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -25,8 +25,8 @@
 		instance.logger = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Randomizer" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.Randomizer" name="init" output="false">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
 			var local = {};
@@ -41,7 +41,7 @@
 			catch(java.security.NoSuchAlgorithmException e) {
 				// Can't throw an exception from the constructor, but this will get
 				// it logged and tracked
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Error creating randomizer", "Can't find random algorithm " & local.algorithm, e ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Error creating randomizer", "Can't find random algorithm " & local.algorithm, e ) );
 			}
 
 			return this;

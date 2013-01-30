@@ -28,7 +28,7 @@
  --->
 <cfinterface>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Logger" name="getLogger"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.Logger" name="getLogger"
 	            output="false"
 
 

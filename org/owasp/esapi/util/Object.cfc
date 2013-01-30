@@ -55,11 +55,11 @@
 	<cffunction access="private" returntype="void" name="throwException" output="false">
 		<cfargument required="true" name="exception"/>
 
-		<!--- CFESAPI RuntimeExceptions --->
-		<cfif isInstanceOf( arguments.exception, "cfesapi.org.owasp.esapi.util.RuntimeException" )>
+		<!--- esapi4cf RuntimeExceptions --->
+		<cfif isInstanceOf( arguments.exception, "esapi4cf.org.owasp.esapi.util.RuntimeException" )>
 			<cfthrow type="#arguments.exception.getType()#" message="#arguments.exception.getMessage()#" extendedinfo="#arguments.exception.getCause()#"/>
-			<!--- CFESAPI Exceptions --->
-		<cfelseif isInstanceOf( arguments.exception, "cfesapi.org.owasp.esapi.util.Exception" )>
+			<!--- esapi4cf Exceptions --->
+		<cfelseif isInstanceOf( arguments.exception, "esapi4cf.org.owasp.esapi.util.Exception" )>
 			<cfthrow type="#arguments.exception.getType()#" message="#arguments.exception.getUserMessage()#" detail="#arguments.exception.getLogMessage()#" extendedinfo="#arguments.exception.getCause()#"/>
 			<!--- Java Exceptions --->
 		<cfelseif isInstanceOf( arguments.exception, "java.lang.Throwable" )>

@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.HttpSession" extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.HttpSession" extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -21,7 +21,7 @@
 	</cfscript>
 
 	<cffunction access="public" returntype="SafeSession" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" name="session"/>
 
 		<cfscript>
@@ -144,7 +144,7 @@
 			* 1) You cannot destroy the session and create a session on the same request, as creating a new session involves sending session cookies
 			*     back. http://livedocs.adobe.com/coldfusion/8/htmldocs/help.html?content=sharedVars_17.html
 			* 2) The instance.session references the J2EE session which contains all of your CF applications. Invalidating instance.session would
-			*     kill all CF application sessions, not just the one you are actively using CFESAPI within.
+			*     kill all CF application sessions, not just the one you are actively using esapi4cf within.
 			* 3) Currently when you do call invalidate(), any references to the session scope after this call within the same request result in a
 			*     "Invalid session" error being thrown.
 			*

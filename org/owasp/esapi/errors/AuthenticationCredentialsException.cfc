@@ -17,7 +17,7 @@
 
 	<cffunction access="public" returntype="AuthenticationCredentialsException" name="init" output="false"
 	            hint="Create a new EnterpriseSecurityException">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
 		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
 		<cfargument name="cause" hint="the cause"/>

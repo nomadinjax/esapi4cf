@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
@@ -242,7 +242,7 @@
 			try {
 				local.validator.getValidDate( "test", "freakshow", getJava( "java.text.DateFormat" ).getDateInstance(), false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// expected
 			}
 
@@ -251,7 +251,7 @@
 				local.validator.getValidDate( "test", "June 32, 2008", getJava( "java.text.DateFormat" ).getDateInstance(), false );
 				// fail();
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// expected
 			}
 		</cfscript>
@@ -271,7 +271,7 @@
 			try {
 				local.validator.isValidFileName( "test", "abc/def", false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.IntrusionException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.IntrusionException e) {
 				// expected
 			}
 		</cfscript>
@@ -415,8 +415,8 @@
 			local.optionalNames.add( "p4" );
 			local.optionalNames.add( "p5" );
 			local.optionalNames.add( "p6" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			local.request.addParameter( "p1", "value" );
 			local.request.addParameter( "p2", "value" );
 			local.request.addParameter( "p3", "value" );
@@ -447,7 +447,7 @@
 				local.validator.safeReadLine( local.s, -1 );
 				fail();
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationAvailabilityException e) {
 				// Expected
 			}
 			local.s.reset();
@@ -455,7 +455,7 @@
 				local.validator.safeReadLine( local.s, 4 );
 				fail();
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationAvailabilityException e) {
 				// Expected
 			}
 			local.s.reset();
@@ -463,7 +463,7 @@
 				local.u = local.validator.safeReadLine( local.s, 20 );
 				assertEquals( "testString", local.u );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationAvailabilityException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationAvailabilityException e) {
 				fail();
 			}
 		</cfscript>

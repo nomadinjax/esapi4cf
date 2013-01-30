@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.Authenticator" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Authenticator interface. This reference implementation is backed by a simple text file that contains serialized information about users. Many organizations will want to create their own implementation of the methods provided in the Authenticator interface backed by their own user repository. This reference implementation captures information about users in a simple text file format that contains user information separated by the pipe '|' character.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.Authenticator" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Authenticator interface. This reference implementation is backed by a simple text file that contains serialized information about users. Many organizations will want to create their own implementation of the methods provided in the Authenticator interface backed by their own user repository. This reference implementation captures information about users in a simple text file format that contains user information separated by the pipe '|' character.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -41,7 +41,7 @@
 
 	<cffunction access="public" returntype="void" name="setHashedPassword" output="false"
 	            hint="Add a hash to a User's hashed password list.  This method is used to store a user's old password hashes to be sure that any new passwords are not too similar to old passwords.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="the user to associate with the new hash"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user" hint="the user to associate with the new hash"/>
 		<cfargument required="true" type="String" name="hash" hint="the hash to store in the user's password hash list"/>
 
 		<cfscript>
@@ -58,7 +58,7 @@
 	</cffunction>
 
 	<cffunction returntype="String" name="getHashedPassword" output="false" hint="Return the specified User's current hashed password.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="this User's current hashed password will be returned"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user" hint="this User's current hashed password will be returned"/>
 
 		<cfscript>
 			var local = {};
@@ -73,7 +73,7 @@
 	</cffunction>
 
 	<cffunction returntype="void" name="setOldPasswordHashes" output="false" hint="Set the specified User's old password hashes.  This will not set the User's current password hash.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="the User's whose old password hashes will be set"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user" hint="the User's whose old password hashes will be set"/>
 		<cfargument required="true" type="Array" name="oldHashes" hint="a list of the User's old password hashes"/>
 
 		<cfscript>
@@ -91,7 +91,7 @@
 	</cffunction>
 
 	<cffunction returntype="Array" name="getAllHashedPasswords" output="false" hint="Returns all of the specified User's hashed passwords.  If the User's list of passwords is null, and create is set to true, an empty password list will be associated with the specified User and then returned. If the User's password map is null and create is set to false, an exception will be thrown.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="the User whose old hashes should be returned"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user" hint="the User whose old hashes should be returned"/>
 		<cfargument required="true" type="boolean" name="create" hint="true - if no password list is associated with this user, create one; false - if no password list is associated with this user, do not create one"/>
 
 		<cfscript>
@@ -111,7 +111,7 @@
 	</cffunction>
 
 	<cffunction returntype="Array" name="getOldPasswordHashes" output="false" hint="Get a List of the specified User's old password hashes.  This will not return the User's current password hash.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="the user whose old password hashes should be returned"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user" hint="the user whose old password hashes should be returned"/>
 
 		<cfscript>
 			var local = {};
@@ -142,8 +142,8 @@
 		instance.currentUser = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Authenticator" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.Authenticator" name="init" output="false">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
 			instance.ESAPI = arguments.ESAPI;
@@ -165,7 +165,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="createUser" output="false">
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.User" name="createUser" output="false">
 		<cfargument required="true" type="String" name="accountName"/>
 		<cfargument required="true" type="String" name="password1"/>
 		<cfargument required="true" type="String" name="password2"/>
@@ -175,28 +175,28 @@
 
 			loadUsersIfNecessary();
 			if(arguments.accountName == "") {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Account creation failed", "Attempt to create user with blank accountName" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Account creation failed", "Attempt to create user with blank accountName" ) );
 			}
 			if(isObject( getUserByAccountName( arguments.accountName ) )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName ) );
 			}
 
 			verifyAccountNameStrength( arguments.accountName );
 
 			if(arguments.password1 == "") {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a blank password" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a blank password" ) );
 			}
 			verifyPasswordStrength( newPassword=arguments.password1 );
 
 			if(!arguments.password1.equals( arguments.password2 ))
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match" ) );
 
-			local.user = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultUser" ).init( instance.ESAPI, arguments.accountName );
+			local.user = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultUser" ).init( instance.ESAPI, arguments.accountName );
 			try {
 				setHashedPassword( local.user, hashPassword( arguments.password1, arguments.accountName ) );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee ) );
+			catch(esapi4cf.org.owasp.esapi.errors.EncryptionException ee) {
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee ) );
 			}
 			this.userMap.put( local.user.getAccountId(), local.user );
 			instance.logger.info( getSecurity("SECURITY_SUCCESS"), true, "New user created: " & arguments.accountName );
@@ -235,7 +235,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="changePassword" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user"/>
 		<cfargument required="true" type="String" name="currentPassword"/>
 		<cfargument required="true" type="String" name="newPassword"/>
 		<cfargument required="true" type="String" name="newPassword2"/>
@@ -248,29 +248,29 @@
 				local.currentHash = getHashedPassword( arguments.user );
 				local.verifyHash = hashPassword( arguments.currentPassword, local.accountName );
 				if(!local.currentHash.equals( local.verifyHash )) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Password change failed", "Authentication failed for password change on user: " & local.accountName ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Password change failed", "Authentication failed for password change on user: " & local.accountName ) );
 				}
 				if(arguments.newPassword == "" || arguments.newPassword2 == "" || !arguments.newPassword.equals( arguments.newPassword2 )) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & local.accountName ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & local.accountName ) );
 				}
 				verifyPasswordStrength( arguments.currentPassword, arguments.newPassword );
 				arguments.user.setLastPasswordChangeTime( getJava( "java.util.Date" ).init() );
 				local.newHash = hashPassword( arguments.newPassword, local.accountName );
 				if(cf8_arrayFind( getOldPasswordHashes( arguments.user ), local.newHash )) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Password change failed", "Password change matches a recent password for user: " & local.accountName ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Password change failed", "Password change matches a recent password for user: " & local.accountName ) );
 				}
 				setHashedPassword( arguments.user, local.newHash );
 				instance.logger.info( getSecurity("SECURITY_SUCCESS"), true, "Password changed for user: " & local.accountName );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncryptionException ee) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Password change failed", "Encryption exception changing password for " & local.accountName, ee ) );
+			catch(esapi4cf.org.owasp.esapi.errors.EncryptionException ee) {
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Password change failed", "Encryption exception changing password for " & local.accountName, ee ) );
 			}
 		</cfscript>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="verifyPassword" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user"/>
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
@@ -287,7 +287,7 @@
 					return true;
 				}
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncryptionException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.EncryptionException e) {
 				instance.logger.fatal( getSecurity("SECURITY_FAILURE"), false, "Encryption error verifying password for " & local.accountName );
 			}
 			instance.logger.fatal( getSecurity("SECURITY_FAILURE"), false, "Password verification failed for " & local.accountName );
@@ -297,7 +297,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="String" name="generateStrongPassword" output="false">
-		<cfargument type="cfesapi.org.owasp.esapi.User" name="user"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.User" name="user"/>
 		<cfargument type="String" name="oldPassword"/>
 
 		<cfscript>
@@ -316,7 +316,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="getCurrentUser" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.User" name="getCurrentUser" output="false"
 	            hint="Returns the currently logged user as set by the setCurrentUser() methods. Must not log in this method because the logger calls getCurrentUser() and this could cause a loop.">
 
 		<cfscript>
@@ -324,7 +324,7 @@
 
 			local.user = instance.currentUser.get();
 			if(!isObject( local.user )) {
-				local.user = createObject( "component", "cfesapi.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI );
+				local.user = createObject( "component", "esapi4cf.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI );
 			}
 			return local.user;
 		</cfscript>
@@ -338,7 +338,7 @@
 			var local = {};
 
 			if(arguments.accountId == 0) {
-				return createObject( "component", "cfesapi.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI );
+				return createObject( "component", "esapi4cf.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI );
 			}
 			loadUsersIfNecessary();
 			if(structKeyExists( this.userMap, arguments.accountId )) {
@@ -356,7 +356,7 @@
 			var local = {};
 
 			if(arguments.accountName == "") {
-				return createObject( "component", "cfesapi.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI );
+				return createObject( "component", "esapi4cf.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI );
 			}
 			loadUsersIfNecessary();
 			for(local.u in this.userMap) {
@@ -369,7 +369,7 @@
 	</cffunction>
 
 	<cffunction access="public" name="getUserFromSession" output="false" hint="Gets the user from session.">
-		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" default="#instance.ESAPI.httpUtilities().getCurrentRequest()#"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.HttpServletRequest" name="request" default="#instance.ESAPI.httpUtilities().getCurrentRequest()#"/>
 
 		<cfscript>
 			var local = {};
@@ -383,8 +383,8 @@
 	</cffunction>
 
 	<cffunction access="public" name="getUserFromRememberToken" output="false" hint="Returns the user if a matching remember token is found, or null if the token is missing, token is corrupt, token is expired, account name does not match and existing account, or hashed password does not match user's hashed password.">
-		<cfargument type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" default="#instance.ESAPI.httpUtilities().getCurrentRequest()#"/>
-		<cfargument type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" default="#instance.ESAPI.httpUtilities().getCurrentResponse()#"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.HttpServletRequest" name="request" default="#instance.ESAPI.httpUtilities().getCurrentRequest()#"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.HttpServletResponse" name="response" default="#instance.ESAPI.httpUtilities().getCurrentResponse()#"/>
 
 		<cfscript>
 			var local = {};
@@ -398,7 +398,7 @@
 			try {
 				local.data = instance.ESAPI.encryptor().unseal( local.token.getValue() ).split( ":" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncryptionException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.EncryptionException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Found corrupt or expired remember token" );
 				instance.ESAPI.httpUtilities().killCookie( arguments.request, arguments.response, instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME );
 				return "";
@@ -420,7 +420,7 @@
 			try {
 				local.user.loginWithPassword( local.password );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationException ae) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationException ae) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Login via remember me cookie failed for user " & local.username, ae );
 				instance.ESAPI.httpUtilities().killCookie( arguments.request, arguments.response, HTTPUtilities.REMEMBER_TOKEN_COOKIE_NAME );
 				return "";
@@ -525,7 +525,7 @@
 
 	</cffunction>
 
-	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.reference.DefaultUser" name="_createUser" output="false"
+	<cffunction access="private" returntype="esapi4cf.org.owasp.esapi.reference.DefaultUser" name="_createUser" output="false"
 	            hint="Create a new user with all attributes from a String.  The format is: [ accountId | accountName | password | roles (comma separated) | unlocked | enabled | old password hashes (comma separated) | last host address | last password change time | last long time | last failed login time | expiration time | failed login count ] This method verifies the account name and password strength, creates a new CSRF token, then returns the newly created user.">
 		<cfargument required="true" type="String" name="line" hint="parameters to set as attributes for the new User."/>
 
@@ -538,7 +538,7 @@
 			local.accountName = local.parts[2];
 
 			verifyAccountNameStrength( local.accountName );
-			local.user = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultUser" ).init( instance.ESAPI, local.accountName );
+			local.user = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultUser" ).init( instance.ESAPI, local.accountName );
 			local.user.accountId = local.accountId;
 
 			local.password = local.parts[3];
@@ -573,10 +573,10 @@
 
 	</cffunction>
 
-	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.User" name="loginWithUsernameAndPassword" output="false"
+	<cffunction access="private" returntype="esapi4cf.org.owasp.esapi.User" name="loginWithUsernameAndPassword" output="false"
 	            hint="Utility method to extract credentials and verify them.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" hint="The current HTTP request"/>
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" hint="The HTTP response being prepared"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.HttpServletRequest" name="request" hint="The current HTTP request"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.HttpServletResponse" name="response" hint="The HTTP response being prepared"/>
 
 		<cfscript>
 			var local = {};
@@ -596,11 +596,11 @@
 				if(local.username == "") {
 					local.username = "unspecified user";
 				}
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Authentication failed", "Authentication failed for " & local.username & " because of blank username or password" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Authentication failed", "Authentication failed for " & local.username & " because of blank username or password" ) );
 			}
 			local.user = getUserByAccountName( local.username );
 			if(!isObject( local.user )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Authentication failed", "Authentication failed because user " & local.username & " doesn't exist" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Authentication failed", "Authentication failed because user " & local.username & " doesn't exist" ) );
 			}
 			local.user.loginWithPassword( local.password );
 
@@ -619,7 +619,7 @@
 			loadUsersIfNecessary();
 			local.user = getUserByAccountName( arguments.accountName );
 			if(!isObject( local.user )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName ) );
 			}
 			this.userMap.remove( getJava( "java.lang.Long" ).init( local.user.getAccountId() ) );
 			System.out.println( "Removing user " & local.user.getAccountName() );
@@ -645,7 +645,7 @@
 						arguments.writer.println( save( local.u ) );
 					}
 					else {
-						createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Problem saving user", "Skipping save of user " & local.accountName );
+						createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Problem saving user", "Skipping save of user " & local.accountName );
 					}
 				}
 			}
@@ -662,7 +662,7 @@
 				}
 				catch(java.io.IOException e) {
 					instance.logger.fatal( getSecurity("SECURITY_FAILURE"), false, "Problem saving user file " & instance.userDB.getAbsolutePath(), e );
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Internal Error", "Problem saving user file " & instance.userDB.getAbsolutePath(), e ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Internal Error", "Problem saving user file " & instance.userDB.getAbsolutePath(), e ) );
 				}
 				if(isObject( local.writer )) {
 					local.writer.close();
@@ -676,7 +676,7 @@
 
 	<cffunction access="private" returntype="String" name="save" output="false"
 	            hint="Save.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.reference.DefaultUser" name="user" hint="the User to save"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.reference.DefaultUser" name="user" hint="the User to save"/>
 
 		<cfscript>
 			var local = {};
@@ -712,15 +712,15 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="login" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request"/>
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response"/>
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.User" name="login" output="false">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.HttpServletRequest" name="request"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.HttpServletResponse" name="response"/>
 
 		<cfscript>
 			var local = {};
 
 			if(!isObject( arguments.request ) || !isObject( arguments.response )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid request", "Request or response objects were empty" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid request", "Request or response objects were empty" ) );
 			}
 
 			// if there's a user in the session then use that
@@ -739,8 +739,8 @@
 				try {
 					instance.ESAPI.httpUtilities().assertSecureRequest( arguments.request );
 				}
-				catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Attempt to login with an insecure request", e.detail, e ) );
+				catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationException" ).init( instance.ESAPI, "Attempt to login with an insecure request", e.detail, e ) );
 				}
 			}
 
@@ -751,8 +751,8 @@
 				try {
 					instance.ESAPI.httpUtilities().isSecureChannel( arguments.request );
 				}
-				catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationException").init( instance.ESAPI, "Attempt to access secure content with an insecure request", e.detail, e ) );
+				catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationException").init( instance.ESAPI, "Attempt to access secure content with an insecure request", e.detail, e ) );
 				}
 			}
 
@@ -762,7 +762,7 @@
 			// don't let anonymous user log in
 			if(local.user.isAnonymous()) {
 				local.user.logout();
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Anonymous user cannot be set to current user. User: " & local.user.getAccountName() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Anonymous user cannot be set to current user. User: " & local.user.getAccountName() ) );
 			}
 
 			// don't let disabled users log in
@@ -770,7 +770,7 @@
 				local.user.logout();
 				local.user.incrementFailedLoginCount();
 				local.user.setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & local.user.getAccountName() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & local.user.getAccountName() ) );
 			}
 
 			// don't let locked users log in
@@ -778,7 +778,7 @@
 				local.user.logout();
 				local.user.incrementFailedLoginCount();
 				local.user.setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & local.user.getAccountName() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & local.user.getAccountName() ) );
 			}
 
 			// don't let expired users log in
@@ -786,7 +786,7 @@
 				local.user.logout();
 				local.user.incrementFailedLoginCount();
 				local.user.setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Expired user cannot be set to current user. User: " & local.user.getAccountName() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Expired user cannot be set to current user. User: " & local.user.getAccountName() ) );
 			}
 
 			// check session inactivity timeout
@@ -794,7 +794,7 @@
 				local.user.logout();
 				local.user.incrementFailedLoginCount();
 				local.user.setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Session inactivity timeout: " & local.user.getAccountName() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Session inactivity timeout: " & local.user.getAccountName() ) );
 			}
 
 			// check session absolute timeout
@@ -802,7 +802,7 @@
 				local.user.logout();
 				local.user.incrementFailedLoginCount();
 				local.user.setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Session absolute timeout: " & local.user.getAccountName() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Session absolute timeout: " & local.user.getAccountName() ) );
 			}
 
 			// create new session for this User
@@ -829,7 +829,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setCurrentUser" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user"/>
 
 		<cfscript>
 			instance.currentUser.setUser( arguments.user );
@@ -843,10 +843,10 @@
 
 		<cfscript>
 			if(arguments.accountName == "") {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid account name", "Attempt to create account with a blank account name" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid account name", "Attempt to create account with a blank account name" ) );
 			}
 			if(!instance.ESAPI.validator().isValidInput( "verifyAccountNameStrength", arguments.accountName, "AccountName", instance.MAX_ACCOUNT_NAME_LENGTH, false )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName ) );
 			}
 		</cfscript>
 
@@ -861,7 +861,7 @@
 			var local = {};
 
 			if(arguments.newPassword == "")
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid password", "New password cannot be blank" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid password", "New password cannot be blank" ) );
 
 			// can't change to a password that contains any 3 character substring of old password
 			if(structKeyExists( arguments, "oldPassword" )) {
@@ -869,7 +869,7 @@
 				for(local.i = 0; local.i < local.length - 2; local.i++) {
 					local.sub = arguments.oldPassword.substring( local.i, local.i + 3 );
 					if(arguments.newPassword.indexOf( local.sub ) > -1) {
-						throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid password", "New password cannot contain pieces of old password" ) );
+						throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid password", "New password cannot contain pieces of old password" ) );
 					}
 				}
 			}
@@ -900,7 +900,7 @@
 			// calculate and verify password strength
 			local.strength = arguments.newPassword.length() * local.charsets;
 			if(local.strength < 16) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid password", "New password is not long and complex enough" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException" ).init( instance.ESAPI, "Invalid password", "New password is not long and complex enough" ) );
 			}
 		</cfscript>
 

@@ -54,16 +54,16 @@
 	            hint="Clears the current User. This allows the thread to be reused safely. This clears all threadlocal variables from the thread. This should ONLY be called after all possible ESAPI operations have concluded. If you clear too early, many calls will fail, including logging, which requires the user identity.">
 	</cffunction>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="login" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.User" name="login" output="false"
 	            hint="This method should be called for every HTTP request, to login the current user either from the session of HTTP request. This method will set the current user so that getCurrentUser() will work properly. Authenticates the user's credentials from the HttpServletRequest if necessary, creates a session if necessary, and sets the user as the current user. Specification:  The implementation should do the following: 1) Check if the User is already stored in the session a. If so, check that session absolute and inactivity timeout have not expired b. Step 2 may not be required if 1a has been satisfied 2) Verify User credentials a. It is recommended that you use loginWithUsernameAndPassword(HttpServletRequest, HttpServletResponse) to verify credentials 3) Set the last host of the User (ex.  user.setLastHostAddress(address) ) 4) Verify that the request is secure (ex. over SSL) 5) Verify the User account is allowed to be logged in a. Verify the User is not disabled, expired or locked 6) Assign User to session variable">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" hint="the current HTTP request"/>
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" hint="the HTTP response"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.HttpServletRequest" name="request" hint="the current HTTP request"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.HttpServletResponse" name="response" hint="the HTTP response"/>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="verifyPassword" output="false"
 	            hint="Verify that the supplied password matches the password for this user. Password should be stored as a hash. It is recommended you use the hashPassword(password, accountName) method in this class. This method is typically used for 'reauthentication' for the most sensitive functions, such as transactions, changing email address, and changing other account information.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="the user who requires verification"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user" hint="the user who requires verification"/>
 		<cfargument required="true" type="String" name="password" hint="the hashed user-supplied password"/>
 
 	</cffunction>
@@ -72,7 +72,7 @@
 	            hint="Logs out the current user. This is usually done by calling User.logout on the current User.">
 	</cffunction>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="createUser" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.User" name="createUser" output="false"
 	            hint="Creates a new User with the information provided. Implementations should check accountName and password for proper format and strength against brute force attacks ( verifyAccountNameStrength(String), verifyPasswordStrength(String, String)  ). Two copies of the new password are required to encourage user interface designers to include a 're-type password' field in their forms. Implementations should verify that both are the same.">
 		<cfargument required="true" type="String" name="accountName" hint="the account name of the new user"/>
 		<cfargument required="true" type="String" name="password1" hint="the password of the new user"/>
@@ -82,14 +82,14 @@
 
 	<cffunction access="public" returntype="String" name="generateStrongPassword" output="false"
 	            hint="Generate strong password that takes into account the user's information and old password. Implementations should verify that the new password does not include information such as the username, fragments of the old password, and other information that could be used to weaken the strength of the password.">
-		<cfargument required="false" type="cfesapi.org.owasp.esapi.User" name="user" hint="the user whose information to use when generating password"/>
+		<cfargument required="false" type="esapi4cf.org.owasp.esapi.User" name="user" hint="the user whose information to use when generating password"/>
 		<cfargument required="false" type="String" name="oldPassword" hint="the old password to use when verifying strength of new password.  The new password may be checked for fragments of oldPassword."/>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="changePassword" output="false"
 	            hint="Changes the password for the specified user. This requires the current password, as well as the password to replace it with. The new password should be checked against old hashes to be sure the new password does not closely resemble or equal any recent passwords for that User. Password strength should also be verified.  This new password must be repeated to ensure that the user has typed it in correctly.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user" hint="the user to change the password for"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user" hint="the user to change the password for"/>
 		<cfargument required="true" type="String" name="currentPassword" hint="the current password for the specified user"/>
 		<cfargument required="true" type="String" name="newPassword" hint="the new password to use"/>
 		<cfargument required="true" type="String" name="newPassword2" hint="a verification copy of the new password"/>
@@ -111,13 +111,13 @@
 	            hint="Gets a collection containing all the existing user names.">
 	</cffunction>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.User" name="getCurrentUser" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.User" name="getCurrentUser" output="false"
 	            hint="Returns the currently logged in User.">
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setCurrentUser" output="false"
 	            hint="Sets the currently logged in User.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.User" name="user"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.User" name="user"/>
 
 	</cffunction>
 

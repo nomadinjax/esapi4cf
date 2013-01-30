@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -29,7 +29,7 @@
 	</cfscript>
 
 	<cffunction access="public" returntype="ESAPIFilter" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI">
 		<cfargument type="Struct" name="filterConfig" default="#structNew()#" hint="configuration object">
 		<cfscript>
 			var local = {};
@@ -92,19 +92,19 @@
 				// figure out who the current user is
 				try {
 					instance.ESAPI.authenticator().login(local.request, local.response);
-				} catch( cfesapi.org.owasp.esapi.errors.AuthenticationException e ) {
+				} catch( esapi4cf.org.owasp.esapi.errors.AuthenticationException e ) {
 					instance.ESAPI.authenticator().logout();
 					local.request.setAttribute("message", instance.authenticationMessage);
 					local.dispatcher = local.request.getRequestDispatcher(instance.authenticationURL);
 					local.dispatcher.forward( local.request.getHttpServletRequest(), local.response.getHttpServletResponse() );
 					return false;
-				} catch( cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e ) {
+				} catch( esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e ) {
 					instance.ESAPI.authenticator().logout();
 					local.request.setAttribute("message", instance.authenticationMessage);
 					local.dispatcher = local.request.getRequestDispatcher(instance.authenticationURL);
 					local.dispatcher.forward( local.request.getHttpServletRequest(), local.response.getHttpServletResponse() );
 					return false;
-				} catch( cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e ) {
+				} catch( esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e ) {
 					instance.ESAPI.authenticator().logout();
 					local.request.setAttribute("message", instance.authenticationMessage);
 					local.dispatcher = local.request.getRequestDispatcher(instance.authenticationURL);
@@ -146,8 +146,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="onRequestEndFilter" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.HttpServletRequest" name="request" hint="Request object to be processed">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.HttpServletResponse" name="response" hint="Response object">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.HttpServletRequest" name="request" hint="Request object to be processed">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.HttpServletResponse" name="response" hint="Response object">
 		<cfscript>
 			var local = {};
 

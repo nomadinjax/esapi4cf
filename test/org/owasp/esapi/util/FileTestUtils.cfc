@@ -1,4 +1,4 @@
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Utilities to help with tests that involve files or directories.">
+<cfcomponent extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="Utilities to help with tests that involve files or directories.">
 	<!---
 	import java.io.File;
 	import java.io.IOException;

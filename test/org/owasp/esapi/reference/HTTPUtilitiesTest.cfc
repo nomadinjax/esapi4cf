@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 		clearUserFile();
 
 		instance.CLASS = getMetaData( this );
@@ -62,8 +62,8 @@
 			var local = {};
 
 			System.out.println( "changeSessionIdentifier" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			local.session = local.request.getSession();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.session.setAttribute( "one", "one" );
@@ -87,21 +87,21 @@
 			System.out.println( "getFileUploads" );
 			local.dir = "";
 
-			local.dir = createObject( "component", "cfesapi.test.org.owasp.esapi.util.FileTestUtils" ).createTmpDirectory( prefix=instance.CLASS_NAME );
+			local.dir = createObject( "component", "esapi4cf.test.org.owasp.esapi.util.FileTestUtils" ).createTmpDirectory( prefix=instance.CLASS_NAME );
 			local.content = '--ridiculous\r\nContent-Disposition: form-data; name="upload"; filename="testupload.txt"\r\nContent-Type: application/octet-stream\r\n\r\nThis is a test of the multipart broadcast system.\r\nThis is only a test.\r\nStop.\r\n\r\n--ridiculous\r\nContent-Disposition: form-data; name="submit"\r\n\r\nSubmit Query\r\n--ridiculous--\r\nEpilogue';
 
-			local.request1 = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init( "/test", local.content.getBytes() );
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request1 = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init( "/test", local.content.getBytes() );
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request1, local.response );
 			try {
 				instance.ESAPI.httpUtilities().getSafeFileUploads( instance.ESAPI.currentRequest(), local.dir, local.dir );
 				fail();
 			}
-			catch(cfesapi.org.owsap.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owsap.esapi.errors.ValidationException e) {
 				// expected
 			}
 
-			local.request2 = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init( "/test", local.content.getBytes() );
+			local.request2 = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init( "/test", local.content.getBytes() );
 			local.request2.setContentType( "multipart/form-data; boundary=ridiculous" );
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request2, local.response );
 			try {
@@ -113,21 +113,21 @@
 				}
 				assertTrue( local.list.size() > 0 );
 			}
-			catch(cfesapi.org.owsap.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owsap.esapi.errors.ValidationException e) {
 				fail();
 			}
 
-			local.request3 = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init( "/test", local.content.replaceAll( "txt", "ridiculous" ).getBytes() );
+			local.request3 = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init( "/test", local.content.replaceAll( "txt", "ridiculous" ).getBytes() );
 			local.request3.setContentType( "multipart/form-data; boundary=ridiculous" );
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request3, local.response );
 			try {
 				instance.ESAPI.httpUtilities().getSafeFileUploads( instance.ESAPI.currentRequest(), local.dir, local.dir );
 				fail();
 			}
-			catch(cfesapi.org.owsap.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owsap.esapi.errors.ValidationException e) {
 				// expected
 			}
-			createObject( "component", "cfesapi.test.org.owasp.esapi.util.FileTestUtils" ).deleteRecursively( local.dir );
+			createObject( "component", "esapi4cf.test.org.owasp.esapi.util.FileTestUtils" ).deleteRecursively( local.dir );
 		</cfscript>
 
 	</cffunction>
@@ -139,7 +139,7 @@
 			var local = {};
 
 			System.out.println( "isValidHTTPRequest" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
 			local.request.addParameter( "p1", "v1" );
 			local.request.addParameter( "p2", "v3" );
 			local.request.addParameter( "p3", "v2" );
@@ -151,7 +151,7 @@
 			local.list.add( getJava( "javax.servlet.http.Cookie" ).init( "c2", "v2" ) );
 			local.list.add( getJava( "javax.servlet.http.Cookie" ).init( "c3", "v3" ) );
 			local.request.setCookies( local.list );
-			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init() );
+			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init() );
 
 			// should throw IntrusionException which will be caught in isValidHTTPRequest and return false
 			local.request.setMethod( "JEFF" );
@@ -178,10 +178,10 @@
 			var local = {};
 
 			System.out.println( "killAllCookies" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
-			local.safeResponse = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
+			local.safeResponse = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
 			assertTrue( local.response.getCookies().isEmpty() );
 			local.list = [];
 			local.list.add( getJava( "javax.servlet.http.Cookie" ).init( "test1", "1" ) );
@@ -202,9 +202,9 @@
 			var local = {};
 
 			System.out.println( "killCookie" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
-			local.safeResponse = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.safeResponse = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			assertTrue( local.response.getCookies().isEmpty() );
 			local.list = [];
@@ -226,8 +226,8 @@
 			var local = {};
 
 			System.out.println( "sendSafeRedirect" );
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
-			local.safeResponse = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.safeResponse = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
 			try {
 				local.safeResponse.sendRedirect( "/test1/abcdefg" );
 				local.safeResponse.sendRedirect( "/test2/1234567" );
@@ -260,8 +260,8 @@
 			var local = {};
 
 			System.out.println( "setCookie" );
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
-			local.safeResponse = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.safeResponse = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
 			assertTrue( local.response.getCookies().isEmpty() );
 
 			local.safeResponse.addCookie( getJava( "javax.servlet.http.Cookie" ).init( "test1", "test1" ) );
@@ -288,10 +288,10 @@
 			var local = {};
 
 			System.out.println( "getStateFromEncryptedCookie" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
-			local.safeResponse = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
+			local.safeResponse = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
 			local.map = {};
 			local.map.put( "one", "aspect" );
 			local.map.put( "two", "ridiculous" );
@@ -316,7 +316,7 @@
 					}
 				}
 			}
-			catch(cfesapi.org.owsap.esapi.errors.EncryptionException e) {
+			catch(esapi4cf.org.owsap.esapi.errors.EncryptionException e) {
 				fail("");
 			}
 		</cfscript>
@@ -330,9 +330,9 @@
 			var local = {};
 
 			System.out.println( "saveStateInEncryptedCookie" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
-			local.safeResponse = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.safeResponse = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeResponse" ).init( instance.ESAPI, local.response );
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.map = {};
 			local.map.put( "one", "aspect" );
@@ -344,7 +344,7 @@
 				local.encrypted = local.value.substring( local.value.indexOf( "=" ) + 1, local.value.indexOf( ";" ) );
 				instance.ESAPI.encryptor().decryptString( local.encrypted );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncryptionException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.EncryptionException e) {
 				fail();
 			}
 		</cfscript>
@@ -358,8 +358,8 @@
 			var local = {};
 
 			System.out.println( "setNoCacheHeaders" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			assertTrue( local.response.getHeaderNames().isEmpty() );
 			local.response.addHeader( "test1", "1" );
@@ -384,10 +384,10 @@
 			local.password = local.authenticator.generateStrongPassword();
 			local.user = local.authenticator.createUser( local.accountName, local.password, local.password );
 			local.user.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
 			local.request.addParameter( "username", local.accountName );
 			local.request.addParameter( "password", local.password );
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 			local.authenticator.login( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse() );
 

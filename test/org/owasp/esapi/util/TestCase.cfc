@@ -6,7 +6,7 @@
 		System = getJava( "java.lang.System" );
 
 		// The following property must be set in order for the tests to find the resources directory
-		System.setProperty( "cfesapi.org.owasp.esapi.resources", "/cfesapi/test/resources" );
+		System.setProperty( "esapi4cf.org.owasp.esapi.resources", "/esapi4cf/test/resources" );
 		System.setProperty( "basedir", expandPath("../../../../") );
 	</cfscript>
 
@@ -54,11 +54,11 @@
 	<cffunction access="private" returntype="void" name="throwException" output="false">
 		<cfargument required="true" name="exception"/>
 
-		<!--- CFESAPI RuntimeExceptions --->
-		<cfif isInstanceOf( arguments.exception, "cfesapi.org.owasp.esapi.util.RuntimeException" )>
+		<!--- esapi4cf RuntimeExceptions --->
+		<cfif isInstanceOf( arguments.exception, "esapi4cf.org.owasp.esapi.util.RuntimeException" )>
 			<cfthrow type="#arguments.exception.getType()#" message="#arguments.exception.getMessage()#" extendedinfo="#arguments.exception.getCause()#"/>
-			<!--- CFESAPI Exceptions --->
-		<cfelseif isInstanceOf( arguments.exception, "cfesapi.org.owasp.esapi.util.Exception" )>
+			<!--- esapi4cf Exceptions --->
+		<cfelseif isInstanceOf( arguments.exception, "esapi4cf.org.owasp.esapi.util.Exception" )>
 			<cfthrow type="#arguments.exception.getType()#" message="#arguments.exception.getUserMessage()#" detail="#arguments.exception.getLogMessage()#" extendedinfo="#arguments.exception.getCause()#"/>
 			<!--- Java Exceptions --->
 		<cfelseif isInstanceOf( arguments.exception, "java.lang.Throwable" )>

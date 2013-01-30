@@ -20,7 +20,7 @@
  * @since June 1, 2007
  * @see org.owasp.esapi.User
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.User" extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.User" extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -86,7 +86,7 @@
 
 	<cffunction access="public" returntype="DefaultUser" name="init" output="false"
 	            hint="Instantiates a new user.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="accountName" hint="The name of this user's account."/>
 
 		<cfscript>
@@ -123,7 +123,7 @@
 				instance.logger.info( getSecurity("SECURITY_SUCCESS"), true, "Role " & local.roleName & " added to " & getAccountName() );
 			}
 			else {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Add role failed", "Attempt to add invalid role " & local.roleName & " to " & getAccountName() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationAccountsException" ).init( instance.ESAPI, "Add role failed", "Attempt to add invalid role " & local.roleName & " to " & getAccountName() ) );
 			}
 		</cfscript>
 
@@ -284,7 +284,7 @@
 		<cfargument required="true" name="s"/>
 
 		<cfscript>
-			if(isInstanceOf( arguments.s, "cfesapi.org.owasp.esapi.HttpSession" )) {
+			if(isInstanceOf( arguments.s, "esapi4cf.org.owasp.esapi.HttpSession" )) {
 				instance.sessions.add( arguments.s );
 			}
 		</cfscript>
@@ -295,7 +295,7 @@
 		<cfargument required="true" name="s"/>
 
 		<cfscript>
-			if(isInstanceOf( arguments.s, "cfesapi.org.owasp.esapi.HttpSession" )) {
+			if(isInstanceOf( arguments.s, "esapi4cf.org.owasp.esapi.HttpSession" )) {
 				instance.sessions.remove( arguments.s );
 			}
 		</cfscript>
@@ -421,28 +421,28 @@
 			if(arguments.password == "" || arguments.password.equals( "" )) {
 				setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
 				incrementFailedLoginCount();
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Missing password: " & instance.accountName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Missing password: " & instance.accountName ) );
 			}
 
 			// don't let disabled users log in
 			if(!isEnabled()) {
 				setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
 				incrementFailedLoginCount();
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Disabled user attempt to login: " & instance.accountName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Disabled user attempt to login: " & instance.accountName ) );
 			}
 
 			// don't let locked users log in
 			if(isLocked()) {
 				setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
 				incrementFailedLoginCount();
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Locked user attempt to login: " & instance.accountName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Locked user attempt to login: " & instance.accountName ) );
 			}
 
 			// don't let expired users log in
 			if(isExpired()) {
 				setLastFailedLoginTime( getJava( "java.util.Date" ).init() );
 				incrementFailedLoginCount();
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Expired user attempt to login: " & instance.accountName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Expired user attempt to login: " & instance.accountName ) );
 			}
 
 			logout();
@@ -462,7 +462,7 @@
 				if(getFailedLoginCount() >= instance.ESAPI.securityConfiguration().getAllowedLoginAttempts()) {
 					this.lock();
 				}
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Incorrect password provided for " & getAccountName() ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException" ).init( instance.ESAPI, "Login failed", "Incorrect password provided for " & getAccountName() ) );
 			}
 		</cfscript>
 
@@ -483,7 +483,7 @@
 			instance.ESAPI.httpUtilities().killCookie( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), "JSESSIONID" );
 			instance.loggedIn = false;
 			instance.logger.info( getSecurity("SECURITY_SUCCESS"), true, "Logout successful" );
-			instance.ESAPI.authenticator().setCurrentUser( createObject( "component", "cfesapi.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI ) );
+			instance.ESAPI.authenticator().setCurrentUser( createObject( "component", "esapi4cf.org.owasp.esapi.User$ANONYMOUS" ).init( instance.ESAPI ) );
 		</cfscript>
 
 	</cffunction>
@@ -559,7 +559,7 @@
 		<cfscript>
 			if(instance.lastHostAddress != "" && !instance.lastHostAddress.equals( arguments.remoteHost )) {
 				// returning remote address not remote hostname to prevent DNS lookup
-				createObject( "component", "cfesapi.org.owasp.esapi.errors.AuthenticationHostException" ).init( instance.ESAPI, "Host change", "User session just jumped from " & instance.lastHostAddress & " to " & arguments.remoteHost );
+				createObject( "component", "esapi4cf.org.owasp.esapi.errors.AuthenticationHostException" ).init( instance.ESAPI, "Host change", "User session just jumped from " & instance.lastHostAddress & " to " & arguments.remoteHost );
 			}
 			instance.lastHostAddress = arguments.remoteHost;
 		</cfscript>

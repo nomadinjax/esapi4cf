@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
 --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 
 		instance.CLASS = getMetaData( this );
 		instance.CLASS_NAME = listLast( instance.CLASS.name, "." );
@@ -30,7 +30,7 @@
 
 		instance.pathWithNullByte = "/temp/file.txt" & chr(0);
 
-		instance.FileTestUtils = createObject("cfesapi.test.org.owasp.esapi.util.FileTestUtils");
+		instance.FileTestUtils = createObject("esapi4cf.test.org.owasp.esapi.util.FileTestUtils");
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
@@ -87,9 +87,9 @@
 			var local = {};
 			for(local.i = instance.GOOD_FILE_CHARS.iterator();local.i.hasNext();) {
 				local.ch = local.i.next().toString();	// avoids generic issues in 1.4&1.5
-				local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch);
+				local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch);
 				assertFalse(local.sf.exists(), 'File "' & instance.TEST_FILE_NAME & local.ch & '" should not exist (local.ch=' & local.ch.charAt(0) & ').');
-				local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch & "test");
+				local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch & "test");
 				assertFalse(local.sf.exists(), 'File "' & instance.TEST_FILE_NAME & local.ch & '" should not exist (local.ch=' & local.ch.charAt(0) & ').');
 			}
 		</cfscript>
@@ -102,15 +102,15 @@
 			for(local.i = instance.BAD_FILE_CHARS.iterator();local.i.hasNext();) {
 				local.ch = local.i.next().toString();	// avoids generic issues in 1.4&1.5
 				try {
-					createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch);
+					createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch);
 					fail('Able to create SafeFile "' & instance.TEST_FILE_NAME & local.ch & '" (local.ch=' & local.ch.charAt(0) & ').');
 				}
-				catch(cfesapi.org.owasp.esapi.errors.ValidationException expected) { }
+				catch(esapi4cf.org.owasp.esapi.errors.ValidationException expected) { }
 				try {
-					createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch  & "test");
+					createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch  & "test");
 					fail('Able to create SafeFile "' & instance.TEST_FILE_NAME & local.ch & '" (local.ch=' & local.ch.charAt(0) & ').');
 				}
-				catch(cfesapi.org.owasp.esapi.errors.ValidationException expected) { }
+				catch(esapi4cf.org.owasp.esapi.errors.ValidationException expected) { }
 			}
 		</cfscript>
 	</cffunction>
@@ -122,9 +122,9 @@
 			for(local.i=instance.GOOD_FILE_CHARS.iterator();local.i.hasNext();) {
 				local.ch = local.i.next().toString();	// avoids generic issues in 1.4&1.5
 				local.ch = local.ch & local.ch & local.ch;
-				local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch);
+				local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch);
 				assertFalse(local.sf.exists(), 'File "' & instance.TEST_FILE_NAME & local.ch & '" should not exist (local.ch=' & local.ch.charAt(0) & ').');
-				local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch & "test");
+				local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch & "test");
 				assertFalse(local.sf.exists(), 'File "' & instance.TEST_FILE_NAME & local.ch & '" should not exist (local.ch=' & local.ch.charAt(0) & ').');
 			}
 		</cfscript>
@@ -138,15 +138,15 @@
 				local.ch = local.i.next().toString();	// avoids generic issues in 1.4&1.5
 				local.ch = local.ch & local.ch & local.ch;
 				try {
-					createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch);
+					createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch);
 					fail('Able to create SafeFile "' & instance.TEST_FILE_NAME & local.ch & '" (local.ch=' & local.ch.charAt(0) & ').');
 				}
-				catch(cfesapi.org.owasp.esapi.errors.ValidationException expected) { }
+				catch(esapi4cf.org.owasp.esapi.errors.ValidationException expected) { }
 				try {
-					createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch  & "test");
+					createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & local.ch  & "test");
 					fail('Able to create SafeFile "' & instance.TEST_FILE_NAME & local.ch & '" (local.ch=' & local.ch.charAt(0) & ').');
 				}
-				catch(cfesapi.org.owasp.esapi.errors.ValidationException expected) { }
+				catch(esapi4cf.org.owasp.esapi.errors.ValidationException expected) { }
 				local.i=instance.BAD_FILE_CHARS.iterator();
 			}
 		</cfscript>
@@ -158,10 +158,10 @@
 			var local = {};
 
 			try {
-				local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & ":secret.txt");
+				local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.TEST_FILE_NAME & ":secret.txt");
 				fail("Able to construct SafeFile for alternate data stream: " & local.sf.getPath());
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException expected) { }
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException expected) { }
 		</cfscript>
 	</cffunction>
 
@@ -182,7 +182,7 @@
 		<cfscript>
 			var local = {};
 
-			local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getPath());
+			local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getPath());
 			assertTrue(local.sf.exists());
 		</cfscript>
 	</cffunction>
@@ -192,7 +192,7 @@
 		<cfscript>
 			var local = {};
 
-			local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.testFile.getName());
+			local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir, instance.testFile.getName());
 			assertTrue(local.sf.exists());
 		</cfscript>
 	</cffunction>
@@ -202,7 +202,7 @@
 		<cfscript>
 			var local = {};
 
-			local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParentFile(), instance.testFile.getName());
+			local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParentFile(), instance.testFile.getName());
 			assertTrue(local.sf.exists());
 		</cfscript>
 	</cffunction>
@@ -212,7 +212,7 @@
 		<cfscript>
 			var local = {};
 
-			local.sf = createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(ESAPI=instance.ESAPI, uri=instance.testFile.toURI());
+			local.sf = createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(ESAPI=instance.ESAPI, uri=instance.testFile.toURI());
 			assertTrue(local.sf.exists());
 		</cfscript>
 	</cffunction>
@@ -224,10 +224,10 @@
 
 			try
 			{
-				createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir & getJava("java.io.File").separator & "file%00.txt");
+				createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testDir & getJava("java.io.File").separator & "file%00.txt");
 				fail("no exception thrown for file name with percent encoded null");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException expected)
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException expected)
 			{
 			}
 		</cfscript>
@@ -240,10 +240,10 @@
 
 			try
 			{
-				createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file?.txt");
+				createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file?.txt");
 				fail("no exception thrown for file name with question mark in it");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e)
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e)
 			{
 				// expected
 			}
@@ -257,10 +257,10 @@
 			var local = {};
 			try
 			{
-				createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file" & chr(0) & ".txt");
+				createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file" & chr(0) & ".txt");
 				fail("no exception thrown for file name with null in it");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e)
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e)
 			{
 				// expected
 			}
@@ -274,10 +274,10 @@
 
 			try
 			{
-				createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file" & chr(160) & ".txt");
+				createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file" & chr(160) & ".txt");
 				fail("no exception thrown for file name with high byte in it");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e)
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e)
 			{
 				// expected
 			}
@@ -291,10 +291,10 @@
 
 			try
 			{
-				createObject("component", "cfesapi.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file%00.txt");
+				createObject("component", "esapi4cf.org.owasp.esapi.SafeFile").init(instance.ESAPI, instance.testFile.getParent() & getJava("java.io.File").separator & "file%00.txt");
 				fail("no exception thrown for file name with percent encoded null");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e)
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e)
 			{
 				// expected
 			}

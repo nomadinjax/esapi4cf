@@ -1,8 +1,11 @@
+<cfoutput>
 <div id="navigation">
-	<a href="index.cfm">Home</a> | <a href="index.cfm?action=Login">Tutorial</a> |
-	<b><a href="index.cfm?action=Login.lab">Lab : Authenticator Functions</a></b> |
-	<a href="index.cfm?action=Login.solution">Solution</a>
+	<a href="#buildURL('')#">Home</a> |
+	<a href="#buildURL('Login')#">Tutorial</a> |
+	<b><a href="#buildURL('Login.lab')#">Lab : Authenticator Functions</a></b> |
+	<a href="#buildURL('Login.solution')#">Solution</a>
 </div>
+</cfoutput>
 <div id="header"></div>
 <p>
 <hr>
@@ -56,12 +59,12 @@
 			<a href="index.cfm?action=Logout.lab">logout</a>
 		</cfif>
 	</cfif>
-	<cfcatch type="cfesapi.org.owasp.esapi.errors.AuthenticationException">
+	<cfcatch type="esapi4cf.org.owasp.esapi.errors.AuthenticationException">
 		<cfset ESAPI().currentRequest().setAttribute("userMessage", cfcatch.message )>
 		<cfset ESAPI().currentRequest().setAttribute("logMessage", cfcatch.detail )>
 		<cfset cfcatch.printStackTrace()>
 	</cfcatch>
-	<cfcatch type="cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException">
+	<cfcatch type="esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException">
 		<cfset ESAPI().currentRequest().setAttribute("userMessage", cfcatch.message )>
 		<cfset ESAPI().currentRequest().setAttribute("logMessage", cfcatch.detail )>
 		<cfset cfcatch.printStackTrace()>
@@ -74,8 +77,9 @@
 </cftry>
 
 <cfif user EQ "" OR user.isAnonymous()>
+<cfoutput>
 	<h2>Create User</h2>
-	<form action="index.cfm?action=Login.lab" method="POST">
+	<form action="#buildURL('Login.lab')#" method="POST">
 		<table>
 			<tr>
 				<td>Username:</td>
@@ -99,7 +103,7 @@
 	</form>
 
 	<h2>Login</h2>
-	<form action="index.cfm?action=Login.lab" method="POST">
+	<form action="#buildURL('Login.lab')#" method="POST">
 		<table>
 			<tr>
 				<td>Username:</td>
@@ -119,4 +123,5 @@
 		</table>
 		<input type="submit" value="login"><br>
 	</form>
+</cfoutput>
 </cfif>

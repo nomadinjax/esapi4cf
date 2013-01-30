@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 		clearUserFile();
 	</cfscript>
 
@@ -45,35 +45,35 @@
 				local.authenticator.createUser( local.accountName, local.password, local.password );// duplicate user
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationAccountsException e) {
 				// success
 			}
 			try {
 				local.authenticator.createUser( instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS ), "password1", "password2" );// don't match
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.createUser( instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS ), "weak1", "weak1" );// weak password
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.createUser( "", "weak1", "weak1" );// null username
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationAccountsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationAccountsException e) {
 				// success
 			}
 			try {
 				local.authenticator.createUser( instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS ), "", "" );// null password
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 		</cfscript>
@@ -95,7 +95,7 @@
 					local.newPassword = local.authenticator.generateStrongPassword();
 					local.authenticator.verifyPasswordStrength( local.oldPassword, local.newPassword );
 				}
-				catch(cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
+				catch(esapi4cf.org.owasp.esapi.errors.AuthenticationException e) {
 					System.out.println( "  FAILED >> " & local.newPassword & " : " & e.getLogMessage() );
 					fail("");
 				}
@@ -103,7 +103,7 @@
 			try {
 				local.authenticator.verifyPasswordStrength( "test56^$test", "abcdx56^$sl" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// expected
 			}
 		</cfscript>
@@ -123,8 +123,8 @@
 			local.user1 = local.authenticator.createUser( local.username1, "getCurrentUser", "getCurrentUser" );
 			local.user2 = local.authenticator.createUser( local.username2, "getCurrentUser", "getCurrentUser" );
 			local.user1.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();;
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();;
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.user1.loginWithPassword( "getCurrentUser" );
 			local.currentUser = local.authenticator.getCurrentUser();
@@ -148,7 +148,7 @@
 			            }
 			            a = instance.createUser(accountName, password, password);
 			            instance.setCurrentUser(a);
-			        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
+			        } catch (esapi4cf.org.owasp.esapi.errors.AuthenticationException e) {
 			            e.printStackTrace();
 			        }
 			        User b = instance.getCurrentUser();
@@ -195,19 +195,19 @@
 			local.accountName = instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS );
 			local.user = local.authenticator.createUser( local.accountName, local.password, local.password );
 			local.user.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();;
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();;
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 
 			local.request.setCookie( instance.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, "ridiculous" );
 			try {
 				local.authenticator.login( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse() );// wrong cookie will fail
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// expected
 			}
 
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			instance.ESAPI.authenticator().setCurrentUser( local.user );
 			local.newToken = instance.ESAPI.httpUtilities().setRememberToken( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse(), local.password, 10000, "test.com", local.request.getContextPath() );
@@ -231,10 +231,10 @@
 			local.password = local.authenticator.generateStrongPassword();
 			local.user = local.authenticator.createUser( local.accountName, local.password, local.password );
 			local.user.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
 			local.request.addParameter( "username", local.accountName );
 			local.request.addParameter( "password", local.password );
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();;
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();;
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.authenticator.login( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse() );
 			local.test = local.authenticator.getUserFromSession();
@@ -297,10 +297,10 @@
 			local.password = local.authenticator.generateStrongPassword();
 			local.user = local.authenticator.createUser( local.username, local.password, local.password );
 			local.user.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
 			local.request.addParameter( "username", local.username );
 			local.request.addParameter( "password", local.password );
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 			local.test = local.authenticator.login( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse() );
 			assertTrue( local.test.isLoggedIn() );
@@ -357,8 +357,8 @@
 			local.user2 = instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_UPPERS );
 			local.userOne = local.authenticator.createUser( local.user1, "getCurrentUser", "getCurrentUser" );
 			local.userOne.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();;
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();;
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.userOne.loginWithPassword( "getCurrentUser" );
 			local.currentUser = local.authenticator.getCurrentUser();
@@ -378,7 +378,7 @@
 			            instance.setCurrentUser(u);
 			            ESAPI.getLogger("test").info( Logger.SECURITY, true, "Got current user" );
 			            // ESAPI.authenticator().removeUser( u.getAccountName() );
-			        } catch (cfesapi.org.owasp.esapi.errors.AuthenticationException e) {
+			        } catch (esapi4cf.org.owasp.esapi.errors.AuthenticationException e) {
 			            e.printStackTrace();
 			        }
 			    }
@@ -403,10 +403,10 @@
 			local.accountName = instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS );
 			local.user = local.authenticator.createUser( local.accountName, local.password, local.password );
 			local.user.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
 			local.request.addParameter( "username", local.accountName );
 			local.request.addParameter( "password", local.password );
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 			local.authenticator.login( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse() );
 			assertEquals( local.user, local.authenticator.getCurrentUser() );
@@ -414,7 +414,7 @@
 				local.user.disable();
 				local.authenticator.login( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse() );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			try {
@@ -422,7 +422,7 @@
 				local.user.lock();
 				local.authenticator.login( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse() );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			try {
@@ -430,7 +430,7 @@
 				local.user.setExpirationTime( getJava( "java.util.Date" ).init() );
 				local.authenticator.login( instance.ESAPI.currentRequest(), instance.ESAPI.currentResponse() );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected`
 			}
 		</cfscript>
@@ -451,56 +451,56 @@
 				local.authenticator.verifyPasswordStrength( "password", "jeff" );
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.verifyPasswordStrength( "diff123bang", "same123string" );
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.verifyPasswordStrength( "password", "JEFF" );
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.verifyPasswordStrength( "password", "1234" );
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.verifyPasswordStrength( "password", "password" );
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.verifyPasswordStrength( "password", "-1" );
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.verifyPasswordStrength( "password", "password123" );
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
 				local.authenticator.verifyPasswordStrength( "password", "test123" );
 				fail("");
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 

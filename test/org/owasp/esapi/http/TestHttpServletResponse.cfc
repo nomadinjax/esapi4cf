@@ -13,8 +13,8 @@
  * @author Damon Miller
  * @created 2011
  --->
-<!---  implements="cfesapi.org.owasp.esapi.HttpServletResponse" --->
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<!---  implements="esapi4cf.org.owasp.esapi.HttpServletResponse" --->
+<cfcomponent extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
 		/** The cookies. */

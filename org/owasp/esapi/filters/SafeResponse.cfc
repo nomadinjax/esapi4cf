@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.HttpServletResponse" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="This response wrapper simply overrides unsafe methods in the HttpServletResponse API with safe versions.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.HttpServletResponse" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="This response wrapper simply overrides unsafe methods in the HttpServletResponse API with safe versions.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -21,9 +21,9 @@
 		instance.logger = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.HttpServletResponse" name="init" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.HttpServletResponse" name="init" output="false"
 	            hint="Construct a safe response that overrides the default response methods with safer versions.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" name="response"/>
 
 		<cfscript>
@@ -88,7 +88,7 @@
 				local.header &= "; Secure; HttpOnly";
 				instance.response.addHeader( "Set-Cookie", local.header );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Attempt to set invalid cookie denied", e );
 			}
 		</cfscript>
@@ -106,7 +106,7 @@
 				local.safeName = instance.ESAPI.validator().getValidInput( "safeSetDateHeader", arguments.name, "HTTPHeaderName", 20, false );
 				instance.response.addDateHeader( local.safeName, arguments.date );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Attempt to set invalid date header name denied", e );
 			}
 		</cfscript>
@@ -128,7 +128,7 @@
 				local.safeValue = instance.ESAPI.validator().getValidInput( "addHeader", local.strippedValue, "HTTPHeaderValue", 500, false );
 				instance.response.setHeader( local.safeName, local.safeValue );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Attempt to add invalid header denied", e );
 			}
 		</cfscript>
@@ -146,7 +146,7 @@
 				local.safeName = instance.ESAPI.validator().getValidInput( "safeSetDateHeader", arguments.name, "HTTPHeaderName", 20, false );
 				instance.response.addIntHeader( local.safeName, arguments.value );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Attempt to set invalid int header name denied", e );
 			}
 		</cfscript>
@@ -352,7 +352,7 @@
 				local.safeName = instance.ESAPI.validator().getValidInput( "safeSetDateHeader", arguments.name, "HTTPHeaderName", 20, false );
 				instance.response.setDateHeader( local.safeName, arguments.date );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Attempt to set invalid date header name denied", e );
 			}
 		</cfscript>
@@ -373,7 +373,7 @@
 				local.safeValue = instance.ESAPI.validator().getValidInput( "setHeader", local.strippedValue, "HTTPHeaderValue", 500, false );
 				instance.response.setHeader( local.safeName, local.safeValue );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Attempt to set invalid header denied", e );
 			}
 		</cfscript>
@@ -391,7 +391,7 @@
 				local.safeName = instance.ESAPI.validator().getValidInput( "safeSetDateHeader", arguments.name, "HTTPHeaderName", 20, false );
 				instance.response.setIntHeader( local.safeName, arguments.value );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Attempt to set invalid int header name denied", e );
 			}
 		</cfscript>

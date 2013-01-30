@@ -16,7 +16,7 @@
 <cfcomponent extends="EnterpriseSecurityException" output="false" hint="An ExecutorException should be thrown for any problems that arise during the execution of a system executable.">
 
 	<cffunction access="public" returntype="ExecutorException" name="init" output="false" hint="Creates a new instance of ExecutorException.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
 		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
 		<cfargument name="cause" hint="the cause"/>

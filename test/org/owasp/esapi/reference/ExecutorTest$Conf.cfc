@@ -1,4 +1,4 @@
-﻿<cfcomponent extends="cfesapi.test.org.owasp.esapi.SecurityConfigurationWrapper" output="false" hint="Config wrapper to temporarly set the allowedExecutables and workingDirectory.">
+﻿<cfcomponent extends="esapi4cf.test.org.owasp.esapi.SecurityConfigurationWrapper" output="false" hint="Config wrapper to temporarly set the allowedExecutables and workingDirectory.">
 
 	<cfscript>
 		instance.allowedExes = [];
@@ -6,7 +6,7 @@
 	</cfscript>
 
 	<cffunction access="public" returntype="ExecutorTest$Conf" name="init" output="false" hint="Create wrapper with the specified allowed execs and workingDir.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.SecurityConfiguration" name="orig" hint="The configuration to wrap.">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.SecurityConfiguration" name="orig" hint="The configuration to wrap.">
 		<cfargument required="true" type="Array" name="allowedExes" hint="The executables to be allowed">
 		<cfargument required="true" name="workingDir" hint="The working directory for execution">
 		<cfscript>

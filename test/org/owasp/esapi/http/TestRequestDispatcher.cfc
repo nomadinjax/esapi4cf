@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cffunction access="public" returntype="void" name="forward" output="false">
 		<cfargument required="true" name="request"/>

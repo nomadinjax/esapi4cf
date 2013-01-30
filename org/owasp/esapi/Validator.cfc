@@ -50,7 +50,7 @@
 		<cfargument required="true" type="String" name="type" hint="The regular expression name that maps to the actual regular expression from 'ESAPI.properties'."/>
 		<cfargument required="true" type="numeric" name="maxLength" hint="The maximum post-canonicalized String length allowed."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -69,7 +69,7 @@
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" name="format" hint="Required formatting of date inputted."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -88,7 +88,7 @@
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" type="numeric" name="maxLength" hint="The maximum post-canonicalized String length allowed."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -105,7 +105,7 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -122,7 +122,7 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -139,7 +139,7 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -160,7 +160,7 @@
 		<cfargument required="true" type="numeric" name="minValue" hint="Lowest legal value for input."/>
 		<cfargument required="true" type="numeric" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -181,7 +181,7 @@
 		<cfargument required="true" type="numeric" name="minValue" hint="Lowest legal value for input."/>
 		<cfargument required="true" type="numeric" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -202,7 +202,7 @@
 		<cfargument required="true" type="numeric" name="minValue" hint="Lowest legal value for input."/>
 		<cfargument required="true" type="numeric" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -221,7 +221,7 @@
 		<cfargument required="true" type="binary" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" type="numeric" name="maxBytes" hint="The maximum number of bytes allowed in a legal file."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -244,7 +244,7 @@
 		<cfargument required="true" type="binary" name="content" hint="A byte array containing the content of the uploaded file."/>
 		<cfargument required="true" type="numeric" name="maxBytes" hint="The max number of bytes allowed for a legal file upload."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -271,7 +271,7 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" type="Array" name="list" hint="The list to search for 'input'."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -288,7 +288,7 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="Array" name="requiredNames" hint="parameters that are required to be in HTTP request"/>
 		<cfargument required="true" type="Array" name="optionalNames" hint="additional parameters that may be in HTTP request"/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -306,7 +306,7 @@
 		<cfargument required="true" name="input" hint="data to be checked for validity"/>
 		<cfargument required="true" type="numeric" name="maxLength" hint="Maximum number of bytes stored in 'input'"/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 
@@ -323,7 +323,7 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="redirect location to be checked for validity, according to rules set in 'ESAPI.properties'"/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
-		<cfargument type="cfesapi.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
+		<cfargument type="esapi4cf.org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
 	</cffunction>
 

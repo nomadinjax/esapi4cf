@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 		clearUserFile();
 	</cfscript>
 
@@ -29,7 +29,7 @@
 
 	</cffunction>
 
-	<cffunction access="private" returntype="cfesapi.org.owasp.esapi.reference.DefaultUser" name="createTestUser" output="false"
+	<cffunction access="private" returntype="esapi4cf.org.owasp.esapi.reference.DefaultUser" name="createTestUser" output="false"
 	            hint="Creates the test user.">
 		<cfargument required="true" type="String" name="password" hint="the password"/>
 
@@ -108,7 +108,7 @@
 				local.user.changePassword( local.password2, local.password1, local.password1 );
 				fail( "Shouldn't be able to reuse a password" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// expected
 			}
 			assertTrue( local.user.verifyPassword( local.password2 ) );
@@ -162,8 +162,8 @@
 			System.out.println( "failedLoginLockout" );
 			local.user = createTestUser( "failedLoginLockout" );
 			local.user.enable();
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 
 			local.user.loginWithPassword( "failedLoginLockout" );
@@ -171,7 +171,7 @@
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			System.out.println( "FAILED: " & local.user.getFailedLoginCount() );
@@ -180,7 +180,7 @@
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			System.out.println( "FAILED: " & local.user.getFailedLoginCount() );
@@ -189,7 +189,7 @@
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			System.out.println( "FAILED: " & local.user.getFailedLoginCount() );
@@ -224,13 +224,13 @@
 			local.authenticator = instance.ESAPI.authenticator();
 			local.oldPassword = local.authenticator.generateStrongPassword();
 			local.user = createTestUser( local.oldPassword );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			local.llt1 = local.user.getLastFailedLoginTime();
@@ -238,7 +238,7 @@
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			local.llt2 = local.user.getLastFailedLoginTime();
@@ -331,14 +331,14 @@
 			local.accountName = instance.ESAPI.randomizer().getRandomString( 8, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS );
 			local.password = instance.ESAPI.authenticator().generateStrongPassword();
 			local.user = local.authenticator.createUser( local.accountName, local.password, local.password );
-			local.jsession1 = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpSession" ).init();
-			local.session1 = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeSession" ).init(instance.ESAPI, local.jsession1);
+			local.jsession1 = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession" ).init();
+			local.session1 = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeSession" ).init(instance.ESAPI, local.jsession1);
 			local.user.addSession( local.session1 );
-			local.jsession2 = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpSession" ).init();
-			local.session2 = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeSession" ).init(instance.ESAPI, local.jsession1);
+			local.jsession2 = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession" ).init();
+			local.session2 = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeSession" ).init(instance.ESAPI, local.jsession1);
 			local.user.addSession( local.session2 );
-			local.jsession3 = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpSession" ).init();
-			local.session3 = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeSession" ).init(instance.ESAPI, local.jsession1);
+			local.jsession3 = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession" ).init();
+			local.session3 = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeSession" ).init(instance.ESAPI, local.jsession1);
 			local.user.addSession( local.session3 );
 			local.sessions = local.user.getSessions();
 			local.i = local.sessions.iterator();
@@ -377,34 +377,34 @@
 			local.user = createTestUser( "incrementFailedLoginCount" );
 			local.user.enable();
 			assertEquals( 0, local.user.getFailedLoginCount() );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertEquals( 1, local.user.getFailedLoginCount() );
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertEquals( 2, local.user.getFailedLoginCount() );
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertEquals( 3, local.user.getFailedLoginCount() );
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertTrue( local.user.isLocked() );
@@ -473,8 +473,8 @@
 			local.user = createTestUser( local.oldPassword );
 			local.now = System.currentTimeMillis();
 			// setup request and response
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.session = local.request.getSession();
 
@@ -501,8 +501,8 @@
 			local.user = createTestUser( local.oldPassword );
 			local.now = System.currentTimeMillis();
 			// setup request and response
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP( local.request, local.response );
 			local.session = local.request.getSession();
 
@@ -542,8 +542,8 @@
 			var local = {};
 
 			System.out.println( "loginWithPassword" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			instance.ESAPI.httpUtilities().setCurrentHTTP(local.request, local.response);
 			local.session = local.request.getSession();
 			assertFalse( local.session.getInvalidated() );
@@ -557,20 +557,20 @@
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertFalse( local.user.isLoggedIn() );
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			try {
 				local.user.loginWithPassword( "ridiculous" );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AuthenticationLoginException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertTrue( local.user.isLocked() );
@@ -587,8 +587,8 @@
 			var local = {};
 
 			System.out.println( "logout" );
-			local.request = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
-			local.response = createObject( "component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
+			local.request = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest" ).init();
+			local.response = createObject( "component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse" ).init();
 			local.session = local.request.getSession();
 			assertFalse( local.session.getInvalidated() );
 			local.authenticator = instance.ESAPI.authenticator();

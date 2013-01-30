@@ -29,7 +29,7 @@
  * @author Damon Miller
  * @since June 1, 2007
  --->
-<cfinterface extends="cfesapi.org.owasp.esapi.util.Principal">
+<cfinterface extends="esapi4cf.org.owasp.esapi.util.Principal">
 	<!---
 	import java.security.Principal;
 	import java.util.Date;

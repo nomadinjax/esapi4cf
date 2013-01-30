@@ -16,7 +16,7 @@
 <p>Warning: this method does not perform the level of validation and checks generally required in ESAPI, and can therefore be used to create a username and password that do not comply with the username and password strength requirements.</p>
 <cfscript>
 	if (cgi.request_method == "post") {
-		ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI").init();
+		ESAPI = createObject("component", "esapi4cf.org.owasp.esapi.ESAPI").init();
 		ESAPI.securityConfiguration().setResourceDirectory(expandPath("../../../../test/resources/"));
 
 		if (listLen(form.fieldNames) != 3) {

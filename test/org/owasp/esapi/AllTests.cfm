@@ -16,34 +16,34 @@
 <cfsetting requesttimeout="60">
 <cfscript>
 	System = createObject( "java", "java.lang.System" );
-	instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+	instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 
 	System.out.println( "INITIALIZING ALL TESTS" );
 
 	suite = createObject( "component", "mxunit.framework.TestSuite" ).TestSuite();
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.DefaultSecurityConfigurationTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.LoggerTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.SafeFileTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.UserTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.ESAPITest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.RandomizerTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.AccessControllerTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.HTTPUtilitiesTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.ValidatorTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.EncryptorTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.IntrusionDetectorTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.AccessReferenceMapTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.IntegerAccessReferenceMapTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.ExecutorTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.EncoderTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.EncryptedPropertiesTest" );
-	suite.addAll( "cfesapi.test.org.owasp.esapi.reference.AuthenticatorTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.DefaultSecurityConfigurationTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.LoggerTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.SafeFileTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.UserTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.ESAPITest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.RandomizerTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.AccessControllerTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.HTTPUtilitiesTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.ValidatorTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.EncryptorTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.IntrusionDetectorTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.AccessReferenceMapTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.IntegerAccessReferenceMapTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.ExecutorTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.EncoderTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.EncryptedPropertiesTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.reference.AuthenticatorTest" );
 
 	// exceptions
-	suite.addAll( "cfesapi.test.org.owasp.esapi.errors.EnterpriseSecurityExceptionTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.errors.EnterpriseSecurityExceptionTest" );
 
 	// filters
-	suite.addAll( "cfesapi.test.org.owasp.esapi.filters.ESAPIFilterTest" );
+	suite.addAll( "esapi4cf.test.org.owasp.esapi.filters.ESAPIFilterTest" );
 
 	startTestSuiteRunTime = getTickCount();
 

@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.Encoder" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Encoder interface. This implementation takes a whitelist approach to encoding, meaning that everything not specifically identified in a list of 'immune' characters is encoded. Several methods follow the approach in the Microsoft AntiXSS Library. The Encoder performs two key functions The canonicalization algorithm is complex, as it has to be able to recognize encoded characters that might affect downstream interpreters without being told what encodings are possible. The stream is read one character at a time. If an encoded character is encountered, it is canonicalized and pushed back onto the stream. If the next character is encoded, then a intrusion exception is thrown for the double-encoding which is assumed to be an attack. The encoding methods also attempt to prevent double encoding, by canonicalizing strings that are passed to them for encoding. Currently the implementation supports: HTML Entity Encoding (including non-terminated), Percent Encoding, Backslash Encoding">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.Encoder" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Encoder interface. This implementation takes a whitelist approach to encoding, meaning that everything not specifically identified in a list of 'immune' characters is encoded. Several methods follow the approach in the Microsoft AntiXSS Library. The Encoder performs two key functions The canonicalization algorithm is complex, as it has to be able to recognize encoded characters that might affect downstream interpreters without being told what encodings are possible. The stream is read one character at a time. If an encoded character is encountered, it is canonicalized and pushed back onto the stream. If the next character is encoded, then a intrusion exception is thrown for the double-encoding which is assumed to be an attack. The encoding methods also attempt to prevent double encoding, by canonicalizing strings that are passed to them for encoding. Currently the implementation supports: HTML Entity Encoding (including non-terminated), Percent Encoding, Backslash Encoding">
 
 	<cfscript>
 		// Codecs
@@ -41,9 +41,9 @@
 		instance.IMMUNE_XPATH = [',', '.', '-', '_', ' '];
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Encoder" name="init" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.Encoder" name="init" output="false"
 	            hint="Instantiates a new DefaultEncoder">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument type="Array" name="codecs" hint="A list of codecs to use by the Encoder class"/>
 
 		<cfscript>
@@ -142,7 +142,7 @@
 			// do strict tests and handle if any mixed, multiple, nested encoding were found
 			if(local.foundCount >= 2 && local.mixedCount > 1) {
 				if(arguments.strict) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "Input validation failure", "Multiple (" & local.foundCount & "x) and mixed encoding (" & local.mixedCount & "x) detected in " & arguments.input ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "Input validation failure", "Multiple (" & local.foundCount & "x) and mixed encoding (" & local.mixedCount & "x) detected in " & arguments.input ) );
 				}
 				else {
 					instance.logger.warning( getSecurity( "SECURITY_FAILURE" ), false, "Multiple (" & local.foundCount & "x) and mixed encoding (" & local.mixedCount & "x) detected in " & arguments.input );
@@ -150,7 +150,7 @@
 			}
 			else if(local.foundCount >= 2) {
 				if(arguments.strict) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "Input validation failure", "Multiple (" & local.foundCount & "x) encoding detected in " & arguments.input ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "Input validation failure", "Multiple (" & local.foundCount & "x) encoding detected in " & arguments.input ) );
 				}
 				else {
 					instance.logger.warning( getSecurity( "SECURITY_FAILURE" ), false, "Multiple (" & local.foundCount & "x) encoding detected in " & arguments.input );
@@ -158,7 +158,7 @@
 			}
 			else if(local.mixedCount > 1) {
 				if(arguments.strict) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "Input validation failure", "Mixed encoding (" & local.mixedCount & "x) detected in " & arguments.input ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "Input validation failure", "Mixed encoding (" & local.mixedCount & "x) detected in " & arguments.input ) );
 				}
 				else {
 					instance.logger.warning( getSecurity( "SECURITY_FAILURE" ), false, "Mixed encoding (" & local.mixedCount & "x) detected in " & arguments.input );
@@ -494,10 +494,10 @@
 				return getJava( "java.net.URLEncoder" ).encode( javaCast( "string", arguments.input ), instance.ESAPI.securityConfiguration().getCharacterEncoding() );
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncodingException" ).init( instance.ESAPI, "Encoding failure", "Encoding not supported", ex ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncodingException" ).init( instance.ESAPI, "Encoding failure", "Encoding not supported", ex ) );
 			}
 			catch(java.lang.Exception e) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncodingException" ).init( instance.ESAPI, "Encoding failure", "Problem URL decoding input", e ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncodingException" ).init( instance.ESAPI, "Encoding failure", "Problem URL decoding input", e ) );
 			}
 		</cfscript>
 
@@ -508,15 +508,15 @@
 
 		<cfscript>
 			var local = {};
-			local.canonical = canonicalize( arguments.input );
+			local.canonical = this.canonicalize( arguments.input );
 			try {
 				return getJava( "java.net.URLDecoder" ).decode( local.canonical, instance.ESAPI.securityConfiguration().getCharacterEncoding() );
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncodingException" ).init( instance.ESAPI, "Decoding failed", "Encoding not supported", ex ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncodingException" ).init( instance.ESAPI, "Decoding failed", "Encoding not supported", ex ) );
 			}
 			catch(java.lang.Exception e) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncodingException" ).init( instance.ESAPI, "Decoding failed", "Problem URL decoding input", e ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncodingException" ).init( instance.ESAPI, "Decoding failed", "Problem URL decoding input", e ) );
 			}
 		</cfscript>
 

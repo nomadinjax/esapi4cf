@@ -39,7 +39,7 @@
 		}
 	}
 
-	ESAPI = createObject("component", "cfesapi.org.owasp.esapi.ESAPI").init();
+	ESAPI = createObject("component", "esapi4cf.org.owasp.esapi.ESAPI").init();
 	ESAPI.securityConfiguration().setResourceDirectory(expandPath("../../../../test/resources/"));
 
 	f = createObject("java", "java.io.File").init(form.file);

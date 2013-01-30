@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testFilter" output="false">
@@ -24,7 +24,7 @@
 			var local = {};
 
 	        System.out.println("ESAPIFilter");
-	        local.filter = createObject("component", "cfesapi.org.owasp.esapi.filters.ESAPIFilter").init(instance.ESAPI);
+	        local.filter = createObject("component", "esapi4cf.org.owasp.esapi.filters.ESAPIFilter").init(instance.ESAPI);
 	        System.out.println(">>>" & instance.ESAPI.securityConfiguration().getResourceDirectory() );
 
 	        // setup the user in session
@@ -34,8 +34,8 @@
 			local.user = local.authenticator.createUser(local.accountName, local.password, local.password);
 			local.authenticator.setCurrentUser(local.user);
 			local.user.enable();
-	   	    local.request = createObject("component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			local.response = createObject("component", "cfesapi.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+	   	    local.request = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
+			local.response = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
 	        local.session = local.request.getSession();
 	        local.session.setAttribute("ESAPIUserSessionKey", local.user);
 

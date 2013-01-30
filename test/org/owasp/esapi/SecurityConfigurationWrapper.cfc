@@ -1,4 +1,4 @@
-<cfcomponent implements="cfesapi.org.owasp.esapi.SecurityConfiguration" output="false" hint="Simple wrapper implementation of {@link SecurityConfiguration}. This allows for easy subclassing and property fixups for unit tests. This has been changed to be concrete instead of abstract so problems caused by changes to the interface will show up here (ie, not abstract not implementing...) instead of versions inheriting from it.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.SecurityConfiguration" output="false" hint="Simple wrapper implementation of {@link SecurityConfiguration}. This allows for easy subclassing and property fixups for unit tests. This has been changed to be concrete instead of abstract so problems caused by changes to the interface will show up here (ie, not abstract not implementing...) instead of versions inheriting from it.">
 
 	<cfscript>
 		instance.wrapped = "";
@@ -13,7 +13,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.SecurityConfiguration" name="getWrappedSecurityConfiguration" output="false" hint="Access the wrapped configuration.">
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.SecurityConfiguration" name="getWrappedSecurityConfiguration" output="false" hint="Access the wrapped configuration.">
 		<cfscript>
 			return instance.wrapped;
 		</cfscript>

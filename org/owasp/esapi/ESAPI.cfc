@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="ESAPI locator class is provided to make it easy to gain access to the current ESAPI classes in use. Use the set methods to override the reference implementations with instances of any custom ESAPI implementations.">
+<cfcomponent extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="ESAPI locator class is provided to make it easy to gain access to the current ESAPI classes in use. Use the set methods to override the reference implementations with instances of any custom ESAPI implementations.">
 
 	<cfscript>
 		instance.ESAPI = {
@@ -60,7 +60,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.accessController ))
-				instance.ESAPI.accessController = createObject( "component", "cfesapi.org.owasp.esapi.reference.FileBasedAccessController" ).init( this );
+				instance.ESAPI.accessController = createObject( "component", "esapi4cf.org.owasp.esapi.reference.FileBasedAccessController" ).init( this );
 			return instance.ESAPI.accessController;
 		</cfscript>
 
@@ -79,7 +79,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.authenticator ))
-				instance.ESAPI.authenticator = createObject( "component", "cfesapi.org.owasp.esapi.reference.FileBasedAuthenticator" ).init( this );
+				instance.ESAPI.authenticator = createObject( "component", "esapi4cf.org.owasp.esapi.reference.FileBasedAuthenticator" ).init( this );
 			return instance.ESAPI.authenticator;
 		</cfscript>
 
@@ -98,7 +98,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.encoder ))
-				instance.ESAPI.encoder = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultEncoder" ).init( this );
+				instance.ESAPI.encoder = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultEncoder" ).init( this );
 			return instance.ESAPI.encoder;
 		</cfscript>
 
@@ -117,7 +117,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.encryptor ))
-				instance.ESAPI.encryptor = createObject( "component", "cfesapi.org.owasp.esapi.reference.JavaEncryptor" ).init( this );
+				instance.ESAPI.encryptor = createObject( "component", "esapi4cf.org.owasp.esapi.reference.JavaEncryptor" ).init( this );
 			return instance.ESAPI.encryptor;
 		</cfscript>
 
@@ -136,7 +136,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.executor ))
-				instance.ESAPI.executor = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultExecutor" ).init( this );
+				instance.ESAPI.executor = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultExecutor" ).init( this );
 			return instance.ESAPI.executor;
 		</cfscript>
 
@@ -155,7 +155,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.httpUtilities ))
-				instance.ESAPI.httpUtilities = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultHTTPUtilities" ).init( this );
+				instance.ESAPI.httpUtilities = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultHTTPUtilities" ).init( this );
 			return instance.ESAPI.httpUtilities;
 		</cfscript>
 
@@ -174,7 +174,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.intrusionDetector ))
-				instance.ESAPI.intrusionDetector = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultIntrusionDetector" ).init( this );
+				instance.ESAPI.intrusionDetector = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultIntrusionDetector" ).init( this );
 			return instance.ESAPI.intrusionDetector;
 		</cfscript>
 
@@ -195,10 +195,10 @@
 			if(!isObject( instance.ESAPI.logFactory ) || instance.applicationName != securityConfiguration().getApplicationName()) {
 				instance.applicationName = securityConfiguration().getApplicationName();
 				if(securityConfiguration().getLogDefaultLog4J()) {
-					instance.ESAPI.logFactory = createObject( "component", "cfesapi.org.owasp.esapi.reference.Log4JLogFactory" ).init( this, instance.applicationName );
+					instance.ESAPI.logFactory = createObject( "component", "esapi4cf.org.owasp.esapi.reference.Log4JLogFactory" ).init( this, instance.applicationName );
 				}
 				else {
-					instance.ESAPI.logFactory = createObject( "component", "cfesapi.org.owasp.esapi.reference.JavaLogFactory" ).init( this, instance.applicationName );
+					instance.ESAPI.logFactory = createObject( "component", "esapi4cf.org.owasp.esapi.reference.JavaLogFactory" ).init( this, instance.applicationName );
 				}
 			}
 			return instance.ESAPI.logFactory;
@@ -238,7 +238,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.randomizer ))
-				instance.ESAPI.randomizer = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultRandomizer" ).init( this );
+				instance.ESAPI.randomizer = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultRandomizer" ).init( this );
 			return instance.ESAPI.randomizer;
 		</cfscript>
 
@@ -257,7 +257,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.securityConfiguration ))
-				instance.ESAPI.securityConfiguration = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultSecurityConfiguration" ).init( this );
+				instance.ESAPI.securityConfiguration = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultSecurityConfiguration" ).init( this );
 			return instance.ESAPI.securityConfiguration;
 		</cfscript>
 
@@ -276,7 +276,7 @@
 
 		<cfscript>
 			if(!isObject( instance.ESAPI.validator ))
-				instance.ESAPI.validator = createObject( "component", "cfesapi.org.owasp.esapi.reference.DefaultValidator" ).init( this );
+				instance.ESAPI.validator = createObject( "component", "esapi4cf.org.owasp.esapi.reference.DefaultValidator" ).init( this );
 			return instance.ESAPI.validator;
 		</cfscript>
 

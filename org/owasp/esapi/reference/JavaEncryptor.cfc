@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.Encryptor" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Encryptor interface. This implementation layers on the JCE provided cryptographic package. Algorithms used are configurable in the ESAPI.properties file.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.Encryptor" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Encryptor interface. This implementation layers on the JCE provided cryptographic package. Algorithms used are configurable in the ESAPI.properties file.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -33,8 +33,8 @@
 		instance.encoding = "UTF-8";
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.Encryptor" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.Encryptor" name="init" output="false">
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
 			var local = {};
@@ -69,7 +69,7 @@
 			}
 			catch(java.lang.Exception e) {
 				// can't throw this exception in initializer, but this will log it
-				createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Encryption failure", "Error creating Encryptor", e );
+				createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Encryption failure", "Error creating Encryptor", e );
 			}
 
 			return this;
@@ -103,7 +103,7 @@
 				return local.encoded;
 			}
 			catch(java.security.NoSuchAlgorithmException e) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Internal error", "Can't find hash algorithm " & instance.hashAlgorithm, e ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Internal error", "Can't find hash algorithm " & instance.hashAlgorithm, e ) );
 			}
 		</cfscript>
 
@@ -124,7 +124,7 @@
 				return instance.ESAPI.encoder().encodeForBase64( local.enc, false );
 			}
 			catch(java.lang.Exception e) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Encryption failure", "Encryption problem: " & e.getMessage(), e ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Encryption failure", "Encryption problem: " & e.getMessage(), e ) );
 			}
 		</cfscript>
 
@@ -145,7 +145,7 @@
 				return getJava( "java.lang.String" ).init( local.output, instance.encoding );
 			}
 			catch(java.lang.Exception e) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Decryption failed", "Decryption problem: " & e.getMessage(), e ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Decryption failed", "Decryption problem: " & e.getMessage(), e ) );
 			}
 		</cfscript>
 
@@ -165,7 +165,7 @@
 				return instance.ESAPI.encoder().encodeForBase64( local.bytes, true );
 			}
 			catch(java.lang.Exception e) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Signature failure", "Can't find signature algorithm " & instance.signatureAlgorithm, e ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Signature failure", "Can't find signature algorithm " & instance.signatureAlgorithm, e ) );
 			}
 		</cfscript>
 
@@ -186,7 +186,7 @@
 				return local.signer.verify( local.bytes );
 			}
 			catch(java.lang.Exception e) {
-				createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Invalid signature", "Problem verifying signature: " & e.getMessage(), e );
+				createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Invalid signature", "Problem verifying signature: " & e.getMessage(), e );
 				return false;
 			}
 		</cfscript>
@@ -205,8 +205,8 @@
 				local.random = instance.ESAPI.randomizer().getRandomString( 10, getJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS );
 				return this.encryptString( arguments.timestamp & ":" & local.random & ":" & arguments.data );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncryptionException e) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.IntegrityException" ).init( instance.ESAPI, e.message, e.detail, e ) );
+			catch(esapi4cf.org.owasp.esapi.errors.EncryptionException e) {
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.IntegrityException" ).init( instance.ESAPI, e.message, e.detail, e ) );
 			}
 		</cfscript>
 
@@ -222,20 +222,20 @@
 			try {
 				local.plaintext = decryptString( arguments.seal );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncryptionException e) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Invalid seal", "Seal did not decrypt properly", e ) );
+			catch(esapi4cf.org.owasp.esapi.errors.EncryptionException e) {
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Invalid seal", "Seal did not decrypt properly", e ) );
 			}
 
 			local.index = local.plaintext.indexOf( ":" );
 			if(local.index == -1) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Invalid seal", "Seal did not contain properly formatted separator" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Invalid seal", "Seal did not contain properly formatted separator" ) );
 			}
 
 			local.timestring = local.plaintext.substring( 0, local.index );
 			local.now = getJava( "java.util.Date" ).init().getTime();
 			local.expiration = getJava( "java.lang.Long" ).init( local.timestring );
 			if(local.now > local.expiration) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Invalid seal", "Seal expiration date has expired" ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.EncryptionException" ).init( instance.ESAPI, "Invalid seal", "Seal expiration date has expired" ) );
 			}
 
 			local.index = local.plaintext.indexOf( ":", local.index + 1 );
@@ -253,7 +253,7 @@
 				unseal( arguments.seal );
 				return true;
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncryptionException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.EncryptionException e) {
 				return false;
 			}
 		</cfscript>

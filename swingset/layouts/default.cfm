@@ -1,35 +1,31 @@
 <cfscript>
-	action = ESAPI().currentRequest().getAttribute("action");
-	title = "ESAPI SwingSet Interactive - " & action;
-	querystring = ESAPI().currentRequest().getQueryString();
-	pageHeader = "ESAPI Swingset Interactive - " & action;
+	title = "ESAPI SwingSet Interactive - " & listFirst(rc.action, ".");
+	pageHeader = "ESAPI Swingset Interactive - " & listFirst(rc.action, ".");
 
-	i1 = querystring.indexOf("&solution");
-	secure = ( i1 != -1 );
+	secure = iif(listLast(rc.action, ".") EQ "solution", true, false);
 	if ( secure ) {
-		querystring = querystring.substring( 0, i1 );
 		title &= ": Solution with ESAPI";
 		pageHeader &= ": Solution with ESAPI";
 	}
 
-	i2 = querystring.indexOf("&lab");
-	insecure = ( i2 != -1 );
+	insecure = iif(listLast(rc.action, ".") EQ "lab", true, false);
 	if ( insecure ) {
-		querystring = querystring.substring( 0, i2 );
 		title &= ": Lab";
 		pageHeader &= ": Lab";
 	}
 </cfscript>
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8" />
 <cfoutput><title>#title#</title></cfoutput>
-<link rel="stylesheet" type="text/css" href="style/style.css" />
+<link rel="stylesheet" href="style/style.css" />
 </head>
 
-<cfif ( !insecure && !secure )> <body> </cfif>
-<cfif ( insecure ) > <body bgcolor="#EECCCC"> </cfif>
-<cfif ( secure ) > <body bgcolor="#BBDDBB"> </cfif>
+<cfif ( !insecure && !secure )> <body>
+<cfelseif ( insecure ) > <body bgcolor="#EECCCC">
+<cfelseif ( secure ) > <body bgcolor="#BBDDBB">
+</cfif>
 <div id="container">
 	<div id="holder">
 		<div id="logo"><img src="style/images/owasp-logo_130x55.png" width="130" height="55" alt="owasp_logo" title="owasp_logo"></div>

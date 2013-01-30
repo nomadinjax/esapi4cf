@@ -1,4 +1,4 @@
-﻿<cfcomponent extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+﻿<cfcomponent extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -8,7 +8,7 @@
 	</cfscript>
 
 	<cffunction access="public" returntype="DefaultIntrusionDetector$Event" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="key"/>
 
 		<cfscript>
@@ -39,7 +39,7 @@
 				local.plong = local.past.getTime();
 				local.nlong = local.now.getTime();
 				if(local.nlong - local.plong < arguments.interval * 1000) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "Threshold exceeded", "Exceeded threshold for " & this.key ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.IntrusionException" ).init( instance.ESAPI, "Threshold exceeded", "Exceeded threshold for " & this.key ) );
 				}
 			}
 		</cfscript>

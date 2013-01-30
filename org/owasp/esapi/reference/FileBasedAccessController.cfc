@@ -76,7 +76,7 @@
  * @since June 1, 2007
  * @see org.owasp.esapi.AccessController
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.AccessController" extends="cfesapi.org.owasp.esapi.util.Object" output="false">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.AccessController" extends="esapi4cf.org.owasp.esapi.util.Object" output="false">
 
 	<!---
 	import java.io.File;
@@ -126,7 +126,7 @@
 	</cfscript>
 
 	<cffunction access="public" returntype="FileBasedAccessController" name="init" output="false">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
 			instance.ESAPI = arguments.ESAPI;
@@ -145,7 +145,7 @@
 				assertAuthorizedForURL( arguments.url );
 				return true;
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				return false;
 			}
 		</cfscript>
@@ -160,7 +160,7 @@
 				assertAuthorizedForFunction( arguments.functionName );
 				return true;
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				return false;
 			}
 		</cfscript>
@@ -176,7 +176,7 @@
 				assertAuthorizedForData( argumentCollection=arguments );
 				return true;
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				return false;
 			}
 		</cfscript>
@@ -191,7 +191,7 @@
 				assertAuthorizedForFile( arguments.filepath );
 				return true;
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				return false;
 			}
 		</cfscript>
@@ -206,7 +206,7 @@
 				assertAuthorizedForService( arguments.serviceName );
 				return true;
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				return false;
 			}
 		</cfscript>
@@ -221,7 +221,7 @@
 				instance.urlMap = loadRules( "URLAccessRules.txt" );
 			}
 			if(!matchRuleByPath( instance.urlMap, arguments.url )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for URL", "Not authorized for URL: " & arguments.url ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for URL", "Not authorized for URL: " & arguments.url ) );
 			}
 		</cfscript>
 
@@ -235,7 +235,7 @@
 				instance.functionMap = loadRules( "FunctionAccessRules.txt" );
 			}
 			if(!matchRuleByPath( instance.functionMap, arguments.functionName )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for function", "Not authorized for function: " & arguments.functionName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for function", "Not authorized for function: " & arguments.functionName ) );
 			}
 		</cfscript>
 
@@ -252,11 +252,11 @@
 
 			if(structKeyExists( arguments, "data" )) {
 				if(!matchRuleByAction( instance.dataMap, arguments.data, arguments.action )) {
-					throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for data", "Not authorized for data: " & arguments.data.getClass().getName() ) );
+					throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for data", "Not authorized for data: " & arguments.data.getClass().getName() ) );
 				}
 			}
 			else if(!matchRuleByPath( instance.dataMap, arguments.action )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for function", "Not authorized for data: " & arguments.action ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for function", "Not authorized for data: " & arguments.action ) );
 			}
 		</cfscript>
 
@@ -270,7 +270,7 @@
 				instance.fileMap = loadRules( "FileAccessRules.txt" );
 			}
 			if(!matchRuleByPath( instance.fileMap, arguments.filepath.replaceAll( "\\", "/" ) )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for file", "Not authorized for file: " & arguments.filepath ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for file", "Not authorized for file: " & arguments.filepath ) );
 			}
 		</cfscript>
 
@@ -284,7 +284,7 @@
 				instance.serviceMap = loadRules( "ServiceAccessRules.txt" );
 			}
 			if(!matchRuleByPath( instance.serviceMap, arguments.serviceName )) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for service", "Not authorized for service: " & arguments.serviceName ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.AccessControlException" ).init( instance.ESAPI, "Not authorized for service", "Not authorized for service: " & arguments.serviceName ) );
 			}
 		</cfscript>
 
@@ -340,7 +340,7 @@
 			try {
 				local.canonical = instance.ESAPI.encoder().canonicalize( arguments.path );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.EncodingException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.EncodingException e) {
 				instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Failed to canonicalize input: " & arguments.path );
 			}
 
@@ -354,7 +354,7 @@
 			}
 
 			if(local.part.indexOf( ".." ) != -1) {
-				throwException( createObject( "component", "cfesapi.org.owasp.esapi.errors.IntrusionException" ).init( "Attempt to manipulate access control path", "Attempt to manipulate access control path: " & arguments.path ) );
+				throwException( createObject( "component", "esapi4cf.org.owasp.esapi.errors.IntrusionException" ).init( "Attempt to manipulate access control path", "Attempt to manipulate access control path: " & arguments.path ) );
 			}
 
 			// extract extension if any
@@ -473,7 +473,7 @@
 				try {
 					local.canonical = instance.ESAPI.encoder().canonicalize( trim( arguments.roles[local.x] ) );
 				}
-				catch(cfesapi.org.owasp.esapi.errors.EncodingException e) {
+				catch(esapi4cf.org.owasp.esapi.errors.EncodingException e) {
 					instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Failed to canonicalize role " & trim( arguments.roles[local.x] ), e );
 				}
 				if(!instance.ESAPI.validator().isValidInput( "Validating user roles in FileBasedAccessController", local.canonical, "^[a-zA-Z0-9_]{0,10}$", 200, false ))

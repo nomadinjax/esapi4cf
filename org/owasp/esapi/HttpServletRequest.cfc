@@ -1,4 +1,4 @@
-﻿<cfinterface extends="cfesapi.org.owasp.esapi.util.ServletRequest">
+﻿<cfinterface extends="esapi4cf.org.owasp.esapi.util.ServletRequest">
 
 	<cffunction access="public" returntype="String" name="getAuthType" output="false">
 	</cffunction>

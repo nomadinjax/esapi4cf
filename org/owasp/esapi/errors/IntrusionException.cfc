@@ -13,7 +13,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.org.owasp.esapi.util.RuntimeException" output="false" hint="An IntrusionException should be thrown anytime an error condition arises that is likely to be the result of an attack in progress. IntrusionExceptions are handled specially by the IntrusionDetector, which is equipped to respond by either specially logging the event, logging out the current user, or invalidating the current user's account. Unlike other exceptions in the ESAPI, the IntrusionException is a RuntimeException so that it can be thrown from anywhere and will not require a lot of special exception handling.">
+<cfcomponent extends="esapi4cf.org.owasp.esapi.util.RuntimeException" output="false" hint="An IntrusionException should be thrown anytime an error condition arises that is likely to be the result of an attack in progress. IntrusionExceptions are handled specially by the IntrusionDetector, which is equipped to respond by either specially logging the event, logging out the current user, or invalidating the current user's account. Unlike other exceptions in the ESAPI, the IntrusionException is a RuntimeException so that it can be thrown from anywhere and will not require a lot of special exception handling.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -23,9 +23,9 @@
 		instance.logMessage = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="cfesapi.org.owasp.esapi.errors.IntrusionException" name="init" output="false"
+	<cffunction access="public" returntype="esapi4cf.org.owasp.esapi.errors.IntrusionException" name="init" output="false"
 	            hint="Creates a new instance of IntrusionException.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
 		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
 		<cfargument name="cause" hint="the cause"/>

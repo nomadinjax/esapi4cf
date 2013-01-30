@@ -10,7 +10,7 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent implements="cfesapi.org.owasp.esapi.HttpServletRequest" extends="cfesapi.org.owasp.esapi.util.Object" output="false" hint="This request wrapper simply overrides unsafe methods in the HttpServletRequest API with safe versions that return canonicalized data where possible. The wrapper returns a safe value when a validation error is detected, including stripped or empty strings.">
+<cfcomponent implements="esapi4cf.org.owasp.esapi.HttpServletRequest" extends="esapi4cf.org.owasp.esapi.util.Object" output="false" hint="This request wrapper simply overrides unsafe methods in the HttpServletRequest API with safe versions that return canonicalized data where possible. The wrapper returns a safe value when a validation error is detected, including stripped or empty strings.">
 
 	<cfscript>
 		instance.ESAPI = "";
@@ -20,7 +20,7 @@
 
 	<cffunction access="public" returntype="SafeRequest" name="init" output="false"
 	            hint="Construct a safe request that overrides the default request methods with safer versions.">
-		<cfargument required="true" type="cfesapi.org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="esapi4cf.org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" name="request"/>
 
 		<cfscript>
@@ -106,7 +106,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP context path: " & local.path, local.path, "HTTPContextPath", 150, false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return clean;
@@ -145,7 +145,7 @@
 						}
 						local.newCookies.add( local.n );
 					}
-					catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+					catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 						instance.logger.warning( getSecurity("SECURITY_FAILURE"), false, "Skipping bad cookie: " & local.c.getName() & "=" & local.c.getValue(), e );
 					}
 				}
@@ -176,7 +176,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP header value: " & local.value, local.value, "HTTPHeaderValue", instance.ESAPI.validator().MAX_PARAMETER_VALUE_LENGTH, true );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -197,7 +197,7 @@
 					local.clean = instance.ESAPI.validator().getValidInput( "HTTP header name: " & local.name, local.name, "HTTPHeaderName", instance.ESAPI.validator().MAX_PARAMETER_NAME_LENGTH, true );
 					local.v.add( local.clean );
 				}
-				catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+				catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 					// already logged
 				}
 			}
@@ -220,7 +220,7 @@
 					local.clean = instance.ESAPI.validator().getValidInput( "HTTP header value (" & arguments.name & "): " & local.value, local.value, "HTTPHeaderValue", instance.ESAPI.validator().MAX_PARAMETER_VALUE_LENGTH, true );
 					local.v.add( local.clean );
 				}
-				catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+				catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 					// already logged
 				}
 			}
@@ -314,7 +314,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP parameter name: " & arguments.name, local.orig, "HTTPParameterValue", instance.ESAPI.validator().MAX_PARAMETER_VALUE_LENGTH, true );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -344,7 +344,7 @@
 					}
 					local.cleanMap.put( local.cleanName, local.cleanValues );
 				}
-				catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+				catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 					// already logged
 				}
 			}
@@ -366,7 +366,7 @@
 					local.clean = instance.ESAPI.validator().getValidInput( "HTTP parameter name: " & local.name, local.name, "HTTPParameterName", instance.ESAPI.validator().MAX_PARAMETER_NAME_LENGTH, true );
 					local.v.add( local.clean );
 				}
-				catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+				catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 					// already logged
 				}
 			}
@@ -390,7 +390,7 @@
 						local.cleanValue = instance.ESAPI.validator().getValidInput( "HTTP parameter value: " & local.value, local.value, "HTTPParameterValue", instance.ESAPI.validator().MAX_PARAMETER_VALUE_LENGTH, true );
 						local.newValues.add( local.cleanValue );
 					}
-					catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+					catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 						instance.logger.warning( Logger.SECURITY, false, "Skipping bad parameter" );
 					}
 				}
@@ -413,7 +413,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP path: " & local.path, local.path, "HTTPPath", 150, false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -452,7 +452,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP query string: " & local.query, local.query, "HTTPQueryString", 2000, true );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -537,7 +537,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "Requested cookie: " & local.id, local.id, "HTTPJSESSIONID", 50, false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -555,7 +555,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP URI: " & local.uri, local.uri, "HTTPURI", 2000, false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -572,7 +572,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP URL: " & local.url, local.url, "HTTPURL", 2000, false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return getJava( "java.lang.StringBuffer" ).init( local.clean );
@@ -590,7 +590,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP scheme: " & local.scheme, local.scheme, "HTTPScheme", 10, false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -609,7 +609,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP server name: " & local.name, local.name, "HTTPServerName", 100, false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -644,7 +644,7 @@
 			try {
 				local.clean = instance.ESAPI.validator().getValidInput( "HTTP servlet path: " & local.path, local.path, "HTTPServletPath", 100, false );
 			}
-			catch(cfesapi.org.owasp.esapi.errors.ValidationException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
 			return local.clean;
@@ -663,11 +663,11 @@
 				if( !(structKeyExists( local, "jsession" ) && ( isStruct(local.jsession) || isObject(local.jsession) ) )) {
 					return "";
 				}
-				local.session = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeSession" ).init( instance.ESAPI, local.jsession );
+				local.session = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeSession" ).init( instance.ESAPI, local.jsession );
 			}
 			else {
 				local.jsession = getHttpServletRequest().getSession();
-				local.session = createObject( "component", "cfesapi.org.owasp.esapi.filters.SafeSession" ).init( instance.ESAPI, local.jsession );
+				local.session = createObject( "component", "esapi4cf.org.owasp.esapi.filters.SafeSession" ).init( instance.ESAPI, local.jsession );
 				local.user = instance.ESAPI.authenticator().getCurrentUser();
 				local.user.addSession( local.session );
 			}

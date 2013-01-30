@@ -1,13 +1,13 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>CFESAPI Links</title>
+		<title>ESAPI4CF Links</title>
 	</head>
 	<body>
-		<h1>ESAPI for ColdFusion/CFML (CFESAPI) Links</h1>
+		<h1>ESAPI for ColdFusion/CFML (ESAPI4CF) Links</h1>
 		<dl>
-			<dt><a href="test/org/owasp/esapi/AllTests.cfm">CFESAPI Unit Tests</a></dt>
+			<dt><a href="test/org/owasp/esapi/AllTests.cfm">ESAPI4CF Unit Tests</a></dt>
 			<dd>The ESAPI Unit Tests ported into ColdFusion/CFML using MXUnit (not included).</dd>
 			<dt><a href="swingset/index.cfm">The ESAPI Swingset is a web application which demonstrates the many uses of the Enterprise Security API (ESAPI).</a></dt>
 			<dd>The ESAPI Swingset is a web application which demonstrates common security vulnerabilities and asks users to secure the application against these vulnerabilities using the ESAPI library. The application is intended for ColdFusion/CFML Developers. The goal of the application is to teach developers about the functionality of the ESAPI library and give users a practical understanding of how it can be used to protect web applications against common security vulnerabilities.</dd>

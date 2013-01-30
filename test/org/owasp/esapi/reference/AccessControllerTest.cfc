@@ -13,10 +13,10 @@
  * @author Damon Miller
  * @created 2011
  --->
-<cfcomponent extends="cfesapi.test.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		instance.ESAPI = createObject( "component", "cfesapi.org.owasp.esapi.ESAPI" ).init();
+		instance.ESAPI = createObject( "component", "esapi4cf.org.owasp.esapi.ESAPI" ).init();
 		clearUserFile();
 
 		instance.origResDir = "";
@@ -174,7 +174,7 @@
 				local.accessController.assertAuthorizedForURL( "/nobody" );
 				fail();
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
 		</cfscript>
@@ -219,7 +219,7 @@
 				local.accessController.assertAuthorizedForFunction( "/FunctionDdeny" );
 				fail();
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
 		</cfscript>
@@ -302,7 +302,7 @@
 				local.accessController.assertAuthorizedForData( "write", local.adminR );
 				fail();
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
 		</cfscript>
@@ -341,7 +341,7 @@
 				local.accessController.assertAuthorizedForFile( "/Dir/File6" );
 				fail();
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
 		</cfscript>
@@ -381,7 +381,7 @@
 				local.accessController.assertAuthorizedForService( "/test/ridiculous" );
 				fail();
 			}
-			catch(cfesapi.org.owasp.esapi.errors.AccessControlException e) {
+			catch(esapi4cf.org.owasp.esapi.errors.AccessControlException e) {
 				// expected
 			}
 		</cfscript>

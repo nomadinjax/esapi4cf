@@ -106,8 +106,8 @@
 				local.item = arguments.stackTrace[local.i];
 				// CF: runFunction; Railo: udfCall
 				if(listFind( "runFunction,udfCall", local.item.getMethodName() )) {
-					// drop indexes that contain "cfesapi\org\owasp\esapi\errors"
-					if(findNoCase( "cfesapi\org\owasp\esapi\util\Exception.cfc", local.item.getFileName() ) || findNoCase( "cfesapi\org\owasp\esapi\errors", local.item.getFileName() )) {
+					// drop indexes that contain "esapi4cf\org\owasp\esapi\errors"
+					if(findNoCase( "esapi4cf\org\owasp\esapi\util\Exception.cfc", local.item.getFileName() ) || findNoCase( "esapi4cf\org\owasp\esapi\errors", local.item.getFileName() )) {
 						continue;
 					}
 					arrayAppend( instance.stackTrace, local.item );
@@ -131,9 +131,9 @@
 
 		<cfscript>
 			instance.type = getMetaData().name;
-			// full path is missing when cfesapi is virtual directory
+			// full path is missing when esapi4cf is virtual directory
 			if(listLen( instance.type, "." ) EQ 1) {
-				instance.type = "cfesapi.org.owasp.esapi.errors." & instance.type;
+				instance.type = "esapi4cf.org.owasp.esapi.errors." & instance.type;
 			}
 		</cfscript>
 
