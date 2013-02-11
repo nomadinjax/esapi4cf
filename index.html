@@ -28,58 +28,14 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <p>OWASP Enterprise Security API (ESAPI)
+          <h1>esapi4cf</h1>
+
+<p>OWASP Enterprise Security API (ESAPI)
 OWASP ESAPI for ColdFusion/CFML Project
 Purpose: This is the ColdFusion/CFML language version of OWASP ESAPI.
 = The current release of this project <em>is not</em> suitable for production use =
 License: BSD license
-<a href="https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML">https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API#tab=ColdFusion.2FCFML</a></p>
-
-<p>*** SETUP/USAGE ***</p>
-
-<p>Setup:
-1. Ensure that J2EE session variables be enabled! You will not be able to authenticate if this is disabled.
-2. The cfesapi folder should sit at the webroot level.
-3. Copy /cfesapi/esapi/esapi-2.0.1.jar and selected files from /cfesapi/esapi/libs/ to your lib folder (see compatibility below).
-4. Restart ColdFusion.
-NOTE: there are folders included with CFESAPI that you will want to exclude from your production environment</p>
-
-<p>Tests:</p>
-
-<ul>
-<li>You will need to create an 'esapi' folder under your User Home directory so the users.txt file can be written to disk i.e. C:\Users\myusername\esapi\</li>
-<li>You can run the MXUnit tests using: /cfesapi/test/TestSuite.cfm</li>
-</ul><p>Demos:</p>
-
-<ul>
-<li>See the /cfesapi/demo/ for basic examples of implementation. <strong>Be sure to have https setup else you can't login.</strong>
-</li>
-</ul><p>Implementation:</p>
-
-<ul>
-<li>You can extend any of the default implementations to overwrite the methods you need
-and/or</li>
-<li>You can create new implementations that implement the provided interfaces</li>
-</ul><p>How:</p>
-
-<ul>
-<li>Copy the /cfesapi/esapi/configuration/esapi/ folder to a location within your CF application and make changes to your copy of the config files</li>
-<li>ESAPI.properties
-
-<ul>
-<li>IMPORTANT: Run /cfesapi/org/owasp/esapi/reference/crypto/JavaEncryptor.cfm to calculate your <em>own</em> Encryptor.MasterKey and Encryptor.MasterSalt values</li>
-<li>Update the component paths with the location of your implementation components</li>
-<li>Modify other configs as needed</li>
-</ul>
-</li>
-<li>Include the /cfesapi/helpers/ESAPI.cfm in your application</li>
-<li>Call the filters provided by CFESAPI to secure and authenticate each request.</li>
-<li>See demos for examples</li>
-</ul><p>Tips:</p>
-
-<ul>
-<li>You can determine whether unlimited strength crypto is installed by running: /cfesapi/test/org/owasp/esapi/reference/crypto/CryptoPolicy.cfm</li>
-</ul>
+<a href="https://owasp.org/index.php/ESAPI">https://owasp.org/index.php/ESAPI</a></p>
         </section>
 
         <aside id="sidebar">
