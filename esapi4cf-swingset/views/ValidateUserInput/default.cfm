@@ -40,158 +40,158 @@ and will run.</p>
 ESAPI's Validator Interface includes following functions:
 </p>
 <ul>
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##assertIsValidHTTPRequest()">void assertIsValidHTTPRequest()</a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##assertIsValidHTTPRequest()">void assertIsValidHTTPRequest()</a></b> 
 	          Validates the current HTTP request by comparing parameters, headers, and cookies to a predefined whitelist of allowed characters. </li><br />	<br />
 	          
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##assertIsValidHTTPRequestParameterSet()">void assertIsValidHTTPRequestParameterSet(String context, Set required, Set optional)</a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##assertIsValidHTTPRequestParameterSet()">void assertIsValidHTTPRequestParameterSet(String context, Set required, Set optional)</a></b> 
 	          Validates that the parameters in the current request contain all required parameters and only optional ones in addition.</li><br /><br />
 	
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##assertIsValidHTTPRequestParameterSet()">void assertIsValidHTTPRequestParameterSet(String context, Set required, Set optional, ValidationErrorList errorList) </a></b>
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##assertIsValidHTTPRequestParameterSet()">void assertIsValidHTTPRequestParameterSet(String context, Set required, Set optional, ValidationErrorList errorList) </a></b>
 	          Validates that the parameters in the current request contain all required parameters and only optional ones in addition.</li><br /><br />
 	
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##assertValidFileUpload()">void assertValidFileUpload(String context, String filepath, String filename, byte[] content, int maxBytes, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##assertValidFileUpload()">void assertValidFileUpload(String context, String filepath, String filename, byte[] content, int maxBytes, boolean allowNull) </a></b> 
 	          Validates the filepath, filename, and content of a file. </li><br /><br />
 	
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##assertValidFileUpload()">void assertValidFileUpload(String context, String filepath, String filename, byte[] content, int maxBytes, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##assertValidFileUpload()">void assertValidFileUpload(String context, String filepath, String filename, byte[] content, int maxBytes, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Validates the filepath, filename, and content of a file. </li><br /><br />
 	
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidCreditCard()">String getValidCreditCard(String context, String input, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidCreditCard()">String getValidCreditCard(String context, String input, boolean allowNull) </a></b> 
 	          Returns a canonicalized and validated credit card number as a String. </li><br /><br />
 	
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidCreditCard()">String getValidCreditCard(String context, String input, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidCreditCard()">String getValidCreditCard(String context, String input, boolean allowNull, ValidationErrorList errorList) </a></b> 
           	   Returns a canonicalized and validated credit card number as a String. </li>
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDate()">Date getValidDate(String context, String input, java.text.DateFormat format, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDate()">Date getValidDate(String context, String input, java.text.DateFormat format, boolean allowNull) </a></b> 
 	          Returns a valid date as a Date. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.htmd##getValidDate()">Date getValidDate(String context, String input, java.text.DateFormat format, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.htmd##getValidDate()">Date getValidDate(String context, String input, java.text.DateFormat format, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns a valid date as a Date. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDirectoryPath()">String getValidDirectoryPath(String context, String input, boolean allowNull) 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDirectoryPath()">String getValidDirectoryPath(String context, String input, boolean allowNull) 
           Returns a canonicalized and validated directory path as a String.</a></b> 
 	          Returns a canonicalized and validated directory path as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDirectoryPath()">String getValidDirectoryPath(String context, String input, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDirectoryPath()">String getValidDirectoryPath(String context, String input, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns a canonicalized and validated directory path as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDouble()">Double getValidDouble(String context, String input, double minValue, double maxValue, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDouble()">Double getValidDouble(String context, String input, double minValue, double maxValue, boolean allowNull) </a></b> 
 	          Returns a validated real number as a double. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDouble()">Double getValidDouble(String context, String input, double minValue, double maxValue, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDouble()">Double getValidDouble(String context, String input, double minValue, double maxValue, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns a validated real number as a double. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDouble()">byte[] getValidFileContent(String context, byte[] input, int maxBytes, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidDouble()">byte[] getValidFileContent(String context, byte[] input, int maxBytes, boolean allowNull) </a></b> 
 	          Returns validated file content as a byte array. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidFileContent()">byte[] getValidFileContent(String context, byte[] input, int maxBytes, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidFileContent()">byte[] getValidFileContent(String context, byte[] input, int maxBytes, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns validated file content as a byte array. </li><br />	<br />
 	
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidFileName()">String getValidFileName(String context, String input, boolean allowNull) </a></b>
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidFileName()">String getValidFileName(String context, String input, boolean allowNull) </a></b>
           	  Returns a canonicalized and validated file name as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidFileName()">String getValidFileName(String context, String input, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidFileName()">String getValidFileName(String context, String input, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	           Returns a canonicalized and validated file name as a String.</li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidInput()">String getValidInput(String context, String input, String type, int maxLength, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidInput()">String getValidInput(String context, String input, String type, int maxLength, boolean allowNull) </a></b> 
 	          Returns canonicalized and validated input as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidInput()">String getValidInput(String context, String input, String type, int maxLength, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidInput()">String getValidInput(String context, String input, String type, int maxLength, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns canonicalized and validated input as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidInteger()">Integer getValidInteger(String context, String input, int minValue, int maxValue, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidInteger()">Integer getValidInteger(String context, String input, int minValue, int maxValue, boolean allowNull) </a></b> 
 	          Returns a validated integer. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidInteger()">Integer getValidInteger(String context, String input, int minValue, int maxValue, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidInteger()">Integer getValidInteger(String context, String input, int minValue, int maxValue, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns a validated integer. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidListItem()">String getValidListItem(String context, String input, List list) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidListItem()">String getValidListItem(String context, String input, List list) </a></b> 
 	          Returns the list item that exactly matches the canonicalized input. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidListItem()">String getValidListItem(String context, String input, List list, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidListItem()">String getValidListItem(String context, String input, List list, ValidationErrorList errorList) </a></b> 
 	          Returns the list item that exactly matches the canonicalized input. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidNumber()">Double getValidNumber(String context, String input, long minValue, long maxValue, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidNumber()">Double getValidNumber(String context, String input, long minValue, long maxValue, boolean allowNull) </a></b> 
 	          Returns a validated number as a double within the range of minValue to maxValue. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidNumber()">Double getValidNumber(String context, String input, long minValue, long maxValue, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidNumber()">Double getValidNumber(String context, String input, long minValue, long maxValue, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns a validated number as a double within the range of minValue to maxValue. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidPrintable()">byte[] getValidPrintable(String context, byte[] input, int maxLength, boolean allowNull)</a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidPrintable()">byte[] getValidPrintable(String context, byte[] input, int maxLength, boolean allowNull)</a></b> 
 	          Returns canonicalized and validated printable characters as a byte array. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidPrintable()">byte[] getValidPrintable(String context, byte[] input, int maxLength, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidPrintable()">byte[] getValidPrintable(String context, byte[] input, int maxLength, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns canonicalized and validated printable characters as a byte array. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidPrintable()">String getValidPrintable(String context, String input, int maxLength, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidPrintable()">String getValidPrintable(String context, String input, int maxLength, boolean allowNull) </a></b> 
 	          Returns canonicalized and validated printable characters as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidPrintable()">String getValidPrintable(String context, String input, int maxLength, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidPrintable()">String getValidPrintable(String context, String input, int maxLength, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns canonicalized and validated printable characters as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidRedirectLocation()">String getValidRedirectLocation(String context, String input, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidRedirectLocation()">String getValidRedirectLocation(String context, String input, boolean allowNull) </a></b> 
 	          Returns canonicalized and validated printable characters as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidRedirectLocation()">String getValidRedirectLocation(String context, String input, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidRedirectLocation()">String getValidRedirectLocation(String context, String input, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns canonicalized and validated printable characters as a String. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidSafeHTML()">String getValidSafeHTML(String context, String input, int maxLength, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidSafeHTML()">String getValidSafeHTML(String context, String input, int maxLength, boolean allowNull) </a></b> 
 	          Returns canonicalized and validated "safe" HTML. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidSafeHTML()">String getValidSafeHTML(String context, String input, int maxLength, boolean allowNull, ValidationErrorList errorList) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##getValidSafeHTML()">String getValidSafeHTML(String context, String input, int maxLength, boolean allowNull, ValidationErrorList errorList) </a></b> 
 	          Returns canonicalized and validated "safe" HTML. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidCreditCard()">boolean isValidCreditCard(String context, String input, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidCreditCard()">boolean isValidCreditCard(String context, String input, boolean allowNull) </a></b> 
 	          Returns true if input is a valid credit card. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidDate()">boolean isValidDate(String context, String input, java.text.DateFormat format, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidDate()">boolean isValidDate(String context, String input, java.text.DateFormat format, boolean allowNull) </a></b> 
 	          Returns true if input is a valid date according to the specified date format. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidDirectoryPath()">boolean isValidDirectoryPath(String context, String input, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidDirectoryPath()">boolean isValidDirectoryPath(String context, String input, boolean allowNull) </a></b> 
 	          Returns true if input is a valid directory path. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidDouble()">boolean isValidDouble(String context, String input, double minValue, double maxValue, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidDouble()">boolean isValidDouble(String context, String input, double minValue, double maxValue, boolean allowNull) </a></b> 
 	          Returns true if input is a valid double within the range of minValue to maxValue. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidFileContent()">boolean isValidFileContent(String context, byte[] input, int maxBytes, boolean allowNull)</a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidFileContent()">boolean isValidFileContent(String context, byte[] input, int maxBytes, boolean allowNull)</a></b> 
 	          Returns true if input is valid file content. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidFileName()">boolean isValidFileName(String context, String input, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidFileName()">boolean isValidFileName(String context, String input, boolean allowNull) </a></b> 
 	          Returns true if input is a valid file name. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidFileUpload()">boolean isValidFileUpload(String context, String filepath, String filename, byte[] content, int maxBytes, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidFileUpload()">boolean isValidFileUpload(String context, String filepath, String filename, byte[] content, int maxBytes, boolean allowNull) </a></b> 
 	          Returns true if a file upload has a valid name, path, and content. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidHTTPRequest()">boolean isValidHTTPRequest() </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidHTTPRequest()">boolean isValidHTTPRequest() </a></b> 
 	          Validate the current HTTP request by comparing parameters, headers, and cookies to a predefined whitelist of allowed characters. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidHTTPRequestParameterSet()">boolean isValidHTTPRequestParameterSet(String context, Set required, Set optional) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidHTTPRequestParameterSet()">boolean isValidHTTPRequestParameterSet(String context, Set required, Set optional) </a></b> 
 	          Returns true if the parameters in the current request contain all required parameters and only optional ones in addition. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidInput()">boolean isValidInput(String context, String input, String type, int maxLength, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidInput()">boolean isValidInput(String context, String input, String type, int maxLength, boolean allowNull) </a></b> 
 	          Returns true if input is valid according to the specified type. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidInteger()">boolean isValidInteger(String context, String input, int minValue, int maxValue, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidInteger()">boolean isValidInteger(String context, String input, int minValue, int maxValue, boolean allowNull) </a></b> 
 	          Returns true if input is a valid integer within the range of minValue to maxValue. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidListItem()">boolean isValidListItem(String context, String input, List list) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidListItem()">boolean isValidListItem(String context, String input, List list) </a></b> 
 	          Returns true if input is a valid list item. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidNumber()">boolean isValidNumber(String context, String input, long minValue, long maxValue, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidNumber()">boolean isValidNumber(String context, String input, long minValue, long maxValue, boolean allowNull) </a></b> 
 	          Returns true if input is a valid number within the range of minValue to maxValue. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidPrintable()">boolean isValidPrintable(String context, byte[] input, int maxLength, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidPrintable()">boolean isValidPrintable(String context, byte[] input, int maxLength, boolean allowNull) </a></b> 
 	          Returns true if input contains only valid printable ASCII characters (32-126). </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidPrintable()">boolean isValidPrintable(String context, String input, int maxLength, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidPrintable()">boolean isValidPrintable(String context, String input, int maxLength, boolean allowNull) </a></b> 
 	          Returns true if input contains only valid printable ASCII characters (32-126). </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidRedirectLocation()">boolean isValidRedirectLocation(String context, String input, boolean allowNull)</a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidRedirectLocation()">boolean isValidRedirectLocation(String context, String input, boolean allowNull)</a></b> 
 	          Returns true if input is a valid redirect location, as defined by "ESAPI.properties". </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidSafeHTML()">boolean isValidSafeHTML(String context, String input, int maxLength, boolean allowNull) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##isValidSafeHTML()">boolean isValidSafeHTML(String context, String input, int maxLength, boolean allowNull) </a></b> 
 	          Returns true if input is "safe" HTML. </li><br />	<br />
 
-	<li> <b><a href="../apiref/esapi4cf/org/owasp/esapi/Validator.html##safeReadLine()">boolean safeReadLine(InputStream inputStream, int maxLength) </a></b> 
+	<li> <b><a href="../esapi4cf-apiref/esapi4cf/org/owasp/esapi/Validator.html##safeReadLine()">boolean safeReadLine(InputStream inputStream, int maxLength) </a></b> 
 	          Reads from an input stream until end-of-line or a maximum number of characters. </li><br />	<br />
 </ul>
 
