@@ -33,7 +33,7 @@
 			// allows the FW/1 'reload' to also reload ESAPI for us
 			structDelete(application, "ESAPI");
 			
-			ESAPI().securityConfiguration().setResourceDirectory( "/esapi4cf/swingset/WEB-INF/.esapi/" );
+			ESAPI().securityConfiguration().setResourceDirectory( "/esapi4cf/esapi4cf-swingset/WEB-INF/.esapi/" );
 			application.logger = ESAPI().getLogger( "SwingsetFilter" );
 			application.ignore = [ "password" ];
 		</cfscript>
@@ -50,7 +50,7 @@
 				// log this request, obfuscating any parameter named password
 				ESAPI().httpUtilities().logHTTPRequest(ESAPI().httpUtilities().getCurrentRequest(), application.logger, application.ignore);
 				
-				// CD 2011-04-30: if the user can be identified via the session ID, the following will set "currentUser" 
+				// if the user can be identified via the session ID, the following will set "currentUser" 
 				// in the Authenticator for consistent user identification across all requests in log messages
 				local.session = ESAPI().httpUtilities().getCurrentRequest().getSession(false);
 				if(isObject(local.session)){
@@ -66,7 +66,7 @@
 					//noop
 					ESAPI().authenticator(); // for breakpoint debugging only
 				}
-			} catch (Exception e) {
+			} catch (java.lang.Exception e) {
 				application.logger.error( ESAPILogger().SECURITY_FAILURE, false, "Error in ESAPI security filter: " & e.message, e );
 				ESAPI().currentRequest().setAttribute("message", e.getMessage() );
 			}
@@ -79,7 +79,6 @@
 			// VERY IMPORTANT
 			// clear out the ThreadLocal variables in the authenticator
 			// some containers could possibly reuse this thread without clearing the User
-			// CD 2011-04-12: ATTENTION: this will only work if this filter is correctly configured in web.xml !!!
 			ESAPI().authenticator().clearCurrent();
 		</cfscript>
 	</cffunction>
