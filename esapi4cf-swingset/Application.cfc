@@ -1,6 +1,9 @@
 ﻿<cfcomponent extends="esapi4cf.esapi4cf-swingset.org.corfield.framework" output="false">
 
+	<cfprocessingdirective pageEncoding="utf-8" />
+	
 	<cfscript>
+		this.scriptProtect = "none";	// don't let CF interfere with the ESAPI demos
 		this.mappings = {
 			"esapi4cf" = "/esapi4cf/esapi4cf"	
 		};
