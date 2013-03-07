@@ -172,3 +172,5 @@ pip-log.txt
 ## demo (temp) - not ready yet
 ############
 demo/
+/esapi4cf-swingset/WEB-INF/.esapi/users.txt
+/esapi4cf-test/resources/users.txt
