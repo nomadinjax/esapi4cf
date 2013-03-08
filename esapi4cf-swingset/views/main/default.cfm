@@ -67,7 +67,7 @@ The ESAPI AccessController interface defines a set of methods that can be used i
 
 <h2>Authentication and Session Management</h2>
 <ul>
-<li><a href="https://localhost:8443<%=request.getContextPath() %>/#buildURL('Login')#">Login</a></li>
+<li><a href="#buildURL('Login')#">Login</a></li>
 <!-- <li><a href="#buildURL('Logout')#">Logout</a></li> (no implementation)-->
 <li><a href="#buildURL('ChangePassword')#">Change Password</a></li>
 <li><a href="#buildURL('ChangeSessionIdentifier')#">Change Session Identifier</a></li>

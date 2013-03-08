@@ -32,7 +32,7 @@
 
 <p>
 	Changing the user parameter in the url to any of the users name will
-	retrieve the users message. <br /> E.g. in the url <i>https://localhost:8443/SwingSet/main?function=ObjectReference&lab&user=admin</i><br />
+	retrieve the users message. <br /> E.g. in the url <i>#buildURL(action='ObjectReference.lab', queryString='user=admin')#</i><br />
 	Change 'admin' to 'matrix'.
 </p>
 

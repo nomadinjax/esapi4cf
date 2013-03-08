@@ -21,7 +21,7 @@
 <p>username : test <br/>password : test<br/><br/>Make a note of the session id displayed.</p>
 
 <h3>Step 2</h3>
-<p>Open a new browser window and browse to the following URL: https://localhost:8443/SwingSet/LoginServletLab. <br> You should be told that you are not logged in.
+<p>Open a new browser window and browse to the following URL: #buildURL('LoginServlet.lab')#. <br> You should be told that you are not logged in.
 <h3>Step 3</h3>
 <p>
 You have a session id for a logged in user from Step 1. Change the session id by using the Tamper Data Firefox plugin or by typing the following script in the browser url bar:<br/><br/>
