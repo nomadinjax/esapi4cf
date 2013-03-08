@@ -14,12 +14,11 @@
 <cfscript>
 	found = false;
 	quote = "Change the URL to access other files...";
-	if (ESAPI().currentRequest().getAttribute("user") != "") {
+	if (structKeyExists(rc, "user") ) {
 		found = true;
-		quote = ESAPI().currentRequest().getAttribute("user").toString();
+		quote = rc.user;
 	}
 	href = buildURL(action='ObjectReference.lab', queryString='&user=');
-	thisSession = ESAPI().currentRequest().getSession();
 </cfscript>
 
 <h2>Lab: Insecure Object Reference</h2>
@@ -45,29 +44,29 @@
 	<tr>
 		<th width="50%">List of Users</th>
 	</tr>
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do0")#">#thisSession.getAttribute("do0")#</a></td></tr> --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do1")#">#thisSession.getAttribute("do1")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do2")#">#thisSession.getAttribute("do2")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do3")#">#thisSession.getAttribute("do3")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do4")#">#thisSession.getAttribute("do4")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do5")#">#thisSession.getAttribute("do5")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do6")#">#thisSession.getAttribute("do6")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do7")#">#thisSession.getAttribute("do7")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do8")#">#thisSession.getAttribute("do8")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do9")#">#thisSession.getAttribute("do9")#</a></td></tr>  --->
-	<!--- <tr><td><a href="#href##thisSession.getAttribute("do10")#">#thisSession.getAttribute("do10")#</a></td></tr> --->
+	<!--- <tr><td><a href="#href##session["do0"]#">#session["do0"]#</a></td></tr> --->
+	<!--- <tr><td><a href="#href##session["do1"]#">#session["do1"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do2"]#">#session["do2"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do3"]#">#session["do3"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do4"]#">#session["do4"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do5"]#">#session["do5"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do6"]#">#session["do6"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do7"]#">#session["do7"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do8"]#">#session["do8"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do9"]#">#session["do9"]#</a></td></tr>  --->
+	<!--- <tr><td><a href="#href##session["do10"]#">#session["do10"]#</a></td></tr> --->
 
-	<tr><td><a href="#href##thisSession.getAttribute("do0")#">#thisSession.getAttribute("do0")#</a></td></tr>
-	<tr><td><a href="#href##thisSession.getAttribute("do1")#">#thisSession.getAttribute("do1")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do2")#">#thisSession.getAttribute("do2")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do3")#">#thisSession.getAttribute("do3")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do4")#">#thisSession.getAttribute("do4")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do5")#">#thisSession.getAttribute("do5")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do6")#">#thisSession.getAttribute("do6")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do7")#">#thisSession.getAttribute("do7")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do8")#">#thisSession.getAttribute("do8")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do9")#">#thisSession.getAttribute("do9")#</a></td></tr> 
-	<tr><td><a href="#href##thisSession.getAttribute("do10")#">#thisSession.getAttribute("do10")#</a></td></tr>
+	<tr><td><a href="#href##session["do0"]#">#session["do0"]#</a></td></tr>
+	<tr><td><a href="#href##session["do1"]#">#session["do1"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do2"]#">#session["do2"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do3"]#">#session["do3"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do4"]#">#session["do4"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do5"]#">#session["do5"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do6"]#">#session["do6"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do7"]#">#session["do7"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do8"]#">#session["do8"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do9"]#">#session["do9"]#</a></td></tr> 
+	<tr><td><a href="#href##session["do10"]#">#session["do10"]#</a></td></tr>
 </table>
 <br />
 
