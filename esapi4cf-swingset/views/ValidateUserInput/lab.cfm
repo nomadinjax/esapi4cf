@@ -6,7 +6,7 @@
 	input = form.input;
 	err = "";
 	if(form.output!=""){
-		output = ESAPI().currentRequest().getAttribute("output").toString();
+		output = form.output;
 	}
 	if ( input == "" ) input = "type input here";
 	
