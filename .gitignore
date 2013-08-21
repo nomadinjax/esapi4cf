@@ -174,3 +174,5 @@ pip-log.txt
 demo/
 /esapi4cf-swingset/WEB-INF/.esapi/users.txt
 /esapi4cf-test/resources/users.txt
+/test/resources/users.txt
+/test/resources/users.txt
