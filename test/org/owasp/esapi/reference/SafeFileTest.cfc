@@ -18,12 +18,12 @@
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		variables.ESAPI = createObject( "component", "org.owasp.esapi.ESAPI" ).init();
-
-		variables.CLASS = getMetaData( this );
-		variables.CLASS_NAME = listLast( variables.CLASS.name, "." );
-		/** Name of the file in the temporary directory */
-		variables.TEST_FILE_NAME = "test.file";
+    	variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
+    
+    	variables.CLASS = getMetaData(this);
+    	variables.CLASS_NAME = listLast(variables.CLASS.name, ".");
+    	/** Name of the file in the temporary directory */
+    	variables.TEST_FILE_NAME = "test.file";
 		variables.GOOD_FILE_CHARS = newJava("org.owasp.esapi.util.CollectionsUtil").strToUnmodifiableSet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-" /* + "." */);
 		variables.BAD_FILE_CHARS = newJava("org.owasp.esapi.util.CollectionsUtil").strToUnmodifiableSet("\u0000" & /*(File.separatorChar == '/' ? '\\' : '/') +*/ "*|<>?:" /*+ "~!@#$%^&(){}[],`;"*/);
 

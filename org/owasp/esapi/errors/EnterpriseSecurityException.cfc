@@ -19,51 +19,57 @@
 
 	<cfscript>
 		variables.ESAPI = "";
-
+	
 		/** The logger. */
 		variables.logger = "";
-
+	
 		variables.logMessage = "";
 	</cfscript>
- 
-	<cffunction access="public" returntype="EnterpriseSecurityException" name="init" output="false" hint="Creates a new instance of EnterpriseSecurityException. This exception is automatically logged, so that simply by using this API, applications will generate an extensive security log. In addition, this exception is automatically registered with the IntrusionDetector, so that quotas can be checked.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" type="String" name="userMessage" hint="the message displayed to the user">
-		<cfargument required="true" type="String" name="logMessage" hint="the message logged">
-		<cfargument name="cause" hint="the cause">
+	
+	<cffunction access="public" returntype="EnterpriseSecurityException" name="init" output="false"
+	            hint="Creates a new instance of EnterpriseSecurityException. This exception is automatically logged, so that simply by using this API, applications will generate an extensive security log. In addition, this exception is automatically registered with the IntrusionDetector, so that quotas can be checked.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="String" name="userMessage" hint="the message displayed to the user"/>
+		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
+	
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
-			variables.logger = variables.ESAPI.getLogger( "EnterpriseSecurityException" );
-
-			if(structKeyExists( arguments, "cause" )) {
-				super.init( arguments.userMessage, arguments.cause );
+			variables.logger = variables.ESAPI.getLogger("EnterpriseSecurityException");
+		
+			if(structKeyExists(arguments, "cause")) {
+				super.init(arguments.userMessage, arguments.cause);
 			}
 			else {
-				super.init( arguments.userMessage );
+				super.init(arguments.userMessage);
 			}
 			variables.logMessage = arguments.logMessage;
-
+		
 			if(!variables.ESAPI.securityConfiguration().getDisableIntrusionDetection()) {
-				variables.ESAPI.intrusionDetector().addException( this );
+				variables.ESAPI.intrusionDetector().addException(this);
 			}
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getUserMessage" output="false" hint="Returns message that is safe to display to users">
+	
+	<cffunction access="public" returntype="String" name="getUserMessage" output="false"
+	            hint="Returns message that is safe to display to users">
+		
 		<cfscript>
 			return getMessage();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getLogMessage" output="false" hint="Returns a message that is safe to display in logs, but probably not to users">
+	
+	<cffunction access="public" returntype="String" name="getLogMessage" output="false"
+	            hint="Returns a message that is safe to display in logs, but probably not to users">
+		
 		<cfscript>
 			return variables.logMessage;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

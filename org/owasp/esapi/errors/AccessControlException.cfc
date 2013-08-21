@@ -17,18 +17,20 @@
 --->
 <cfcomponent extends="EnterpriseSecurityException" output="false" hint="An AccessControlException should be thrown when a user attempts to access a resource that they are not authorized for.">
 
-
-	<cffunction access="public" returntype="AccessControlException" name="init" output="false" hint="Instantiates a new access control exception.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users">
-		<cfargument required="true" type="String" name="logMessage" hint="the message logged">
-		<cfargument name="cause" hint="the cause">
+	<cffunction access="public" returntype="AccessControlException" name="init" output="false"
+	            hint="Instantiates a new access control exception.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
+		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
+	
 		<cfscript>
-			super.init( argumentCollection=arguments );
-
+			super.init(argumentCollection=arguments);
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 
 </cfcomponent>

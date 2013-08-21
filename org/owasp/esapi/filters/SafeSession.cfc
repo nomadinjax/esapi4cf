@@ -21,105 +21,116 @@
 		variables.ESAPI = "";
 		variables.httpSession = "";
 	</cfscript>
- 
+	
 	<cffunction access="public" returntype="SafeSession" name="init" output="false">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" name="httpSession">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" name="httpSession"/>
+	
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
-
+		
 			variables.httpSession = arguments.httpSession;
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getAttribute" output="false">
-		<cfargument required="true" type="String" name="name">
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
-			return variables.httpSession.getAttribute( javaCast( "string", arguments.name ) );
-		</cfscript> 
+			return variables.httpSession.getAttribute(javaCast("string", arguments.name));
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Array" name="getAttributeNames" output="false">
+		
 		<cfscript>
 			var ret = [];
 			var atts = variables.httpSession.getAttributeNames();
-			if (isArray(atts)) {
+			if(isArray(atts)) {
 				ret = atts;
 			}
-			else {
-				if (isDefined("atts")) {
-					while (atts.hasNext()) {
-						arrayAppend(ret, atts.next());
-					}
+			else if(isDefined("atts")) {
+				while(atts.hasNext()) {
+					arrayAppend(ret, atts.next());
 				}
 			}
 			return ret;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getCreationTime" output="false">
+		
 		<cfscript>
 			return variables.httpSession.getCreationTime();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getId" output="false">
+		
 		<cfscript>
 			return variables.httpSession.getId();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getLastAccessedTime" output="false">
+		
 		<cfscript>
 			return variables.httpSession.getLastAccessedTime();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getMaxInactiveInterval" output="false">
+		
 		<cfscript>
 			return variables.httpSession.getMaxInactiveInterval();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getServletContext" output="false">
+		
 		<cfscript>
 			return variables.httpSession.getServletContext();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getSessionContext" output="false" hint="Deprecated. No replacement.">
+		
 		<cfscript>
 			return variables.httpSession.getSessionContext();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getValue" output="false" hint="Deprecated in favor of getAttribute(name).">
-		<cfargument required="true" type="String" name="name">
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
-			return variables.httpSession.getValue( javaCast( "string", arguments.name ) );
-		</cfscript> 
+			return variables.httpSession.getValue(javaCast("string", arguments.name));
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="Array" name="getValueNames" output="false" hint="Deprecated in favor of getAttributeNames().">
+	
+	<cffunction access="public" returntype="Array" name="getValueNames" output="false"
+	            hint="Deprecated in favor of getAttributeNames().">
+		
 		<cfscript>
 			return variables.httpSession.getValueNames();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="invalidate" output="false">
+		
 		<cfscript>
 			/*
 			* Discussion:
@@ -160,57 +171,65 @@
 			else {
 				structClear(variables.httpSession);
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="boolean" name="isNew" output="false">
+		
 		<cfscript>
 			return variables.httpSession.isNew();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="putValue" output="false" hint="Deprecated in favor of setAttribute(name, value).">
-		<cfargument required="true" type="String" name="name">
-		<cfargument required="true" name="value">
+	
+	<cffunction access="public" returntype="void" name="putValue" output="false"
+	            hint="Deprecated in favor of setAttribute(name, value).">
+		<cfargument required="true" type="String" name="name"/>
+		<cfargument required="true" name="value"/>
+	
 		<cfscript>
-			return variables.httpSession.putValue( javaCast( "string", arguments.name ), arguments.value );
-		</cfscript> 
+			return variables.httpSession.putValue(javaCast("string", arguments.name), arguments.value);
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="removeAttribute" output="false">
-		<cfargument required="true" type="String" name="name">
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
-			return variables.httpSession.removeAttribute( javaCast( "string", arguments.name ) );
-		</cfscript> 
+			return variables.httpSession.removeAttribute(javaCast("string", arguments.name));
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="removeValue" output="false" hint="Deprecated in favor of removeAttribute(name).">
-		<cfargument required="true" type="String" name="name">
+	
+	<cffunction access="public" returntype="void" name="removeValue" output="false"
+	            hint="Deprecated in favor of removeAttribute(name).">
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
-			return variables.httpSession.removeValue( javaCast( "string", arguments.name ) );
-		</cfscript> 
+			return variables.httpSession.removeValue(javaCast("string", arguments.name));
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setAttribute" output="false">
-		<cfargument required="true" type="String" name="name">
-		<cfargument required="true" name="value">
+		<cfargument required="true" type="String" name="name"/>
+		<cfargument required="true" name="value"/>
+	
 		<cfscript>
-			return variables.httpSession.setAttribute( javaCast( "string", arguments.name ), arguments.value );
-		</cfscript> 
+			return variables.httpSession.setAttribute(javaCast("string", arguments.name), arguments.value);
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setMaxInactiveInterval" output="false">
-		<cfargument required="true" type="numeric" name="interval">
+		<cfargument required="true" type="numeric" name="interval"/>
+	
 		<cfscript>
-			return variables.httpSession.setMaxInactiveInterval( javaCast( "int", arguments.interval ) );
-		</cfscript> 
+			return variables.httpSession.setMaxInactiveInterval(javaCast("int", arguments.interval));
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

@@ -20,220 +20,252 @@
 	<cfscript>
 		variables.wrapped = "";
 	</cfscript>
- 
-	<cffunction access="public" returntype="SecurityConfigurationWrapper" name="init" output="false" hint="Constructor wrapping the given configuration.">
-		<cfargument required="true" type="org.owasp.esapi.SecurityConfiguration" name="wrapped" hint="The configuration to wrap.">
+	
+	<cffunction access="public" returntype="SecurityConfigurationWrapper" name="init" output="false"
+	            hint="Constructor wrapping the given configuration.">
+		<cfargument required="true" type="org.owasp.esapi.SecurityConfiguration" name="wrapped" hint="The configuration to wrap."/>
+	
 		<cfscript>
 			variables.wrapped = wrapped;
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="org.owasp.esapi.SecurityConfiguration" name="getWrappedSecurityConfiguration" output="false" hint="Access the wrapped configuration.">
+	
+	<cffunction access="public" returntype="org.owasp.esapi.SecurityConfiguration" name="getWrappedSecurityConfiguration" output="false"
+	            hint="Access the wrapped configuration.">
+		
 		<cfscript>
 			return variables.wrapped;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getApplicationName" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getApplicationName();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Array" name="getMasterPassword" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getMasterPassword();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getKeystore" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getKeystore();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="binary" name="getMasterSalt" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getMasterSalt();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Array" name="getAllowedFileExtensions" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getAllowedFileExtensions();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getAllowedFileUploadSize" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getAllowedFileUploadSize();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getPasswordParameterName" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getPasswordParameterName();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getUsernameParameterName" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getUsernameParameterName();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getEncryptionAlgorithm" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getEncryptionAlgorithm();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getHashAlgorithm();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getCharacterEncoding();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getDigitalSignatureAlgorithm();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getRandomAlgorithm" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getRandomAlgorithm();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getAllowedLoginAttempts" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getAllowedLoginAttempts();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getMaxOldPasswordHashes" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getMaxOldPasswordHashes();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getQuota" output="false">
-		<cfargument required="true" type="String" name="eventName">
+		<cfargument required="true" type="String" name="eventName"/>
+	
 		<cfscript>
 			return variables.wrapped.getQuota(arguments.eventName);
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getResourceDirectory" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getResourceDirectory();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setResourceDirectory" output="false">
-		<cfargument required="true" type="String" name="dir">
+		<cfargument required="true" type="String" name="dir"/>
+	
 		<cfscript>
 			variables.wrapped.setResourceDirectory(arguments.dir);
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getResponseContentType" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getResponseContentType();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getRememberTokenDuration();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getSessionIdleTimeoutLength();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getSessionAbsoluteTimeoutLength" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getSessionAbsoluteTimeoutLength();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="boolean" name="getLogEncodingRequired" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getLogEncodingRequired();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="boolean" name="getLogDefaultLog4J" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getLogDefaultLog4J();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getLogLevel" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getLogLevel();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getLogFileName" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getLogFileName();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getMaxLogFileSize" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getMaxLogFileSize();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="boolean" name="getDisableIntrusionDetection" output="false">
+		
 		<cfscript>
 			return variables.wrapped.getDisableIntrusionDetection();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

@@ -17,18 +17,20 @@
 --->
 <cfcomponent extends="EnterpriseSecurityException" output="false">
 
-
-	<cffunction access="public" returntype="IntegrityException" name="init" output="false" hint="Instantiates a new availability exception.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users">
-		<cfargument required="true" type="String" name="logMessage" hint="the message logged">
-		<cfargument name="cause" hint="the cause">
+	<cffunction access="public" returntype="IntegrityException" name="init" output="false"
+	            hint="Instantiates a new availability exception.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
+		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
+	
 		<cfscript>
-			super.init( argumentCollection=arguments );
-
+			super.init(argumentCollection=arguments);
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 
 </cfcomponent>

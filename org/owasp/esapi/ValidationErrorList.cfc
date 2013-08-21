@@ -21,52 +21,62 @@
 		// Error list of ValidationException's
 		variables.errorList = {};
 	</cfscript>
- 
-	<cffunction access="public" returntype="void" name="addError" output="false" hint="Adds a new error to list with a unique named context. No action taken if either element is null. Existing contexts will be overwritten.">
-		<cfargument required="true" type="String" name="context" hint="unique named context for this ValidationErrorList">
-		<cfargument required="true" name="ve" hint="org.owasp.esapi.errors.ValidationException">
+	
+	<cffunction access="public" returntype="void" name="addError" output="false"
+	            hint="Adds a new error to list with a unique named context. No action taken if either element is null. Existing contexts will be overwritten.">
+		<cfargument required="true" type="String" name="context" hint="unique named context for this ValidationErrorList"/>
+		<cfargument required="true" name="ve" hint="org.owasp.esapi.errors.ValidationException"/>
+	
 		<cfscript>
-			if (structCount(getError(arguments.context))) {
+			if(structCount(getError(arguments.context))) {
 				throwException(newJava("java.lang.RuntimeException").init("Context (" & context & ") already exists, programmer error"));
 			}
-			
-			if ((arguments.context != "") && (structCount(arguments.ve))) {
+		
+			if((arguments.context != "") && (structCount(arguments.ve))) {
 				variables.errorList[arguments.context] = arguments.ve;
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="Array" name="errors" output="false" hint="Returns list of ValidationException, or empty list of no errors exist.">
+	
+	<cffunction access="public" returntype="Array" name="errors" output="false"
+	            hint="Returns list of ValidationException, or empty list of no errors exist.">
+		
 		<cfscript>
 			return variables.errorList.values();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="Struct" name="getError" output="false" hint="Retrieves ValidationException for given context if one exists.">
-		<cfargument required="true" type="String" name="context" hint="unique name for each error">
+	
+	<cffunction access="public" returntype="Struct" name="getError" output="false"
+	            hint="Retrieves ValidationException for given context if one exists.">
+		<cfargument required="true" type="String" name="context" hint="unique name for each error"/>
+	
 		<cfscript>
-			if (structKeyExists(variables.errorList, arguments.context)) {
+			if(structKeyExists(variables.errorList, arguments.context)) {
 				return variables.errorList[arguments.context];
 			}
 			return structNew();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="isEmpty" output="false" hint="Returns true if no error are present.">
+	
+	<cffunction access="public" returntype="boolean" name="isEmpty" output="false"
+	            hint="Returns true if no error are present.">
+		
 		<cfscript>
 			return variables.errorList.isEmpty();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="numeric" name="size" output="false" hint="Returns the numbers of errors present.">
+	
+	<cffunction access="public" returntype="numeric" name="size" output="false"
+	            hint="Returns the numbers of errors present.">
+		
 		<cfscript>
 			return variables.errorList.size();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

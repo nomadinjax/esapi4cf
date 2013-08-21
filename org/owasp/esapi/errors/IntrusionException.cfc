@@ -21,47 +21,53 @@
 		variables.ESAPI = "";
 		/** The logger. */
 		variables.logger = "";
-
+	
 		variables.logMessage = "";
 	</cfscript>
- 
-	<cffunction access="public" returntype="org.owasp.esapi.errors.IntrusionException" name="init" output="false" hint="Creates a new instance of IntrusionException.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users">
-		<cfargument required="true" type="String" name="logMessage" hint="the message logged">
-		<cfargument name="cause" hint="the cause">
+	
+	<cffunction access="public" returntype="org.owasp.esapi.errors.IntrusionException" name="init" output="false"
+	            hint="Creates a new instance of IntrusionException.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
+		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
+	
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
-			variables.logger = variables.ESAPI.getLogger( "IntrusionException" );
-
-			if(structKeyExists( arguments, "cause" )) {
-				super.init( arguments.userMessage, arguments.cause );
+			variables.logger = variables.ESAPI.getLogger("IntrusionException");
+		
+			if(structKeyExists(arguments, "cause")) {
+				super.init(arguments.userMessage, arguments.cause);
 				variables.logMessage = arguments.logMessage;
-				variables.logger.error( getSecurity("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.logMessage, arguments.cause );
+				variables.logger.error(getSecurity("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.logMessage, arguments.cause);
 			}
 			else {
-				super.init( arguments.userMessage );
+				super.init(arguments.userMessage);
 				variables.logMessage = arguments.logMessage;
-				variables.logger.error( getSecurity("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.logMessage );
+				variables.logger.error(getSecurity("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.logMessage);
 			}
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getUserMessage" output="false" hint="Returns a String containing a message that is safe to display to users">
+	
+	<cffunction access="public" returntype="String" name="getUserMessage" output="false"
+	            hint="Returns a String containing a message that is safe to display to users">
+		
 		<cfscript>
 			return getMessage();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="String" name="getLogMessage" output="false" hint="Returns a String that is safe to display in logs, but probably not to users">
+	
+	<cffunction access="public" returntype="String" name="getLogMessage" output="false"
+	            hint="Returns a String that is safe to display in logs, but probably not to users">
+		
 		<cfscript>
 			return variables.logMessage;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

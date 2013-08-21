@@ -22,127 +22,139 @@
 		variables.stackTrace = [];
 		variables.type = "";
 	</cfscript>
- 
+	
 	<cffunction access="public" returntype="Exception" name="init" output="false">
-		<cfargument type="String" name="message">
-		<cfargument name="cause">
+		<cfargument type="String" name="message"/>
+		<cfargument name="cause"/>
+	
 		<cfscript>
 			var rootCause = "";
-			if(structKeyExists( arguments, "message" )) {
-				if(structKeyExists( arguments, "cause" ) && isObject( arguments.cause )) {
+			if(structKeyExists(arguments, "message")) {
+				if(structKeyExists(arguments, "cause") && isObject(arguments.cause)) {
 					// CF exceptions extend java.lang.Exception
-					if(isInstanceOf( arguments.cause, "java.lang.Throwable" )) {
+					if(isInstanceOf(arguments.cause, "java.lang.Throwable")) {
 						rootCause = arguments.cause;
 					}
 					// RAILO exceptions do not extend java.lang.Exception
 					// ? is there a better way ? I hope so...
-					else if(isStruct( arguments.cause )) {
-						rootCause = newJava( "java.lang.Exception" ).init( arguments.cause.message );
+					else if(isStruct(arguments.cause)) {
+						rootCause = newJava("java.lang.Exception").init(arguments.cause.message);
 					}
-					variables.exception = newJava( "java.lang.Exception" ).init( arguments.message, cause );
+					variables.exception = newJava("java.lang.Exception").init(arguments.message, cause);
 				}
 				else {
-					variables.exception = newJava( "java.lang.Exception" ).init( arguments.message );
+					variables.exception = newJava("java.lang.Exception").init(arguments.message);
 				}
 			}
 			else {
-				variables.exception = newJava( "java.lang.Exception" ).init();
+				variables.exception = newJava("java.lang.Exception").init();
 			}
-
+		
 			setType();
 			// RAILO ERROR: setStackTrace(variables.exception.tagContext);
-			setStackTrace( variables.exception.getStackTrace() );
-
+			setStackTrace(variables.exception.getStackTrace());
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 	<!--- fillInStackTrace --->
-
+	
 	<cffunction access="public" name="getCause" output="false">
+		
 		<cfscript>
 			return variables.exception.getCause();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getLocalizedMessage" output="false">
+		
 		<cfscript>
 			return variables.exception.getLocalizedMessage();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getMessage" output="false">
+		
 		<cfscript>
 			return variables.exception.getMessage();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Array" name="getStackTrace" output="false">
+		
 		<cfscript>
 			//return variables.exception.getStackTrace();
 			return variables.stackTrace;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Exception" name="initCause" output="false">
-		<cfargument required="true" name="cause">
+		<cfargument required="true" name="cause"/>
+	
 		<cfscript>
-			return variables.exception.initCause( arguments.cause );
-		</cfscript> 
+			return variables.exception.initCause(arguments.cause);
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="printStackTrace" output="false">
+		
 		<cfscript>
 			return variables.exception.printStackTrace();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setStackTrace" output="false">
-		<cfargument required="true" type="Array" name="stackTrace">
+		<cfargument required="true" type="Array" name="stackTrace"/>
+	
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var i = "";
 			var item = "";
-			
+		
 			// loop to include only the template calls
-			for(i = 1; i <= arrayLen( arguments.stackTrace ); i++) {
+			for(i = 1; i <= arrayLen(arguments.stackTrace); i++) {
 				item = arguments.stackTrace[i];
 				// CF: runFunction; Railo: udfCall
-				if(listFind( "runFunction,udfCall", item.getMethodName() )) {
+				if(listFind("runFunction,udfCall", item.getMethodName())) {
 					// drop indexes that contain "org\owasp\esapi\errors"
-					if(findNoCase( "org\owasp\esapi\util\Exception.cfc", item.getFileName() ) || findNoCase( "org\owasp\esapi\errors", item.getFileName() )) {
+					if(findNoCase("org\owasp\esapi\util\Exception.cfc", item.getFileName()) || findNoCase("org\owasp\esapi\errors", item.getFileName())) {
 						continue;
 					}
-					arrayAppend( variables.stackTrace, item );
+					arrayAppend(variables.stackTrace, item);
 				}
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 	<!--- toString() --->
-
+	
 	<cffunction access="public" returntype="String" name="getType" output="false">
+		
 		<cfscript>
 			return variables.type;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="private" returntype="void" name="setType" output="false">
+		
 		<cfscript>
 			variables.type = getMetaData().name;
 			// full path is missing when ESAPI is virtual directory
-			if(listLen( variables.type, "." ) EQ 1) {
+			if(listLen(variables.type, ".") EQ 1) {
 				variables.type = "org.owasp.esapi.errors." & variables.type;
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

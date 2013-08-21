@@ -21,194 +21,217 @@
 	<cfscript>
 		/** The invalidated. */
 		variables.invalidated = false;
-
+	
 		/** The creation time. */
-		variables.creationTime = newJava( "java.util.Date" ).getTime();
-
+		variables.creationTime = newJava("java.util.Date").getTime();
+	
 		/** The accessed time. */
-		variables.accessedTime = newJava( "java.util.Date" ).getTime();
-
+		variables.accessedTime = newJava("java.util.Date").getTime();
+	
 		/** The count. */
 		if(!structKeyExists(request, "count")) {
 			request.count = 1;
 		}
-
+	
 		/** The sessionid. */
 		variables.sessionid = request.count++;
-
+	
 		/** The attributes. */
 		variables.attributes = {};
 	</cfscript>
- 
-	<cffunction access="public" returntype="TestHttpSession" name="init" output="false" hint="Instantiates a new test http session.">
-		<cfargument type="Date" name="creationTime" hint="the creation time">
-		<cfargument type="Date" name="accessedTime" hint="the accessed time">
+	
+	<cffunction access="public" returntype="TestHttpSession" name="init" output="false"
+	            hint="Instantiates a new test http session.">
+		<cfargument type="Date" name="creationTime" hint="the creation time"/>
+		<cfargument type="Date" name="accessedTime" hint="the accessed time"/>
+	
 		<cfscript>
-			if(structKeyExists( arguments, "creationTime" )) {
+			if(structKeyExists(arguments, "creationTime")) {
 				variables.creationTime = arguments.creationTime;
 			}
-			if(structKeyExists( arguments, "accessedTime" )) {
+			if(structKeyExists(arguments, "accessedTime")) {
 				variables.accessedTime = arguments.accessedTime;
 			}
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getAttribute" output="false">
-		<cfargument required="true" type="String" name="name">
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
-			if(structKeyExists( variables.attributes, arguments.name )) {
-				return variables.attributes.get( arguments.name );
+			if(structKeyExists(variables.attributes, arguments.name)) {
+				return variables.attributes.get(arguments.name);
 			}
 			return "";
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Array" name="getAttributeNames" output="false">
+		
 		<cfscript>
-			return listToArray( structKeyList( variables.attributes ) );
-		</cfscript> 
+			return listToArray(structKeyList(variables.attributes));
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getCreationTime" output="false">
+		
 		<cfscript>
 			return variables.creationTime;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getId" output="false">
+		
 		<cfscript>
 			return "" & variables.sessionid;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="boolean" name="getInvalidated" output="false" hint="Gets the invalidated.">
+	
+	<cffunction access="public" returntype="boolean" name="getInvalidated" output="false"
+	            hint="Gets the invalidated.">
+		
 		<cfscript>
 			return variables.invalidated;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getLastAccessedTime" output="false">
+		
 		<cfscript>
 			return variables.accessedTime;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getMaxInactiveInterval" output="false">
+		
 		<cfscript>
 			return 0;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getServletContext" output="false">
+		
 		<cfscript>
 			return "";
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getSessionContext" output="false">
+		
 		<cfscript>
 			return "";
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getValue" output="false">
-		<cfargument required="true" type="String" name="name">
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
 			return "";
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Array" name="getValueNames" output="false">
+		
 		<cfscript>
 			ret = [];
 			return ret;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="invalidate" output="false">
+		
 		<cfscript>
 			variables.invalidated = true;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="boolean" name="isNew" output="false">
+		
 		<cfscript>
 			return true;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="putValue" output="false">
-		<cfargument required="true" type="String" name="name">
-		<cfargument required="true" name="value">
+		<cfargument required="true" type="String" name="name"/>
+		<cfargument required="true" name="value"/>
+	
 		<cfscript>
 			// stub
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="removeAttribute" output="false">
-		<cfargument required="true" type="String" name="name">
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
 			// stub
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="removeValue" output="false">
-		<cfargument required="true" type="String" name="name">
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
 			// stub
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setAttribute" output="false">
-		<cfargument required="true" type="String" name="name">
-		<cfargument required="true" name="value">
+		<cfargument required="true" type="String" name="name"/>
+		<cfargument required="true" name="value"/>
+	
 		<cfscript>
-			variables.attributes.put( arguments.name, arguments.value );
-		</cfscript> 
+			variables.attributes.put(arguments.name, arguments.value);
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setMaxInactiveInterval" output="false">
-		<cfargument required="true" type="numeric" name="interval">
+		<cfargument required="true" type="numeric" name="interval"/>
+	
 		<cfscript>
 			// stub
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setAccessedTime" output="false">
-		<cfargument required="true" type="numeric" name="time">
+		<cfargument required="true" type="numeric" name="time"/>
+	
 		<cfscript>
 			variables.accessedTime = arguments.time;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setCreationTime" output="false">
-		<cfargument required="true" type="numeric" name="time">
+		<cfargument required="true" type="numeric" name="time"/>
+	
 		<cfscript>
 			variables.creationTime = arguments.time;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

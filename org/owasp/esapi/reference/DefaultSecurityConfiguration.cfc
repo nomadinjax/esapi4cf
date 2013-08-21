@@ -20,13 +20,13 @@
 	<cfscript>
 		/** The properties. */
 		variables.properties = newJava("java.util.Properties").init();
-
+	
 		/** The name of the ESAPI property file */
 		this.RESOURCE_FILE = "ESAPI.properties";
-
+	
 		/** The location of the Resources directory used by ESAPI. */
 		this.RESOURCE_DIRECTORY = "org.owasp.esapi.resources";
-
+	
 		// private
 		variables.ALLOWED_LOGIN_ATTEMPTS = "AllowedLoginAttempts";
 		variables.APPLICATION_NAME = "ApplicationName";
@@ -52,11 +52,11 @@
 		variables.MAX_LOG_FILE_SIZE = "MaxLogFileSize";
 		variables.LOG_ENCODING_REQUIRED = "LogEncodingRequired";
 		variables.LOG_DEFAULT_LOG4J = "LogDefaultLog4J";
-
+	
 		//protected
 		variables.MAX_REDIRECT_LOCATION = 1000;
 		variables.MAX_FILE_NAME_LENGTH = 1000;
-
+	
 		/**
 		 * Load properties from properties file. Set this with setResourceDirectory
 		 * from your web application or ESAPI filter. For test and non-web
@@ -68,20 +68,22 @@
 		 * where 'path' references the appropriate directory in your system.
 		 */
 		variables.resourceDirectory = System.getProperty(this.RESOURCE_DIRECTORY);
-
+	
 		/*
 		 * Absolute path to the customDirectory
 		 */
 		variables.customDirectory = System.getProperty("org.owasp.esapi.resources");
-
+	
 		/*
 		 * Absolute path to the userDirectory
 		 */
 		variables.userDirectory = System.getProperty("user.home") & newJava("java.io.File").separator & ".esapi";
 	</cfscript>
- 
-	<cffunction access="public" returntype="org.owasp.esapi.SecurityConfiguration" name="init" output="false" hint="Instantiates a new configuration.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
+	
+	<cffunction access="public" returntype="org.owasp.esapi.SecurityConfiguration" name="init" output="false"
+	            hint="Instantiates a new configuration.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+	
 		<cfscript>
 			try {
 				loadConfiguration();
@@ -89,44 +91,48 @@
 			catch(java.io.FileNotFoundException e) {
 				logSpecial("Failed to load security configuration", e);
 			}
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getApplicationName" output="false">
+		
 		<cfscript>
 			// prefer the CF application name
-			if (structKeyExists(application, "applicationName")) {
+			if(structKeyExists(application, "applicationName")) {
 				return application.applicationName;
 			}
 			// fallback on the ESAPI.properties ApplicationName
 			return variables.properties.getProperty(variables.APPLICATION_NAME, "AppNameNotSpecified");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Array" name="getMasterPassword" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.MASTER_PASSWORD).toCharArray();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getKeystore" output="false">
+		
 		<cfscript>
 			return newJava("java.io.File").init(getResourceDirectory(), "keystore");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getResourceDirectory" output="false">
+		
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var fileSeparator = "";
-			
-			if (!structKeyExists(variables, "resourceDirectory")) {
+		
+			if(!structKeyExists(variables, "resourceDirectory")) {
 				variables.resourceDirectory = "";
 			}
 			fileSeparator = newJava("java.io.File").separator;
@@ -134,16 +140,17 @@
 				variables.resourceDirectory &= fileSeparator;
 			}
 			return variables.resourceDirectory;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setResourceDirectory" output="false">
-		<cfargument required="true" type="String" name="dir">
+		<cfargument required="true" type="String" name="dir"/>
+	
 		<cfscript>
 			variables.resourceDirectory = arguments.dir;
 			logSpecial("Reset resource directory to: " & arguments.dir, "");
-
+		
 			// reload configuration if necessary
 			try {
 				loadConfiguration();
@@ -151,35 +158,40 @@
 			catch(java.io.IOException e) {
 				logSpecial("Failed to load security configuration from " & arguments.dir, e);
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="binary" name="getMasterSalt" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.MASTER_SALT).getBytes();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="Array" name="getAllowedFileExtensions" output="false">
+		
 		<cfscript>
 			var def = ".zip,.pdf,.tar,.gz,.xls,.properties,.txt,.xml";
 			var extList = variables.properties.getProperty(variables.VALID_EXTENSIONS, def).split(",");
 			return extList;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getAllowedFileUploadSize" output="false">
+		
 		<cfscript>
 			var bytes = variables.properties.getProperty(variables.MAX_UPLOAD_FILE_BYTES, "5000000");
 			return int(bytes);
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="private" returntype="void" name="loadConfiguration" output="false" hint="Load configuration. Never prints properties.">
+	
+	<cffunction access="private" returntype="void" name="loadConfiguration" output="false"
+	            hint="Load configuration. Never prints properties.">
+		
 		<cfscript>
 			try {
 				//first attempt file IO loading of properties
@@ -197,20 +209,21 @@
 					logSpecial(this.RESOURCE_FILE & " could not be loaded by any means. fail.", e);
 				}
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="private" returntype="Properties" name="loadConfigurationFromClasspath" output="false">
-		<cfargument required="true" type="String" name="fileName">
+		<cfargument required="true" type="String" name="fileName"/>
+	
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var i = "";
-			
+		
 			var result = "";
 			var ins = "";
 			var loaders = [newJava("java.lang.Thread").currentThread().getContextClassLoader(), newJava("java.lang.ClassLoader").getSystemClassLoader()];
-
+		
 			var currentLoader = "";
 			for(i = 1; i <= arrayLen(loaders); i++) {
 				if(isObject(loaders[i])) {
@@ -218,17 +231,17 @@
 					try {
 						// try root
 						ins = loaders[i].getResourceAsStream(arguments.fileName);
-
+					
 						// try .esapi folder
 						if(!isDefined("ins")) {
 							ins = currentLoader.getResourceAsStream(".esapi/" & arguments.fileName);
 						}
-
+					
 						// try resources folder
 						if(!isDefined("ins")) {
 							ins = currentLoader.getResourceAsStream("resources/" & arguments.fileName);
 						}
-
+					
 						// now load the properties
 						if(isDefined("ins")) {
 							result = newJava("java.util.Properties").init();
@@ -248,102 +261,115 @@
 					}
 				}
 			}
-
+		
 			if(result == "") {
 				throwException(newJava("java.lang.IllegalArgumentException").init("[" & this.ESAPINAME & "] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
 			}
-
+		
 			return result;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="private" returntype="void" name="logSpecial" output="false" hint="Used to log errors to the console during the loading of the properties file itself. Can't use standard logging in this case, since the Logger is not initialized yet.">
-		<cfargument required="true" type="String" name="message" hint="The message to send to the console.">
-		<cfargument required="false" name="e" hint="The error that occured (this value is currently ignored).">
+	
+	<cffunction access="private" returntype="void" name="logSpecial" output="false"
+	            hint="Used to log errors to the console during the loading of the properties file itself. Can't use standard logging in this case, since the Logger is not initialized yet.">
+		<cfargument required="true" type="String" name="message" hint="The message to send to the console."/>
+		<cfargument required="false" name="e" hint="The error that occured (this value is currently ignored)."/>
+	
 		<cfscript>
 			System.out.println("[" & this.ESAPINAME & "] " & arguments.message);
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getPasswordParameterName" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.PASSWORD_PARAMETER_NAME, "password");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getUsernameParameterName" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.USERNAME_PARAMETER_NAME, "username");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getEncryptionAlgorithm" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.ENCRYPTION_ALGORITHM, "PBEWithMD5AndDES/CBC/PKCS5Padding");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getHashAlgorithm" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.HASH_ALGORITHM, "SHA-512");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getCharacterEncoding" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.CHARACTER_ENCODING, "UTF-8");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getDigitalSignatureAlgorithm" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.DIGITAL_SIGNATURE_ALGORITHM, "SHAwithDSA");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getRandomAlgorithm" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.RANDOM_ALGORITHM, "SHA1PRNG");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getAllowedLoginAttempts" output="false">
+		
 		<cfscript>
 			var attempts = variables.properties.getProperty(variables.ALLOWED_LOGIN_ATTEMPTS, "5");
 			return newJava("java.lang.Integer").parseInt(attempts);
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getMaxOldPasswordHashes" output="false">
+		
 		<cfscript>
 			var max = variables.properties.getProperty(variables.MAX_OLD_PASSWORD_HASHES, "12");
 			return newJava("java.lang.Integer").parseInt(max);
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="boolean" name="getDisableIntrusionDetection" output="false">
+		
 		<cfscript>
 			var value = variables.properties.getProperty(variables.DISABLE_INTRUSION_DETECTION);
 			if(isDefined("value") && value.equalsIgnoreCase("true"))
 				return true;
 			return false;// Default result
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getQuota" output="false">
-		<cfargument required="true" type="String" name="eventName">
+		<cfargument required="true" type="String" name="eventName"/>
+	
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var count = "";
@@ -354,33 +380,34 @@
 			var actionString = "";
 			var actionList = "";
 			var q = "";
-			
+		
 			count = 0;
 			countString = variables.properties.getProperty(arguments.eventName & ".count");
 			if(isDefined("countString")) {
 				count = newJava("java.lang.Integer").parseInt(countString);
 			}
-
+		
 			interval = 0;
 			intervalString = variables.properties.getProperty(arguments.eventName & ".interval");
 			if(isDefined("intervalString")) {
 				interval = newJava("java.lang.Integer").parseInt(intervalString);
 			}
-
+		
 			actions = [];
 			actionString = variables.properties.getProperty(arguments.eventName & ".actions");
 			if(isDefined("actionString")) {
 				actionList = actionString.split(",");
 				actions = newJava("java.util.Arrays").asList(actionList);
 			}
-
+		
 			q = newJava("org.owasp.esapi.SecurityConfiguration$Threshold").init(javaCast("string", arguments.eventName), javaCast("int", count), javaCast("long", interval), actions);
 			return q;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getLogLevel" output="false">
+		
 		<cfscript>
 			var level = variables.properties.getProperty(variables.LOG_LEVEL);
 			if(!isDefined("level")) {
@@ -404,20 +431,22 @@
 				return newJava("org.owasp.esapi.Logger").TRACE;
 			if(level.equalsIgnoreCase("ALL"))
 				return newJava("org.owasp.esapi.Logger").ALL;
-
+		
 			// This error is NOT logged the normal way because the logger constructor calls getLogLevel() and if this error occurred it would cause an infinite loop.
 			logSpecial("The LOG-LEVEL property in the ESAPI properties file has the unrecognized value: " & level, "");
 			return newJava("org.owasp.esapi.Logger").WARNING;// Note: The default logging level is WARNING.
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getLogFileName" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.LOG_FILE_NAME, "ESAPI_logging_file");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 	<cfscript>
 		/**
 		 * The default max log file size is set to 10,000,000 bytes (10 Meg). If the
@@ -428,86 +457,94 @@
 		 */
 		this.DEFAULT_MAX_LOG_FILE_SIZE = 10000000;
 	</cfscript>
-
+	
 	<cffunction access="public" returntype="numeric" name="getMaxLogFileSize" output="false">
+		
 		<cfscript>
 			// The default is 10 Meg if the property is not specified
 			var value = variables.properties.getProperty(variables.MAX_LOG_FILE_SIZE);
 			if(value == "")
 				return DEFAULT_MAX_LOG_FILE_SIZE;
-
+		
 			try {
 				return Integer.parseInt(value);
 			}
 			catch(NumberFormatException e) {
 				return DEFAULT_MAX_LOG_FILE_SIZE;
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="boolean" name="getLogDefaultLog4J" output="false">
+		
 		<cfscript>
 			var value = variables.properties.getProperty(variables.LOG_DEFAULT_LOG4J);
 			if(isDefined("value") && value.equalsIgnoreCase("true"))
 				return true;
 			return false;// Default result
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="boolean" name="getLogEncodingRequired" output="false">
+		
 		<cfscript>
 			var value = variables.properties.getProperty(variables.LOG_ENCODING_REQUIRED);
 			if(isDefined("value") && value.equalsIgnoreCase("true"))
 				return true;
 			return false;// Default result
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getResponseContentType" output="false">
+		
 		<cfscript>
 			return variables.properties.getProperty(variables.RESPONSE_CONTENT_TYPE, "text/html; charset=UTF-8");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getRememberTokenDuration" output="false">
+		
 		<cfscript>
 			var value = variables.properties.getProperty(variables.REMEMBER_TOKEN_DURATION, "14");
 			var days = newJava("java.lang.Long").parseLong(value);
 			var duration = 1000 * 60 * 60 * 24 * days;
 			return duration;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getSessionIdleTimeoutLength" output="false">
+		
 		<cfscript>
 			var value = variables.properties.getProperty(variables.IDLE_TIMEOUT_DURATION, "20");
 			var minutes = newJava("java.lang.Integer").parseInt(value);
 			var duration = 1000 * 60 * minutes;
 			return duration;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="numeric" name="getSessionAbsoluteTimeoutLength" output="false">
+		
 		<cfscript>
 			var value = variables.properties.getProperty(variables.ABSOLUTE_TIMEOUT_DURATION, "120");
 			var minutes = newJava("java.lang.Integer").parseInt(value);
 			var duration = 1000 * 60 * minutes;
 			return duration;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getValidationPatternNames" output="false" hint="getValidationPattern names returns validator pattern names from ESAPI's global properties">
+		
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var name = "";
-			
+		
 			var list = [];
 			var i = variables.properties.keySet().iterator();
 			while(i.hasNext()) {
@@ -517,28 +554,30 @@
 				}
 			}
 			return list.iterator();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getValidationPattern" output="false" hint="getValidationPattern returns a single pattern based upon key">
-		<cfargument required="true" type="String" name="key" hint="validation pattern name you'd like">
+		<cfargument required="true" type="String" name="key" hint="validation pattern name you'd like"/>
+	
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var pattern = "";
-			
+		
 			var value = variables.properties.getProperty("Validator." & arguments.key);
 			if(!isDefined("value") || value == "")
 				return "";
 			pattern = newJava("java.util.regex.Pattern").compile(value);
 			return pattern;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="private" name="loadPropertiesFromStream" output="false">
-		<cfargument required="true" name="is">
-		<cfargument required="true" type="String" name="name">
+		<cfargument required="true" name="is"/>
+		<cfargument required="true" type="String" name="name"/>
+	
 		<cfscript>
 			var config = newJava("java.util.Properties").init();
 			try {
@@ -554,18 +593,19 @@
 				catch(java.lang.Exception e) {
 				}
 			return config;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getResourceStream" output="false" hint="Utility method to get a resource as an InputStream. The search looks for an 'esapi-resources' directory in the setResourceDirectory() location, then the System.getProperty( 'org.owasp.esapi.resources' ) location, then the System.getProperty( 'user.home' ) location, and then the classpath.">
-		<cfargument required="true" type="String" name="filename">
+		<cfargument required="true" type="String" name="filename"/>
+	
 		<cfscript>
 			var f = "";
 			if(arguments.filename == "") {
 				return "";
 			}
-
+		
 			try {
 				f = getResourceFile(arguments.filename);
 				if(isObject(f) && f.exists()) {
@@ -575,26 +615,27 @@
 			catch(java.lang.Exception e) {
 			}
 			throwException(newJava("java.io.FileNotFoundException").init());
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getResourceFile" output="false">
-		<cfargument required="true" type="String" name="filename">
+		<cfargument required="true" type="String" name="filename"/>
+	
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var fileLocation = "";
-			
+		
 			var fileSeparator = newJava("java.io.File").separator;
 			var f = "";
-
+		
 			logSpecial("Attempting to load " & arguments.filename & " via file io.");
-
+		
 			if(arguments.filename == "") {
 				logSpecial("Failed to load properties via FileIO. Filename is empty.");
 				return "";// not found.
 			}
-
+		
 			// first, allow command line overrides. -Dorg.owasp.esapi.resources
 			// directory
 			if(structKeyExists(variables, "customDirectory")) {
@@ -607,7 +648,7 @@
 					logSpecial("Not found in 'org.owasp.esapi.resources' directory or file not readable: " & f.getAbsolutePath());
 				}
 			}
-
+		
 			// if not found, then try the programatically set resource directory
 			// (this defaults to SystemResource directory/RESOURCE_FILE
 			if(structKeyExists(variables, "resourceDirectory")) {
@@ -626,7 +667,7 @@
 					logSpecial("Not found in SystemResource Directory/resourceDirectory: " & fileLocation);
 				}
 			}
-
+		
 			// if not found, then try the user's home directory
 			if(structKeyExists(variables, "userDirectory")) {
 				f = newJava("java.io.File").init(variables.userDirectory, arguments.filename);
@@ -638,11 +679,11 @@
 					logSpecial("Not found in 'user.home' directory: " & f.getAbsolutePath());
 				}
 			}
-
+		
 			// return empty if not found
 			return "";
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

@@ -20,17 +20,18 @@
 	<cfscript>
 		// 1. Required - set an application name
 		this.name = "ESAPI-MXUnit";
-
+	
 		// 2. Required - turn on J2EE session management (requires J2EE Sessions be turned on in administrator)
 		this.sessionManagement = true;
-
+	
 		// 3. Optional - turn off deprecated client management
 		this.clientManagement = false;
-
+	
 		// 4. Optional - don't set CFID/CFTOKEN cookies - these are garbage
 		this.setClientCookies = false;
-
+	
 		this.mappings["/org"] = expandPath("/esapi4cf/org");
 	</cfscript>
- 
+	
+
 </cfcomponent>

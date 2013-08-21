@@ -18,24 +18,26 @@
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		variables.ESAPI = createObject( "component", "org.owasp.esapi.ESAPI" ).init();
+		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
 	</cfscript>
- 
-	<cffunction access="public" returntype="void" name="testSetters" output="false" hint="Test of all the ESAPI setter methods">
+	
+	<cffunction access="public" returntype="void" name="testSetters" output="false"
+	            hint="Test of all the ESAPI setter methods">
+		
 		<cfscript>
-			System.out.println( "testSetters" );
-			variables.ESAPI.setAccessController( variables.ESAPI.accessController() );
-			variables.ESAPI.setAuthenticator( variables.ESAPI.authenticator() );
-			variables.ESAPI.setEncoder( variables.ESAPI.encoder() );
-			variables.ESAPI.setEncryptor( variables.ESAPI.encryptor() );
-			variables.ESAPI.setExecutor( variables.ESAPI.executor() );
-			variables.ESAPI.setHttpUtilities( variables.ESAPI.httpUtilities() );
-			variables.ESAPI.setIntrusionDetector( variables.ESAPI.intrusionDetector() );
-			variables.ESAPI.setRandomizer( variables.ESAPI.randomizer() );
-			variables.ESAPI.setSecurityConfiguration( variables.ESAPI.securityConfiguration() );
-			variables.ESAPI.setValidator( variables.ESAPI.validator() );
-		</cfscript> 
+			System.out.println("testSetters");
+			variables.ESAPI.setAccessController(variables.ESAPI.accessController());
+			variables.ESAPI.setAuthenticator(variables.ESAPI.authenticator());
+			variables.ESAPI.setEncoder(variables.ESAPI.encoder());
+			variables.ESAPI.setEncryptor(variables.ESAPI.encryptor());
+			variables.ESAPI.setExecutor(variables.ESAPI.executor());
+			variables.ESAPI.setHttpUtilities(variables.ESAPI.httpUtilities());
+			variables.ESAPI.setIntrusionDetector(variables.ESAPI.intrusionDetector());
+			variables.ESAPI.setRandomizer(variables.ESAPI.randomizer());
+			variables.ESAPI.setSecurityConfiguration(variables.ESAPI.securityConfiguration());
+			variables.ESAPI.setValidator(variables.ESAPI.validator());
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

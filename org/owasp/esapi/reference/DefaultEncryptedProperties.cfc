@@ -19,80 +19,89 @@
 
 	<cfscript>
 		variables.ESAPI = "";
-
+	
 		/** The properties. */
 		variables.properties = newJava("java.util.Properties").init();
-
+	
 		/** The logger. */
 		variables.logger = "";
 	</cfscript>
- 
-	<cffunction access="public" returntype="DefaultEncryptedProperties" name="init" output="false" hint="Instantiates a new encrypted properties.">
-		<cfargument required="true" returntype="org.owasp.esapi.ESAPI" name="ESAPI">
+	
+	<cffunction access="public" returntype="DefaultEncryptedProperties" name="init" output="false"
+	            hint="Instantiates a new encrypted properties.">
+		<cfargument required="true" returntype="org.owasp.esapi.ESAPI" name="ESAPI"/>
+	
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
 			variables.logger = variables.ESAPI.getLogger("EncryptedProperties");
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getProperty" output="false">
-		<cfargument required="true" type="String" name="key">
+		<cfargument required="true" type="String" name="key"/>
+	
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var encryptedValue = "";
-			
+		
 			try {
 				encryptedValue = variables.properties.getProperty(arguments.key);
-
+			
 				if(!isDefined("encryptedValue"))
 					return "";
 				return variables.ESAPI.encryptor().decryptString(encryptedValue);
-			} catch (Exception e) {
+			}
+			catch(Exception e) {
 				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Property retrieval failure", "Couldn't decrypt property", e));
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="setProperty" output="false">
-		<cfargument required="true" type="String" name="key">
-		<cfargument required="true" type="String" name="value">
+		<cfargument required="true" type="String" name="key"/>
+		<cfargument required="true" type="String" name="value"/>
+	
 		<cfscript>
 			try {
 				return variables.properties.setProperty(arguments.key, variables.ESAPI.encryptor().encryptString(arguments.value));
-			} catch (org.owasp.esapi.errors.EncryptionException e) {
+			}
+			catch(org.owasp.esapi.errors.EncryptionException e) {
 				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Property setting failure", "Couldn't encrypt property", e));
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="keySet" output="false">
+		
 		<cfscript>
 			return variables.properties.keySet();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="load" output="false">
-		<cfargument required="true" name="in">
+		<cfargument required="true" name="in"/>
+	
 		<cfscript>
 			variables.properties.load(arguments.in);
 			variables.logger.trace(getSecurity("SECURITY_SUCCESS"), true, "Encrypted properties loaded successfully");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="store" output="false">
-		<cfargument required="true" name="out">
-		<cfargument required="true" type="String" name="comments">
+		<cfargument required="true" name="out"/>
+		<cfargument required="true" type="String" name="comments"/>
+	
 		<cfscript>
 			variables.properties.store(arguments.out, arguments.comments);
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

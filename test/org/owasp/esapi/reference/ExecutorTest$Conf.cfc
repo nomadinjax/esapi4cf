@@ -21,33 +21,38 @@
 		variables.allowedExes = [];
 		variables.workingDir = "";
 	</cfscript>
- 
-	<cffunction access="public" returntype="ExecutorTest$Conf" name="init" output="false" hint="Create wrapper with the specified allowed execs and workingDir.">
-		<cfargument required="true" type="org.owasp.esapi.SecurityConfiguration" name="orig" hint="The configuration to wrap.">
-		<cfargument required="true" type="Array" name="allowedExes" hint="The executables to be allowed">
-		<cfargument required="true" name="workingDir" hint="The working directory for execution">
+	
+	<cffunction access="public" returntype="ExecutorTest$Conf" name="init" output="false"
+	            hint="Create wrapper with the specified allowed execs and workingDir.">
+		<cfargument required="true" type="org.owasp.esapi.SecurityConfiguration" name="orig" hint="The configuration to wrap."/>
+		<cfargument required="true" type="Array" name="allowedExes" hint="The executables to be allowed"/>
+		<cfargument required="true" name="workingDir" hint="The working directory for execution"/>
+	
 		<cfscript>
 			super.init(arguments.orig);
 			variables.allowedExes = arguments.allowedExes;
 			variables.workingDir = arguments.workingDir;
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="Array" name="getAllowedExecutables" output="false" hint="Override real one with our temporary one.">
+	
+	<cffunction access="public" returntype="Array" name="getAllowedExecutables" output="false"
+	            hint="Override real one with our temporary one.">
+		
 		<cfscript>
 			return variables.allowedExes;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getWorkingDirectory" output="false" hint="Override real one with our temporary one.">
+		
 		<cfscript>
 			return variables.workingDir;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

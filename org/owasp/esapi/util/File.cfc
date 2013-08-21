@@ -20,93 +20,101 @@
 	<cfscript>
 		variables.File = "";
 	</cfscript>
- 
+	
 	<cffunction access="public" returntype="File" name="init" output="false">
-		<cfargument type="String" name="pathname">
-		<cfargument name="parent">
-		<cfargument type="String" name="child">
-		<cfargument name="uri">
+		<cfargument type="String" name="pathname"/>
+		<cfargument name="parent"/>
+		<cfargument type="String" name="child"/>
+		<cfargument name="uri"/>
+	
 		<cfscript>
-			if (structKeyExists(arguments, "pathname")) {
+			if(structKeyExists(arguments, "pathname")) {
 				variables.File = newJava("java.io.File").init(javaCast("string", arguments.pathname));
 			}
-			else if (structKeyExists(arguments, "parent") && structKeyExists(arguments, "child")) {
+			else if(structKeyExists(arguments, "parent") && structKeyExists(arguments, "child")) {
 				variables.File = newJava("java.io.File").init(arguments.parent, javaCast("string", arguments.child));
 			}
-			else if (structKeyExists(arguments, "uri")) {
+			else if(structKeyExists(arguments, "uri")) {
 				variables.File = newJava("java.io.File").init(arguments.uri);
 			}
 			else {
 				throwException(newJava("IOException").init("Invalid File Instantiation.", "You must provide either a pathname, a parent and child, or a uri."));
 			}
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 	<!---canRead()
-		canWrite()
-		compareTo(File pathname)
-		compareTo(Object o)
-		createNewFile()
-		createTempFile(String prefix, String suffix)
-		createTempFile(String prefix, String suffix, File directory)
-		delete()
-		deleteOnExit()
-		equals(Object obj)--->
-
+	    canWrite()
+	    compareTo(File pathname)
+	    compareTo(Object o)
+	    createNewFile()
+	    createTempFile(String prefix, String suffix)
+	    createTempFile(String prefix, String suffix, File directory)
+	    delete()
+	    deleteOnExit()
+	    equals(Object obj)--->
+	
 	<cffunction access="public" returntype="boolean" name="exists" output="false">
+		
 		<cfscript>
 			return variables.File.exists();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 	<!---getAbsoluteFile()
-		getAbsolutePath()
-		getCanonicalFile()
-		getCanonicalPath()--->
-
+	    getAbsolutePath()
+	    getCanonicalFile()
+	    getCanonicalPath()--->
+	
 	<cffunction access="public" returntype="String" name="getName" output="false">
+		
 		<cfscript>
 			return variables.File.getName();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getParent" output="false">
+		
 		<cfscript>
 			return variables.File.getParent();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 	<!---getParentFile() --->
-
+	
 	<cffunction access="public" returntype="String" name="getPath" output="false">
+		
 		<cfscript>
 			return variables.File.getPath();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 	<!--- hashCode()
-		isAbsolute()
-		isDirectory()
-		isFile()
-		isHidden()
-		lastModified()
-		length()
-		list()
-		list(FilenameFilter filter)
-		listFiles()
-		listFiles(FileFilter filter)
-		listFiles(FilenameFilter filter)
-		listRoots()
-		mkdir()
-		mkdirs()
-		renameTo(File dest)
-		setLastModified(long time)
-		setReadOnly()
-		toString()
-		toURI()
-		toURL()--->
-
+	    isAbsolute()
+	    isDirectory()
+	    isFile()
+	    isHidden()
+	    lastModified()
+	    length()
+	    list()
+	    list(FilenameFilter filter)
+	    listFiles()
+	    listFiles(FileFilter filter)
+	    listFiles(FilenameFilter filter)
+	    listRoots()
+	    mkdir()
+	    mkdirs()
+	    renameTo(File dest)
+	    setLastModified(long time)
+	    setReadOnly()
+	    toString()
+	    toURI()
+	    toURL()--->
 </cfcomponent>

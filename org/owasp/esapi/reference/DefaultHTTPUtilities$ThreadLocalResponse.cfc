@@ -20,37 +20,41 @@
 	<cfscript>
 		variables.ESAPI = "";
 	</cfscript>
- 
+	
 	<cffunction access="public" returntype="DefaultHTTPUtilities$ThreadLocalResponse" name="init" output="false">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+	
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="initialValue" output="false">
+		
 		<cfscript>
 			return "";
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" type="org.owasp.esapi.filters.SafeResponse" name="getResponse" output="false">
+		
 		<cfscript>
 			return super.get();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" type="void" name="setResponse" output="false">
-		<cfargument required="true" type="org.owasp.esapi.filters.SafeResponse" name="newResponse">
+		<cfargument required="true" type="org.owasp.esapi.filters.SafeResponse" name="newResponse"/>
+	
 		<cfscript>
-			super.set( arguments.newResponse );
-		</cfscript> 
+			super.set(arguments.newResponse);
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

@@ -19,141 +19,151 @@
 
 	<cfscript>
 		variables.ESAPI = "";
-
+	
 		/** The itod (indirect to direct) */
 		variables.itod = {};
-
+	
 		/** The dtoi (direct to indirect) */
 		variables.dtoi = {};
-
+	
 		/** The random. */
 		variables.random = "";
 	</cfscript>
- 
-	<cffunction access="public" returntype="RandomAccessReferenceMap" name="init" output="false" hint="This AccessReferenceMap implementation uses short random strings to create a layer of indirection. Other possible implementations would use simple integers as indirect references.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument type="Array" name="directReferences" hint="Instantiates a new access reference map with a set of direct references.">
+	
+	<cffunction access="public" returntype="RandomAccessReferenceMap" name="init" output="false"
+	            hint="This AccessReferenceMap implementation uses short random strings to create a layer of indirection. Other possible implementations would use simple integers as indirect references.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument type="Array" name="directReferences" hint="Instantiates a new access reference map with a set of direct references."/>
+	
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
 			variables.random = variables.ESAPI.randomizer();
-
-			if (structKeyExists(arguments, "directReferences")) {
+		
+			if(structKeyExists(arguments, "directReferences")) {
 				this.update(arguments.directReferences);
 			}
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="iterator" output="false">
+		
 		<cfscript>
 			var sorted = newJava("java.util.TreeSet").init(variables.dtoi.keySet());
 			return sorted.iterator();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="addDirectReference" output="false">
-		<cfargument required="true" name="direct">
+		<cfargument required="true" name="direct"/>
+	
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var indirect = "";
-			
-			if ( structKeyExists(variables.dtoi, arguments.direct) ) {
+		
+			if(structKeyExists(variables.dtoi, arguments.direct)) {
 				return variables.dtoi[arguments.direct];
 			}
 			indirect = getUniqueRandomReference();
 			variables.itod[indirect] = arguments.direct;
 			variables.dtoi[arguments.direct] = indirect;
 			return indirect;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="private" returntype="String" name="getUniqueRandomReference" output="true" hint="Create a new random reference that is guaranteed to be unique.">
+	
+	<cffunction access="private" returntype="String" name="getUniqueRandomReference" output="true"
+	            hint="Create a new random reference that is guaranteed to be unique.">
+		
 		<cfscript>
 			var candidate = "";
 			do {
 				candidate = variables.random.getRandomString(6, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			} while (structKeyExists(variables.itod, candidate));
+			}while(structKeyExists(variables.itod, candidate));
 			return candidate;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="removeDirectReference" output="false">
-		<cfargument required="true" name="direct">
+		<cfargument required="true" name="direct"/>
+	
 		<cfscript>
 			var indirect = "";
-			if (structKeyExists(variables.dtoi, arguments.direct)) {
+			if(structKeyExists(variables.dtoi, arguments.direct)) {
 				indirect = variables.dtoi[arguments.direct];
 			}
-			if ( isDefined("indirect") ) {
+			if(isDefined("indirect")) {
 				variables.itod.remove(indirect);
 				variables.dtoi.remove(arguments.direct);
 				return indirect;
 			}
 			return "";
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="update" output="false">
-		<cfargument required="true" type="Array" name="directReferences">
+		<cfargument required="true" type="Array" name="directReferences"/>
+	
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var i = "";
 			var direct = "";
 			var indirect = "";
-			
+		
 			var dtoi_old = duplicate(variables.dtoi);
 			variables.dtoi.clear();
 			variables.itod.clear();
-
+		
 			i = arguments.directReferences.iterator();
-			while (i.hasNext()) {
+			while(i.hasNext()) {
 				direct = i.next();
 				indirect = "";
-
-				if (structKeyExists(dtoi_old, direct)) {
+			
+				if(structKeyExists(dtoi_old, direct)) {
 					// get the old indirect reference
 					indirect = dtoi_old[direct];
 				}
-
+			
 				// if the old reference is null, then create a new one that doesn't
 				// collide with any existing indirect references
-				if (!len(indirect)) {
+				if(!len(indirect)) {
 					indirect = getUniqueRandomReference();
 				}
-
+			
 				variables.itod[indirect] = direct;
 				variables.dtoi[direct] = indirect;
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="String" name="getIndirectReference" output="false">
-		<cfargument required="true" name="directReference">
+		<cfargument required="true" name="directReference"/>
+	
 		<cfscript>
-			if (variables.dtoi.containsKey(arguments.directReference)) {
+			if(variables.dtoi.containsKey(arguments.directReference)) {
 				return variables.dtoi.get(arguments.directReference);
 			}
 			return "";
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="getDirectReference" output="false">
-		<cfargument required="true" type="String" name="indirectReference">
+		<cfargument required="true" type="String" name="indirectReference"/>
+	
 		<cfscript>
-			if (variables.itod.containsKey(arguments.indirectReference)) {
+			if(variables.itod.containsKey(arguments.indirectReference)) {
 				return variables.itod.get(arguments.indirectReference);
 			}
 			throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Access denied", "Request for invalid indirect reference: " & arguments.indirectReference));
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

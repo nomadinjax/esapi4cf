@@ -16,19 +16,20 @@
  */
 --->
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
-
+	
 	<cfscript>
-		variables.ESAPI = createObject( "component", "org.owasp.esapi.ESAPI" ).init();
+		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
 	</cfscript>
- 
+	
 	<cffunction access="public" returntype="void" name="testGetProperty" output="false">
+		
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
 			var name = "";
 			var value = "";
 			var result = "";
-			
+		
 			System.out.println("getProperty");
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
 			name = "name";
@@ -37,18 +38,19 @@
 			result = instance.getProperty(name);
 			assertEquals(value, result);
 			assertTrue(instance.getProperty("ridiculous") == "");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="testSetProperty" output="false">
+		
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
 			var name = "";
 			var value = "";
 			var result = "";
-			
+		
 			System.out.println("setProperty");
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
 			name = "name";
@@ -58,42 +60,45 @@
 			assertEquals(value, result);
 			/* NULL test not valid in CF
 			try {
-				instance.setProperty(null, null);
-				fail("");
+			    instance.setProperty(null, null);
+			    fail("");
 			} catch( org.owasp.esapi.errors.EncryptionException e ) {
-				// expected
+			    // expected
 			} */
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
-	<cffunction access="public" returntype="void" name="testNonExistantKeyValue" output="false" hint="Test the behavior when the requested key does not exist.">
+	
+	<cffunction access="public" returntype="void" name="testNonExistantKeyValue" output="false"
+	            hint="Test the behavior when the requested key does not exist.">
+		
 		<cfscript>
 			var instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
 			assertTrue(instance.getProperty("not.there") == "");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="testKeySet" output="false">
+		
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
 			var i = "";
 			var key = "";
-			
+		
 			var sawTwo = false;
 			var sawOne = false;
-
+		
 			System.out.println("keySet");
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
 			instance.setProperty("one", "two");
 			instance.setProperty("two", "three");
 			i = instance.keySet().iterator();
-			while(i.hasNext())
-			{
+			while(i.hasNext()) {
 				key = i.next();
-
+			
 				assertFalse(key == "", "key returned from keySet() iterator was null");
 				if(key.equals("one"))
 					if(sawOne)
@@ -110,33 +115,35 @@
 			}
 			assertTrue(sawOne, "Key one was never seen");
 			assertTrue(sawTwo, "Key two was never seen");
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
+	
 
-
-	<cffunction access="public" returntype="void" name="testStoreLoad" output="false" hint="Test storing and loading of encrypted properties.">
+	<cffunction access="public" returntype="void" name="testStoreLoad" output="false"
+	            hint="Test storing and loading of encrypted properties.">
+		
 		<cfscript>
-			// CF8 requires 'var' at the top
-			var i = "";
-			var key = "";
-			
-			var toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
-			var toLoad = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
-			var baos = newJava("java.io.ByteArrayOutputStream").init();
-			var bais = "";
-			var sawOne = false;
-			var sawTwo = false;
+        	// CF8 requires 'var' at the top
+        	var i = "";
+        	var key = "";
+        
+        	var toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+        	var toLoad = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+        	var baos = newJava("java.io.ByteArrayOutputStream").init();
+        	var bais = "";
+        	var sawOne = false;
+        	var sawTwo = false;
+        
+        	toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+        	toStore.setProperty("one", "two");
+        	toStore.setProperty("two", "three");
+        	toStore.store(baos, "testStore");
+        
+        	bais = newJava("java.io.ByteArrayInputStream").init(baos.toByteArray());
+        	toLoad.load(bais);
 
-			toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
-			toStore.setProperty("one", "two");
-			toStore.setProperty("two", "three");
-			toStore.store(baos, "testStore");
-
-			bais = newJava("java.io.ByteArrayInputStream").init(baos.toByteArray());
-			toLoad.load(bais);
-
-			for(i=toLoad.keySet().iterator();i.hasNext();)
-			{
+			for(i=toLoad.keySet().iterator();i.hasNext();) {
 				key = i.next();
 
 				assertFalse(key == "", "key returned from keySet() iterator was null");
@@ -162,6 +169,7 @@
 			assertTrue(sawOne, "Key one was never seen");
 			assertTrue(sawTwo, "Key two was never seen");
 		</cfscript> 
+		
 	</cffunction>
 
 

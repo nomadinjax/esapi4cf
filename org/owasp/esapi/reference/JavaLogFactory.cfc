@@ -20,36 +20,39 @@
 	<cfscript>
 		variables.ESAPI = "";
 		variables.applicationName = "";
-
+	
 		variables.loggersMap = {};
 	</cfscript>
- 
-	<cffunction access="public" returntype="org.owasp.esapi.LogFactory" name="init" output="false" hint="Constructor for this implementation of the LogFactory interface.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" type="String" name="applicationName" hint="The name of this application this logger is being constructed for.">
+	
+	<cffunction access="public" returntype="org.owasp.esapi.LogFactory" name="init" output="false"
+	            hint="Constructor for this implementation of the LogFactory interface.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="String" name="applicationName" hint="The name of this application this logger is being constructed for."/>
+	
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
 			variables.applicationName = applicationName;
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="org.owasp.esapi.Logger" name="getLogger" output="false">
-		<cfargument required="true" type="String" name="moduleName">
+		<cfargument required="true" type="String" name="moduleName"/>
+	
 		<cfscript>
 			var moduleLogger = "";
 			// If a logger for this module already exists, we return the same one, otherwise we create a new one.
-			if(structKeyExists( variables.loggersMap, arguments.moduleName )) {
-				moduleLogger = variables.loggersMap.get( arguments.moduleName );
+			if(structKeyExists(variables.loggersMap, arguments.moduleName)) {
+				moduleLogger = variables.loggersMap.get(arguments.moduleName);
 			}
 			if(!isObject("moduleLogger")) {
-				moduleLogger = createObject( "component", "JavaLogFactory$JavaLogger" ).init( variables.ESAPI, variables.applicationName, arguments.moduleName );
-				variables.loggersMap.put( arguments.moduleName, moduleLogger );
+				moduleLogger = createObject("component", "JavaLogFactory$JavaLogger").init(variables.ESAPI, variables.applicationName, arguments.moduleName);
+				variables.loggersMap.put(arguments.moduleName, moduleLogger);
 			}
 			return moduleLogger;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

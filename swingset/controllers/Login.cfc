@@ -17,38 +17,46 @@
 --->
 <cfcomponent output="false">
 
-
 	<cffunction access="public" returntype="void" name="solution" output="false">
-		<cfargument required="true" type="Struct" name="rc">
+		<cfargument required="true" type="Struct" name="rc"/>
+	
 		<cfscript>
+			// CF8 requires 'var' at the top
+			var authenticator = "";
+			var password = "";
+			var maxAge = "";
+			var token = "";
+			
 			try {
-				if ( structKeyExists(arguments.rc, "logout") ) //if URL contains logout, logout
-					arguments.rc.ESAPI.authenticator().logout();
+				if(structKeyExists(arguments.rc, "logout"))//if URL contains logout, logout
 				
+					arguments.rc.ESAPI.authenticator().logout();
+			
 				authenticator = arguments.rc.ESAPI.authenticator();
 				//Create user for demo if user does not exist
-				if(!authenticator.exists("admin")) 
+				if(!authenticator.exists("admin"))
 					authenticator.createUser("admin", "lookatme01@", "lookatme01@");
-				
+			
 				//Enable user if disabled (disabled after creation by default)
-				if(!authenticator.getUserByAccountName("admin").isEnabled()) 
+				if(!authenticator.getUserByAccountName("admin").isEnabled())
 					authenticator.getUserByAccountName("admin").enable();
-				
+			
 				// set a remember cookie
-				if ( structKeyExists(arguments.rc, "remember") ) {				
+				if(structKeyExists(arguments.rc, "remember")) {
 					// password must be right at this point since we're logged in.
 					password = arguments.rc.password;
-					maxAge = ( 60 * 60 * 24 * 14 );
-					token = arguments.rc.ESAPI.httpUtilities().setRememberToken( arguments.rc.ESAPI.httpUtilities().getCurrentRequest(), arguments.rc.ESAPI.httpUtilities().getCurrentResponse(), password, maxAge, "", "" );
-					arguments.rc.ESAPI.currentRequest().setAttribute("message", "New remember token:" & token );
+					maxAge = (60 * 60 * 24 * 14);
+					token = arguments.rc.ESAPI.httpUtilities().setRememberToken(arguments.rc.ESAPI.httpUtilities().getCurrentRequest(), arguments.rc.ESAPI.httpUtilities().getCurrentResponse(), password, maxAge, "", "");
+					arguments.rc.ESAPI.currentRequest().setAttribute("message", "New remember token:" & token);
 				}
 			}
-			catch( org.owas.esapi.errors.EnterpriseSecurityException e ) {
+			catch(org.owas.esapi.errors.EnterpriseSecurityException e) {
 				// Any unhandled security exceptions result in an immediate logout and login screen
 				arguments.rc.ESAPI.authenticator().logout();
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 
 </cfcomponent>

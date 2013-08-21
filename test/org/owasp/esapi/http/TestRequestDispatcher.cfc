@@ -17,17 +17,16 @@
 --->
 <cfcomponent extends="org.owasp.esapi.util.Object" output="false">
 
-
 	<cffunction access="public" returntype="void" name="forward" output="false">
-		<cfargument required="true" name="httpRequest">
-		<cfargument required="true" name="httpResponse">
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
+	
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="include" output="false">
-		<cfargument required="true" name="httpRequest">
-		<cfargument required="true" name="httpResponse">
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
+	
 	</cffunction>
-
-
+	
 </cfcomponent>

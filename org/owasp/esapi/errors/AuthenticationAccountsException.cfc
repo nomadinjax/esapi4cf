@@ -17,18 +17,20 @@
 --->
 <cfcomponent extends="AuthenticationException" output="false" hint="An AuthenticationException should be thrown when anything goes wrong during login or logout. They are also appropriate for any problems related to identity management.">
 
-
-	<cffunction access="public" returntype="AuthenticationAccountsException" name="init" output="false" hint="Instantiates a new authentication exception.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users">
-		<cfargument required="true" type="String" name="logMessage" hint="the message logged">
-		<cfargument name="cause" hint="the cause">
+	<cffunction access="public" returntype="AuthenticationAccountsException" name="init" output="false"
+	            hint="Instantiates a new authentication exception.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
+		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
+	
 		<cfscript>
-			super.init( argumentCollection=arguments );
-
+			super.init(argumentCollection=arguments);
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 
 </cfcomponent>

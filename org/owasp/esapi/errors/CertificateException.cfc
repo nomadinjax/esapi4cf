@@ -17,18 +17,20 @@
 --->
 <cfcomponent extends="EnterpriseSecurityException" output="false" hint="A CertificateException should be thrown for any problems that arise during processing of digital certificates.">
 
-
-	<cffunction access="public" returntype="CertificateException" name="init" output="false" hint="Creates a new instance of CertificateException.">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users">
-		<cfargument required="true" type="String" name="logMessage" hint="the message logged">
-		<cfargument name="cause" hint="the cause">
+	<cffunction access="public" returntype="CertificateException" name="init" output="false"
+	            hint="Creates a new instance of CertificateException.">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
+		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
+	
 		<cfscript>
-			super.init( argumentCollection=arguments );
-
+			super.init(argumentCollection=arguments);
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 
 </cfcomponent>

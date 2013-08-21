@@ -20,37 +20,41 @@
 	<cfscript>
 		variables.ESAPI = "";
 	</cfscript>
- 
+	
 	<cffunction access="public" returntype="FileBasedAuthenticator$ThreadLocalUser" name="init" output="false">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+	
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
-
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" name="initialValue" output="false">
+		
 		<cfscript>
-			return createObject( "component", "org.owasp.esapi.User$ANONYMOUS" ).init( variables.ESAPI );
-		</cfscript> 
+			return createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI);
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="User" name="getUser" output="false">
+		
 		<cfscript>
 			return super.get();
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 	<cffunction access="public" returntype="void" name="setUser" output="false">
-		<cfargument required="true" type="org.owasp.esapi.User" name="newUser">
+		<cfargument required="true" type="org.owasp.esapi.User" name="newUser"/>
+	
 		<cfscript>
-			super.set( arguments.newUser );
-		</cfscript> 
+			super.set(arguments.newUser);
+		</cfscript>
+		
 	</cffunction>
-
-
+	
 </cfcomponent>

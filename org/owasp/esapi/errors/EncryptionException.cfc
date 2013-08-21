@@ -17,18 +17,20 @@
 --->
 <cfcomponent extends="EnterpriseSecurityException" output="false" hint="An EncryptionException should be thrown for any problems related to encryption, hashing, or digital signatures.">
 
-
-	<cffunction access="public" returntype="EncryptionException" name="init" output="false" hint="Create a new EncryptionException">
-		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI">
-		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users">
-		<cfargument required="true" type="String" name="logMessage" hint="the message logged">
-		<cfargument name="cause" hint="the cause">
+	<cffunction access="public" returntype="EncryptionException" name="init" output="false"
+	            hint="Create a new EncryptionException">
+		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument required="true" type="String" name="userMessage" hint="the message to display to users"/>
+		<cfargument required="true" type="String" name="logMessage" hint="the message logged"/>
+		<cfargument name="cause" hint="the cause"/>
+	
 		<cfscript>
-			super.init( argumentCollection=arguments );
-
+			super.init(argumentCollection=arguments);
+		
 			return this;
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 
 </cfcomponent>

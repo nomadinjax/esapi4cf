@@ -17,18 +17,20 @@
 --->
 <cfcomponent output="false">
 
-
 	<cffunction access="public" returntype="void" name="getRandomBoolean" output="false">
-		<cfargument required="true" type="Struct" name="rc">
+		<cfargument required="true" type="Struct" name="rc"/>
+	
 		<cfscript>
 			try {
 				arguments.rc.ESAPI.currentResponse().setContentType("text/html");
-				arguments.rc.randomBoolean = false; // TODO 1: Generate random boolean
-			} catch (IOException e) {
+				arguments.rc.randomBoolean = false;// TODO 1: Generate random boolean
+			}
+			catch(IOException e) {
 				e.printStackTrace();
 			}
-		</cfscript> 
+		</cfscript>
+		
 	</cffunction>
-
+	
 
 </cfcomponent>
