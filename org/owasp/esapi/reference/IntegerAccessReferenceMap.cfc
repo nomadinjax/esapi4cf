@@ -15,7 +15,7 @@
  * @created 2011
  */
 --->
-<cfcomponent implements="org.owasp.esapi.AccessReferenceMap" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the AccessReferenceMap interface. This implementation generates random 6 character alphanumeric strings for indirect references. It is possible to use simple integers as indirect references, but the random string approach provides a certain level of protection from CSRF attacks, because an attacker would have difficulty guessing the indirect reference.">
+<cfcomponent implements="org.owasp.esapi.AccessReferenceMap" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the AccessReferenceMap interface. This implementation generates integers for indirect references.">
 
 	<cfscript>
 		variables.ESAPI = "";
@@ -26,12 +26,11 @@
 		/** The dtoi (direct to indirect) */
 		variables.dtoi = {};
 	
-		/** The random. */
-		variables.random = "";
+		variables.count = 1;
 	</cfscript>
 	
-	<cffunction access="public" returntype="RandomAccessReferenceMap" name="init" output="false"
-	            hint="This AccessReferenceMap implementation uses short random strings to create a layer of indirection. Other possible implementations would use simple integers as indirect references.">
+	<cffunction access="public" returntype="IntegerAccessReferenceMap" name="init" output="false"
+	            hint="This AccessReferenceMap implementation uses integers to create a layer of indirection.">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument type="Array" name="directReferences" hint="Instantiates a new access reference map with a set of direct references."/>
 	
@@ -67,7 +66,7 @@
 			if(structKeyExists(variables.dtoi, arguments.direct)) {
 				return variables.dtoi[arguments.direct];
 			}
-			indirect = getUniqueRandomReference();
+			indirect = getUniqueReference();
 			variables.itod[indirect] = arguments.direct;
 			variables.dtoi[arguments.direct] = indirect;
 			return indirect;
@@ -75,15 +74,11 @@
 		
 	</cffunction>
 	
-	<cffunction access="private" returntype="String" name="getUniqueRandomReference" output="false"
-	            hint="Create a new random reference that is guaranteed to be unique.">
+	<cffunction access="private" returntype="String" name="getUniqueReference" output="false"
+	            hint="Returns a reference guaranteed to be unique.">
 	
 		<cfscript>
-			var candidate = "";
-			do {
-				candidate = variables.random.getRandomString(6, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			}while(structKeyExists(variables.itod, candidate));
-			return candidate;
+			return toString(variables.count++);// returns a string version of the counter
 		</cfscript>
 		
 	</cffunction>
@@ -132,9 +127,8 @@
 				// if the old reference is null, then create a new one that doesn't
 				// collide with any existing indirect references
 				if(!len(indirect)) {
-					indirect = getUniqueRandomReference();
+					indirect = getUniqueReference();
 				}
-			
 				variables.itod[indirect] = direct;
 				variables.dtoi[direct] = indirect;
 			}
