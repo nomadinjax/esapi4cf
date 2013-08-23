@@ -619,4 +619,36 @@
 		
 	</cffunction>
 	
+	<!--- issues --->
+	
+	<cffunction access="public" returntype="void" name="testIssue12" output="false" hint="https://github.com/damonmiller/esapi4cf/issues/12">
+		<cfscript>
+			var instance = variables.ESAPI.encoder();
+
+			var testString1	= "dir=4&num=00000745'%20and%20char(124)%2Buser%2Bchar(124)=0%20and%20'%25'='";
+			// decodes to	= "dir=4?m=00000745' and char(124)+user+char(124)=0 and '%'='";
+			// this is double-encoded; the &nu is seen as an HTML entity along with the Percent encoding
+
+			var testString2	= "dir=4&num=00013588+++++++++++++++++++++++Result:+%ED%E5+%ED%E0%F8%EB%EE%F1%FC+%F4%EE%F0%EC%FB+%E4%EB%FF+%EE%F2%EF%F0%E0%E2%EA%E8;";
+			// decodes to	= "dir=4?m=00013588+++++++++++++++++++++++Result:+íå+íàøëîñü+ôîðìû+äëÿ+îòïðàâêè;";
+			// this is double-encoded; the &nu is seen as an HTML entity along with the Percent encoding
+			
+			try {
+				instance.canonicalize(testString1);
+				fail("");
+			}
+			catch (org.owasp.esapi.errors.IntrusionException ex) {
+				// expected
+			}
+			
+			try {
+				instance.canonicalize(testString2);
+				fail("");
+			}
+			catch (org.owasp.esapi.errors.IntrusionException ex) {
+				// expected
+			}
+		</cfscript>
+	</cffunction>
+	
 </cfcomponent>

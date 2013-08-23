@@ -28,7 +28,7 @@
 	</cfscript>
 	
 	<cffunction access="public" name="init" output="false" hint="Default constructor">
-		
+	
 		<cfscript>
 			return this;
 		</cfscript>
@@ -36,7 +36,7 @@
 	</cffunction>
 	
 	<cffunction access="private" returntype="numeric" name="getESAPI4JVersion" output="false">
-		
+	
 		<cfscript>
 			try {
 				// cannot use newJava() here
@@ -115,6 +115,31 @@
 		<cfif arguments.abort>
 			<cfabort/>
 		</cfif>
+	</cffunction>
+	
+	<cffunction access="private" returntype="void" name="cf8_writeLog" output="true">
+		<cfargument required="true" type="string" name="text"/>
+		<cfargument type="string" name="type"/>
+		<cfargument type="boolean" name="application"/>
+		<cfargument type="string" name="file"/>
+		<cfargument type="string" name="log"/>
+
+		<cfscript>
+			var atts = {text=arguments.text};
+			if (structKeyExists(arguments, "type")) {
+				atts.type = arguments.type;
+			}
+			if (structKeyExists(arguments, "application")) {
+				atts.application = arguments.application;
+			}
+			if (structKeyExists(arguments, "file")) {
+				atts.file = arguments.file;
+			}
+			if (structKeyExists(arguments, "log")) {
+				atts.log = arguments.log;
+			}
+		</cfscript>
+		<cflog attributecollection="#atts#"/>
 	</cffunction>
 	
 </cfcomponent>
