@@ -46,7 +46,7 @@
 		<h2>Configuration Files</h2>
 	</div>
 	
-	<p>Next, you will want to setup your own configuration settings for your CF application.  In the extracted files, under /test/resources/ you will find a file named ESAPI.properties.  Copy this file to a location that is *not* accessible via the browser, typically somewhere under your /WEB-INF/ folder.  For the sake of simplicity in our sample code however, we are going to break this rule and place under /samples/config/ folder.</p>
+	<p>Next, you will want to setup your own configuration settings for your CF application.  In the extracted files, under /test/resources/ you will find a file named ESAPI.properties.  Copy this file to a location that is *not* accessible via the browser, typically somewhere under your /WEB-INF/ folder.</p>
 	<p>There are additional configuration files here named *Rules.txt and we will get to these under the Access Control tutorial.  If you have already run the MXUnit tests, you probably also see a users.txt file.  This will be covered under the Authentication tutorial.</p>
 	<p>Now let's open up your copy of the ESAPI.properties file.  There is lots of good stuff in here that we will go over under its relevant tutorial and you can play with these on your own.  Right now, there are two very important values that we MUST change before we begin using ESAPI4CF - MasterPassword and MasterSalt.
 	<p>CHANGE THESE IMMEDIATELY!!!</p>
@@ -100,11 +100,20 @@ application.ESAPI.securityConfiguration().setResourceDirectory("/WEB-INF/esapi/"
 </pre>
 
 	<p>Now there is lots of logging built into the various modules but you will want a logging reference for your own application so you can log messages against your application.  Logging messages in ESAPI4CF automatically contain vital information like the date/time, current user, IP and more.  We will get more into that when we cover the Logging tutorial but just know that if you have security logging to do in your application, you want to use the ESAPI4CF logger to do it.  When we create this logging instance, you want to give it a name specific to your application so let's just use our CF applicationName.</p>
-	<p>We also will need a reference to the ESAPI4J logger as well.  ESAPI4CF has done a lot to limit the Java references you need but there are a few things it cannot do.  There are security logging levels that we need from ESAPI4J so we want to persist a reference ourselves.</p>
-	<p>The last piece of logging that we want to store in the application scope is a list of input parameters to have the logger ignore.  This should be a very short list, particularly passwords must be here.  If you have additional private information like credit cards numbers, social security numbers, etc you will also want to include them in this list.</p>
+
 <pre>
 application.logger = application.ESAPI.getLogger(application.applicationName);
+</pre>
+
+	<p>We also will need a reference to the ESAPI4J logger as well.  ESAPI4CF has done a lot to limit the Java references you need but there are a few things it cannot do.  There are security logging levels that we need from ESAPI4J so we want to persist a reference ourselves.</p>
+
+<pre>
 application.ESAPI4JLogger = createObject("java", "org.owasp.esapi.Logger");
+</pre>
+
+	<p>The last piece of logging that we want to store in the application scope is a list of input parameters to have the logger obfuscate.  This should be a very short list, particularly passwords must be here.  If you have additional fields containing private information like credit cards numbers, social security numbers, or anything you would encrypt in your database you will also want to include them in this list.</p>
+
+<pre>
 application.ignoredByLogger = ["password"];
 </pre>
 
@@ -137,11 +146,11 @@ function onApplicationStart() {
 	
 	<h3>onSessionStart</h3>
 	
-	<p>Next onto onSessionStart....ok, done! Yup, that's right, there is nothing to add to onSessionStart.  You may be disbelief here but I speak the truth.</p>
+	<p>Next onto onSessionStart....ok, done! Yup, that's right, there is nothing to add to onSessionStart.  You may be in disbelief here but I speak the truth.</p>
 	
-	<p>You may be saying "What about creating the user?  What about authentication?"  Well, authentication will be addresssed in a separate tutorial but I will say that your user should be verified on EVERY REQUEST, not just when the session is created.  That may go against everything you have been taught in the past but you will see soon enough why that is.  So since we verify a user on every request, authentication is handled in onRequestStart.</p>
+	<p>You may be saying "What about creating the user?  What about authentication?"  Well, authentication will be addresssed in a separate tutorial but I will say that your user should be verified on EVERY REQUEST not just when the session is created.  That may go against everything you have been taught in the past but you will see soon enough why that is.  So since we verify a user on every request, authentication is handled in onRequestStart.</p>
 	
-	<p>Don't believe me?  Well, I can't help you with your trust issues so just move along.</p>
+	<p>Don't believe me?  Well, ESAPI4CF can't help you with your personal trust issues so just move along.</p>
 	
 	<h3>onRequestStart</h3>
 	
@@ -175,7 +184,7 @@ application.ESAPI.validator().assertIsValidHTTPRequest();
 	
 	<p>Our authentication would be next but we are skipping that for now since this tutorial is just focused on getting ESAPI4CF up and running.</p>
 	
-	<p>The last step would be log this request with ESAPI4CF.  This is optional but recommended and is dependent on the log level you have set in ESAPI.properties.  This will be an informational message and we will be logging this under our sample application and as a successful security request.  In addition to the standard info the logger takes care of, the HTTP method, URL, any form parameters, and cookies will be logged (excluding JSESSIONID).  This is where we will also pass in the list of parameters to obfuscate so that our user's passwords do not end up somewhere for you sneaky developers to see.</p>
+	<p>The last step would be to log this request with ESAPI4CF.  This is optional but recommended and is dependent on the log level you have set in ESAPI.properties.  This will be an informational message and we will be logging this under our sample application and as a successful security request.  In addition to the standard info the logger takes care of, the HTTP method, URL, any form parameters, and cookies will be logged (excluding JSESSIONID).  This is where we will also pass in the list of parameters to obfuscate so that our user's passwords do not end up somewhere for you sneaky developers to see.</p>
 	
 <pre>
 application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
@@ -206,7 +215,7 @@ function onRequestStart() {
 		// validate the current request to ensure nothing is suspicious
 		application.ESAPI.validator().assertIsValidHTTPRequest();
 
-		... authentication goes here - will be covered in separate tutorial ...
+		... authentication will go here later ...
 
 		// log this request, obfuscating any parameter named password
 		application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
@@ -223,7 +232,7 @@ function onRequestStart() {
 
 	<h3>onRequestEnd</h3>
 	
-	<p>Almost done.  One last thing and its again in the name of being safe.  During our request cycle we registered the request/response instances with ESAPI4CF which were stored in the request scope for easy access.  If there were any references to the current user (which the logging does) then ESAPI4CF is holding onto a reference to the current user in the request scope as well even though we are not yet authenticating.  An unauthenticated user is called an anonymous user but again we'll get to that later.  Yes, CF will automatically release anything in the request scope once the request completes but that means putting your faith in CF performing cleanup.  Let's eliminate any doubt and do this ourselves.</p>
+	<p>Almost done.  One last thing and its again in the name of being safe.  During our request cycle we registered the request/response instances with ESAPI4CF which were stored in the request scope for easy access by ESAPI4CF.  If there were any references to the current user (which the logging does) then ESAPI4CF is holding onto a reference to the current user in the request scope as well even though we are not yet authenticating.  An unauthenticated user is called an anonymous user but again we'll get to that later.  Yes, CF will automatically release anything in the request scope once the request completes but that means putting your faith in CF performing cleanup.  Let's eliminate any doubt and do this ourselves.</p>
 	<p>In the authenticator module there is a clearCurrent() method which will destroy the request scope variables which held onto the current user.  Don't worry, we are only talking about the request scope.  The session scope is still used to persist an authenticated user between requests.</p>
 	<p>And in the httpUtilties module we can just call the same setCurrentHTTP() method we did to register the request/response instances but this time set them to empty in order to destroy the request scope references.</p>
 	
@@ -237,7 +246,7 @@ function onRequestEnd() {
 }
 </pre>
 
-	<p>That's it we're done.  You have successfully got ESAPI4CF up and running.  With just this bit of setup ESAPI4CF is already validating your request instance for potential issues. Pretty sweet, huh?</p>
+	<p>That's it we're done.  You have successfully got ESAPI4CF up and running.  With just this bit of setup ESAPI4CF is already validating your request instance for potential threats. Pretty sweet, huh?</p>
 	
 	<!-- END content -->
 
