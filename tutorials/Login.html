@@ -33,15 +33,6 @@
 
 <p class="newsItem"><code>authenticator = application.ESAPI.authenticator();</code></p>
 
-<p>If you plan on using the default Access Controller, you may need one or more of the following:</p>
-<ul>
-<li> DataAccessRules.txt</li>
-<li> FileAccessRules.txt</li>
-<li> FunctionAccessRules.txt</li>
-<li> ServiceAccessRules.txt</li>
-<li> URLAccessRules.txt</li>
-</ul>
-
 <p>You do not need users.txt.  ESAPI will create this file when your application requests to create its first user.</p>
 
 <h4>Create Users</h4>
@@ -82,6 +73,91 @@ To log a User out, simply call:
 <h4>ESAPI User Interface: </h4>
 <p>ESAPI's User Interface provides support to store lot of information that an application must store for each user in order to enforce security properly.</p>
 <p>A user account can be in one of several states. When first created, a User should be disabled, not expired, and unlocked. To start using the account, an administrator should enable the account. The account can be locked for a number of reasons, most commonly because they have failed login for too many times. Finally, the account can expire after the expiration date has been reached. The User must be enabled, not expired, and unlocked in order to pass authentication. </p>
+
+
+	<p>...</p>
+
+<pre>
+function onRequestStart() {
+	try {
+		// register request and response in ESAPI4CF
+		application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
+	
+		// get references to the registered request/response safe wrappers
+		var httpRequest = application.ESAPI.currentRequest();
+		var httpResponse = application.ESAPI.currentResponse();
+
+		// if the user can be identified via the sessionID, the following will set "currentUser"
+		// in the Authenticator for consistent user identification across all requests in log messages
+		var httpSession = httpRequest.getSession(false);
+		if(isObject(httpSession)) {
+			try {
+				// this will verify authentication for your entire web application
+				// rememberToken is not implemented by default; if you wish to use rememberToken,
+				// you must call it inside your login() method after the user has been verified
+				application.ESAPI.authenticator().login(httpRequest, httpResponse);
+			}
+			catch(org.owasp.esapi.errors.AuthenticationException e) {
+				// Possible exceptions:
+				// Attempt to login with an insecure request : Received non-SSL request
+				// Attempt to login with an insecure request : Received request using GET when only POST is allowed
+				// Attempt to access secure content with an insecure request : Received non-SSL request
+				loginFailure(e.message, e.detail);
+			}
+			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+				// Possible exceptions:
+				// Invalid request : Request or response objects were empty
+				// Authentication failed : blank username/password
+				// Authentication failed : username does not exist
+				loginFailure(e.message, e.detail);
+			}
+			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
+				// Possible exceptions:
+				// Login failed : Missing password
+				// Login failed : Disabled user attempt to login
+				// Login failed : Locked user attempt to login
+				// Login failed : Expired user attempt to login
+				// Login failed : Incorrect password provided
+				// Login failed : Anonymous user cannot be set to current user
+				// Login failed : Disabled user cannot be set to current user
+				// Login failed : Locked user cannot be set to current user
+				// Login failed : Expired user cannot be set to current user
+				// Login failed : Session inactivity timeout
+				// Login failed : Session absolute timeout
+				loginFailure(e.message, e.detail);
+			}
+		}
+		
+		// log this request, obfuscating any parameter named password
+		application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
+	}
+	catch(Any e) {
+		application.logger.error(application.ESAPI4JLogger.SECURITY_FAILURE, false, "Error in ESAPI security filter: " & e.message, e);
+		application.ESAPI.currentRequest().setAttribute("message", e.message);
+	}
+	
+	...other code...
+}
+</pre>
+
+	<p>...</p>
+	
+<pre>
+function loginFailure(message, detail) {
+	// the ESAPI4CF exception was already logged so we do not have to do anything with the message/detail
+	// unless you have specific business requirements to do so.
+	
+	// let's provide a whitelist of pages that do not require authentication (if needed)
+	if (listFindNoCase("forgotpassword.cfm,...", cgi....)) {
+		return;
+	}
+	
+	// we were not in the whitelist so we must fail this request
+	location();
+}
+</pre>
+
+
 
 	<!-- END content -->
 
