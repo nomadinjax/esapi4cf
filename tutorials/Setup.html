@@ -28,7 +28,9 @@
 		<h1 class="text-center">Setup</h1>
 	</div>
 	
-	<p>First things first, download it!  Select your desired download format under the Download Latest from the top navigation.</p>
+	<p>In this first tutorial we will cover the installation and configuration of ESAPI4CF.  When we are finished you will have the ESAPI4CF core implemented with every request in your CF application. This will provide your CF application with validation against suspicious requests.</p>
+	<p><span class="label label-warning">CAUTION</span> Be cautious implementing the request validator in existing applications as some of your existing code may trigger a validation exception.  As developers we can create pheonominal applications and sometimes not realize the shortcuts and rules we bend which potentially violate security best practices.  If you choose to implement the request validator in an existing application be sure to thoroughly regression test.</p>
+	<p>So first things first, download it!  Select your desired download format under the Download Latest from the top navigation.</p>
 	
 	<div class="page-header">
 		<h2>JAR dependencies</h2>
@@ -168,7 +170,7 @@ var httpResponse = application.ESAPI.currentResponse();
 </pre>
 
 	<p>Want to know something pretty sweet?  We are only in the setup step of ESAPI4CF and can already make our CF application more secure. Are you ready for this?</p>
-	<p>One of the validators built into ESAPI4CF will verify that your request itself is in fact not a security threat by performing the following checks:</p>
+	<p>There is a request validator built into ESAPI4CF will verify that your request is in fact not a security threat by performing the following checks:</p>
 	<ol>
 		<li>Ensures that a request was registered with ESAPI4CF</li>
 		<li>Checks that your HTTP methods are either GET or POST</li>
@@ -177,6 +179,7 @@ var httpResponse = application.ESAPI.currentResponse();
 		<li>Validates input of all HTTP headers</li>
 	</ol>
 	<p>WOW, impressive! So if any of these checks fail an error will be thrown. Don't worry we'll get to handling that later but this is our validation magic for right now.</p>
+	<p><span class="label label-warning">CAUTION</span> If you are implementing ESAPI4CF in an existing web application you may want to leave the request validator out for right now unless you plan to do some extensive regression testing. Please refer to the CAUTION message at the beginning of this tutorial for an explanation.</p>
 	
 <pre>
 application.ESAPI.validator().assertIsValidHTTPRequest();
