@@ -37,14 +37,20 @@
 			<h1>
 				ESAPI for ColdFusion/CFML (ESAPI4CF) Links
 			</h1>
-			<p>Please refer to the <a href="http://damonmiller.github.io/esapi4cf/">ESAPI4CF GitHub.io pages</a> for more information.</p>
+			<p>
+				Please refer to the
+				<a href="http://damonmiller.github.io/esapi4cf/">
+					ESAPI4CF GitHub.io pages
+				</a>
+				for more information.
+			</p>
 			<h2>
 				Tests
 			</h2>
 			<dl>
 				<dt>
 					<a href="test/org/owasp/esapi/AllTests.cfm">
-						ESAPI4CF Unit Tests
+						Unit Tests
 					</a>
 				</dt>
 				<dd>
@@ -73,6 +79,19 @@
 					WARNING: this method does not perform the level of validation and checks generally required in
 					ESAPI, and can therefore be used to create a username and password that do not comply with the
 					username and password strength requirements.
+				</dd>
+			</dl>
+			<h2>
+				Samples
+			</h2>
+			<dl>
+				<dt>
+					<a href="samples/">
+						Tutorial Sample Code
+					</a>
+				</dt>
+				<dd>
+					This is the sample code referenced by the <a href="http://damonmiller.github.io/esapi4cf/tutorials/Introduction.html">ESAPI4CF tutorials</a>.
 				</dd>
 			</dl>
 		</body>
