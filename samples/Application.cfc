@@ -7,7 +7,7 @@ component {
 	this.sessionManagement = true;
 	this.sessionTimeout = createTimeSpan(0, 0, 20, 0);
 
-	// because these samples are part of the entire project, we are under a sub-folder so add a mapping to fix this
+	// ESAPI4CF is under a sub-folder due to the structure of the project - add a mapping to find esapi4cf
 	this.mappings["/org"] = expandPath("/esapi4cf/org");
 
 	function onApplicationStart() {
@@ -15,9 +15,9 @@ component {
 		application.ESAPI = new org.owasp.esapi.ESAPI();
 
 		// tell ESAPI4CF where you config files are stored
-		// you want your security config in a place not accessible from your web application like /WEB-INF/
-		// but for the sake of simplicity in our examples, it is not
-		application.ESAPI.securityConfiguration().setResourceDirectory("/samples/config/");
+		// You want your security config in a place not accessible from your web application like /WEB-INF/esapi-resources/
+		// but for the sake of simplicity in our samples, it is not
+		application.ESAPI.securityConfiguration().setResourceDirectory("/samples/esapi-resources/");
 
 		// define an application specific logger instance
 		// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
@@ -48,6 +48,7 @@ component {
 		}
 		catch(Any e) {
 			application.logger.error(application.ESAPI4JLogger.SECURITY_FAILURE, false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+			// we could also throw our own exception here if we used a global error handler
 			application.ESAPI.currentRequest().setAttribute("message", e.message);
 		}
 	}
