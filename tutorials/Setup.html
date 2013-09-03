@@ -129,7 +129,7 @@ function onApplicationStart() {
 	// tell ESAPI4CF where you config files are stored
 	// you want your security config in a place not accessible from your web application like /WEB-INF/
 	// but for the sake of simplicity in our examples, it is not
-	application.ESAPI.securityConfiguration().setResourceDirectory("/samples/config/");
+	application.ESAPI.securityConfiguration().setResourceDirectory("/samples/esapi-resources/");
 
 	// define an application specific logger instance
 	// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
