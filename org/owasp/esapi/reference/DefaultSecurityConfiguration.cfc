@@ -636,21 +636,8 @@
 				return "";// not found.
 			}
 		
-			// first, allow command line overrides. -Dorg.owasp.esapi.resources
-			// directory
-			if(structKeyExists(variables, "customDirectory")) {
-				f = newJava("java.io.File").init(expandPath(variables.customDirectory), arguments.filename);
-				if(variables.customDirectory != "" && f.canRead()) {
-					logSpecial("Found in 'org.owasp.esapi.resources' directory: " & f.getAbsolutePath());
-					return f;
-				}
-				else {
-					logSpecial("Not found in 'org.owasp.esapi.resources' directory or file not readable: " & f.getAbsolutePath());
-				}
-			}
-		
-			// if not found, then try the programatically set resource directory
-			// (this defaults to SystemResource directory/RESOURCE_FILE
+			// check specific setting first
+			// (this defaults to SystemResource directory/RESOURCE_FILE)
 			if(structKeyExists(variables, "resourceDirectory")) {
 				fileLocation = expandPath(variables.resourceDirectory & fileSeparator & arguments.filename);
 				if(fileExists(fileLocation)) {
@@ -668,6 +655,18 @@
 				}
 			}
 		
+			// second, allow command line overrides. -Dorg.owasp.esapi.resources directory
+			if(structKeyExists(variables, "customDirectory")) {
+				f = newJava("java.io.File").init(expandPath(variables.customDirectory), arguments.filename);
+				if(variables.customDirectory != "" && f.canRead()) {
+					logSpecial("Found in 'org.owasp.esapi.resources' directory: " & f.getAbsolutePath());
+					return f;
+				}
+				else {
+					logSpecial("Not found in 'org.owasp.esapi.resources' directory or file not readable: " & f.getAbsolutePath());
+				}
+			}
+
 			// if not found, then try the user's home directory
 			if(structKeyExists(variables, "userDirectory")) {
 				f = newJava("java.io.File").init(variables.userDirectory, arguments.filename);
