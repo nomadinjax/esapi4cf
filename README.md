@@ -25,6 +25,7 @@ RELEASE NOTES
 - [Issue 32] FileBasedAuthenticator#login - try/catch around isSecureChannel that will never catch
 - [Issue 33] DefaultValidator#assertIsValidHTTPRequest - error cookie.getValue(), should be httpCookie variable
 - [Issue 34] setResourceDirectory value not being picked up
+- [Issue 27] Get valid test cases for 'IntegerAccessReferenceMapTest'
 
 1.0.0a - 2013-08-19
 - Initial alpha release
