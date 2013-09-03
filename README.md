@@ -29,7 +29,7 @@ RELEASE NOTES
 1.0.0a - 2013-08-19
 - Initial alpha release
 - Majority feature complete
-- [Issue 22] file upload validation not completed
+- file upload validation not completed (see Issue 22)
 - Outstanding unit tests not passing
 - Railo4: 10 failures; 71 errors (see Issue 28)
 - CF10: 11 failures; 7 errors
