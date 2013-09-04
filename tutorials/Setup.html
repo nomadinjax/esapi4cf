@@ -118,7 +118,7 @@ function onApplicationStart() {
 			<p>You may be saying "What about creating the user?  What about authentication?"  Well, authentication will be addresssed in a separate tutorial but I will say that your user should be verified on EVERY REQUEST not just when the session is created.  That may go against everything you have been taught in the past but you will see soon enough why that is.  So since we verify a user on every request, authentication is handled in onRequestStart.</p>
 			<p>Don't believe me?  Well, ESAPI4CF can't help you with your personal trust issues so just move along.</p>
 			<h3>onRequestStart</h3>
-			<p>So in each request we need to register the request and response Java objects with ESAPI4CF.  The reason we do this is ESAPI4CF stores a reference to these instances and provide "safe" wrappers around the data stored within these instances.  This helps to secure our request and response by cleansing the data retrieved from these instances.</p>
+			<p>So in each request we need to register the request and response Java objects with ESAPI4CF.  The reason we do this is ESAPI4CF stores a reference to these instances and provide "safe" wrappers around the data stored within these instances.  This helps to secure our request and response by cleansing the data retrieved from these instances.  The rest of the ESAPI4CF library uses these request and response instances quite extensively and they <strong>only</strong> accept the <em>safe</em> instances registered by ESAPI4CF.</p>
 			<pre>
 application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
 </pre>
