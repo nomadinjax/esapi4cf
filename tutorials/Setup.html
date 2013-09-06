@@ -53,14 +53,14 @@ MasterSalt=testtest
 			<div class="page-header">
 				<h2>Application.cfc</h2>
 			</div>
-			<p>Open up or create your Application.cfc.  At the very beginning, we must define two application settings that ESAPI4CF requires - name and sessionManagement.  OWASP recommends session idle timeouts be between 5-20 minutes depending on the sensitivity of the data in your application.  This timeout is configured in the ESAPI.properties file.  It is good practice to also set the sessionTimeout in the CF application so that it does not keep sessions around any longer than ESAPI4CF does.  Assuming the data in our sample application is low-risk, let's make our timeout 20 minutes.</p>
+			<p>Open up or create your Application.cfc.  At the very beginning, we must define two application settings that ESAPI4CF requires - name for our logging and sessionManagement if you want to persist user across requests.  OWASP recommends session idle timeouts be between 5-20 minutes depending on the sensitivity of the data in your application.  This timeout is configured in the ESAPI.properties file.  It is good practice to also set the sessionTimeout in the CF application so that it does not keep sessions around any longer than ESAPI4CF does.  Assuming the data in our sample application is low-risk, let's make our timeout 20 minutes.</p>
 			<pre>
 component {
 	// you should always name your application
 	// ESAPI4CF needs a name for logging
 	this.name = "MyESAPITestApp";
 	
-	// ESAPI4CF requires J2EE sessions
+	// required in order to persist a user
 	this.sessionManagement = true;
 	this.sessionTimeout = createTimeSpan(0, 0, 20, 0);
 	
@@ -80,10 +80,6 @@ application.ESAPI.securityConfiguration().setResourceDirectory("/WEB-INF/esapi/"
 			<pre>
 application.logger = application.ESAPI.getLogger(application.applicationName);
 </pre>
-			<p>We also will need a reference to the ESAPI4J logger as well.  ESAPI4CF has done a lot to limit the Java references you need but there are a few things it cannot do.  There are security logging levels that we need from ESAPI4J so we want to persist a reference ourselves.</p>
-			<pre>
-application.ESAPI4JLogger = createObject("java", "org.owasp.esapi.Logger");
-</pre>
 			<p>The last piece of logging that we want to store in the application scope is a list of input parameters to have the logger obfuscate.  This should be a very short list, particularly passwords must be here.  If you have additional fields containing private information like credit cards numbers, social security numbers, or anything you would encrypt in your database you will also want to include them in this list.</p>
 			<pre>
 application.ignoredByLogger = ["password"];
@@ -102,9 +98,6 @@ function onApplicationStart() {
 	// define an application specific logger instance
 	// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
 	application.logger = application.ESAPI.getLogger(application.applicationName);
-
-	// we need a reference to the ESAPI4J Logger as well
-	application.ESAPI4JLogger = createObject("java", "org.owasp.esapi.Logger");
 
 	// define any input parameters that should be ignored by the logger.
 	// we never want a user's password to get logged
@@ -147,14 +140,14 @@ application.ESAPI.validator().assertIsValidHTTPRequest();
 			<p>Our authentication would be next but we are skipping that for now since this tutorial is just focused on getting ESAPI4CF up and running.</p>
 			<p>The last step would be to log this request with ESAPI4CF.  This is optional but recommended and is dependent on the log level you have set in ESAPI.properties.  This will be an informational event and we will be logging this under our sample application and as a successful security request.  In addition to the standard info the logger takes care of, the HTTP method, URL, any form parameters, and cookies will be logged (excluding JSESSIONID).  This is where we will also pass in the list of parameters to obfuscate so that our user's passwords do not end up somewhere for you sneaky developers to see.</p>
 			<pre>
-application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
+application.ESAPI.httpUtilities().logHTTPRequest(application.ESAPI.currentRequest(), application.logger, application.ignoredByLogger);
 </pre>
 			<p>Did I say last step? Well there is a catch... literally.  All of this logic in onRequestStart should be inside of a try/catch.  If there is any issue at all trying to register and reference our safe request/response or anything suspicious in our request validation, we need to be sure that is logged.  Why? Because its safe!</p>
-			<p>So inside of our catch, we need to once again call our application logger to send it a security failure but this time it will be at the error level.  We also must reference that ESAPI4J logger reference we created for this failure.  This error, if it occurs, will not prevent our application from completing the request but will be sure it is logged and that a message is available for you to display to the end user.</p>
+			<p>So inside of our catch, we need to once again call our application logger to send it a security failure but this time it will be at the error level.  For our arguments we must pass it a security type, either SUCCESS or FAILURE, a boolean meaning the same, success or failure, and a message.  This error, if it occurs, will not prevent our application from completing the request but will be sure it is logged and that a message is available for you to display to the end user.</p>
 			<pre>
 catch(Any e) {
-	application.logger.error(application.ESAPI4JLogger.SECURITY_FAILURE, false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
-	application.ESAPI.currentRequest().setAttribute("message", e.message);
+	application.logger.error(application.logger.getSecurity("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+	throw(e.message, e.type, e.detail);
 }
 </pre>
 			<p>So now its once again time to put all of this code together for the onRequestStart method.</p>
