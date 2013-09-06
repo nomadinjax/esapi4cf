@@ -23,9 +23,6 @@ component {
 		// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
 		application.logger = application.ESAPI.getLogger(application.applicationName);
 
-		// we need a reference to the ESAPI4J Logger as well
-		application.ESAPI4JLogger = createObject("java", "org.owasp.esapi.Logger");
-
 		// define any input parameters that should be ignored by the logger.
 		// we never want a user's password to get logged
 		application.ignoredByLogger = ["password"];
@@ -47,9 +44,9 @@ component {
 			application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
 		}
 		catch(Any e) {
-			application.logger.error(application.ESAPI4JLogger.SECURITY_FAILURE, false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
-			// we could also throw our own exception here if we used a global error handler
-			application.ESAPI.currentRequest().setAttribute("message", e.message);
+			application.logger.error(application.logger.getSecurity("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+			// let's rethrow this error so your global error handler catches it if you have one
+			throw(e.message, e.type, e.detail);
 		}
 	}
 

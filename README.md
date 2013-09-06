@@ -20,6 +20,12 @@ More info: http://damonmiller.github.io/esapi4cf/
 RELEASE NOTES
 =============
 
+1.0.2a - TBD
+- fixes due to issues found in some real world testing
+- [Issue 35] DefaultSecurityConfiguration exception "Complex object types cannot be converted to simple values." Line 265
+- [Issue 30] getValidDate returntype is 'String' - should allow for Date or empty string
+- [Issue 37] getSecurity method needs to be public
+
 1.0.1a - 2013-09-02
 - fixes due to issues found in some real world testing
 - [Issue 32] FileBasedAuthenticator#login - try/catch around isSecureChannel that will never catch

@@ -72,16 +72,14 @@
 
 	</cffunction>
 
-	<cffunction access="private" name="getSecurity" output="false">
+	<cffunction access="public" name="getSecurity" output="false">
 		<cfargument required="true" type="String" name="type"/>
 
 		<cfscript>
 			var logger = newJava("org.owasp.esapi.Logger");
-			// ESAPI 1.4.4
-			if(structKeyExists(logger, "SECURITY")) {
+			if(this.ESAPI4JVERSION EQ 1) {
 				return logger.SECURITY;
 			}
-			// ESAPI 2.0+
 			else {
 				return logger[arguments.type];
 			}
