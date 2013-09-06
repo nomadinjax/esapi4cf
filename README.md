@@ -25,6 +25,7 @@ RELEASE NOTES
 - [Issue 35] DefaultSecurityConfiguration exception "Complex object types cannot be converted to simple values." Line 265
 - [Issue 30] getValidDate returntype is 'String' - should allow for Date or empty string
 - [Issue 37] getSecurity method needs to be public
+- [Issue 36] SafeRequest - HTTPParameterName and HTTPParameterValue had hard-coded maxlengths
 
 1.0.1a - 2013-09-02
 - fixes due to issues found in some real world testing
