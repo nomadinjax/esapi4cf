@@ -144,7 +144,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="String" name="getValidDate" output="false"
+	<cffunction access="public" name="getValidDate" output="false"
 	            hint="Returns a valid date as a Date. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
@@ -174,7 +174,7 @@
 					}
 
 					date = arguments.format.parse(arguments.input);
-					return date;
+					return createDateTime(year(date), month(date), day(date), hour(date), minute(date), second(date));
 				}
 				catch(java.lang.Exception e) {
 					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid date must follow " & arguments.format & " format", "Invalid date: context=" & arguments.context & ", format=" & arguments.format & ", input=" & arguments.input, e, arguments.context));
@@ -609,7 +609,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="String" name="getValidNumber" output="false"
+	<cffunction access="public" name="getValidNumber" output="false"
 	            hint="Returns a validated number as a double. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
@@ -663,7 +663,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="String" name="getValidDouble" output="false"
+	<cffunction access="public" name="getValidDouble" output="false"
 	            hint="Returns a validated number as a double. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
@@ -740,7 +740,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="String" name="getValidInteger" output="false"
+	<cffunction access="public" name="getValidInteger" output="false"
 	            hint="Returns a validated number as a double. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
@@ -996,7 +996,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="String" name="getValidListItem" output="false"
+	<cffunction access="public" name="getValidListItem" output="false"
 	            hint="Returns the list item that exactly matches the canonicalized input. Invalid or non-matching input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
