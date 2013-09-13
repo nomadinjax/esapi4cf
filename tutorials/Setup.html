@@ -158,7 +158,7 @@ application.ESAPI.httpUtilities().logHTTPRequest(application.ESAPI.currentReques
 			<p>So inside of our catch, we need to once again call our application logger to send it a security failure but this time it will be at the error level.  For our arguments we must pass it a security type, either SUCCESS or FAILURE, a boolean meaning the same, success or failure, and a message.  This error, if it occurs, will not prevent our application from completing the request but will be sure it is logged and that a message is available for you to display to the end user.</p>
 			<pre>
 catch(Any e) {
-	application.logger.error(application.logger.getSecurity("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+	application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
 	throw(e.message, e.type, e.detail);
 }
 </pre>
@@ -182,8 +182,9 @@ function onRequestStart() {
 		application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
 	}
 	catch(Any e) {
-		application.logger.error(application.ESAPI4JLogger.SECURITY_FAILURE, false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
-		application.ESAPI.currentRequest().setAttribute("message", e.message);
+		application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+		// throw the exception again or allow a global error handler to catch this
+		throw(e.message, e.type, e.detail);
 	}
 	
 	... other code ...
