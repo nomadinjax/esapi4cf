@@ -187,11 +187,13 @@
 		<cfscript>
 			var value = variables.httpRequest.getHeader(arguments.name);
 			var clean = "";
-			try {
-				clean = variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 150, true);
-			}
-			catch(org.owasp.esapi.errors.ValidationException e) {
-				// already logged
+			if (isDefined("value")) {
+				try {
+					clean = variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 150, true);
+				}
+				catch(org.owasp.esapi.errors.ValidationException e) {
+					// already logged
+				}
 			}
 			return clean;
 		</cfscript>
