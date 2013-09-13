@@ -44,7 +44,7 @@ component {
 			application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
 		}
 		catch(Any e) {
-			application.logger.error(application.logger.getSecurity("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+			application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
 			// let's rethrow this error so your global error handler catches it if you have one
 			throw(e.message, e.type, e.detail);
 		}

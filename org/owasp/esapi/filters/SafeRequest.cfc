@@ -161,7 +161,7 @@
 						newCookies.add(n);
 					}
 					catch(org.owasp.esapi.errors.ValidationException e) {
-						variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Skipping bad cookie: " & c.getName() & "=" & c.getValue(), e);
+						variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Skipping bad cookie: " & c.getName() & "=" & c.getValue(), e);
 					}
 				}
 			}

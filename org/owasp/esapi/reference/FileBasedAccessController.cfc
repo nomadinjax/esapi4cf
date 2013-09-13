@@ -1,16 +1,16 @@
 <!---
 /**
  * OWASP Enterprise Security API (ESAPI)
- * 
+ *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
  * Copyright (c) 2011 - The OWASP Foundation
- * 
+ *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- * 
+ *
  * @author Damon Miller
  * @created 2011
  */
@@ -19,44 +19,44 @@
 
 	<cfscript>
 		variables.ESAPI = "";
-	
+
 		/** The url map. */
 		variables.urlMap = {};
-	
+
 		/** The function map. */
 		variables.functionMap = {};
-	
+
 		/** The data map. */
 		variables.dataMap = {};
-	
+
 		/** The file map. */
 		variables.fileMap = {};
-	
+
 		/** The service map. */
 		variables.serviceMap = {};
-	
+
 		/** A rule containing "deny". */
 		variables.deny = createObject("component", "FileBasedAccessController$Rule").init();
-	
+
 		/** The logger. */
 		variables.logger = "";
 	</cfscript>
-	
+
 	<cffunction access="public" returntype="FileBasedAccessController" name="init" output="false">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
-	
+
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
 			variables.logger = variables.ESAPI.getLogger("AccessController");
-		
+
 			return this;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="boolean" name="isAuthorizedForURL" output="false">
 		<cfargument required="true" type="String" name="url"/>
-	
+
 		<cfscript>
 			try {
 				assertAuthorizedForURL(arguments.url);
@@ -66,12 +66,12 @@
 				return false;
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="boolean" name="isAuthorizedForFunction" output="false">
 		<cfargument required="true" type="String" name="functionName"/>
-	
+
 		<cfscript>
 			try {
 				assertAuthorizedForFunction(arguments.functionName);
@@ -81,13 +81,13 @@
 				return false;
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="boolean" name="isAuthorizedForData" output="false">
 		<cfargument required="true" type="String" name="action"/>
 		<cfargument name="data"/>
-	
+
 		<cfscript>
 			try {
 				assertAuthorizedForData(argumentCollection=arguments);
@@ -97,12 +97,12 @@
 				return false;
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="boolean" name="isAuthorizedForFile" output="false">
 		<cfargument required="true" type="String" name="filepath"/>
-	
+
 		<cfscript>
 			try {
 				assertAuthorizedForFile(arguments.filepath);
@@ -112,12 +112,12 @@
 				return false;
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="boolean" name="isAuthorizedForService" output="false">
 		<cfargument required="true" type="String" name="serviceName"/>
-	
+
 		<cfscript>
 			try {
 				assertAuthorizedForService(arguments.serviceName);
@@ -127,12 +127,12 @@
 				return false;
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="assertAuthorizedForURL" output="false">
 		<cfargument required="true" type="String" name="url"/>
-	
+
 		<cfscript>
 			if(variables.urlMap.isEmpty()) {
 				variables.urlMap = loadRules("URLAccessRules.txt");
@@ -141,12 +141,12 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for URL", "Not authorized for URL: " & arguments.url));
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="assertAuthorizedForFunction" output="false">
 		<cfargument required="true" type="String" name="functionName"/>
-	
+
 		<cfscript>
 			if(variables.functionMap.isEmpty()) {
 				variables.functionMap = loadRules("FunctionAccessRules.txt");
@@ -155,18 +155,18 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for function", "Not authorized for function: " & arguments.functionName));
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="assertAuthorizedForData" output="false">
 		<cfargument required="true" type="String" name="action"/>
 		<cfargument name="data"/>
-	
+
 		<cfscript>
 			if(variables.dataMap.isEmpty()) {
 				variables.dataMap = loadDataRules("DataAccessRules.txt");
 			}
-		
+
 			if(structKeyExists(arguments, "data")) {
 				if(!matchRuleByAction(variables.dataMap, arguments.data, arguments.action)) {
 					throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for data", "Not authorized for data: " & arguments.data.getClass().getName()));
@@ -176,12 +176,12 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for function", "Not authorized for data: " & arguments.action));
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="assertAuthorizedForFile" output="false">
 		<cfargument required="true" type="String" name="filepath"/>
-	
+
 		<cfscript>
 			if(variables.fileMap.isEmpty()) {
 				variables.fileMap = loadRules("FileAccessRules.txt");
@@ -190,12 +190,12 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for file", "Not authorized for file: " & arguments.filepath));
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="assertAuthorizedForService" output="false">
 		<cfargument required="true" type="String" name="serviceName"/>
-	
+
 		<cfscript>
 			if(variables.serviceMap.isEmpty()) {
 				variables.serviceMap = loadRules("ServiceAccessRules.txt");
@@ -204,14 +204,14 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for service", "Not authorized for service: " & arguments.serviceName));
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="boolean" name="matchRuleByPath" output="false"
 	            hint="Checks to see if the current user has access to the specified data, File, Object, etc. If the User has access, as specified by the map parameter, this method returns true.  If the User does not have access or an exception is thrown, false is returned.">
 		<cfargument required="true" type="Struct" name="map" hint="the map containing access rules"/>
 		<cfargument required="true" type="String" name="path" hint="the path of the requested File, URL, Object, etc."/>
-	
+
 		<cfscript>
 			// get users roles
 			var user = variables.ESAPI.authenticator().getCurrentUser();
@@ -220,15 +220,15 @@
 			var rule = searchForRuleByPath(arguments.map, roles, arguments.path);
 			return rule.allow;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="boolean" name="matchRuleByAction" output="false"
 	            hint="Checks to see if the current user has access to the specified Class and action. If the User has access, as specified by the map parameter, this method returns true. If the User does not have access or an exception is thrown, false is returned.">
 		<cfargument required="true" type="Struct" name="map" hint="the map containing access rules"/>
 		<cfargument required="true" name="clazz" hint="the Class being requested for access"/>
 		<cfargument required="true" type="String" name="action" hint="the action the User has asked to perform"/>
-	
+
 		<cfscript>
 			// get users roles
 			var user = variables.ESAPI.authenticator().getCurrentUser();
@@ -237,15 +237,15 @@
 			var rule = searchForRuleByAction(arguments.map, roles, arguments.clazz, arguments.action);
 			return isObject(rule);
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="FileBasedAccessController$Rule" name="searchForRuleByPath" output="false"
 	            hint="Search for rule. Four mapping rules are used in order: - exact match, e.g. /access/login - longest path prefix match, beginning / and ending /*, e.g. /access/* or /* - extension match, beginning *., e.g. *.css - default servlet, specified by the single character pattern /">
 		<cfargument required="true" type="Struct" name="map" hint="the map containing access rules"/>
 		<cfargument required="true" type="Array" name="roles" hint="the roles of the User being checked for access"/>
 		<cfargument required="true" type="String" name="path" hint="the File, URL, Object, etc. being checked for access"/>
-	
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var part = "";
@@ -253,81 +253,81 @@
 			var extIndex = "";
 			var rule = "";
 			var slash = "";
-		
+
 			var canonical = "";
 			try {
 				canonical = variables.ESAPI.encoder().canonicalize(arguments.path);
 			}
 			catch(org.owasp.esapi.errors.EncodingException e) {
-				variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Failed to canonicalize input: " & arguments.path);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failed to canonicalize input: " & arguments.path);
 			}
-		
+
 			part = canonical;
 			if(part == "") {
 				part = "";
 			}
-		
+
 			while(part.endsWith("/")) {
 				part = part.substring(0, part.length() - 1);
 			}
-		
+
 			if(part.indexOf("..") != -1) {
 				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init("Attempt to manipulate access control path", "Attempt to manipulate access control path: " & arguments.path));
 			}
-		
+
 			// extract extension if any
 			extension = "";
 			extIndex = part.lastIndexOf(".");
 			if(extIndex != -1) {
 				extension = part.substring(extIndex + 1);
 			}
-		
+
 			rule = "";
 			// Check for exact match - ignore any ending slash
 			if(structKeyExists(arguments.map, part)) {
 				rule = arguments.map.get(part);
 			}
-		
+
 			// Check for ending with /*
 			if(!isDefined("rule"))
 				if(structKeyExists(arguments.map, part & "/*"))
 					rule = arguments.map.get(part & "/*");
-		
+
 			// Check for matching extension rule *.ext
 			if(!isDefined("rule"))
 				if(structKeyExists(arguments.map, "*." & extension))
 					rule = arguments.map.get("*." & extension);
-		
+
 			// if rule found and user's roles match rules' roles, return the rule
 			if(isDefined("rule") && overlapByRoles(rule.roles, arguments.roles)) {
 				return rule;
 			}
-		
+
 			// rule hasn't been found - if there are no more parts, return a deny
 			slash = part.lastIndexOf('/');
 			if(slash == -1) {
 				return variables.deny;
 			}
-		
+
 			// if there are more parts, strip off the last part and recurse
 			part = part.substring(0, part.lastIndexOf('/'));
-		
+
 			// return default deny
 			if(part.length() <= 1) {
 				return variables.deny;
 			}
-		
+
 			return searchForRuleByPath(arguments.map, arguments.roles, part);
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" name="searchForRuleByAction" output="false" hint="Search for rule. Searches the specified access map to see if any of the roles specified have access to perform the specified action on the specified Class.">
 		<cfargument required="true" type="Struct" name="map" hint="the map containing access rules"/>
 		<cfargument required="true" type="Array" name="roles" hint="the roles used to determine access level"/>
 		<cfargument required="true" name="clazz" hint="the Class being requested for access"/>
 		<cfargument required="true" type="String" name="action" hint="the action the User has asked to perform"/>
-	
+
 		<cfscript>
 			var rule = "";
 			// Check for exact match - ignore any ending slash
@@ -339,19 +339,19 @@
 			}
 			return "";
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="boolean" name="overlapByRoles" output="false"
 	            hint="Return true if there is overlap between the two sets.  This method merely checks to see if ruleRoles contains any of the roles listed in userRoles.">
 		<cfargument required="true" type="Array" name="ruleRoles" hint="the rule roles"/>
 		<cfargument required="true" type="Array" name="userRoles" hint="the user roles"/>
-	
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var i = "";
 			var role = "";
-		
+
 			if(arguments.ruleRoles.contains("any")) {
 				return true;
 			}
@@ -364,32 +364,32 @@
 			}
 			return false;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="boolean" name="overlapByAction" output="false"
 	            hint="This method merely checks to see if ruleActions contains the action requested.">
 		<cfargument required="true" type="Array" name="ruleActions" hint="actions listed for a rule"/>
 		<cfargument required="true" type="String" name="action" hint="the action requested that will be searched for in ruleActions"/>
-	
+
 		<cfscript>
 			if(arguments.ruleActions.contains(arguments.action))
 				return true;
 			return false;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="Array" name="validateRoles" output="false"
 	            hint="Checks that the roles passed in contain only letters, numbers, and underscores.  Also checks that roles are no more than 10 characters long.  If a role does not pass validation, it is not included in the list of roles returned by this method.  A log warning is also generated for any invalid roles.">
 		<cfargument required="true" type="Array" name="roles" hint="roles to validate according to criteria started above"/>
-	
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var ret = "";
 			var x = "";
 			var canonical = "";
-		
+
 			ret = [];
 			for(x = 1; x <= arrayLen(arguments.roles); x++) {
 				canonical = "";
@@ -397,22 +397,22 @@
 					canonical = variables.ESAPI.encoder().canonicalize(trim(arguments.roles[x]));
 				}
 				catch(org.owasp.esapi.errors.EncodingException e) {
-					variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Failed to canonicalize role " & trim(arguments.roles[x]), e);
+					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failed to canonicalize role " & trim(arguments.roles[x]), e);
 				}
 				if(!variables.ESAPI.validator().isValidInput("Validating user roles in FileBasedAccessController", canonical, "^[a-zA-Z0-9_]{0,10}$", 200, false))
-					variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Role: " & trim(arguments.roles[x]) & " is invalid, so was not added to the list of roles for this Rule.");
+					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Role: " & trim(arguments.roles[x]) & " is invalid, so was not added to the list of roles for this Rule.");
 				else
 					ret.add(canonical.trim());
 			}
 			return ret;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="Struct" name="loadRules" output="false"
 	            hint="Loads access rules by storing them in a hashmap.  This method begins reading the File specified by the ruleset parameter, ignoring any lines that begin with '##' characters as comments.  Sections of the access rules file are split by the pipe character ('|').  The method loads all paths, replacing '\' characters with '/' for uniformity then loads the list of comma separated roles. The roles are validated to be sure they are within a length and character set, specified in the validateRoles(String) method.  Then the permissions are stored for each item in the rules list. If the word 'allow' appears on the line, the specified roles are granted access to the data - otherwise, they will be denied access. Each path may only appear once in the access rules file.  Any entry, after the first, containing the same path will be logged and ignored.">
 		<cfargument required="true" type="String" name="ruleset" hint="the name of the data that contains access rules"/>
-	
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var line = "";
@@ -421,7 +421,7 @@
 			var roles = "";
 			var x = "";
 			var action = "";
-		
+
 			var map = {};
 			var ins = "";
 			try {
@@ -433,16 +433,16 @@
 						parts = line.split("\|");
 						// fix Windows paths
 						rule.path = parts[1].trim().replaceAll("\\", "/");
-					
+
 						roles = commaSplit(parts[2].trim().toLowerCase());
 						roles = validateRoles(roles);
 						for(x = 1; x <= arrayLen(roles); x++)
 							rule.roles.add(trim(roles[x]));
-					
+
 						action = parts[3].trim();
 						rule.allow = action.equalsIgnoreCase("allow");
 						if(map.containsKey(rule.path)) {
-							variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Problem in access control file. Duplicate rule ignored: " & rule);
+							variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Problem in access control file. Duplicate rule ignored: " & rule);
 						}
 						else {
 							map.put(rule.path, rule);
@@ -452,7 +452,7 @@
 				}
 			}
 			catch(java.lang.Exception e) {
-				variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Problem in access control file : " & arguments.ruleset, e);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Problem in access control file : " & arguments.ruleset, e);
 			}
 			try {
 				if(isObject(ins)) {
@@ -460,18 +460,18 @@
 				}
 			}
 			catch(java.io.IOException e) {
-				variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Failure closing access control file : " & arguments.ruleset, e);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failure closing access control file : " & arguments.ruleset, e);
 			}
-		
+
 			return map;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="Struct" name="loadDataRules" output="false"
 	            hint="Loads access rules by storing them in a hashmap.  This method begins reading the File specified by the ruleset parameter, ignoring any lines that begin with '##' characters as comments.  Sections of the access rules file are split by the pipe character ('|').  The method then loads all Classes, loads the list of comma separated roles, then the list of comma separated actions. The roles are validated to be sure they are within a length and character set, specified in the validateRoles(String) method. Each path may only appear once in the access rules file.  Any entry, after the first, containing the same path will be logged and ignored.">
 		<cfargument required="true" type="String" name="ruleset" hint="the name of the data that contains access rules"/>
-	
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var line = "";
@@ -480,10 +480,10 @@
 			var roles = "";
 			var x = "";
 			var action = "";
-		
+
 			var map = {};
 			var ins = "";
-		
+
 			try {
 				ins = newJava("java.io.FileInputStream").init(newJava("java.io.File").init(variables.ESAPI.securityConfiguration().getResourceDirectory(), arguments.ruleset));
 				line = variables.ESAPI.validator().safeReadLine(ins, 500);
@@ -492,18 +492,18 @@
 						rule = createObject("component", "FileBasedAccessController$Rule").init();
 						parts = line.split("\|");
 						rule.clazz = parts[1].trim();
-					
+
 						roles = commaSplit(parts[2].trim().toLowerCase());
 						roles = validateRoles(roles);
 						for(x = 1; x <= arrayLen(roles); x++)
 							rule.roles.add(trim(roles[x]));
-					
+
 						action = commaSplit(parts[3].trim().toLowerCase());
 						for(x = 1; x <= arrayLen(action); x++)
 							rule.actions.add(trim(action[x]));
-					
+
 						if(map.containsKey(rule.path)) {
-							variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Problem in access control file. Duplicate rule ignored: " & rule.toStringData());
+							variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Problem in access control file. Duplicate rule ignored: " & rule.toStringData());
 						}
 						else {
 							map.put(rule.clazz, rule);
@@ -513,32 +513,32 @@
 				}
 			}
 			catch(java.lang.Exception e) {
-				variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Problem in access control file : " & arguments.ruleset, e);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Problem in access control file : " & arguments.ruleset, e);
 			}
-		
+
 			try {
 				if(isObject(ins)) {
 					ins.close();
 				}
 			}
 			catch(java.io.IOException e) {
-				variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Failure closing access control file : " & arguments.ruleset, e);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failure closing access control file : " & arguments.ruleset, e);
 			}
-		
+
 			return map;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="Array" name="commaSplit" output="false"
 	            hint="This method splits a String by the ',' and returns the result as a List.">
 		<cfargument required="true" type="String" name="input" hint="the String to split by ','"/>
-	
+
 		<cfscript>
 			var array = arguments.input.split(",");
 			return array;
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 </cfcomponent>

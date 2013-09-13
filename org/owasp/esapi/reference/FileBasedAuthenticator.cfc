@@ -52,7 +52,7 @@
 			if(hashes.size() > variables.ESAPI.securityConfiguration().getMaxOldPasswordHashes())
 				hashes.remove(hashes.size() - 1);
 			variables.passwordMap.put(arguments.user.getAccountId(), hashes);
-			variables.logger.info(getSecurity("SECURITY_SUCCESS"), true, "New hashed password stored for " & arguments.user.getAccountName());
+			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "New hashed password stored for " & arguments.user.getAccountName());
 		</cfscript>
 
 	</cffunction>
@@ -195,7 +195,7 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee));
 			}
 			this.userMap.put(user.getAccountId(), user);
-			variables.logger.info(getSecurity("SECURITY_SUCCESS"), true, "New user created: " & arguments.accountName);
+			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "New user created: " & arguments.accountName);
 			saveUsers();
 			return user;
 		</cfscript>
@@ -257,7 +257,7 @@
 					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Password change matches a recent password for user: " & accountName));
 				}
 				setHashedPassword(arguments.user, newHash);
-				variables.logger.info(getSecurity("SECURITY_SUCCESS"), true, "Password changed for user: " & accountName);
+				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Password changed for user: " & accountName);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException ee) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, "Password change failed", "Encryption exception changing password for " & accountName, ee));
@@ -282,14 +282,14 @@
 				if(attemptedHash.equals(currentHash)) {
 					arguments.user.setLastLoginTime(newJava("java.util.Date").init());
 					arguments.user.setFailedLoginCount(0);
-					variables.logger.info(getSecurity("SECURITY_SUCCESS"), true, "Password verified for " & accountName);
+					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Password verified for " & accountName);
 					return true;
 				}
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				variables.logger.fatal(getSecurity("SECURITY_FAILURE"), false, "Encryption error verifying password for " & accountName);
+				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Encryption error verifying password for " & accountName);
 			}
-			variables.logger.fatal(getSecurity("SECURITY_FAILURE"), false, "Password verification failed for " & accountName);
+			variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Password verification failed for " & accountName);
 			return false;
 		</cfscript>
 
@@ -306,7 +306,7 @@
 			if(structKeyExists(arguments, "user") && structKeyExists(arguments, "oldPassword")) {
 				newPassword = _generateStrongPassword(arguments.oldPassword);
 				if(isDefined("newPassword"))
-					variables.logger.info(getSecurity("SECURITY_SUCCESS"), true, "Generated strong password for " & arguments.user.getAccountName());
+					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Generated strong password for " & arguments.user.getAccountName());
 				return newPassword;
 			}
 			else {
@@ -397,7 +397,7 @@
 				data = variables.ESAPI.encryptor().unseal(token.getValue()).split(":");
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Found corrupt or expired remember token");
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Found corrupt or expired remember token");
 				variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 				return "";
 			}
@@ -410,16 +410,16 @@
 			password = data[3];
 			user = getUserByAccountName(username);
 			if(!isObject(user)) {
-				variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Found valid remember token but no user matching " & username);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Found valid remember token but no user matching " & username);
 				return "";
 			}
 
-			variables.logger.warning(getSecurity("SECURITY_SUCCESS"), true, "Logging in user with remember token: " & user.getAccountName());
+			variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "Logging in user with remember token: " & user.getAccountName());
 			try {
 				user.loginWithPassword(password);
 			}
 			catch(org.owasp.esapi.errors.AuthenticationException ae) {
-				variables.logger.warning(getSecurity("SECURITY_FAILURE"), false, "Login via remember me cookie failed for user " & username, ae);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Login via remember me cookie failed for user " & username, ae);
 				variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, HTTPUtilities.REMEMBER_TOKEN_COOKIE_NAME);
 				return "";
 			}
@@ -492,7 +492,7 @@
 			var line = "";
 			var user = "";
 
-			variables.logger.trace(getSecurity("SECURITY_SUCCESS"), true, "Loading users from " & variables.userDB.getAbsolutePath());
+			variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "Loading users from " & variables.userDB.getAbsolutePath());
 
 			reader = "";
 			try {
@@ -503,7 +503,7 @@
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
 						user = _createUser(line);
 						if(map.containsKey(javaCast("long", user.getAccountId()))) {
-							variables.logger.fatal(getSecurity("SECURITY_FAILURE"), false, "Problem in user file. Skipping duplicate user: " & user);
+							variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Problem in user file. Skipping duplicate user: " & user);
 						}
 						map.put(user.getAccountId(), user);
 					}
@@ -511,10 +511,10 @@
 				}
 				this.userMap = map;
 				variables.lastModified = System.currentTimeMillis();
-				variables.logger.trace(getSecurity("SECURITY_SUCCESS"), true, "User file reloaded: " & map.size());
+				variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "User file reloaded: " & map.size());
 			}
 			catch(java.lang.Exception e) {
-				variables.logger.fatal(getSecurity("SECURITY_FAILURE"), false, "Failure loading user file: " & variables.userDB.getAbsolutePath(), e);
+				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Failure loading user file: " & variables.userDB.getAbsolutePath(), e);
 			}
 			try {
 				if(isObject(reader)) {
@@ -522,7 +522,7 @@
 				}
 			}
 			catch(java.io.IOException e) {
-				variables.logger.fatal(getSecurity("SECURITY_FAILURE"), false, "Failure closing user file: " & variables.userDB.getAbsolutePath(), e);
+				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Failure closing user file: " & variables.userDB.getAbsolutePath(), e);
 			}
 		</cfscript>
 
@@ -592,7 +592,7 @@
 			// if a logged-in user is requesting to login, log them out first
 			var user = getCurrentUser();
 			if(isObject(user) && !user.isAnonymous()) {
-				variables.logger.warning(getSecurity("SECURITY_SUCCESS"), true, "User requested relogin. Performing logout then authentication");
+				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "User requested relogin. Performing logout then authentication");
 				user.logout();
 			}
 
@@ -668,10 +668,10 @@
 					printWriter.println();
 					saveUsers(printWriter);
 					printWriter.flush();
-					variables.logger.info(getSecurity("SECURITY_SUCCESS"), true, "User file written to disk");
+					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "User file written to disk");
 				}
 				catch(java.io.IOException e) {
-					variables.logger.fatal(getSecurity("SECURITY_FAILURE"), false, "Problem saving user file " & variables.userDB.getAbsolutePath(), e);
+					variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Problem saving user file " & variables.userDB.getAbsolutePath(), e);
 					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, "Internal Error", "Problem saving user file " & variables.userDB.getAbsolutePath(), e));
 				}
 				if(isObject(printWriter)) {

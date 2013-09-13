@@ -72,7 +72,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" name="getSecurity" output="false">
+	<cffunction access="public" name="getSecurityType" output="false">
 		<cfargument required="true" type="String" name="type"/>
 
 		<cfscript>

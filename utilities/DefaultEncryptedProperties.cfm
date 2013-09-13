@@ -1,16 +1,16 @@
 ﻿<!---
 /**
  * OWASP Enterprise Security API (ESAPI)
- * 
+ *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
  * Copyright (c) 2011 - The OWASP Foundation
- * 
+ *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- * 
+ *
  * @author Damon Miller
  * @created 2011
  */
@@ -47,17 +47,17 @@
 			</button>
 		</form>
 		<cfif cgi.request_method EQ "post" AND structKeyExists(form, "file")>
-		
+
 			<cffunction name="throwException">
 				<cfargument required="true" name="exception"/>
-			
+
 				<cfif isInstanceOf(arguments.exception, "java.lang.Throwable")>
 					<cfthrow object="#arguments.exception#"/>
 				</cfif>
 			</cffunction>
-			
+
 			<cfscript>
-			
+
 				function getSecurity(type) {
 					var logger = createObject("java", "org.owasp.esapi.Logger");
 					// ESAPI 1.4.4
@@ -69,17 +69,17 @@
 						return logger[arguments.type];
 					}
 				}
-				
+
 				ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
 				ESAPI.securityConfiguration().setResourceDirectory(expandPath("../../../../test/resources/"));
-			
+
 				f = createObject("java", "java.io.File").init(form.file);
-				ESAPI.getLogger("EncryptedProperties.main").debug(getSecurity("SECURITY_SUCCESS"), true, "Loading encrypted properties from " & f.getAbsolutePath());
+				ESAPI.getLogger("EncryptedProperties.main").debug(getSecurityType("SECURITY_SUCCESS"), true, "Loading encrypted properties from " & f.getAbsolutePath());
 				if(!f.exists())
 					throwException(createObject("java", "java.io.IOException").init("Properties file not found: " & f.getAbsolutePath()));
-				ESAPI.getLogger("EncryptedProperties.main").debug(getSecurity("SECURITY_SUCCESS"), true, "Encrypted properties found in " & f.getAbsolutePath());
+				ESAPI.getLogger("EncryptedProperties.main").debug(getSecurityType("SECURITY_SUCCESS"), true, "Encrypted properties found in " & f.getAbsolutePath());
 				ep = createObject("component", "DefaultEncryptedProperties").init(ESAPI);
-			
+
 				fis = "";
 				//try {
 				fis = createObject("java", "java.io.FileInputStream").init(f);
@@ -90,7 +90,7 @@
 				}
 				catch(java.lang.Exception e) {
 				}
-			
+
 				if(structKeyExists(form, "key") && len(form.key) && structKeyExists(form, "value") && len(form.value)) {
 					out = "";
 					//try {
@@ -103,7 +103,7 @@
 					}
 					catch(java.lang.Exception e) {
 					}
-					
+
 					i = ep.keySet().iterator();
 					while(i.hasNext()) {
 						k = i.next();
@@ -112,10 +112,10 @@
 					}
 				}
 			</cfscript>
-			
+
 			<cfoutput>
 				<p>
-					Current properties: 
+					Current properties:
 					#ep.keySet().size()#
 				</p>
 				<form method="post">
