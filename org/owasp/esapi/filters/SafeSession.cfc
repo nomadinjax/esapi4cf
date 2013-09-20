@@ -54,8 +54,8 @@
 				ret = atts;
 			}
 			else if(isDefined("atts")) {
-				while(atts.hasNext()) {
-					arrayAppend(ret, atts.next());
+				while(atts.hasMoreElements()) {
+					arrayAppend(ret, atts.nextElement());
 				}
 			}
 			return ret;

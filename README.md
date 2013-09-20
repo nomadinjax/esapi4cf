@@ -20,6 +20,12 @@ More info: http://damonmiller.github.io/esapi4cf/
 RELEASE NOTES
 =============
 
+1.0.3a - ?
+- Railo4 tests are 11 failures; 7 errors - see Issue 28 comments for workaround the Base64 error
+- fixed SafeSession#getAttributeNames exception 'hasNext' not defined
+- 
+
+
 1.0.2a - 2013-09-13
 - fixes due to issues found in some real world testing
 - [Issue 35] DefaultSecurityConfiguration exception "Complex object types cannot be converted to simple values." Line 265
