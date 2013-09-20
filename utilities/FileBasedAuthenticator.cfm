@@ -1,16 +1,16 @@
 <!---
 /**
  * OWASP Enterprise Security API (ESAPI)
- * 
+ *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
  * Copyright (c) 2011 - The OWASP Foundation
- * 
+ *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- * 
+ *
  * @author Damon Miller
  * @created 2011
  */
@@ -39,12 +39,12 @@
 			ESAPI, and can therefore be used to create a username and password that do not comply with the
 			username and password strength requirements.
 		</p>
-		
+
 		<cfscript>
 			if(cgi.request_method == "post") {
 				ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
-				ESAPI.securityConfiguration().setResourceDirectory(expandPath("../../../../test/resources/"));
-			
+				ESAPI.securityConfiguration().setResourceDirectory("../test/resources/");
+
 				if(listLen(form.fieldNames) != 3) {
 					writeOutput("<p>Usage: Authenticator accountname password role</p>");
 					return;
@@ -55,7 +55,7 @@
 				role = form.role;
 				user = auth.getUserByAccountName(form.accountName);
 				if(!isObject(user)) {
-					user = createObject("component", "DefaultUser").init(ESAPI, accountName);
+					user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(ESAPI, accountName);
 					newHash = auth.hashPassword(password, accountName);
 					auth.setHashedPassword(user, newHash);
 					user.addRole(role);
@@ -71,7 +71,7 @@
 				}
 			}
 		</cfscript>
-		
+
 		<form method="post">
 			<label for="accountName">
 				Account Name
