@@ -26,7 +26,7 @@
 						+ '<ul class="dropdown-menu">'
 							+ '<li><a href="' + context + '/tutorials/Introduction.html">Introduction</a></li>'
 							+ '<li><a href="' + context + '/tutorials/Setup.html">Setup</a></li>'
-							+ '<li><a href="' + context + '/tutorials/Login.html"><span class="label label-warning">WIP</span> Authentication</a></li>'
+							+ '<li><a href="' + context + '/tutorials/Login.html">Authentication</a></li>'
 							+ '<li><a href="' + context + '/tutorials/SessionManagement.html"><span class="label label-danger">TODO</span> Session Management</a></li>'
 							+ '<li><a href="' + context + '/tutorials/AccessControl.html"><span class="label label-danger">TODO</span> Access Control</a></li>'
 							+ '<li><a href="' + context + '/tutorials/ValidateUserInput.html"><span class="label label-danger">TODO</span> Input Validation</a></li>'
