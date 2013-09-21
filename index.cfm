@@ -86,13 +86,25 @@
 			</h2>
 			<dl>
 				<dt>
-					<a href="samples/">
-						Tutorial Sample Code
+					<a href="samples/tutorials/">
+						Tutorials Code
 					</a>
 				</dt>
 				<dd>
-					This is the sample code referenced by the <a href="http://damonmiller.github.io/esapi4cf/tutorials/Introduction.html">ESAPI4CF tutorials</a>.
+					This is the sample code referenced by the
+					<a href="http://damonmiller.github.io/esapi4cf/tutorials/Introduction.html">
+						ESAPI4CF tutorials
+					</a>
+					.
 				</dd>
+				<!-- <dt>
+					<a href="samples/rest-taffy/">
+						REST with Taffy
+					</a>
+				</dt>
+				<dd>
+					Example of how to implement ESAPI4CF with Taffy REST framework (not included).
+				</dd> -->
 			</dl>
 		</body>
 	</html>
