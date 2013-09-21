@@ -183,7 +183,7 @@ function onRequestStart() {
 	}
 	catch(Any e) {
 		application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
-		// throw the exception again or allow a global error handler to catch this
+		// let's rethrow this error so your global error handler catches it if you have one
 		throw(e.message, e.type, e.detail);
 	}
 	

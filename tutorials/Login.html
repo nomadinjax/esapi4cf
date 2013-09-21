@@ -18,75 +18,275 @@
 			<div class="page-header">
 				<h1 class="text-center">Authentication</h1>
 			</div>
-			<!--
-			<p>In this tutorial we are going to cover the Authentication module in ESAPI4CF.  We will be adding onto our Application.cfc that we defined in the Setup tutorial in order to validate our users, diving into the what the login process does, going over the other functionality provided by this module, and lastly covering how to implement your own user base into ESAPI4CF.</p>
-			<h4>Background</h4>
-			<p>Instance of the ESAPI's authenticator component can be created as:</p>
-			<p class="newsItem"><code>authenticator = application.ESAPI.authenticator();</code></p>
-			<p>You do not need users.txt.  ESAPI will create this file when your application requests to create its first user.</p>
-			<h4>Create Users</h4>
-			There are two ways to create users safely in ESAPI:
-			<p>Use FileBasedAuthenticator.cfm to generate users.txt for the first time.  To do this follow this link: <a href="../org/owasp/esapi/reference/FileBasedAuthenticator.cfm">FileBasedAuthenticator.cfm</a></p>
-			To create users from within your application, use:
-			<p class="newsItem"><code>application.ESAPI.authenticator().createUser(username, password, password)</code></p>
-			Two copies of the new password are required to encourage user interface designers to include a "re-type password" field in their forms.
-			<br />''Note:Users created with the createUser method are disabled and locked by default.'' <br /><br /> You must call:
-			<p class="newsItem">
-			<code>
-			application.ESAPI.authenticator().getUserByAccountName(username).enable();<br>
-			application.ESAPI.authenticator().getUserByAccountName(username).unlock();
-			</code>
+			<p>
+				<span class="label label-info">NOTE</span>
+				As with all of the modules in ESAPI4CF, Authentication is not required for you to implement the library.  You can implement any one or more of the modules.  However, let me say that without authentication your security logging will lack an accountName and IP address tied to each event which will make all of that nice logging pretty worthless.  So I would highly recommend implementing the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				but the final decision is all yours.
 			</p>
-			<h4>Login</h4>
-			If you use the default ESAPI authenticator, you will need your login page to use SSL, so be sure to have a keystore file and adjust your server configuration settings to account for this.  If you are using Apache Tomcat, please see the readme included in the latest release of the <a href="https://www.owasp.org/index.php/ESAPI_Swingset">ESAPI Swingset</a> for help setting up SSL.
-			<br/><br/>
-			<a href="http://tomcat.apache.org/tomcat-6.0-doc/ssl-howto.html##Configuration">Set up SSL for tomcat 6.0</a>
-			<br/><br/>
-			<p>To authenticate a user, call:</p>
-			<p class="newsItem"><code>user = application.ESAPI.authenticator().login(application.ESAPI.currentRequest(), application.ESAPI.currentResponse());</code></p>
-			Be sure to set the UsernameParameterName and PasswordParameterName variables in ESAPI.properties.  The login method will use those variable names to take the username and password that the user entered from the currentRequest().
-			<h4>Logout</h4>
-			To log a User out, simply call:
-			<p class="newsItem">
-			<code>user = application.ESAPI.authenticator().logout;</code>
+			<p>
+				In this tutorial we are going to cover the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				in ESAPI4CF.  We will be diving into the what the login process does under the hood, adding onto our Application.cfc that we defined in the <a href="Setup.html">Setup Tutorial</a>
+				in order to authenticate users, going over the other functionality provided by this module, and lastly covering how to implement your own user base into ESAPI4CF.
 			</p>
-			<h4>ESAPI User Interface: </h4>
-			<p>ESAPI's User Interface provides support to store lot of information that an application must store for each user in order to enforce security properly.</p>
-			<p>A user account can be in one of several states. When first created, a User should be disabled, not expired, and unlocked. To start using the account, an administrator should enable the account. The account can be locked for a number of reasons, most commonly because they have failed login for too many times. Finally, the account can expire after the expiration date has been reached. The User must be enabled, not expired, and unlocked in order to pass authentication. </p>
-			<p>...</p>
+			<div class="page-header">
+				<h2>Authenticator Module</h2>
+			</div>
+			<p>All of the modules are accessible via our main ESAPI instance:</p>
 			<pre>
-			function onRequestStart() {
-			try {
-			// register request and response in ESAPI4CF
-			application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
-			// get references to the registered request/response safe wrappers
-			var httpRequest = application.ESAPI.currentRequest();
-			var httpResponse = application.ESAPI.currentResponse();
-			// if the user can be identified via the sessionID, the following will set "currentUser"
-			// in the Authenticator for consistent user identification across all requests in log messages
-			var httpSession = httpRequest.getSession(false);
-			if(isObject(httpSession)) {
-			try {
+application.ESAPI.authenticator()
+</pre>
+			<div class="page-header">
+				<h2>Creating Users and Passwords</h2>
+			</div>
+			<p>
+				At some point in your application you will have to create users and you will have certain business logic in order to do so.  But what type of validation do you have that the accountName and password being created are in fact strong enough?  Well luckily the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				has got you covered. There is a method call included which will validate the accountName and password to ensure their strength.
+			</p>
+			<pre>
+application.ESAPI.authenticator().createUser(accountName, password1, password2)
+</pre>
+			<p>The accountName will be verified for uniqueness and validated against a regular expression that you can customize in the ESAPI.properties.  In many applications the email address is also used as the accountName so if that is the case this regular expression should be the same as the email regular expression you configure in ESAPI.properties.</p>
+			<pre>
+Validator.AccountName=^[a-zA-Z0-9]{3,20}$
+</pre>
+			<p>The password is also asked for twice to encourage user interfaces to require the re-type password field and the two passwords here will be verified as matching.</p>
+			<p>The password strength will also be verified.  It is important to understand the password complexity rules that ESAPI4CF provides.  The password complexity works off of four character sets:</p>
+			<ul>
+				<li>lowercase letters</li>
+				<li>uppercase letters</li>
+				<li>numbers</li>
+				<li>special characters</li>
+			</ul>
+			<p>Below are the password complexity rules that must be met in order to pass validation:</p>
+			<ul>
+				<li>The new password cannot contain any 3 character substring of the old password.</li>
+				<li>If the password contains only one character set, the password length must be at least 16 characters.</li>
+				<li>If the password contains at least two character sets, the password length must be at least 8 characters.</li>
+				<li>If the password contains at least three character sets, the password length must be at least 6 characters.</li>
+				<li>If the password contains all four character sets, the password length must be at least 4 characters.</li>
+			</ul>
+			<p>If you require that a random password be generated instead of the user providing one, ESAPI4CF can take care of generating a random secure password for you and you can pass this to the createUser method. The password will contain letters, numbers, and special characters.</p>
+			<pre>
+application.ESAPI.authenticator().generateStrongPassword()
+</pre>
+			<div class="page-header">
+				<h2>Retrieving Users</h2>
+			</div>
+			<p>At any point you need to retrieve one of your users there is a built-in method to accomplish just this.</p>
+			<pre>
+application.ESAPI.authenticator().getUserByAccountId(accountId)
+</pre>
+			<p>
+				But we don't always have the <em>accountId</em>
+				available so we can also do this by <em>accountName</em>.
+			</p>
+			<pre>
+application.ESAPI.authenticator().getUserByAccountName(accountName)
+</pre>
+			<div class="page-header">
+				<h2>Current User</h2>
+			</div>
+			<p>We also run into scenario's where we need to know who our current user is using the web application.  Regardless of whether your application currently has an authenticated user, an anonymous user, or just don't know which user you have you can retrieve who the current user is at anytime.  Both the authenticated user and anonymous user instances implement the same User interface so you can rest assured they contain the same methods.</p>
+			<pre>
+application.ESAPI.authenticator().getCurrentUser()
+</pre>
+			<div class="page-header">
+				<h2>The User</h2>
+			</div>
+			<p>
+				So all this talk about users within ESAPI4CF, what exactly does this user instance look like?  The user is pretty basic so there is not really a point in going through them all.  You can view the methods in the <a href="..//apiref/1/org/owasp/esapi/User.html">User module</a>.
+			</p>
+			<div class="page-header">
+				<h2>Changing Passwords</h2>
+			</div>
+			<p>Changing a password follows a similar pattern as createUser where the new password is asked for twice.</p>
+			<pre>
+application.ESAPI.authenticator().changePassword(user, currentPassword, newPassword, newPassword2)
+</pre>
+			<p>The same type of validation is performed around your password - matching and complexity.  Plus the new password will be checked against the passwordHash history.  The passwordHash is not permitted to match any previous passwordHashes in the history. The number of passwordHashes in the history is configurable in the ESAPI.properties file.</p>
+			<pre>
+MaxOldPasswordHashes=13
+</pre>
+			<p>You can also call the changePassword directly on the current user.</p>
+			<pre>
+application.ESAPI.authenticator().getCurrentUser().changePassword(oldPassword, newPassword1, newPassword2)
+</pre>
+			<div class="page-header">
+				<h2>Password Verification</h2>
+			</div>
+			<p>In many cases you will want to have the user verify their password again when they access or update sensitive data like email address, accountName, or other personal information.  This can be accomplished with the verifyPassword method.</p>
+			<pre>
+application.ESAPI.authenticator().verifyPassword(user, password)
+</pre>
+			<p>Or directly on the current user.</p>
+			<pre>
+application.ESAPI.authenticator().getCurrentUser().verifyPassword(password)
+</pre>
+			<div class="page-header">
+				<h2>Password Hashing</h2>
+			</div>
+			<p>
+				ESAPI4CF comes out of the box using double-salted, SHA-512 algorithm, 1024 iterations hashing of passwords.  The first salt we mentioned in the <a href="Setup.html">Setup Tutorial</a>
+				when we covered <em>MasterSalt</em>.  The second salt is the accountName of the user.  The advantage of double salting is that if someone got ahold of your user database, they would not have the MasterSalt since this is stored elsewhere.
+			</p>
+			<p>As for the algorithm and iterations they are configurable in your ESAPI.properties file.  Be aware that once you have established users, changing these values will invalidate their passwordHashes.</p>
+			<pre>
+HashAlgorithm=SHA-512
+HashIterations=1024
+</pre>
+			<p>
+				<span class="label label-danger">IMPORTANT</span>
+				Because the accountName is used in the passwordHash this means that when the user changes their accountName you must also require them to verify their password so that you have both pieces of information in order to reset the passwordHash.
+			</p>
+			<div class="page-header">
+				<h2>Login</h2>
+			</div>
+			<p>
+				So how does the current user get <em>authenticated</em>
+				anyway?  Let us go over what I would say is the single most important method in entire ESAPI4CF library, the login method.  This is obvious but I will say it anyway: the login method is used to authenticate your user for your request.  I stress the word <em>request</em>
+				here because we login the user on every request not just for the session.  Say what?  This naming of this method is decieving as it really should be named <em>loginAndPersistAndValidateUser</em>
+				because that is really what it does.  In addition to logging our user in via the traditional <em>username</em>
+				and <em>password</em>
+				it also logs our user in via the RememberToken, takes care of persisting/retrieving our user across requests, and checks the various constraints put on our users like expiration, lockout, activation, etc.  And by the way if anything fails along the way, an Authentication exception is thrown so you can easily catch this.  Can we say WOW?  So let's get through any confusion by jumping into the details. 
+			</p>
+			<p>In order to authenticate a user, which will also return the ESAPI4CF user, we make this call per request:</p>
+			<pre>
+application.ESAPI.authenticator().login(application.ESAPI.currentRequest(), application.ESAPI.currentResponse())
+</pre>
+			<p>So I am sure this single call brings up several questions, all of which will be answered.</p>
+			<ol>
+				<li>How do you login without an accountName and password?</li>
+				<li>What's with those two arguments?</li>
+				<li>
+					What <em>auto-</em>magic is this?
+				</li>
+			</ol>
+			<p>
+				The answer to the first two questions is related so I'll answer them together. As I stated earlier we make this call on every request.  Well on every request we will not have an accountName and password, we only have those when an actual login attempt is made. Instead we pass the <em>safe</em>
+				request and <em>safe</em>
+				response instances that we registered with ESAPI4CF back in the <a href="Setup.html">Setup Tutorial</a>.  As you may know these instances contain all of the information around the request and the desired response respectively, like:
+			</p>
+			<ul>
+				<li>Access to cookies including the JSESSIONID and RememberToken cookies.</li>
+				<li>HTTP headers which would include the accountName and password if this were a login attempt.</li>
+				<li>Access to the session to retrieve a persisted user.</li>
+				<li>Ability to write cookies, including the RememberToken.</li>
+			</ul>
+			<p>So as you can see this login method along with these two arguments will handle the entire life of authentication including the persistence, not just the login itself.  So what's the magic?</p>
+			<h3>The Magic</h3>
+			<p>Here we are going to step through the default authentication process step-by-step. When you make the above call to the login method here is what occurs:</p>
+			<h4>1. Validates the request and response arguments</h4>
+			<p>We need to first ensure that the arguments provided are in fact valid in order to proceed.</p>
+			<h4>2. Checks the session scope for a persisted user</h4>
+			<p>Here we verify the session is valid and check whether we have a persisted user here.  If a persisted user is found we can proceed to Step 5.</p>
+			<p>Most requests will fall under this scenario as this is where ESAPI4CF stores the persisted user.</p>
+			<h4>3. Checks for a RememberToken cookie</h4>
+			<p>
+				The RememberToken cookie is checked for existence and is attempted to be unsealed.  The seal/unseal process is part of the <a href="../apiref/1/org/owasp/esapi/Encryptor.html">Encryptor module</a>
+				but the short explanation is that the unseal process decrypts the data and checks that the timestamp has not expired.  If data was able to be unsealed, it verifies the user exists then attempts to log that user in with their password. If all goes well, proceed to Step 5.
+			</p>
+			<p>
+				<span class="label label-warning">IMPORTANT</span>
+				Implementing a RememberToken is optional and is not on by default in ESAPI4CF.  If you choose to set the RememberToken, which is in the <a href="../apiref/1/org/owasp/esapi/HTTPUtilities.html">HTTPUtilities module</a>, the login method is already set up to check for it.
+			</p>
+			<p>You can also configure how many days the RememberToken persists in the user's cookie in the ESAPI.properties.</p>
+			<pre>
+RememberTokenDuration=14
+</pre>
+			<h4>4. Checks for login attempt</h4>
+			<p>The HTTP headers are checked to see if the username and password parameters exist and retrieves their values.  The actual name of these two parameters are configurable in the ESAPI.properties.</p>
+			<pre>
+UsernameParameterName=username
+PasswordParameterName=password
+</pre>
+			<p>We then check to be sure the username and password values are not empty then moving onto verifying the user exists and finally attempting to log the user in with the provided password. If this is successful move onto Step 5.</p>
+			<h4>5. Verifies a secure request</h4>
+			<p>Any login attempt must be an HTTP POST over SSL. Any request made post-login must be secured over SSL in order to protect the authenitcated session. We cannot proceed unless we are secure.</p>
+			<h4>6. Verify validity of the user</h4>
+			<p>At this point we are validating that our authenticated user is in fact allowed to proceed. Keep in mind that these checks are ran on each request so even an already logged in user could fail the checks below and get logged out.  There are several checks to validate our user:</p>
+			<ol>
+				<li>Not Anonymous</li>
+				<li>Not Disabled</li>
+				<li>Not Locked</li>
+				<li>Not Expired</li>
+				<li>Not exceeded session idle timeout</li>
+				<li>Not exceeded session absolute timeout</li>
+			</ol>
+			<p>
+				Regarding the two session timeouts, these can be configured in your ESAPI.properties.  The <em>idle</em>
+				timeout is equivelant to the ColdFusion sessionTimeout configured in your Application.cfc and these two values should be kept in sync. The <em>absolute</em>
+				timeout is the longest a user is allowed to persist their session.  This means that even if the user is active during the entire duration of their session, they will still be logged out once this duration is exceeded.  Both of these values are in minutes.
+			</p>
+			<pre>
+IdleTimeoutDuration=20
+AbsoluteTimeoutDuration=120
+</pre>
+			<p>If at any point during the process the user is established but fails to be validated due to an invalid password, the user is disabled, the user is locked, or the user is expired this will count against the user's login attempts.  If the threshold of allowed login attempts is exceeded the user's account will automatically lock to prevent continued unauthorized attempts.  The login attempt threshold is configurable in ESAPI.properties.  The failed login count is reset upon a successful login.  There is no automatic unlocking mechanism so you must build a way to unlock a user in your application.</p>
+			<pre>
+AllowedLoginAttempts=3
+</pre>
+			<h4>7. Success</h4>
+			<p>
+				If your user made it this far they have successfully passed validation and is considered a valid, authenticated user.  You should keep in mind that this is the <em>default</em>
+				implementation of the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				and with all of the ESAPI4CF modules it can be overridden with your own implementiation.  You will want to do this if you need to also include SSO or API authentication into the login method.  You will certainly have to override this module in order to implement your own user base.  More on how to use your own implementations will be at the end of this tutorial.
+			</p>
+			<div class="page-header">
+				<h2>Logout</h2>
+			</div>
+			<p>To log the current user out, simply call:</p>
+			<pre>
+application.ESAPI.authenticator().logout()
+</pre>
+			<p>This will destroy the RememberToken cookie, invalidate the session, and destroy the JSESSIONID cookie.  Changing your sessionId is good security practice when toggling between an authenticated user and anonymous user or vice versa.</p>
+			<div class="page-header">
+				<h1 class="text-center">Sample App</h1>
+			</div>
+			<p>
+				So now let's take what we just learned and apply it to our sample app we started in the <a href="Setup.html">Setup Tutorial</a>. Do you remember how we left a spot in our <em>onRequestEnd</em>
+				method to authentication?  Well now it's time to fill that void.
+			</p>
+			<p>
+				One thing I would like to point out is the use of 3 separate catch statements. Both the <em>AuthenticationCredentialsException</em>
+				and <em>AuthenticationLoginException</em>
+				exceptions extend <em>AuthenticationException</em>
+				so in other languages, like Java and in ESAPI4J, you only have to catch the <em>AuthenticationException</em>
+				exception and all extended types were also caught.  CFML does not seem to work this way and treats an exception type explicitly as that defined type; it does not recognize any extended objects.  This is unfortunate but as you'll see below it is easy to workaround by having separate catches.
+			</p>
+			<pre>
+function onRequestStart() {
+	try {
+		// register request and response in ESAPI4CF
+		application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
+		
+		// get references to the registered request/response safe wrappers
+		var httpRequest = application.ESAPI.currentRequest();
+		var httpResponse = application.ESAPI.currentResponse();
+		
+		// validate the current request to ensure nothing is suspicious
+		application.ESAPI.validator().assertIsValidHTTPRequest();
+		
+		try {
 			// this will verify authentication for your entire web application
 			// rememberToken is not implemented by default; if you wish to use rememberToken,
 			// you must call it inside your login() method after the user has been verified
 			application.ESAPI.authenticator().login(httpRequest, httpResponse);
-			}
-			catch(org.owasp.esapi.errors.AuthenticationException e) {
+		}
+		catch(org.owasp.esapi.errors.AuthenticationException e) {
 			// Possible exceptions:
 			// Attempt to login with an insecure request : Received non-SSL request
 			// Attempt to login with an insecure request : Received request using GET when only POST is allowed
 			// Attempt to access secure content with an insecure request : Received non-SSL request
-			loginFailure(e.message, e.detail);
-			}
-			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			loginFailure(e);
+		}
+		catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 			// Possible exceptions:
 			// Invalid request : Request or response objects were empty
 			// Authentication failed : blank username/password
 			// Authentication failed : username does not exist
-			loginFailure(e.message, e.detail);
-			}
-			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
+			loginFailure(e);
+		}
+		catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 			// Possible exceptions:
 			// Login failed : Missing password
 			// Login failed : Disabled user attempt to login
@@ -99,33 +299,50 @@
 			// Login failed : Expired user cannot be set to current user
 			// Login failed : Session inactivity timeout
 			// Login failed : Session absolute timeout
-			loginFailure(e.message, e.detail);
-			}
-			}
-			// log this request, obfuscating any parameter named password
-			application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
-			}
-			catch(Any e) {
-			application.logger.error(application.ESAPI4JLogger.SECURITY_FAILURE, false, "Error in ESAPI security filter: " & e.message, e);
-			application.ESAPI.currentRequest().setAttribute("message", e.message);
-			}
-			...other code...
-			}
+			loginFailure(e);
+		}
+		
+		// log this request, obfuscating any parameter named password
+		application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
+	}
+	catch(Any e) {
+		application.logger.error(application.ESAPI4JLogger.SECURITY_FAILURE, false, "Error in ESAPI security filter: " & e.message, e);
+		// let's rethrow this error so your global error handler catches it if you have one
+		throw(e.message, e.type, e.detail);
+	}
+	
+	...other code...
+
+}
 			</pre>
-			<p>...</p>
+			<p>Since we have 3 separate catches which need to perform the same action, fail authentication, we are going to send them all off to a single method to handle this.</p>
 			<pre>
-			function loginFailure(message, detail) {
-			// the ESAPI4CF exception was already logged so we do not have to do anything with the message/detail
-			// unless you have specific business requirements to do so.
-			// let's provide a whitelist of pages that do not require authentication (if needed)
-			if (listFindNoCase("forgotpassword.cfm,...", cgi....)) {
-			return;
-			}
-			// we were not in the whitelist so we must fail this request
-			location();
-			}
-			</pre>
-			--><!-- END content --><hr/>
+function loginFailure(required ex) {
+	// the ESAPI4CF login exception was already logged so we do not have to do anything with the message/detail
+	// unless you have specific business requirements to do so.
+
+	// let's provide a whitelist of pages that do not require authentication (this is basic, use a better solution)
+	if (listFindNoCase("login.cfm", listLast(cgi.script_name, "/"))) {
+		return;
+	}
+
+	// we were not in the whitelist so we must fail this request
+	var params = "redirect=" & application.ESAPI.encoder().encodeForURL(cgi.script_name);
+	params &= "&message=" & application.ESAPI.encoder().encodeForURL(ex.message);
+	
+	location(addtoken=false, url="login.cfm?" & params);
+}
+</pre>
+			<div class="page-header">
+				<h1 class="text-center">Make it your own</h1>
+			</div>
+			<p><span class="label label-info">Coming Soon!</span> Instructions on how to implement your own authenticator and/or user base.</p>
+<!--
+			<h4>ESAPI User Interface</h4>
+			<p>ESAPI's User Interface provides support to store lot of information that an application must store for each user in order to enforce security properly.</p>
+			<p>A user account can be in one of several states. When first created, a User should be disabled, not expired, and unlocked. To start using the account, an administrator should enable the account. The account can be locked for a number of reasons, most commonly because they have failed login for too many times. Finally, the account can expire after the expiration date has been reached. The User must be enabled, not expired, and unlocked in order to pass authentication. </p>
+-->
+			<!-- END content --><hr/>
 			<footer>
 				<p>Copyright &#169; 2013 OWASP ESAPI4CF</p>
 			</footer>
