@@ -406,9 +406,9 @@
 
 			v = [];
 			en = variables.httpRequest.getParameterNames();
-			for(i = 1; i <= arrayLen(en); i++) {
+			while (en.hasMoreElements()) {
 				try {
-					name = en[i];
+					name = en.nextElement();
 					clean = variables.ESAPI.validator().getValidInput("HTTP parameter name: " & name, name, "HTTPParameterName", variables.ESAPI.validator().MAX_PARAMETER_NAME_LENGTH, true);
 					v.add(clean);
 				}
