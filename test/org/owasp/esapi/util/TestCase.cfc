@@ -21,10 +21,6 @@
 		variables.javaObjectCache = {};
 
 		System = newJava("java.lang.System");
-
-		// The following property must be set in order for the tests to find the resources directory
-		System.setProperty("org.owasp.esapi.resources", "/esapi4cf/test/resources");
-		System.setProperty("basedir", expandPath("../../../../"));
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
@@ -57,6 +53,23 @@
 		</cfscript>
 
 		<cffile action="write" file="#expandPath(filePath)#" output="#writer#"/>
+	</cffunction>
+
+	<cffunction access="private" returntype="Struct" name="getCFMLMetaData" output="false">
+
+		<cfscript>
+			var results = {};
+			if(structKeyExists(server, "railo")) {
+				results["engine"] = server.ColdFusion.ProductName;
+				results["version"] = server.railo.version;
+			}
+			else {
+				results["engine"] = listFirst(server.ColdFusion.ProductName, " ");
+				results["version"] = server.ColdFusion.ProductVersion;
+			}
+			return results;
+		</cfscript>
+
 	</cffunction>
 
 	<cffunction access="private" name="newJava" output="false">
@@ -103,6 +116,20 @@
 			else {
 				return logger[arguments.type];
 			}
+		</cfscript>
+
+	</cffunction>
+
+	<cffunction access="private" returntype="boolean" name="cf8_isNull" output="false">
+		<cfargument required="true" name="value"/>
+
+		<cfscript>
+			var data = getCFMLMetaData();
+			// CF8 lacks support for isNull() so don't check it
+			if(!(data.engine == "ColdFusion" && listFirst(data.version, ",") == 8)) {
+				return isNull(arguments.value);
+			}
+			return false;
 		</cfscript>
 
 	</cffunction>

@@ -504,9 +504,9 @@
 			}
 			deleter = newJava("javax.servlet.http.Cookie").init(arguments.name, "deleted");
 			deleter.setMaxAge(0);
-			if(isDefined("domain"))
+			if(isDefined("domain") && !cf8_isNull(domain))
 				deleter.setDomain(domain);
-			if(isDefined("path"))
+			if(isDefined("path") && !cf8_isNull(path))
 				deleter.setPath(path);
 			arguments.httpResponse.addCookie(deleter);
 		</cfscript>

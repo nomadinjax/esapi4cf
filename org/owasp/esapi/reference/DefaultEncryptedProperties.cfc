@@ -50,7 +50,7 @@
 			try {
 				encryptedValue = variables.properties.getProperty(arguments.key);
 
-				if(!isDefined("encryptedValue"))
+				if(!(isDefined("encryptedValue") && !cf8_isNull(encryptedValue)))
 					return "";
 				return variables.ESAPI.encryptor().decryptString(encryptedValue);
 			}

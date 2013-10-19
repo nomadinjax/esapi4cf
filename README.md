@@ -20,11 +20,16 @@ More info: http://damonmiller.github.io/esapi4cf/
 RELEASE NOTES
 =============
 
-1.0.3a - ?
-- Railo4 tests are 11 failures; 7 errors - see Issue 28 comments for workaround the Base64 error
+1.0.3a - 2013-10-18
 - fixed SafeSession#getAttributeNames exception 'hasNext' not defined
-- 
-
+- ValidateErrorList#errors() was not returning an array
+- [Issue 20] none of the AccessController unit tests were passing - all now pass for all supported CFML versions
+- Railo 4.1 compatibility - with and without Null support
+- Unit Tests Result Improvements
+- Railo4: 11 failures; 1 error (with Issue 28 workaround)
+- CF10: 11 failures; 1 error
+- CF9: 11 failures; 1 error
+- CF8: 8 failures; 2 errors
 
 1.0.2a - 2013-09-13
 - fixes due to issues found in some real world testing

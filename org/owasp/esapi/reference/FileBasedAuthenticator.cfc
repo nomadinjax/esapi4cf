@@ -95,7 +95,7 @@
 
 		<cfscript>
 			var hashes = variables.passwordMap.get(arguments.user.getAccountId());
-			if(isDefined("hashes"))
+			if(isDefined("hashes") && !cf8_isNull(hashes))
 				return hashes;
 			if(arguments.create) {
 				hashes = [];
@@ -305,7 +305,7 @@
 
 			if(structKeyExists(arguments, "user") && structKeyExists(arguments, "oldPassword")) {
 				newPassword = _generateStrongPassword(arguments.oldPassword);
-				if(isDefined("newPassword"))
+				if(isDefined("newPassword") && !cf8_isNull(newPassword))
 					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Generated strong password for " & arguments.user.getAccountName());
 				return newPassword;
 			}
@@ -499,7 +499,7 @@
 				map = {};
 				reader = newJava("java.io.BufferedReader").init(newJava("java.io.FileReader").init(variables.userDB));
 				line = reader.readLine();
-				while(isDefined("line")) {
+				while(isDefined("line") && !cf8_isNull(line)) {
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
 						user = _createUser(line);
 						if(map.containsKey(javaCast("long", user.getAccountId()))) {
@@ -737,12 +737,12 @@
 			user = getUserFromSession(arguments.httpRequest);
 
 			// else if there's a remember token then use that
-			if(!(isDefined("user") && isObject(user))) {
+			if(!(isDefined("user") && !cf8_isNull(user) && isObject(user))) {
 				user = getUserFromRememberToken(arguments.httpRequest, arguments.httpResponse);
 			}
 
 			// else try to verify credentials - throws exception if login fails
-			if(!(isDefined("user") && isObject(user))) {
+			if(!(isDefined("user") && !cf8_isNull(user) && isObject(user))) {
 				user = loginWithUsernameAndPassword(arguments.httpRequest, arguments.httpResponse);
 
 				// warn if this authentication request was not POST or non-SSL connection, exposing credentials or session id
@@ -874,7 +874,7 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password cannot be blank"));
 
 			// can't change to a password that contains any 3 character substring of old password
-			if(structKeyExists(arguments, "oldPassword")) {
+			if(structKeyExists(arguments, "oldPassword") && !cf8_isNull(arguments.oldPassword)) {
 				length = arguments.oldPassword.length();
 				for(i = 0; i < length - 2; i++) {
 					sub = arguments.oldPassword.substring(i, i + 3);

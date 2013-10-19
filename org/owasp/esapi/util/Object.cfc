@@ -35,6 +35,23 @@
 
 	</cffunction>
 
+	<cffunction access="private" returntype="Struct" name="getCFMLMetaData" output="false">
+
+		<cfscript>
+			var results = {};
+			if(structKeyExists(server, "railo")) {
+				results["engine"] = server.ColdFusion.ProductName;
+				results["version"] = server.railo.version;
+			}
+			else {
+				results["engine"] = listFirst(server.ColdFusion.ProductName, " ");
+				results["version"] = server.ColdFusion.ProductVersion;
+			}
+			return results;
+		</cfscript>
+
+	</cffunction>
+
 	<cffunction access="private" returntype="numeric" name="getESAPI4JVersion" output="false">
 
 		<cfscript>
@@ -58,8 +75,9 @@
 
 		<cfscript>
 			var cp = arguments.classpath;
+			var data = getCFMLMetaData();
 			// prefer StringBuilder in newer CFML engines
-			if(cp == "java.lang.StringBuffer" && !(server.ColdFusion.ProductName == "ColdFusion Server" && listFirst(server.ColdFusion.ProductVersion, ",") == "8")) {
+			if(cp == "java.lang.StringBuffer" && !(data.engine == "ColdFusion" && listFirst(data.version, ",") == "8")) {
 				cp = "java.lang.StringBuilder";
 			}
 
@@ -105,6 +123,20 @@
 		</cfif>
 	</cffunction>
 
+	<cffunction access="private" returntype="boolean" name="cf8_isNull" output="false">
+		<cfargument required="true" name="value"/>
+
+		<cfscript>
+			var data = getCFMLMetaData();
+			// CF8 lacks support for isNull() so don't check it
+			if(!(data.engine == "ColdFusion" && listFirst(data.version, ",") == 8)) {
+				return isNull(arguments.value);
+			}
+			return false;
+		</cfscript>
+
+	</cffunction>
+
 	<cffunction access="private" returntype="void" name="cf8_writeDump" output="true">
 		<cfargument required="true" name="var"/>
 		<cfargument type="boolean" name="abort" default="false"/>
@@ -115,7 +147,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction access="private" returntype="void" name="cf8_writeLog" output="true">
+	<cffunction access="private" returntype="void" name="cf8_writeLog" output="false">
 		<cfargument required="true" type="string" name="text"/>
 		<cfargument type="string" name="type"/>
 		<cfargument type="boolean" name="application"/>
@@ -124,19 +156,20 @@
 
 		<cfscript>
 			var atts = {text=arguments.text};
-			if (structKeyExists(arguments, "type")) {
+			if(structKeyExists(arguments, "type")) {
 				atts.type = arguments.type;
 			}
-			if (structKeyExists(arguments, "application")) {
+			if(structKeyExists(arguments, "application")) {
 				atts.application = arguments.application;
 			}
-			if (structKeyExists(arguments, "file")) {
+			if(structKeyExists(arguments, "file")) {
 				atts.file = arguments.file;
 			}
-			if (structKeyExists(arguments, "log")) {
+			if(structKeyExists(arguments, "log")) {
 				atts.log = arguments.log;
 			}
 		</cfscript>
+
 		<cflog attributecollection="#atts#"/>
 	</cffunction>
 

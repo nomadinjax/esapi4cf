@@ -217,10 +217,10 @@
 
 			try {
 				httpSession = variables.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
-				if(isDefined("httpSession") && isObject(httpSession)) {
+				if(isDefined("httpSession") && !cf8_isNull(httpSession) && isObject(httpSession)) {
 					userSessionIDforLogging = httpSession.getAttribute("ESAPI_SESSION");
 					// if there is no session ID for the user yet, we create one and store it in the user's session
-					if(!isDefined("userSessionIDforLogging")) {
+					if(!(isDefined("userSessionIDforLogging") && !cf8_isNull(userSessionIDforLogging))) {
 						userSessionIDforLogging = "" & variables.ESAPI.randomizer().getRandomInteger(0, 1000000);
 						httpSession.setAttribute("ESAPI_SESSION", userSessionIDforLogging);
 					}
@@ -240,7 +240,7 @@
 			}
 
 			// convert the stack trace into something that can be logged
-			if(structKeyExists(arguments, "throwable") && isObject(arguments.throwable)) {
+			if(structKeyExists(arguments, "throwable") && !cf8_isNull(arguments.throwable) && isObject(arguments.throwable)) {
 				fqn = getMetaData(arguments.throwable).name;
 				index = fqn.lastIndexOf('.');
 				if(index > 0)
