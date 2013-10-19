@@ -285,32 +285,36 @@
 			rule = "";
 			// Check for exact match - ignore any ending slash
 			if(structKeyExists(arguments.map, part)) {
-				rule = arguments.map.get(part);
+				rule = arguments.map[part];
 			}
 
 			// Check for ending with /*
-			if(!isDefined("rule"))
-				if(structKeyExists(arguments.map, part & "/*"))
-					rule = arguments.map.get(part & "/*");
+			if(!isObject(rule)) {
+				if(structKeyExists(arguments.map, part & "/*")) {
+					rule = arguments.map[part & "/*"];
+				}
+			}
 
 			// Check for matching extension rule *.ext
-			if(!isDefined("rule"))
-				if(structKeyExists(arguments.map, "*." & extension))
-					rule = arguments.map.get("*." & extension);
+			if(!isObject(rule)) {
+				if(structKeyExists(arguments.map, "*." & extension)) {
+					rule = arguments.map["*." & extension];
+				}
+			}
 
 			// if rule found and user's roles match rules' roles, return the rule
-			if(isDefined("rule") && overlapByRoles(rule.roles, arguments.roles)) {
+			if(isDefined("rule") && isStruct(rule) && overlapByRoles(rule.roles, arguments.roles)) {
 				return rule;
 			}
 
 			// rule hasn't been found - if there are no more parts, return a deny
-			slash = part.lastIndexOf('/');
+			slash = part.lastIndexOf("/");
 			if(slash == -1) {
 				return variables.deny;
 			}
 
 			// if there are more parts, strip off the last part and recurse
-			part = part.substring(0, part.lastIndexOf('/'));
+			part = part.substring(0, part.lastIndexOf("/"));
 
 			// return default deny
 			if(part.length() <= 1) {
@@ -334,7 +338,7 @@
 			if(structKeyExists(arguments.map, arguments.clazz.getClass().getName())) {
 				rule = arguments.map.get(arguments.clazz.getClass().getName());
 			}
-			if((isDefined("rule")) && (overlapByAction(rule.actions, arguments.action)) && (overlapByRoles(rule.roles, arguments.roles))) {
+			if((isDefined("rule")) && isStruct(rule) && (overlapByAction(rule.actions, arguments.action)) && (overlapByRoles(rule.roles, arguments.roles))) {
 				return rule;
 			}
 			return "";
