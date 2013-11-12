@@ -59,32 +59,21 @@
 
 		/**
 		 * Load properties from properties file. Set this with setResourceDirectory
-		 * from your web application or ESAPI filter. For test and non-web
-		 * applications, this implementation defaults to a System property defined
-		 * when Java is launched. Use:
-		 * <P>
-		 * java -Dorg.owasp.esapi.resources="/path/resources"
-		 * <P>
-		 * where 'path' references the appropriate directory in your system.
+		 * from your web application or ESAPI filter.
 		 */
 		variables.resourceDirectory = System.getProperty(this.RESOURCE_DIRECTORY);
-
-		/*
-		 * Absolute path to the customDirectory
-		 */
-		variables.customDirectory = System.getProperty("org.owasp.esapi.resources");
-
-		/*
-		 * Absolute path to the userDirectory
-		 */
-		variables.userDirectory = System.getProperty("user.home") & newJava("java.io.File").separator & ".esapi";
 	</cfscript>
 
 	<cffunction access="public" returntype="org.owasp.esapi.SecurityConfiguration" name="init" output="false"
 	            hint="Instantiates a new configuration.">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
+		<cfargument type="String" name="resourceDirectory">
 
 		<cfscript>
+			if (structKeyExists(arguments, "resourceDirectory")) {
+				variables.resourceDirectory = arguments.resourceDirectory;
+			}
+
 			try {
 				loadConfiguration();
 			}
@@ -652,30 +641,6 @@
 				}
 				else {
 					logSpecial("Not found in SystemResource Directory/resourceDirectory: " & fileLocation);
-				}
-			}
-
-			// second, allow command line overrides. -Dorg.owasp.esapi.resources directory
-			if(structKeyExists(variables, "customDirectory")) {
-				f = newJava("java.io.File").init(expandPath(variables.customDirectory), arguments.filename);
-				if(variables.customDirectory != "" && f.canRead()) {
-					logSpecial("Found in 'org.owasp.esapi.resources' directory: " & f.getAbsolutePath());
-					return f;
-				}
-				else {
-					logSpecial("Not found in 'org.owasp.esapi.resources' directory or file not readable: " & f.getAbsolutePath());
-				}
-			}
-
-			// if not found, then try the user's home directory
-			if(structKeyExists(variables, "userDirectory")) {
-				f = newJava("java.io.File").init(variables.userDirectory, arguments.filename);
-				if(variables.userDirectory != "" && f.exists()) {
-					logSpecial("Found in 'user.home' directory: " & f.getAbsolutePath());
-					return f;
-				}
-				else {
-					logSpecial("Not found in 'user.home' directory: " & f.getAbsolutePath());
 				}
 			}
 

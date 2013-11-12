@@ -1,16 +1,16 @@
 <!---
 /**
  * OWASP Enterprise Security API (ESAPI)
- * 
+ *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
  * Copyright (c) 2011 - The OWASP Foundation
- * 
+ *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- * 
+ *
  * @author Damon Miller
  * @created 2011
  */
@@ -18,20 +18,19 @@
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
 		clearUserFile();
 	</cfscript>
-	
+
 	<cffunction access="public" returntype="void" name="testCreateUser" output="false"
 	            hint="Test of createAccount method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var accountName = "";
 			var instance = "";
 			var password = "";
 			var user = "";
-		
+
 			System.out.println("createUser");
 			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			instance = variables.ESAPI.authenticator();
@@ -74,19 +73,19 @@
 				// success
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testGenerateStrongPassword" output="false"
 	            hint="Test of generateStrongPassword method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
 			var oldPassword = "";
 			var newPassword = "";
 			var i = "";
-		
+
 			System.out.println("generateStrongPassword");
 			instance = variables.ESAPI.authenticator();
 			oldPassword = "iiiiiiiiii";// i is not allowed in passwords - this prevents failures from containing pieces of old password
@@ -108,12 +107,12 @@
 				// expected
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testGetCurrentUser" output="false"
 	            hint="Test of getCurrentUser method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
@@ -124,7 +123,7 @@
 			var httpRequest = "";
 			var httpResponse = "";
 			var currentUser = "";
-		
+
 			System.out.println("getCurrentUser");
 			instance = variables.ESAPI.authenticator();
 			username1 = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
@@ -140,7 +139,7 @@
 			assertEquals(currentUser, user1);
 			instance.setCurrentUser(user2);
 			assertFalse(currentUser.getAccountName() == user2.getAccountName());
-		
+
 			/* TODO: make runnable
 			Runnable echo = new Runnable() {
 			    private int count = 1;
@@ -172,18 +171,18 @@
 			    Thread.sleep(100);
 			} */
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testGetUser" output="false"
 	            hint="Test of getUser method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
 			var password = "";
 			var accountName = "";
-		
+
 			System.out.println("getUser");
 			instance = variables.ESAPI.authenticator();
 			password = instance.generateStrongPassword();
@@ -192,11 +191,11 @@
 			assertTrue(isObject(instance.getUserByAccountName(accountName)));
 			assertFalse(isObject(instance.getUserByAccountName(variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS))));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testGetUserFromRememberToken" output="false">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
@@ -207,7 +206,7 @@
 			var httpResponse = "";
 			var newToken = "";
 			var test2 = "";
-		
+
 			System.out.println("getUserFromRememberToken");
 			instance = variables.ESAPI.authenticator();
 			instance.logout();// in case anyone is logged in
@@ -218,7 +217,7 @@
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();;
 			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-		
+
 			httpRequest.setCookie(variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, "ridiculous");
 			try {
 				instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());// wrong cookie will fail
@@ -226,7 +225,7 @@
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// expected
 			}
-		
+
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			variables.ESAPI.authenticator().setCurrentUser(user);
@@ -235,12 +234,12 @@
 			test2 = instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
 			assertEquals(user.getAccountName(), test2.getAccountName());
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testGetUserFromSession" output="false"
 	            hint="Test get user from session.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
@@ -250,7 +249,7 @@
 			var httpRequest = "";
 			var httpResponse = "";
 			var test = "";
-		
+
 			System.out.println("getUserFromSession");
 			instance = variables.ESAPI.authenticator();
 			instance.logout();// in case anyone is logged in
@@ -267,12 +266,12 @@
 			test = instance.getUserFromSession();
 			assertEquals(user, test);
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testGetUserNames" output="false"
 	            hint="Test get user names.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
@@ -280,7 +279,7 @@
 			var testnames = "";
 			var i = "";
 			var names = "";
-		
+
 			System.out.println("getUserNames");
 			instance = variables.ESAPI.authenticator();
 			password = instance.generateStrongPassword();
@@ -297,12 +296,12 @@
 				assertTrue(names.contains(testnames[i].toLowerCase()));
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testHashPassword" output="false"
 	            hint="Test of hashPassword method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var username = "";
@@ -310,7 +309,7 @@
 			var instance = "";
 			var result1 = "";
 			var result2 = "";
-		
+
 			System.out.println("hashPassword");
 			username = "Jeff";
 			password = "test";
@@ -319,12 +318,12 @@
 			result2 = instance.hashPassword(password, username);
 			assertTrue(result1.equals(result2));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testLogin" output="false"
 	            hint="Test of login method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
@@ -334,7 +333,7 @@
 			var httpRequest = "";
 			var httpResponse = "";
 			var test = "";
-		
+
 			System.out.println("login");
 			instance = variables.ESAPI.authenticator();
 			username = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
@@ -349,12 +348,12 @@
 			test = instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
 			assertTrue(test.isLoggedIn());
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testRemoveUser" output="false"
 	            hint="Test of removeAccount method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var accountName = "";
@@ -369,18 +368,18 @@
 			instance.removeUser(accountName);
 			assertFalse(instance.exists(accountName));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testSaveUsers" output="false"
 	            hint="Test of saveUsers method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var accountName = "";
 			var instance = "";
 			var password = "";
-		
+
 			System.out.println("saveUsers");
 			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			instance = variables.ESAPI.authenticator();
@@ -391,12 +390,12 @@
 			instance.removeUser(accountName);
 			assertFalse(isObject(instance.getUserByAccountName(accountName)));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testSetCurrentUser" output="false"
 	            hint="Test of setCurrentUser method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
@@ -408,7 +407,7 @@
 			var httpResponse = "";
 			var currentUser = "";
 			var userTwo = "";
-		
+
 			System.out.println("setCurrentUser");
 			instance = variables.ESAPI.authenticator();
 			user1 = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_UPPERS);
@@ -424,7 +423,7 @@
 			userTwo = instance.createUser(user2, "getCurrentUser", "getCurrentUser");
 			instance.setCurrentUser(userTwo);
 			assertFalse(currentUser.getAccountName() == userTwo.getAccountName());
-		
+
 			/* TODO make this work
 			Runnable echo = new Runnable() {
 			    private int count = 1;
@@ -445,12 +444,12 @@
 			    new Thread( echo ).start();
 			} */
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testSetCurrentUserWithRequest" output="false"
 	            hint="Test of setCurrentUser method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
@@ -459,7 +458,7 @@
 			var user = "";
 			var httpRequest = "";
 			var httpResponse = "";
-		
+
 			System.out.println("setCurrentUser(req,resp)");
 			instance = variables.ESAPI.authenticator();
 			instance.logout();// in case anyone is logged in
@@ -498,19 +497,19 @@
 				// expected`
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testValidatePasswordStrength" output="false"
 	            hint="Test of validatePasswordStrength method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
-		
+
 			System.out.println("validatePasswordStrength");
 			instance = variables.ESAPI.authenticator();
-		
+
 			// should fail
 			try {
 				instance.verifyPasswordStrength("password", "jeff");
@@ -568,25 +567,25 @@
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
-		
+
 			// should pass
 			instance.verifyPasswordStrength("password", "jeffJEFF12!");
 			instance.verifyPasswordStrength("password", "super calif ragil istic");
 			instance.verifyPasswordStrength("password", "TONYTONYTONYTONY");
 			instance.verifyPasswordStrength("password", instance.generateStrongPassword());
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testExists" output="false"
 	            hint="Test of exists method, of class org.owasp.esapi.Authenticator.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var accountName = "";
 			var instance = "";
 			var password = "";
-		
+
 			System.out.println("exists");
 			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			instance = variables.ESAPI.authenticator();
@@ -596,11 +595,11 @@
 			instance.removeUser(accountName);
 			assertFalse(instance.exists(accountName));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<!---
-	
+
 	    <cffunction access="public" returntype="void" name="testMain" output="false" hint="Test of main method, of class org.owasp.esapi.Authenticator.">
 	    <cfscript>
 	    System.out.println( "Authenticator Main" );
@@ -626,6 +625,6 @@
 	    assertEquals( instance.hashPassword( password, accountName ), instance.getHashedPassword( u2 ) );
 	    </cfscript>
 	    </cffunction>
-	
+
 	    --->
 </cfcomponent>

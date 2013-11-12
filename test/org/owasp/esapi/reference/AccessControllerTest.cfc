@@ -18,7 +18,6 @@
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
 		clearUserFile();
 
 		variables.origResDir = "";

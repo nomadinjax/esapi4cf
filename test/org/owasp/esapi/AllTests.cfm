@@ -25,7 +25,6 @@
 	writeOutput("<h1>ESAPI4CF " & serverVersion & " Test Results</h1>");
 
 	System = createObject("java", "java.lang.System");
-	variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
 
 	System.out.println("INITIALIZING ALL TESTS");
 

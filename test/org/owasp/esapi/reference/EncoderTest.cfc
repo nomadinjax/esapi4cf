@@ -1,42 +1,38 @@
 <!---
 /**
  * OWASP Enterprise Security API (ESAPI)
- * 
+ *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
  * Copyright (c) 2011 - The OWASP Foundation
- * 
+ *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- * 
+ *
  * @author Damon Miller
  * @created 2011
  */
 --->
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
-	<cfscript>
-		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
-	</cfscript>
-	
 	<cffunction access="public" returntype="void" name="testCanonicalize" output="false">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var list = "";
 			var instance = "";
 			var js = "";
 			var css = "";
-		
+
 			System.out.println("canonicalize");
-		
+
 			list = newJava("java.util.ArrayList").init();
 			list.add(newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init());
 			list.add(newJava("org.owasp.esapi.codecs.PercentCodec").init());
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, list);
-		
+
 			/* NULL test not valid in CF
 			// Test null paths
 			assertEquals( null, instance.canonicalize( null ) );
@@ -46,33 +42,33 @@
 			// test exception paths
 			assertEquals("%", instance.canonicalize("%25", true));
 			assertEquals("%", instance.canonicalize("%25", false));
-		
+
 			assertEquals("%", instance.canonicalize("%25"));
 			assertEquals("%F", instance.canonicalize("%25F"));
 			assertEquals("<", instance.canonicalize("%3c"));
 			assertEquals("<", instance.canonicalize("%3C"));
 			assertEquals("%X1", instance.canonicalize("%X1"));
-		
+
 			assertEquals("<", instance.canonicalize("&lt"));
 			assertEquals("<", instance.canonicalize("&LT"));
 			assertEquals("<", instance.canonicalize("&lt;"));
 			assertEquals("<", instance.canonicalize("&LT;"));
-		
+
 			assertEquals("%", instance.canonicalize("&##37;"));
 			assertEquals("%", instance.canonicalize("&##37"));
 			assertEquals("%b", instance.canonicalize("&##37b"));
-		
+
 			assertEquals("<", instance.canonicalize("&##x3c"));
 			assertEquals("<", instance.canonicalize("&##x3c;"));
 			assertEquals("<", instance.canonicalize("&##x3C"));
 			assertEquals("<", instance.canonicalize("&##X3c"));
 			assertEquals("<", instance.canonicalize("&##X3C"));
 			assertEquals("<", instance.canonicalize("&##X3C;"));
-		
+
 			// percent encoding
 			assertEquals("<", instance.canonicalize("%3c"));
 			assertEquals("<", instance.canonicalize("%3C"));
-		
+
 			// html entity encoding
 			assertEquals("<", instance.canonicalize("&##60"));
 			assertEquals("<", instance.canonicalize("&##060"));
@@ -142,16 +138,16 @@
 			assertEquals("<", instance.canonicalize("&lT;"));
 			assertEquals("<", instance.canonicalize("&Lt;"));
 			assertEquals("<", instance.canonicalize("&LT;"));
-		
+
 			assertEquals('<script>alert("hello");</script>', instance.canonicalize("%3Cscript%3Ealert%28%22hello%22%29%3B%3C%2Fscript%3E"));
 			assertEquals('<script>alert("hello");</script>', instance.canonicalize("%3Cscript&##x3E;alert%28%22hello&##34%29%3B%3C%2Fscript%3E", false));
-		
+
 			// javascript escape syntax
 			js = newJava("java.util.ArrayList").init();
 			js.add(newJava("org.owasp.esapi.codecs.JavaScriptCodec").init());
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, js);
 			System.out.println("JavaScript Decoding");
-		
+
 			/* NULL test not valid in CF
 			assertEquals( "\0", instance.canonicalize("\0"));
 			*/
@@ -165,7 +161,7 @@
 			assertEquals('"', instance.canonicalize('\"'));
 			assertEquals("\", instance.canonicalize("\\"));
 			assertEquals("<", instance.canonicalize("\<"));
-		
+
 			assertEquals("<", instance.canonicalize("\u003c"));
 			assertEquals("<", instance.canonicalize("\U003c"));
 			assertEquals("<", instance.canonicalize("\u003C"));
@@ -174,7 +170,7 @@
 			assertEquals("<", instance.canonicalize("\X3c"));
 			assertEquals("<", instance.canonicalize("\x3C"));
 			assertEquals("<", instance.canonicalize("\X3C"));
-		
+
 			// css escape syntax
 			// be careful because some codecs see \0 as null byte
 			css = newJava("java.util.ArrayList").init();
@@ -192,19 +188,19 @@
 			assertEquals("<", instance.canonicalize("\0003C"));
 			assertEquals("<", instance.canonicalize("\00003C"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testDoubleEncodingCanonicalization" output="false"
 	            hint="Test of canonicalize method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
-		
+
 			System.out.println("doubleEncodingCanonicalization");
 			instance = variables.ESAPI.encoder();
-		
+
 			// note these examples use the strict=false flag on canonicalize to allow
 			// full decoding without throwing an IntrusionException. Generally, you
 			// should use strict mode as allowing double-encoding is an abomination.
@@ -228,7 +224,7 @@
 			// multiple encoding tests
 			assertEquals("% & <script> <script>", instance.canonicalize("%25 %2526 %26##X3c;script&##x3e; &##37;3Cscript%25252525253e", false));
 			assertEquals("< < < < < < <", instance.canonicalize("%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B", false));
-		
+
 			// test strict mode with both mixed and multiple encoding
 			try {
 				assertEquals("< < < < < < <", instance.canonicalize("%26lt; %26lt; &##X25;3c &##x25;3c %2526lt%253B %2526lt%253B %2526lt%253B"));
@@ -236,7 +232,7 @@
 			catch(org.owasp.esapi.errors.IntrusionException e) {
 				// expected
 			}
-		
+
 			try {
 				assertEquals("<script", instance.canonicalize("%253Cscript"));
 			}
@@ -250,12 +246,12 @@
 				// expected
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForHTML" output="false"
 	            hint="Test of encodeForHTML method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			/* NULL tests not valid for CF
@@ -269,34 +265,34 @@
 			assertEquals("dir&amp;", instance.encodeForHTML("dir&"));
 			assertEquals("one&amp;two", instance.encodeForHTML("one&two"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForHTMLAttribute" output="false"
 	            hint="Test of encodeForHTMLAttribute method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("&lt;script&gt;", instance.encodeForHTMLAttribute("<script>"));
 			assertEquals(",.-_", instance.encodeForHTMLAttribute(",.-_"));
 			assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForHTMLAttribute(" !@$%()=+{}[]"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForCSS" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("\3C script\3E ", instance.encodeForCSS("<script>"));
 			assertEquals(" \21 \40 \24 \25 \28 \29 \3D \2B \7B \7D \5B \5D \22 ", instance.encodeForCSS(' !@$%()=+{}[]"'));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForJavascript" output="false"
 	            hint="Test of encodeForJavaScript method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("\x3Cscript\x3E", instance.encodeForJavaScript("<script>"));
@@ -315,56 +311,56 @@
 			// assertEquals( '\"', instance.encodeForJavaScript( '"' ) );
 			// assertEquals( "\\", instance.encodeForJavaScript( "\" ) );
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForVBScript" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals('"<script">', instance.encodeForVBScript("<script>"));
 			assertEquals(' "!"@"$"%"(")"="+"{"}"["]""', instance.encodeForVBScript(' !@$%()=+{}[]"'));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXPath" output="false"
 	            hint="Test of encodeForXPath method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("&##x27;or 1&##x3d;1", instance.encodeForXPath("'or 1=1"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForSQL" output="false"
 	            hint="Test of encodeForSQL method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var mySQL1 = "";
 			var mySQL2 = "";
 			var oracle = "";
-		
+
 			var instance = variables.ESAPI.encoder();
 			var MySQLCodec = newJava("org.owasp.esapi.codecs.MySQLCodec");
-		
+
 			mySQL1 = MySQLCodec.init(MySQLCodec.ANSI_MODE);
 			assertEquals("Jeff'' or ''1''=''1", instance.encodeForSQL(mySQL1, "Jeff' or '1'='1"), "ANSI_MODE");
-		
+
 			mySQL2 = MySQLCodec.init(MySQLCodec.MYSQL_MODE);
 			assertEquals("Jeff\' or \'1\'\=\'1", instance.encodeForSQL(mySQL2, "Jeff' or '1'='1"), "MYSQL_MODE");
-		
+
 			oracle = newJava("org.owasp.esapi.codecs.OracleCodec").init();
 			assertEquals("Jeff'' or ''1''=''1", instance.encodeForSQL(oracle, "Jeff' or '1'='1"), "Oracle");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForLDAP" output="false"
 	            hint="Test of encodeForLDAP method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("Hi This is a test ##��", instance.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
@@ -373,12 +369,12 @@
 			*/
 			assertEquals("Hi \28This\29 = is \2a a \5c test ## � � �", instance.encodeForLDAP("Hi (This) = is * a \ test ## � � �"), "LDAP Christams Tree");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForDN" output="false"
 	            hint="Test of encodeForLDAP method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("Hello�", instance.encodeForDN("Hello�"), "No special characters to escape");
@@ -389,67 +385,67 @@
 			assertEquals("\  \ ", instance.encodeForDN("   "), "only 3 spaces");
 			assertEquals('\ Hello\\ \+ \, \"World\" \;\ ', instance.encodeForDN(' Hello\ + , "World" ; '), "Christmas Tree DN");
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<!--- NULL test not valid for CF
-	
+
 	    <cffunction access="public" returntype="void" name="testEncodeForXMLNull" output="false">
 	    <cfscript>
 	    var instance = variables.ESAPI.encoder();
 	    assertEquals( null, instance.encodeForXML( null ) );
 	    </cfscript>
 	    </cffunction>
-	
+
 	    --->
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLSpace" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals(" ", instance.encodeForXML(" "));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLScript" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("&##x3c;script&##x3e;", instance.encodeForXML("<script>"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLImmune" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals(",.-_", instance.encodeForXML(",.-_"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLSymbol" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForXML("!@$%()=+{}[]"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLPound" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("&##xa3;", instance.encodeForXML(toUnicode("\u00A3")));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<!--- NULL test not valid for CF
-	
+
 	    <cffunction access="public" returntype="void" name="testEncodeForXMLAttributeNull" output="false">
 	    <cfscript>
 	    var instance = variables.ESAPI.encoder();
@@ -457,65 +453,65 @@
 	    </cfscript>
 	    </cffunction>
 	 --->
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSpace" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals(" ", instance.encodeForXMLAttribute(" "));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeScript" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("&##x3c;script&##x3e;", instance.encodeForXMLAttribute("<script>"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeImmune" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals(",.-_", instance.encodeForXMLAttribute(",.-_"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSymbol" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForXMLAttribute(" !@$%()=+{}[]"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributePound" output="false">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("&##xa3;", instance.encodeForXMLAttribute(toUnicode("\u00A3")));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForURL" output="false"
 	            hint="Test of encodeForURL method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("%3Cscript%3E", instance.encodeForURL("<script>"));
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testDecodeFromURL" output="false"
 	            hint="Test of decodeFromURL method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			try {
@@ -526,19 +522,19 @@
 				fail();
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testEncodeForBase64" output="false"
 	            hint="Test of encodeForBase64 method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var i = "";
 			var r = "";
 			var encoded = "";
 			var decoded = "";
-		
+
 			var instance = variables.ESAPI.encoder();
 			try {
 				for(i = 0; i < 100; i++) {
@@ -553,19 +549,19 @@
 				fail();
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="public" returntype="void" name="testDecodeFromBase64" output="false"
 	            hint="Test of decodeFromBase64 method, of class org.owasp.esapi.Encoder.">
-		
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var i = "";
 			var r = "";
 			var encoded = "";
 			var decoded = "";
-		
+
 			var instance = variables.ESAPI.encoder();
 			for(i = 0; i < 100; i++) {
 				try {
@@ -592,17 +588,17 @@
 				}
 			}
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<cffunction access="private" returntype="String" name="toUnicode" output="false">
 		<cfargument required="true" type="String" name="string"/>
-	
+
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var i = "";
 			var thisChr = "";
-		
+
 			var sb = newJava("java.lang.StringBuffer").init();
 			for(i = 1; i <= len(arguments.string); i++) {
 				thisChr = mid(arguments.string, i, 6);
@@ -616,11 +612,11 @@
 			}
 			return sb.toString();
 		</cfscript>
-		
+
 	</cffunction>
-	
+
 	<!--- issues --->
-	
+
 	<cffunction access="public" returntype="void" name="testIssue12" output="false" hint="https://github.com/damonmiller/esapi4cf/issues/12">
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
@@ -632,7 +628,7 @@
 			var testString2	= "dir=4&num=00013588+++++++++++++++++++++++Result:+%ED%E5+%ED%E0%F8%EB%EE%F1%FC+%F4%EE%F0%EC%FB+%E4%EB%FF+%EE%F2%EF%F0%E0%E2%EA%E8;";
 			// decodes to	= "dir=4?m=00013588+++++++++++++++++++++++Result:+íå+íàøëîñü+ôîðìû+äëÿ+îòïðàâêè;";
 			// this is double-encoded; the &nu is seen as an HTML entity along with the Percent encoding
-			
+
 			try {
 				instance.canonicalize(testString1);
 				fail("");
@@ -640,7 +636,7 @@
 			catch (org.owasp.esapi.errors.IntrusionException ex) {
 				// expected
 			}
-			
+
 			try {
 				instance.canonicalize(testString2);
 				fail("");
@@ -650,5 +646,5 @@
 			}
 		</cfscript>
 	</cffunction>
-	
+
 </cfcomponent>

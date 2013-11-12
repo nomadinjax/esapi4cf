@@ -18,6 +18,8 @@
 <cfcomponent extends="mxunit.framework.TestCase" output="false">
 
 	<cfscript>
+		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("../../../resources/");
+
 		variables.javaObjectCache = {};
 
 		System = newJava("java.lang.System");

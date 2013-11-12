@@ -1,16 +1,16 @@
 <!---
 /**
  * OWASP Enterprise Security API (ESAPI)
- * 
+ *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
  * Copyright (c) 2011 - The OWASP Foundation
- * 
+ *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- * 
+ *
  * @author Damon Miller
  * @created 2011
  */
@@ -18,8 +18,6 @@
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-    	variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
-    
     	variables.CLASS = getMetaData(this);
     	variables.CLASS_NAME = listLast(variables.CLASS.name, ".");
     	/** Name of the file in the temporary directory */
@@ -34,7 +32,7 @@
 
 		variables.FileTestUtils = createObject("component", "esapi4cf.test.org.owasp.esapi.util.FileTestUtils");
 	</cfscript>
- 
+
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 		<cfscript>
 			// create a file to test with
@@ -42,14 +40,14 @@
 			variables.testFile = newJava("java.io.File").init(variables.testDir, variables.TEST_FILE_NAME);
 			variables.testFile.createNewFile();
 			variables.testFile = variables.testFile.getCanonicalFile();
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
 	<cffunction access="public" returntype="void" name="tearDown" output="false">
 		<cfscript>
 			variables.FileTestUtils.deleteRecursively(variables.testDir);
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -58,7 +56,7 @@
 			// CF8 requires 'var' at the top
 			var tf = "";
 			var sf = "";
-			
+
 			System.out.println("testEscapeCharactersInFilenameInjection");
 			tf = variables.testFile;
 			if ( tf.exists() ) {
@@ -71,7 +69,7 @@
 			} else {
 				System.out.println( "  Injection didn't work " & sf.getAbsolutePath() );
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -79,7 +77,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var sf = "";
-			
+
 			System.out.println("testEscapeCharacterInDirectoryInjection");
 			sf = newJava("java.io.File").init(variables.testDir, "test\\^.^.\\file");
 			if ( sf.exists() ) {
@@ -87,7 +85,7 @@
 			} else {
 				System.out.println( "  Injection didn't work " & sf.getAbsolutePath() );
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -97,7 +95,7 @@
 			var i = "";
 			var ch = "";
 			var sf = "";
-			
+
 			for(i = variables.GOOD_FILE_CHARS.iterator();i.hasNext();) {
 				ch = i.next().toString();	// avoids generic issues in 1.4&1.5
 				sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch);
@@ -105,7 +103,7 @@
 				sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch & "test");
 				assertFalse(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should not exist (ch=' & ch.charAt(0) & ').');
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -114,7 +112,7 @@
 			// CF8 requires 'var' at the top
 			var i = "";
 			var ch = "";
-			
+
 			for(i = variables.BAD_FILE_CHARS.iterator();i.hasNext();) {
 				ch = i.next().toString();	// avoids generic issues in 1.4&1.5
 				try {
@@ -128,7 +126,7 @@
 				}
 				catch(org.owasp.esapi.errors.ValidationException expected) { }
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -138,7 +136,7 @@
 			var i = "";
 			var ch = "";
 			var sf = "";
-			
+
 			for(i=variables.GOOD_FILE_CHARS.iterator();i.hasNext();) {
 				ch = i.next().toString();	// avoids generic issues in 1.4&1.5
 				ch = ch & ch & ch;
@@ -147,7 +145,7 @@
 				sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch & "test");
 				assertFalse(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should not exist (ch=' & ch.charAt(0) & ').');
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -156,7 +154,7 @@
 			// CF8 requires 'var' at the top
 			var i = "";
 			var ch = "";
-			
+
 			for(i = variables.BAD_FILE_CHARS.iterator();i.hasNext();) {
 				ch = i.next().toString();	// avoids generic issues in 1.4&1.5
 				ch = ch & ch & ch;
@@ -172,7 +170,7 @@
 				catch(org.owasp.esapi.errors.ValidationException expected) { }
 				i=variables.BAD_FILE_CHARS.iterator();
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -180,13 +178,13 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var sf = "";
-			
+
 			try {
 				sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ":secret.txt");
 				fail("Able to construct SafeFile for alternate data stream: " & sf.getPath());
 			}
 			catch(org.owasp.esapi.errors.ValidationException expected) { }
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -196,7 +194,7 @@
 			var hexDigit = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 			var array = [ hexDigit[(bitSHRN(arguments.b, 4)) & inputBaseN("0f", 16)], hexDigit[arguments.b & inputBaseN("0f", 16)] ];
 			return toString(array);
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -204,7 +202,7 @@
 		<cfscript>
 			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testFile.getPath());
 			assertTrue(sf.exists());
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -212,7 +210,7 @@
 		<cfscript>
 			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testDir, variables.testFile.getName());
 			assertTrue(sf.exists());
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -220,7 +218,7 @@
 		<cfscript>
 			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testFile.getParentFile(), variables.testFile.getName());
 			assertTrue(sf.exists());
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -228,7 +226,7 @@
 		<cfscript>
 			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=variables.ESAPI, uri=variables.testFile.toURI());
 			assertTrue(sf.exists());
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -240,7 +238,7 @@
 			}
 			catch(org.owasp.esapi.errors.ValidationException expected) {
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -253,7 +251,7 @@
 			catch(org.owasp.esapi.errors.ValidationException e) {
 				// expected
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 	<!--- NULL test not valid for CFML
@@ -284,7 +282,7 @@
 			{
 				// expected
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 
@@ -299,7 +297,7 @@
 			{
 				// expected
 			}
-		</cfscript> 
+		</cfscript>
 	</cffunction>
 
 

@@ -20,6 +20,9 @@ More info: http://damonmiller.github.io/esapi4cf/
 RELEASE NOTES
 =============
 
+1.?.?a - 2013-?-?
+- ResourceDirectory can now be passed with ESAPI.init() instead of separate setResourceDirectory() call
+
 1.0.3a - 2013-10-18
 - fixed SafeSession#getAttributeNames exception 'hasNext' not defined
 - ValidateErrorList#errors() was not returning an array
