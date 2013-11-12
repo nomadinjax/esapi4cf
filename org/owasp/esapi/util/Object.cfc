@@ -19,9 +19,9 @@
 
 	<cfscript>
 		// all ESAPI components will have these
-		this.ESAPI4JVERSION = getESAPI4JVersion();// ESAPI4J version
-		this.ESAPINAME = "ESAPI4CF";// ESAPI library name
-		this.VERSION = "1.0.2a";// ESAPI library version
+		this.ESAPI4JVERSION = getESAPI4JVersion();	// ESAPI4J version
+		this.ESAPINAME = "ESAPI4CF";				// ESAPI library name
+		this.VERSION = "1.0.3a";					// ESAPI library version
 		variables.javaObjectCache = {};
 
 		System = newJava("java.lang.System");
