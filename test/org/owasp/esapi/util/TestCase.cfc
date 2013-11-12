@@ -20,9 +20,18 @@
 	<cfscript>
 		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("../../../resources/");
 
-		variables.javaObjectCache = {};
+		// ESAPI4J version
+		try {
+			// cannot use newJava() here
+			createObject("java", "org.owasp.esapi.util.ObjFactory");
+			this.ESAPI4JVERSION = 2;
+		}
+		catch(Object e) {
+			// occurs if this version is less than 2.0
+			this.ESAPI4JVERSION = 1;
+		}
 
-		System = newJava("java.lang.System");
+		System = createObject("java", "java.lang.System");
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">
@@ -57,93 +66,6 @@
 		<cffile action="write" file="#expandPath(filePath)#" output="#writer#"/>
 	</cffunction>
 
-	<cffunction access="private" returntype="Struct" name="getCFMLMetaData" output="false">
-
-		<cfscript>
-			var results = {};
-			if(structKeyExists(server, "railo")) {
-				results["engine"] = server.ColdFusion.ProductName;
-				results["version"] = server.railo.version;
-			}
-			else {
-				results["engine"] = listFirst(server.ColdFusion.ProductName, " ");
-				results["version"] = server.ColdFusion.ProductVersion;
-			}
-			return results;
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="private" name="newJava" output="false">
-		<cfargument required="true" type="String" name="classpath"/>
-
-		<cfscript>
-			if(!structKeyExists(variables.javaObjectCache, arguments.classpath)) {
-				variables.javaObjectCache[arguments.classpath] = createObject("java", arguments.classpath);
-			}
-
-			return variables.javaObjectCache[arguments.classpath];
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="private" returntype="void" name="throwException" output="false">
-		<cfargument required="true" name="exception"/>
-
-		<cfif isInstanceOf(arguments.exception, "org.owasp.esapi.util.RuntimeException")>
-			<!--- ESAPI RuntimeExceptions --->
-			<cfthrow type="#arguments.exception.getType()#" message="#arguments.exception.getMessage()#" extendedinfo="#arguments.exception.getCause()#"/>
-		<cfelseif isInstanceOf(arguments.exception, "org.owasp.esapi.util.Exception")>
-			<!--- ESAPI Exceptions --->
-			<cfthrow type="#arguments.exception.getType()#" message="#arguments.exception.getUserMessage()#" detail="#arguments.exception.getLogMessage()#" extendedinfo="#arguments.exception.getCause()#"/>
-		<cfelseif isInstanceOf(arguments.exception, "java.lang.Throwable")>
-			<!--- Java Exceptions --->
-			<cfthrow object="#arguments.exception#"/>
-		<cfelseif isStruct(arguments.exception)>
-			<!--- CFML Exceptions --->
-			<cfthrow attributecollection="#arguments.exception#"/>
-		</cfif>
-	</cffunction>
-
-	<cffunction access="private" name="getSecurityType" output="false">
-		<cfargument required="true" type="String" name="type"/>
-
-		<cfscript>
-			var logger = newJava("org.owasp.esapi.Logger");
-			// ESAPI 1.4.4
-			if(structKeyExists(logger, "SECURITY")) {
-				return logger.SECURITY;
-			}
-			// ESAPI 2.0+
-			else {
-				return logger[arguments.type];
-			}
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="private" returntype="boolean" name="cf8_isNull" output="false">
-		<cfargument required="true" name="value"/>
-
-		<cfscript>
-			var data = getCFMLMetaData();
-			// CF8 lacks support for isNull() so don't check it
-			if(!(data.engine == "ColdFusion" && listFirst(data.version, ",") == 8)) {
-				return isNull(arguments.value);
-			}
-			return false;
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="private" returntype="void" name="cf8_writeDump" output="true">
-		<cfargument required="true" name="var"/>
-		<cfargument type="boolean" name="abort" default="false"/>
-
-		<cfdump var="#arguments.var#"/>
-		<cfif arguments.abort>
-			<cfabort/>
-		</cfif>
-	</cffunction>
+	<cfinclude template="/org/owasp/esapi/util/common.cfm"/>
 
 </cfcomponent>

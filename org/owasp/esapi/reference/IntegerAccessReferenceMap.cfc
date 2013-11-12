@@ -91,7 +91,7 @@
 			if(structKeyExists(variables.dtoi, arguments.direct)) {
 				indirect = variables.dtoi[arguments.direct];
 			}
-			if(isDefined("indirect") && !cf8_isNull(indirect)) {
+			if(isDefined("indirect") && !isNull(indirect)) {
 				variables.itod.remove(indirect);
 				variables.dtoi.remove(arguments.direct);
 				return indirect;

@@ -53,7 +53,7 @@
 			if(isArray(atts)) {
 				ret = atts;
 			}
-			else if(isDefined("atts") && !cf8_isNull(atts)) {
+			else if(isDefined("atts") && !isNull(atts)) {
 				while(atts.hasMoreElements()) {
 					arrayAppend(ret, atts.nextElement());
 				}

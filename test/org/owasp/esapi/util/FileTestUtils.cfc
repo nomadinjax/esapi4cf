@@ -75,11 +75,11 @@
 			var name = "";
 			var dir = "";
 
-			if(!structKeyExists(arguments, "prefix") || cf8_isNull(arguments.prefix))
+			if(!structKeyExists(arguments, "prefix") || isNull(arguments.prefix))
 				arguments.prefix = variables.DEFAULT_PREFIX;
 			else if(!arguments.prefix.endsWith("."))
 				arguments.prefix &= '.';
-			if(!structKeyExists(arguments, "suffix") || cf8_isNull(arguments.suffix))
+			if(!structKeyExists(arguments, "suffix") || isNull(arguments.suffix))
 				arguments.suffix = variables.DEFAULT_SUFFIX;
 			else if(!arguments.suffix.startsWith("."))
 				arguments.suffix = "." & arguments.suffix;
@@ -88,7 +88,7 @@
 			name = arguments.prefix & toHexString(variables.rand.nextLong()) & arguments.suffix;
 			dir = newJava("java.io.File").init(arguments.parent, name);
 			if(!dir.mkdir())
-				throwException(newJava("java.io.IOException").init("Unable to create temporary directory " & dir));
+				throw(object=newJava("java.io.IOException").init("Unable to create temporary directory " & dir));
 			return dir.getCanonicalFile();
 		</cfscript>
 
@@ -104,11 +104,11 @@
 			var childsParent = "";
 
 			if(!isObject(arguments.child))
-				throwException(newJava("java.lang.NullPointerException").init("child argument is null"));
+				throw(object=newJava("java.lang.NullPointerException").init("child argument is null"));
 			if(!arguments.child.isDirectory())
 				return false;
 			if(!isObject(arguments.parent))
-				throwException(newJava("java.lang.NullPointerException").init("parent argument is null"));
+				throw(object=newJava("java.lang.NullPointerException").init("parent argument is null"));
 			arguments.parent = arguments.parent.getCanonicalFile();
 			arguments.child = arguments.child.getCanonicalFile();
 			childsParent = arguments.child.getParentFile();
@@ -130,7 +130,7 @@
 			if(!isObject(arguments.file) || !arguments.file.exists())
 				return;
 			if(!arguments.file.delete())
-				throwException(newJava("java.io.IOException").init("Unable to delete file " & arguments.file.getAbsolutePath()));
+				throw(object=newJava("java.io.IOException").init("Unable to delete file " & arguments.file.getAbsolutePath()));
 		</cfscript>
 
 	</cffunction>

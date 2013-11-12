@@ -637,7 +637,7 @@
 	<cffunction access="public" name="clone" output="false" hint="Override clone and make final to prevent duplicate user objects.">
 
 		<cfscript>
-			throwException(newJava("java.lang.CloneNotSupportedException").init());
+			throw(object=newJava("java.lang.CloneNotSupportedException").init());
 		</cfscript>
 
 	</cffunction>

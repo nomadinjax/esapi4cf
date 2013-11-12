@@ -504,9 +504,9 @@
 			}
 			deleter = newJava("javax.servlet.http.Cookie").init(arguments.name, "deleted");
 			deleter.setMaxAge(0);
-			if(isDefined("domain") && !cf8_isNull(domain))
+			if(isDefined("domain") && !isNull(domain))
 				deleter.setDomain(domain);
-			if(isDefined("path") && !cf8_isNull(path))
+			if(isDefined("path") && !isNull(path))
 				deleter.setPath(path);
 			arguments.httpResponse.addCookie(deleter);
 		</cfscript>
@@ -591,7 +591,7 @@
 		<cfscript>
 			var httpRequest = variables.currentRequest.getRequest();
 			if(!isObject(httpRequest))
-				throwException(newJava("java.lang.NullPointerException").init("Cannot use current request until it is set with HTTPUtilities.setCurrentHTTP()"));
+				throw(object=newJava("java.lang.NullPointerException").init("Cannot use current request until it is set with HTTPUtilities.setCurrentHTTP()"));
 			return httpRequest;
 		</cfscript>
 
@@ -602,7 +602,7 @@
 		<cfscript>
 			var httpResponse = variables.currentResponse.getResponse();
 			if(!isObject(httpResponse))
-				throwException(newJava("java.lang.NullPointerException").init("Cannot use current response until it is set with HTTPUtilities.setCurrentHTTP()"));
+				throw(object=newJava("java.lang.NullPointerException").init("Cannot use current response until it is set with HTTPUtilities.setCurrentHTTP()"));
 			return httpResponse;
 		</cfscript>
 

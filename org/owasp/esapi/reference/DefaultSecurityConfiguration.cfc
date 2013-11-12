@@ -222,17 +222,17 @@
 						ins = loaders[i].getResourceAsStream(arguments.fileName);
 
 						// try .esapi folder
-						if(!(isDefined("ins") && !cf8_isNull(ins))) {
+						if(!(isDefined("ins") && !isNull(ins))) {
 							ins = currentLoader.getResourceAsStream(".esapi/" & arguments.fileName);
 						}
 
 						// try resources folder
-						if(!(isDefined("ins") && !cf8_isNull(ins))) {
+						if(!(isDefined("ins") && !isNull(ins))) {
 							ins = currentLoader.getResourceAsStream("resources/" & arguments.fileName);
 						}
 
 						// now load the properties
-						if(isDefined("ins") && !cf8_isNull(ins)) {
+						if(isDefined("ins") && !isNull(ins)) {
 							result = newJava("java.util.Properties").init();
 							result.load(ins);// Can throw IOException
 							logSpecial("Successfully loaded " & arguments.fileName & " via the classpath! BOO-YA!");
@@ -241,7 +241,7 @@
 					catch(java.lang.Exception e) {
 						result = "";
 					}
-					if(isDefined("ins") && !cf8_isNull(ins)) {
+					if(isDefined("ins") && !isNull(ins)) {
 						try {
 							ins.close();
 						}
@@ -252,7 +252,7 @@
 			}
 
 			if(!isObject(result)) {
-				throwException(newJava("java.lang.IllegalArgumentException").init("[" & this.ESAPINAME & "] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
+				throw(object=newJava("java.lang.IllegalArgumentException").init("[" & this.ESAPINAME & "] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
 			}
 
 			return result;
@@ -349,7 +349,7 @@
 
 		<cfscript>
 			var value = variables.properties.getProperty(variables.DISABLE_INTRUSION_DETECTION);
-			if(isDefined("value") && !cf8_isNull(value) && value.equalsIgnoreCase("true"))
+			if(isDefined("value") && !isNull(value) && value.equalsIgnoreCase("true"))
 				return true;
 			return false;// Default result
 		</cfscript>
@@ -372,19 +372,19 @@
 
 			count = 0;
 			countString = variables.properties.getProperty(arguments.eventName & ".count");
-			if(isDefined("countString") && !cf8_isNull(countString)) {
+			if(isDefined("countString") && !isNull(countString)) {
 				count = newJava("java.lang.Integer").parseInt(countString);
 			}
 
 			interval = 0;
 			intervalString = variables.properties.getProperty(arguments.eventName & ".interval");
-			if(isDefined("intervalString") && !cf8_isNull(intervalString)) {
+			if(isDefined("intervalString") && !isNull(intervalString)) {
 				interval = newJava("java.lang.Integer").parseInt(intervalString);
 			}
 
 			actions = [];
 			actionString = variables.properties.getProperty(arguments.eventName & ".actions");
-			if(isDefined("actionString") && !cf8_isNull(actionString)) {
+			if(isDefined("actionString") && !isNull(actionString)) {
 				actionList = actionString.split(",");
 				actions = newJava("java.util.Arrays").asList(actionList);
 			}
@@ -399,7 +399,7 @@
 
 		<cfscript>
 			var level = variables.properties.getProperty(variables.LOG_LEVEL);
-			if(!(isDefined("level") && !cf8_isNull(level))) {
+			if(!(isDefined("level") && !isNull(level))) {
 				// This error is NOT logged the normal way because the logger constructor calls getLogLevel() and if this error occurred it would cause an infinite loop.
 				logSpecial("The LOG-LEVEL property in the ESAPI properties file is not defined.", "");
 				return newJava("org.owasp.esapi.Logger").WARNING;
@@ -469,7 +469,7 @@
 
 		<cfscript>
 			var value = variables.properties.getProperty(variables.LOG_DEFAULT_LOG4J);
-			if(isDefined("value") && !cf8_isNull(value) && value.equalsIgnoreCase("true"))
+			if(isDefined("value") && !isNull(value) && value.equalsIgnoreCase("true"))
 				return true;
 			return false;// Default result
 		</cfscript>
@@ -480,7 +480,7 @@
 
 		<cfscript>
 			var value = variables.properties.getProperty(variables.LOG_ENCODING_REQUIRED);
-			if(isDefined("value") && !cf8_isNull(value) && value.equalsIgnoreCase("true"))
+			if(isDefined("value") && !isNull(value) && value.equalsIgnoreCase("true"))
 				return true;
 			return false;// Default result
 		</cfscript>
@@ -555,7 +555,7 @@
 			var pattern = "";
 
 			var value = variables.properties.getProperty("Validator." & arguments.key);
-			if(!(isDefined("value") && !cf8_isNull(value)) || value == "")
+			if(!(isDefined("value") && !isNull(value)) || value == "")
 				return "";
 			pattern = newJava("java.util.regex.Pattern").compile(value);
 			return pattern;
@@ -603,7 +603,7 @@
 			}
 			catch(java.lang.Exception e) {
 			}
-			throwException(newJava("java.io.FileNotFoundException").init());
+			throw(object=newJava("java.io.FileNotFoundException").init());
 		</cfscript>
 
 	</cffunction>

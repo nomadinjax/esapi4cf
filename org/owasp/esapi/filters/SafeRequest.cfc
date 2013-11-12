@@ -136,7 +136,7 @@
 
 			cookies = variables.httpRequest.getCookies();
 			newCookies = [];
-			if(isDefined("cookies") && !cf8_isNull(cookies)) {
+			if(isDefined("cookies") && !isNull(cookies)) {
 				for(i = 1; i <= arrayLen(cookies); i++) {
 					c = cookies[i];
 
@@ -152,10 +152,10 @@
 						n = newJava("javax.servlet.http.Cookie").init(name, value);
 						n.setMaxAge(maxAge);
 
-						if(isDefined("domain") && !cf8_isNull(domain)) {
+						if(isDefined("domain") && !isNull(domain)) {
 							n.setDomain(variables.ESAPI.validator().getValidInput("Cookie domain: " & domain, domain, "HTTPHeaderValue", 200, false));
 						}
-						if(isDefined("path") && !cf8_isNull(path)) {
+						if(isDefined("path") && !isNull(path)) {
 							n.setPath(variables.ESAPI.validator().getValidInput("Cookie path: " & path, path, "HTTPHeaderValue", 200, false));
 						}
 						newCookies.add(n);
@@ -187,7 +187,7 @@
 		<cfscript>
 			var value = variables.httpRequest.getHeader(arguments.name);
 			var clean = "";
-			if (isDefined("value") && !cf8_isNull(value)) {
+			if (isDefined("value") && !isNull(value)) {
 				try {
 					clean = variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 150, true);
 				}
@@ -336,7 +336,7 @@
 			var clean = "";
 
 			orig = variables.httpRequest.getParameter(arguments.name);
-			if(!(isDefined("orig") && !cf8_isNull(orig))) {
+			if(!(isDefined("orig") && !isNull(orig))) {
 				orig = "";
 			}
 			clean = "";
@@ -435,7 +435,7 @@
 
 			values = variables.httpRequest.getParameterValues(arguments.name);
 			newValues = [];
-			if(isDefined("values") && !cf8_isNull(values)) {
+			if(isDefined("values") && !isNull(values)) {
 				for(i = 1; i <= arrayLen(values); i++) {
 					try {
 						value = values[i];
@@ -461,7 +461,7 @@
 			var clean = "";
 
 			path = variables.httpRequest.getPathInfo();
-			if(!(isDefined("path") && !cf8_isNull(path))) {
+			if(!(isDefined("path") && !isNull(path))) {
 				path = "";
 			}
 			clean = "";
@@ -503,7 +503,7 @@
 			var clean = "";
 
 			queryString = variables.httpRequest.getQueryString();
-			if(!(isDefined("queryString") && !cf8_isNull(queryString))) {
+			if(!(isDefined("queryString") && !isNull(queryString))) {
 				queryString = "";
 			}
 			clean = "";
@@ -713,7 +713,7 @@
 
 			if(structKeyExists(arguments, "create")) {
 				httpSession = getHttpServletRequest().getSession(arguments.create);
-				if(!(isDefined("httpSession") && !cf8_isNull(httpSession) && (isStruct(httpSession) || isObject(httpSession)))) {
+				if(!(isDefined("httpSession") && !isNull(httpSession) && (isStruct(httpSession) || isObject(httpSession)))) {
 					return "";
 				}
 				safeSession = createObject("component", "org.owasp.esapi.filters.SafeSession").init(variables.ESAPI, httpSession);

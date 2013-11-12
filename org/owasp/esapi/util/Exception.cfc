@@ -29,7 +29,7 @@
 
 		<cfscript>
 			if(structKeyExists(arguments, "message")) {
-				if(structKeyExists(arguments, "cause") && !cf8_isNull(arguments.cause) && isObject(arguments.cause)) {
+				if(structKeyExists(arguments, "cause") && !isNull(arguments.cause) && isObject(arguments.cause)) {
 					// CF exceptions extend java.lang.Exception
 					if(isInstanceOf(arguments.cause, "java.lang.Throwable")) {
 						variables.exception = newJava("java.lang.Exception").init(arguments.message, arguments.cause);

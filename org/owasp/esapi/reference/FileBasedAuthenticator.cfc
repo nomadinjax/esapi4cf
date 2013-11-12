@@ -95,14 +95,14 @@
 
 		<cfscript>
 			var hashes = variables.passwordMap.get(arguments.user.getAccountId());
-			if(isDefined("hashes") && !cf8_isNull(hashes))
+			if(isDefined("hashes") && !isNull(hashes))
 				return hashes;
 			if(arguments.create) {
 				hashes = [];
 				variables.passwordMap.put(arguments.user.getAccountId(), hashes);
 				return hashes;
 			}
-			throwException(createObject("java", "java.lang.RuntimeException").init("No hashes found for " & arguments.user.getAccountName() & ". Is User.hashcode() and equals() implemented correctly?"));
+			throw(object=newJava("java.lang.RuntimeException").init("No hashes found for " & arguments.user.getAccountName() & ". Is User.hashcode() and equals() implemented correctly?"));
 		</cfscript>
 
 	</cffunction>
@@ -253,7 +253,7 @@
 				verifyPasswordStrength(arguments.currentPassword, arguments.newPassword);
 				arguments.user.setLastPasswordChangeTime(newJava("java.util.Date").init());
 				newHash = hashPassword(arguments.newPassword, accountName);
-				if(cf8_arrayFind(getOldPasswordHashes(arguments.user), newHash)) {
+				if(arrayFind(getOldPasswordHashes(arguments.user), newHash)) {
 					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Password change matches a recent password for user: " & accountName));
 				}
 				setHashedPassword(arguments.user, newHash);
@@ -305,7 +305,7 @@
 
 			if(structKeyExists(arguments, "user") && structKeyExists(arguments, "oldPassword")) {
 				newPassword = _generateStrongPassword(arguments.oldPassword);
-				if(isDefined("newPassword") && !cf8_isNull(newPassword))
+				if(isDefined("newPassword") && !isNull(newPassword))
 					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Generated strong password for " & arguments.user.getAccountName());
 				return newPassword;
 			}
@@ -499,7 +499,7 @@
 				map = {};
 				reader = newJava("java.io.BufferedReader").init(newJava("java.io.FileReader").init(variables.userDB));
 				line = reader.readLine();
-				while(isDefined("line") && !cf8_isNull(line)) {
+				while(isDefined("line") && !isNull(line)) {
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
 						user = _createUser(line);
 						if(map.containsKey(javaCast("long", user.getAccountId()))) {
@@ -737,12 +737,12 @@
 			user = getUserFromSession(arguments.httpRequest);
 
 			// else if there's a remember token then use that
-			if(!(isDefined("user") && !cf8_isNull(user) && isObject(user))) {
+			if(!(isDefined("user") && !isNull(user) && isObject(user))) {
 				user = getUserFromRememberToken(arguments.httpRequest, arguments.httpResponse);
 			}
 
 			// else try to verify credentials - throws exception if login fails
-			if(!(isDefined("user") && !cf8_isNull(user) && isObject(user))) {
+			if(!(isDefined("user") && !isNull(user) && isObject(user))) {
 				user = loginWithUsernameAndPassword(arguments.httpRequest, arguments.httpResponse);
 
 				// warn if this authentication request was not POST or non-SSL connection, exposing credentials or session id
@@ -874,7 +874,7 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password cannot be blank"));
 
 			// can't change to a password that contains any 3 character substring of old password
-			if(structKeyExists(arguments, "oldPassword") && !cf8_isNull(arguments.oldPassword)) {
+			if(structKeyExists(arguments, "oldPassword") && !isNull(arguments.oldPassword)) {
 				length = arguments.oldPassword.length();
 				for(i = 0; i < length - 2; i++) {
 					sub = arguments.oldPassword.substring(i, i + 3);
@@ -912,30 +912,6 @@
 			if(strength < 16) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password is not long and complex enough"));
 			}
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="private" returntype="numeric" name="cf8_arrayFind" output="false">
-		<cfargument required="true" type="Array" name="array"/>
-		<cfargument required="true" name="object"/>
-
-		<cfscript>
-			if(isSimpleValue(arguments.object)) {
-				for(i = 1; i <= arrayLen(arguments.array); i++) {
-					if(arguments.object == arguments.array[i]) {
-						return i;
-					}
-				}
-			}
-			else {
-				for(i = 1; i <= arrayLen(arguments.array); i++) {
-					if(arguments.object.equals(arguments.array[i])) {
-						return i;
-					}
-				}
-			}
-			return 0;
 		</cfscript>
 
 	</cffunction>

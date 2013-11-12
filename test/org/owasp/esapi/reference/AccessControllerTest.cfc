@@ -67,9 +67,9 @@
 
 		<cfscript>
 			if(!directoryExists(arguments.dir))
-				throwException(newJava("java.lang.IllegalStateException").init(arguments.prefix & " does not exist (was " & arguments.dir & ')'));
+				throw(object=newJava("java.lang.IllegalStateException").init(arguments.prefix & " does not exist (was " & arguments.dir & ')'));
 			//if(!arguments.dir.isDirectory())
-			//    throwException( newJava( "java.lang.IllegalStateException" ).init( arguments.prefix & " is not a directory (was " & arguments.dir.getPath() & ')' ) );
+			//    throw(object=newJava("java.lang.IllegalStateException" ).init( arguments.prefix & " is not a directory (was " & arguments.dir.getPath() & ')' ) );
 		</cfscript>
 
 	</cffunction>

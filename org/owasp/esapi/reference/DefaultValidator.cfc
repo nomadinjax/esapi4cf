@@ -88,7 +88,7 @@
 					canonical = variables.ESAPI.encoder().canonicalize(arguments.input);
 
 					if(arguments.type == "" || arguments.type.length() == 0) {
-						throwException(newJava("java.lang.RuntimeException").init("Validation misconfiguration, specified type to validate against was null: context=" & arguments.context & ", type=" & arguments.type & "), input=" & arguments.input));
+						throw(object=newJava("java.lang.RuntimeException").init("Validation misconfiguration, specified type to validate against was null: context=" & arguments.context & ", type=" & arguments.type & "), input=" & arguments.input));
 					}
 
 					if(isEmptyInput(canonical)) {
@@ -107,7 +107,7 @@
 							p = newJava("java.util.regex.Pattern").compile(arguments.type);
 						}
 						catch(java.util.regex.PatternSyntaxException e) {
-							throwException(newJava("java.lang.RuntimeException").init("Validation misconfiguration, specified type to validate against was null: context=" & arguments.context & ", type=" & arguments.type & "), input=" & arguments.input));
+							throw(object=newJava("java.lang.RuntimeException").init("Validation misconfiguration, specified type to validate against was null: context=" & arguments.context & ", type=" & arguments.type & "), input=" & arguments.input));
 						}
 					}
 
@@ -223,7 +223,7 @@
 							}
 
 						if(variables.antiSamyPolicy == "") {
-							throwException(newJava("java.lang.IllegalArgumentException").init("Can't load antisamy-esapi.xml as a classloader resource"));
+							throw(object=newJava("java.lang.IllegalArgumentException").init("Can't load antisamy-esapi.xml as a classloader resource"));
 						}
 					}
 					else {
@@ -303,7 +303,7 @@
 								}
 							}
 							if(variables.antiSamyPolicy == "") {
-								throwException(newJava("java.lang.IllegalArgumentException").init("Can't load antisamy-esapi.xml as a classloader resource"));
+								throw(object=newJava("java.lang.IllegalArgumentException").init("Can't load antisamy-esapi.xml as a classloader resource"));
 							}
 						}
 						else {

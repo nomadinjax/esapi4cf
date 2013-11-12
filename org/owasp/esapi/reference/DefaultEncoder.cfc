@@ -62,11 +62,11 @@
 					o = arguments.codecs[i];
 					/* FIXME: this condition fails in Railo - no idea why
 					if(!isInstanceOf( o, "org.owasp.esapi.codecs.Codec" )) {
-					    throwException( newJava( "java.lang.IllegalArgumentException" ).init( "Codec list must contain only Codec instances" ) );
+					    throw(object=newJava("java.lang.IllegalArgumentException").init("Codec list must contain only Codec instances"));
 					} */
 					// at least check to ensure its an object since Railo fails the above check
 					if(!isObject(o)) {
-						throwException(newJava("java.lang.IllegalArgumentException").init("Codec list must contain only Codec instances"));
+						throw(object=newJava("java.lang.IllegalArgumentException").init("Codec list must contain only Codec instances"));
 					}
 				}
 				variables.codecs = arguments.codecs;

@@ -303,7 +303,7 @@
 			}
 
 			// if rule found and user's roles match rules' roles, return the rule
-			if(isDefined("rule") && !cf8_isNull(rule) && isStruct(rule) && overlapByRoles(rule.roles, arguments.roles)) {
+			if(isDefined("rule") && !isNull(rule) && isStruct(rule) && overlapByRoles(rule.roles, arguments.roles)) {
 				return rule;
 			}
 
@@ -338,7 +338,7 @@
 			if(structKeyExists(arguments.map, arguments.clazz.getClass().getName())) {
 				rule = arguments.map.get(arguments.clazz.getClass().getName());
 			}
-			if((isDefined("rule") && !cf8_isNull(rule)) && isStruct(rule) && (overlapByAction(rule.actions, arguments.action)) && (overlapByRoles(rule.roles, arguments.roles))) {
+			if((isDefined("rule") && !isNull(rule)) && isStruct(rule) && (overlapByAction(rule.actions, arguments.action)) && (overlapByRoles(rule.roles, arguments.roles))) {
 				return rule;
 			}
 			return "";

@@ -28,17 +28,17 @@
 		<cfargument name="uri"/>
 
 		<cfscript>
-			if(structKeyExists(arguments, "pathname") && !cf8_isNull(arguments.pathname)) {
+			if(structKeyExists(arguments, "pathname") && !isNull(arguments.pathname)) {
 				variables.File = newJava("java.io.File").init(javaCast("string", arguments.pathname));
 			}
-			else if(structKeyExists(arguments, "parent") && !cf8_isNull(arguments.parent) && structKeyExists(arguments, "child") && !cf8_isNull(arguments.child)) {
+			else if(structKeyExists(arguments, "parent") && !isNull(arguments.parent) && structKeyExists(arguments, "child") && !isNull(arguments.child)) {
 				variables.File = newJava("java.io.File").init(arguments.parent, javaCast("string", arguments.child));
 			}
-			else if(structKeyExists(arguments, "uri") && !cf8_isNull(arguments.uri)) {
+			else if(structKeyExists(arguments, "uri") && !isNull(arguments.uri)) {
 				variables.File = newJava("java.io.File").init(arguments.uri);
 			}
 			else {
-				throwException(newJava("IOException").init("Invalid File Instantiation.", "You must provide either a pathname, a parent and child, or a uri."));
+				throw(object=newJava("IOException").init("Invalid File Instantiation.", "You must provide either a pathname, a parent and child, or a uri."));
 			}
 
 			return this;

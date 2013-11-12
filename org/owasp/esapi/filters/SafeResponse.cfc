@@ -308,7 +308,7 @@
 		<cfscript>
 			if(!variables.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
 				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Bad redirect location: " & arguments.location);
-				throwException(newJava("java.io.IOException").init("Redirect failed"));
+				throw(object=newJava("java.io.IOException").init("Redirect failed"));
 			}
 			variables.httpResponse.sendRedirect(arguments.location);
 		</cfscript>

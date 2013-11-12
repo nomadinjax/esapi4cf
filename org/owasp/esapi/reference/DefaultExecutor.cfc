@@ -112,7 +112,7 @@
 			var br = newJava("java.io.BufferedReader").init(isr);
 			var sb = newJava("java.lang.StringBuffer").init();
 			var line = br.readLine();
-			while(isDefined("line") && !cf8_isNull(line)) {
+			while(isDefined("line") && !isNull(line)) {
 				sb.append(line & "\n");
 				line = br.readLine();
 			}
