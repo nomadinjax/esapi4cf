@@ -29,8 +29,14 @@
 			System.out.println("canonicalize");
 
 			list = newJava("java.util.ArrayList").init();
-			list.add(newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init());
-			list.add(newJava("org.owasp.esapi.codecs.PercentCodec").init());
+			if (this.ESAPI4JVERSION == 2) {
+				list.add("org.owasp.esapi.codecs.HTMLEntityCodec");
+				list.add("org.owasp.esapi.codecs.PercentCodec");
+			}
+			else {
+				list.add(newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init());
+				list.add(newJava("org.owasp.esapi.codecs.PercentCodec").init());
+			}
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, list);
 
 			/* NULL test not valid in CF
@@ -144,7 +150,12 @@
 
 			// javascript escape syntax
 			js = newJava("java.util.ArrayList").init();
-			js.add(newJava("org.owasp.esapi.codecs.JavaScriptCodec").init());
+			if (this.ESAPI4JVERSION == 2) {
+				js.add("org.owasp.esapi.codecs.JavaScriptCodec");
+			}
+			else {
+				js.add(newJava("org.owasp.esapi.codecs.JavaScriptCodec").init());
+			}
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, js);
 			System.out.println("JavaScript Decoding");
 
@@ -174,9 +185,15 @@
 			// css escape syntax
 			// be careful because some codecs see \0 as null byte
 			css = newJava("java.util.ArrayList").init();
-			css.add(newJava("org.owasp.esapi.codecs.CSSCodec").init());
+			if (this.ESAPI4JVERSION == 2) {
+				css.add("org.owasp.esapi.codecs.CSSCodec");
+			}
+			else {
+				css.add(newJava("org.owasp.esapi.codecs.CSSCodec").init());
+			}
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, css);
 			System.out.println("CSS Decoding");
+
 			assertEquals("<", instance.canonicalize("\3c"));// add strings to prevent null byte
 			assertEquals("<", instance.canonicalize("\03c"));
 			assertEquals("<", instance.canonicalize("\003c"));
@@ -275,7 +292,12 @@
 			var instance = variables.ESAPI.encoder();
 			assertEquals("&lt;script&gt;", instance.encodeForHTMLAttribute("<script>"));
 			assertEquals(",.-_", instance.encodeForHTMLAttribute(",.-_"));
-			assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForHTMLAttribute(" !@$%()=+{}[]"));
+			if (this.ESAPI4JVERSION == 2) {
+				assertEquals("&##x20;&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForHTMLAttribute(" !@$%()=+{}[]"));
+			}
+			else {
+				assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForHTMLAttribute(" !@$%()=+{}[]"));
+			}
 		</cfscript>
 
 	</cffunction>
@@ -285,7 +307,7 @@
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("\3C script\3E ", instance.encodeForCSS("<script>"));
-			assertEquals(" \21 \40 \24 \25 \28 \29 \3D \2B \7B \7D \5B \5D \22 ", instance.encodeForCSS(' !@$%()=+{}[]"'));
+			assertEquals("\21 \40 \24 \25 \28 \29 \3D \2B \7B \7D \5B \5D \22 ", instance.encodeForCSS('!@$%()=+{}[]"'));
 		</cfscript>
 
 	</cffunction>
@@ -296,7 +318,12 @@
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("\x3Cscript\x3E", instance.encodeForJavaScript("<script>"));
-			assertEquals(",.-_ ", instance.encodeForJavaScript(",.-_ "));
+			if (this.ESAPI4JVERSION == 2) {
+				assertEquals(",.\x2D_\x20", instance.encodeForJavaScript(",.-_ "));
+			}
+			else {
+				assertEquals(",.-_ ", instance.encodeForJavaScript(",.-_ "));
+			}
 			assertEquals("\x21\x40\x24\x25\x28\x29\x3D\x2B\x7B\x7D\x5B\x5D", instance.encodeForJavaScript("!@$%()=+{}[]"));
 			/* NULL test not valid in CF
 			assertEquals( "\0", instance.encodeForJavaScript("\0"));
@@ -318,8 +345,14 @@
 
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
-			assertEquals('"<script">', instance.encodeForVBScript("<script>"));
-			assertEquals(' "!"@"$"%"(")"="+"{"}"["]""', instance.encodeForVBScript(' !@$%()=+{}[]"'));
+			if (this.ESAPI4JVERSION == 2) {
+				assertEquals('chrw(60)&"script"&chrw(62)', instance.encodeForVBScript("<script>"));
+				assertEquals('x"&chrw(32)&chrw(33)&chrw(64)&chrw(36)&chrw(37)&chrw(40)&chrw(41)&chrw(61)&chrw(43)&chrw(123)&chrw(125)&chrw(91)&chrw(93)', instance.encodeForVBScript('x !@$%()=+{}[]'));
+			}
+			else {
+				assertEquals('"<script">', instance.encodeForVBScript("<script>"));
+				assertEquals(' "!"@"$"%"(")"="+"{"}"["]""', instance.encodeForVBScript(' !@$%()=+{}[]"'));
+			}
 		</cfscript>
 
 	</cffunction>
@@ -519,7 +552,7 @@
 				assertEquals("     ", instance.decodeFromURL("+++++"));
 			}
 			catch(java.lang.Exception e) {
-				fail();
+				fail("");
 			}
 		</cfscript>
 
@@ -546,7 +579,7 @@
 				}
 			}
 			catch(java.io.IOException e) {
-				fail();
+				fail("");
 			}
 		</cfscript>
 
@@ -568,11 +601,10 @@
 					r = variables.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
 					encoded = instance.encodeForBase64(r, variables.ESAPI.randomizer().getRandomBoolean());
 					decoded = instance.decodeFromBase64(encoded);
-					//assertTrue( Arrays.equals( r, decoded ) );
 					assertEquals(charsetEncode(r, "utf-8"), charsetEncode(decoded, "utf-8"));
 				}
 				catch(java.io.IOException e) {
-					fail();
+					fail("");
 				}
 			}
 			for(i = 0; i < 100; i++) {
@@ -580,7 +612,6 @@
 					r = variables.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
 					encoded = variables.ESAPI.randomizer().getRandomString(1, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & instance.encodeForBase64(r, variables.ESAPI.randomizer().getRandomBoolean());
 					decoded = instance.decodeFromBase64(encoded);
-					//assertFalse( Arrays.equals( r, decoded ) );
 					assertNotEquals(charsetEncode(r, "utf-8"), charsetEncode(decoded, "utf-8"));
 				}
 				catch(java.io.IOException e) {
