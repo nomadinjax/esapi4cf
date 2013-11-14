@@ -45,6 +45,6 @@
 
 	</cffunction>
 
-	<cfinclude template="common.cfm"/>
+	<cfinclude template="utils.cfm"/>
 
 </cfcomponent>

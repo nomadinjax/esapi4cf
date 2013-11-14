@@ -18,7 +18,7 @@
 <cfcomponent extends="mxunit.framework.TestCase" output="false">
 
 	<cfscript>
-		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("../../../resources/");
+		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
 
 		// ESAPI4J version
 		try {
@@ -66,6 +66,6 @@
 		<cffile action="write" file="#expandPath(filePath)#" output="#writer#"/>
 	</cffunction>
 
-	<cfinclude template="/org/owasp/esapi/util/common.cfm"/>
+	<cfinclude template="/org/owasp/esapi/util/utils.cfm"/>
 
 </cfcomponent>
