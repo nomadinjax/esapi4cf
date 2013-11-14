@@ -64,7 +64,7 @@
 			instance = variables.ESAPI.executor();
 			executable = newJava("java.io.File").init("C:\\Windows\\System32\\cmd.exe");
 			working = newJava("java.io.File").init("C:\\");
-			params = [];
+			params = newJava("java.util.ArrayList").init();
 			try {
 				params.add("dir");
 				params.add("/C");

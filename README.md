@@ -26,6 +26,7 @@ RELEASE NOTES
 - added NULL unit tests from ESAPI4J due to improved NULL support in Railo 4.1 
 - DefaultEncoder - now fully dependent on ESAPI4J which resolved Issues 25, 26 & 28 and improved performance
 - SafeFile - now fully dependent on ESAPIJ and full File method support
+- DefaultExecutor - new fully dependent on ESAPIJ
 - 
 
 1.0.3a - 2013-10-18
