@@ -22,7 +22,9 @@ RELEASE NOTES
 
 1.1.0a - 2013-?-?
 - ResourceDirectory can now be passed with ESAPI.init() rather than separate setResourceDirectory() call
-- better method backport for CF8 support: arrayFind(), isNull(), throw(), writeDump(), writeLog(). Allows newer CFML engines to use native methods.
+- improved method backport for CF8 allowing newer CFML engines to use native methods: arrayFind(), isNull(), throw(), writeDump(), writeLog()
+- added NULL unit tests from ESAPI4J due to improved NULL support in Railo 4.1 
+- DefaultEncoder - now fully dependent on ESAPI4J which resolved Issues 25, 26 & 28 and improved performance
 - 
 
 1.0.3a - 2013-10-18

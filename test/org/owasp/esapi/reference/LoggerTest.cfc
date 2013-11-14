@@ -160,9 +160,9 @@
 		<cfscript>
 			System.out.println("info");
 			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "test message", "");
-			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "%3escript%3f test message", "");
-			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "<script> test message", "");
+			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
+			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "%3escript%3f test message", javaCast("null", ""));
+			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "<script> test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -173,7 +173,7 @@
 		<cfscript>
 			System.out.println("trace");
 			variables.testLogger.trace(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.trace(getSecurityType("SECURITY_SUCCESS"), true, "test message", "");
+			variables.testLogger.trace(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -184,7 +184,7 @@
 		<cfscript>
 			System.out.println("debug");
 			variables.testLogger.debug(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.debug(getSecurityType("SECURITY_SUCCESS"), true, "test message", "");
+			variables.testLogger.debug(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -195,7 +195,7 @@
 		<cfscript>
 			System.out.println("error");
 			variables.testLogger.error(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.error(getSecurityType("SECURITY_SUCCESS"), true, "test message", "");
+			variables.testLogger.error(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -206,7 +206,7 @@
 		<cfscript>
 			System.out.println("warning");
 			variables.testLogger.warning(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.warning(getSecurityType("SECURITY_SUCCESS"), true, "test message", "");
+			variables.testLogger.warning(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -217,7 +217,7 @@
 		<cfscript>
 			System.out.println("fatal");
 			variables.testLogger.fatal(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.fatal(getSecurityType("SECURITY_SUCCESS"), true, "test message", "");
+			variables.testLogger.fatal(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>

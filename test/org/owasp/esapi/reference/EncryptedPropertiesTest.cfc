@@ -54,13 +54,17 @@
 			instance.setProperty(name, value);
 			result = instance.getProperty(name);
 			assertEquals(value, result);
-			/* NULL test not valid in CF
 			try {
-			    instance.setProperty(null, null);
+				// Railo 4.1 has full NULL support
+			    instance.setProperty(javaCast("null", ""), javaCast("null", ""));
 			    fail("");
-			} catch( org.owasp.esapi.errors.EncryptionException e ) {
+			}
+			catch(org.owasp.esapi.errors.EncryptionException e) {
 			    // expected
-			} */
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
 		</cfscript>
 
 	</cffunction>
@@ -95,7 +99,7 @@
 			while(i.hasNext()) {
 				key = i.next();
 
-				assertFalse(key == "", "key returned from keySet() iterator was null");
+				assertFalse(isNull(key), "key returned from keySet() iterator was null");
 				if(key.equals("one"))
 					if(sawOne)
 						fail("Key one seen more than once.");
@@ -142,7 +146,7 @@
 			for(i=toLoad.keySet().iterator();i.hasNext();) {
 				key = i.next();
 
-				assertFalse(key == "", "key returned from keySet() iterator was null");
+				assertFalse(isNull(key), "key returned from keySet() iterator was null");
 				if(key.equals("one"))
 					if(sawOne)
 						fail("Key one seen more than once.");

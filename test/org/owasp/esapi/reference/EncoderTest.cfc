@@ -39,12 +39,17 @@
 			}
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, list);
 
-			/* NULL test not valid in CF
 			// Test null paths
-			assertEquals( null, instance.canonicalize( null ) );
-			assertEquals( null, instance.canonicalize( null, true ) );
-			assertEquals( null, instance.canonicalize( null, false ) );
-			*/
+			try {
+				// Railo 4.1 has full NULL support
+				assertEquals("", instance.canonicalize(javaCast("null", "")));
+				assertEquals("", instance.canonicalize(javaCast("null", ""), true));
+				assertEquals("", instance.canonicalize(javaCast("null", ""), false));
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
+
 			// test exception paths
 			assertEquals("%", instance.canonicalize("%25", true));
 			assertEquals("%", instance.canonicalize("%25", false));
@@ -159,9 +164,7 @@
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, js);
 			System.out.println("JavaScript Decoding");
 
-			/* NULL test not valid in CF
-			assertEquals( "\0", instance.canonicalize("\0"));
-			*/
+			assertEquals(0, asc(instance.canonicalize("\0")));
 			assertEquals(chr(8), instance.canonicalize("\b"));
 			assertEquals(chr(9), instance.canonicalize("\t"));
 			assertEquals(chr(10), instance.canonicalize("\n"));
@@ -271,9 +274,13 @@
 
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
-			/* NULL tests not valid for CF
-			assertEquals( null, instance.encodeForHTML( null ) );
-			*/
+			try {
+				// Railo 4.1 has full NULL support
+				assertEquals("", instance.encodeForHTML(javaCast("null", "")));
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
 			assertEquals("&lt;script&gt;", instance.encodeForHTML("<script>"));
 			assertEquals("&amp;lt&##x3b;script&amp;gt&##x3b;", instance.encodeForHTML("&lt;script&gt;"));
 			assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForHTML("!@$%()=+{}[]"));
@@ -325,9 +332,7 @@
 				assertEquals(",.-_ ", instance.encodeForJavaScript(",.-_ "));
 			}
 			assertEquals("\x21\x40\x24\x25\x28\x29\x3D\x2B\x7B\x7D\x5B\x5D", instance.encodeForJavaScript("!@$%()=+{}[]"));
-			/* NULL test not valid in CF
-			assertEquals( "\0", instance.encodeForJavaScript("\0"));
-			*/
+			assertEquals(0, asc(instance.encodeForJavaScript(chr(0))));
 			// assertEquals( "\b", instance.encodeForJavaScript( chr( 8 ) ) );
 			// assertEquals( "\t", instance.encodeForJavaScript( chr( 9 ) ) );
 			// assertEquals( "\n", instance.encodeForJavaScript( chr( 10 ) ) );
@@ -397,9 +402,7 @@
 		<cfscript>
 			var instance = variables.ESAPI.encoder();
 			assertEquals("Hi This is a test ##��", instance.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
-			/* NULL test not valid in CF
-			assertEquals( "Hi \00", instance.encodeForLDAP( "Hi " & toUnicode("\u0000") ), "Zeros" );
-			*/
+			assertEquals( "Hi ", instance.encodeForLDAP( "Hi " & toUnicode("\u0000") ), "Zeros" );
 			assertEquals("Hi \28This\29 = is \2a a \5c test ## � � �", instance.encodeForLDAP("Hi (This) = is * a \ test ## � � �"), "LDAP Christams Tree");
 		</cfscript>
 
@@ -421,16 +424,18 @@
 
 	</cffunction>
 
-	<!--- NULL test not valid for CF
-
-	    <cffunction access="public" returntype="void" name="testEncodeForXMLNull" output="false">
-	    <cfscript>
-	    var instance = variables.ESAPI.encoder();
-	    assertEquals( null, instance.encodeForXML( null ) );
-	    </cfscript>
-	    </cffunction>
-
-	    --->
+	<cffunction access="public" returntype="void" name="testEncodeForXMLNull" output="false">
+		<cfscript>
+			var instance = variables.ESAPI.encoder();
+			try {
+				// Railo 4.1 has full NULL support
+				assertEquals("", instance.encodeForXML(javaCast("null", "")));
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
+		</cfscript>
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLSpace" output="false">
 
@@ -477,15 +482,18 @@
 
 	</cffunction>
 
-	<!--- NULL test not valid for CF
-
-	    <cffunction access="public" returntype="void" name="testEncodeForXMLAttributeNull" output="false">
-	    <cfscript>
-	    var instance = variables.ESAPI.encoder();
-	    assertEquals( null, instance.encodeForXMLAttribute( null ) );
-	    </cfscript>
-	    </cffunction>
-	 --->
+	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeNull" output="false">
+		<cfscript>
+			var instance = variables.ESAPI.encoder();
+			try {
+				// Railo 4.1 has full NULL support
+				assertEquals("", instance.encodeForXMLAttribute(javaCast("null", "")));
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
+		</cfscript>
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSpace" output="false">
 
@@ -618,30 +626,6 @@
 					// expected
 				}
 			}
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="private" returntype="String" name="toUnicode" output="false">
-		<cfargument required="true" type="String" name="string"/>
-
-		<cfscript>
-			// CF8 requires 'var' at the top
-			var i = "";
-			var thisChr = "";
-
-			var sb = newJava("java.lang.StringBuffer").init();
-			for(i = 1; i <= len(arguments.string); i++) {
-				thisChr = mid(arguments.string, i, 6);
-				if(left(thisChr, 2) == "\u") {
-					sb.append(chr(inputBaseN(right(thisChr, 4), 16)));
-					i = i + 5;
-				}
-				else {
-					sb.append(left(thisChr, 1));
-				}
-			}
-			return sb.toString();
 		</cfscript>
 
 	</cffunction>

@@ -23,7 +23,7 @@
     	/** Name of the file in the temporary directory */
     	variables.TEST_FILE_NAME = "test.file";
 		variables.GOOD_FILE_CHARS = newJava("org.owasp.esapi.util.CollectionsUtil").strToUnmodifiableSet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-" /* + "." */);
-		variables.BAD_FILE_CHARS = newJava("org.owasp.esapi.util.CollectionsUtil").strToUnmodifiableSet("\u0000" & /*(File.separatorChar == '/' ? '\\' : '/') +*/ "*|<>?:" /*+ "~!@#$%^&(){}[],`;"*/);
+		variables.BAD_FILE_CHARS = newJava("org.owasp.esapi.util.CollectionsUtil").strToUnmodifiableSet(toUnicode("\u0000") & /*(File.separatorChar == '/' ? '\\' : '/') +*/ "*|<>?:" /*+ "~!@#$%^&(){}[],`;"*/);
 
 		variables.testDir = "";
 		variables.testFile = "";
@@ -99,9 +99,9 @@
 			for(i = variables.GOOD_FILE_CHARS.iterator();i.hasNext();) {
 				ch = i.next().toString();	// avoids generic issues in 1.4&1.5
 				sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch);
-				assertFalse(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should not exist (ch=' & ch.charAt(0) & ').');
+				assertTrue(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should exist (ch=' & ch.charAt(0) & ').');
 				sf = createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch & "test");
-				assertFalse(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should not exist (ch=' & ch.charAt(0) & ').');
+				assertTrue(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should exist (ch=' & ch.charAt(0) & ').');
 			}
 		</cfscript>
 	</cffunction>
@@ -254,22 +254,17 @@
 		</cfscript>
 	</cffunction>
 
-	<!--- NULL test not valid for CFML
-
-		<cffunction access="public" returntype="void" name="testCreateFileNameNull" output="false">
+	<cffunction access="public" returntype="void" name="testCreateFileNameNull" output="false">
 		<cfscript>
-		try
-		{
-		createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testFile.getParent() & newJava("java.io.File").separator & "file" & chr(0) & ".txt");
-		fail("no exception thrown for file name with null in it");
-		}
-		catch(org.owasp.esapi.errors.ValidationException e)
-		{
-		// expected
-		}
+			try {
+				createObject("component", "org.owasp.esapi.SafeFile").init(variables.ESAPI, variables.testFile.getParent() & newJava("java.io.File").separator & "file" & chr(0) & ".txt");
+				fail("no exception thrown for file name with null in it");
+			}
+			catch(org.owasp.esapi.errors.ValidationException e) {
+				// expected
+			}
 		</cfscript>
-		</cffunction>
- --->
+	</cffunction>
 
 	<cffunction access="public" returntype="void" name="testCreateFileHighByte" output="false">
 		<cfscript>

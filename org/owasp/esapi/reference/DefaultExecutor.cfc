@@ -111,7 +111,12 @@
 			var isr = newJava("java.io.InputStreamReader").init(arguments.is);
 			var br = newJava("java.io.BufferedReader").init(isr);
 			var sb = newJava("java.lang.StringBuffer").init();
-			var line = br.readLine();
+			var line = "";
+			// prevent lockups by checking ready state
+			if (!br.ready()) {
+				throw(object=newJava("java.lang.RuntimeException").init("BufferedReader not ready to be read."));
+			}
+			line = br.readLine();
 			while(isDefined("line") && !isNull(line)) {
 				sb.append(line & "\n");
 				line = br.readLine();

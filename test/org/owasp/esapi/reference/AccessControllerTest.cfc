@@ -93,6 +93,8 @@
 			testDir = "";
 			resDir = "";
 
+			//if(isNull(basedir))
+			//	throw(object=newJava("java.lang.IllegalStateException").init("The basedir system property used to find the resource directory is not set"));
 			checkDir((basedirFile), "The basedir system property defines a base directory that");
 			srcDir = expandPath("/org");
 			checkDir((srcDir), "The src directory");

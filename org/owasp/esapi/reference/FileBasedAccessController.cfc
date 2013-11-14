@@ -134,7 +134,7 @@
 		<cfargument required="true" type="String" name="url"/>
 
 		<cfscript>
-			if(variables.urlMap.isEmpty()) {
+			if(isNull(variables.urlMap) || variables.urlMap.isEmpty()) {
 				variables.urlMap = loadRules("URLAccessRules.txt");
 			}
 			if(!matchRuleByPath(variables.urlMap, arguments.url)) {
@@ -148,7 +148,7 @@
 		<cfargument required="true" type="String" name="functionName"/>
 
 		<cfscript>
-			if(variables.functionMap.isEmpty()) {
+			if(isNull(variables.functionMap) || variables.functionMap.isEmpty()) {
 				variables.functionMap = loadRules("FunctionAccessRules.txt");
 			}
 			if(!matchRuleByPath(variables.functionMap, arguments.functionName)) {
@@ -163,7 +163,7 @@
 		<cfargument name="data"/>
 
 		<cfscript>
-			if(variables.dataMap.isEmpty()) {
+			if(isNull(variables.dataMap) || variables.dataMap.isEmpty()) {
 				variables.dataMap = loadDataRules("DataAccessRules.txt");
 			}
 
@@ -183,7 +183,7 @@
 		<cfargument required="true" type="String" name="filepath"/>
 
 		<cfscript>
-			if(variables.fileMap.isEmpty()) {
+			if(isNull(variables.fileMap) || variables.fileMap.isEmpty()) {
 				variables.fileMap = loadRules("FileAccessRules.txt");
 			}
 			if(!matchRuleByPath(variables.fileMap, arguments.filepath.replaceAll("\\", "/"))) {
@@ -197,7 +197,7 @@
 		<cfargument required="true" type="String" name="serviceName"/>
 
 		<cfscript>
-			if(variables.serviceMap.isEmpty()) {
+			if(isNull(variables.serviceMap) || variables.serviceMap.isEmpty()) {
 				variables.serviceMap = loadRules("ServiceAccessRules.txt");
 			}
 			if(!matchRuleByPath(variables.serviceMap, arguments.serviceName)) {
@@ -431,7 +431,7 @@
 			try {
 				ins = newJava("java.io.FileInputStream").init(newJava("java.io.File").init(variables.ESAPI.securityConfiguration().getResourceDirectory(), arguments.ruleset));
 				line = variables.ESAPI.validator().safeReadLine(ins, 500);
-				while(line != -1) {
+				while(isDefined("line") && !isNull(line)) {
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
 						rule = createObject("component", "FileBasedAccessController$Rule").init();
 						parts = line.split("\|");
@@ -491,7 +491,7 @@
 			try {
 				ins = newJava("java.io.FileInputStream").init(newJava("java.io.File").init(variables.ESAPI.securityConfiguration().getResourceDirectory(), arguments.ruleset));
 				line = variables.ESAPI.validator().safeReadLine(ins, 500);
-				while(line != -1) {
+				while(isDefined("line") && !isNull(line)) {
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
 						rule = createObject("component", "FileBasedAccessController$Rule").init();
 						parts = line.split("\|");

@@ -59,10 +59,14 @@
 			assertFalse(instance.isValidInput("test", "(555) 555-5555", "SSN", 100, false));
 			assertFalse(instance.isValidInput("test", "test", "SSN", 100, false));
 
-			/* NULL test invalid for CF
-			assertTrue( instance.isValidInput( "test", null, "Email", 100, true ) );
-			assertFalse( instance.isValidInput( "test", null, "Email", 100, false ) );
-			*/
+			try {
+				// Railo 4.1 has full NULL support
+				assertTrue( instance.isValidInput( "test", javaCast("null", ""), "Email", 100, true ) );
+				assertFalse( instance.isValidInput( "test", javaCast("null", ""), "Email", 100, false ) );
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
 		</cfscript>
 
 	</cffunction>
@@ -151,11 +155,15 @@
 			//testing negative range
 			assertFalse(instance.isValidNumber("test", "-4", 1, 10, false));
 			assertTrue(instance.isValidNumber("test", "-4", -10, 10, false));
-			/* NULL test not valid in CF
 			//testing null value
-			assertTrue( instance.isValidNumber( "test", null, -10, 10, true ) );
-			assertFalse( instance.isValidNumber( "test", null, -10, 10, false ) );
-			*/
+			try {
+				// Railo 4.1 has full NULL support
+				assertTrue( instance.isValidNumber( "test", javaCast("null", ""), -10, 10, true ) );
+				assertFalse( instance.isValidNumber( "test", javaCast("null", ""), -10, 10, false ) );
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
 			//testing empty string
 			assertTrue(instance.isValidNumber("test", "", -10, 10, true));
 			assertFalse(instance.isValidNumber("test", "", -10, 10, false));
@@ -194,11 +202,15 @@
 			//testing negative range
 			assertFalse(instance.isValidInteger("test", "-4", 1, 10, false));
 			assertTrue(instance.isValidInteger("test", "-4", -10, 10, false));
-			/* NULL test not valid for CF
 			//testing null value
-			assertTrue( instance.isValidInteger( "test", null, -10, 10, true ) );
-			assertFalse( instance.isValidInteger( "test", null, -10, 10, false ) );
-			*/
+			try {
+				// Railo 4.1 has full NULL support
+				assertTrue(instance.isValidInteger("test", javaCast("null", ""), -10, 10, true));
+				assertFalse(instance.isValidInteger("test", javaCast("null", ""), -10, 10, false));
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
 			//testing empty string
 			assertTrue(instance.isValidInteger("test", "", -10, 10, true));
 			assertFalse(instance.isValidInteger("test", "", -10, 10, false));

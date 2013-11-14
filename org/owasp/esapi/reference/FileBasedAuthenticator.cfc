@@ -170,8 +170,8 @@
 			var user = "";
 
 			loadUsersIfNecessary();
-			if(arguments.accountName == "") {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, "Account creation failed", "Attempt to create user with blank accountName"));
+			if(isNull(arguments.accountName)) {
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, "Account creation failed", "Attempt to create user with null accountName"));
 			}
 			if(isObject(getUserByAccountName(arguments.accountName))) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName));
@@ -179,8 +179,8 @@
 
 			verifyAccountNameStrength(arguments.accountName);
 
-			if(arguments.password1 == "") {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a blank password"));
+			if(isNull(arguments.password1)) {
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password"));
 			}
 			verifyPasswordStrength(newPassword=arguments.password1);
 
@@ -247,7 +247,7 @@
 				if(!currentHash.equals(verifyHash)) {
 					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Authentication failed for password change on user: " & accountName));
 				}
-				if(arguments.newPassword == "" || arguments.newPassword2 == "" || !arguments.newPassword.equals(arguments.newPassword2)) {
+				if(isNull(arguments.newPassword) || isNull(arguments.newPassword2) || !arguments.newPassword.equals(arguments.newPassword2)) {
 					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & accountName));
 				}
 				verifyPasswordStrength(arguments.currentPassword, arguments.newPassword);
@@ -352,7 +352,7 @@
 			// CF8 requires 'var' at the top
 			var u = "";
 
-			if(arguments.accountName == "") {
+			if(isNull(arguments.accountName)) {
 				return createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI);
 			}
 			loadUsersIfNecessary();
@@ -463,7 +463,7 @@
 			// CF8 requires 'var' at the top
 			var timestamp = "";
 
-			if(!isObject(variables.userDB)) {
+			if(isNull(variables.userDB) || !isObject(variables.userDB)) {
 				variables.userDB = newJava("java.io.File").init(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory()), "users.txt");
 			}
 
@@ -597,11 +597,11 @@
 			}
 
 			// now authenticate with username and password
-			if(username == "" || password == "") {
-				if(username == "") {
+			if(isNull(username) || isNull(password)) {
+				if(isNull(username)) {
 					username = "unspecified user";
 				}
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Authentication failed", "Authentication failed for " & username & " because of blank username or password"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Authentication failed", "Authentication failed for " & username & " because of null username or password"));
 			}
 			user = getUserByAccountName(username);
 			if(!isObject(user)) {
@@ -730,7 +730,7 @@
 			var httpSession = "";
 
 			if(!isObject(arguments.httpRequest) || !isObject(arguments.httpResponse)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid request", "Request or response objects were empty"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid request", "Request or response objects were null"));
 			}
 
 			// if there's a user in the session then use that
@@ -847,8 +847,8 @@
 		<cfargument required="true" type="String" name="accountName"/>
 
 		<cfscript>
-			if(arguments.accountName == "") {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "Attempt to create account with a blank account name"));
+			if(isNull(arguments.accountName)) {
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "Attempt to create account with a null account name"));
 			}
 			if(!variables.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.accountName, "AccountName", variables.MAX_ACCOUNT_NAME_LENGTH, false)) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName));
@@ -870,8 +870,8 @@
 			var charsets = "";
 			var strength = "";
 
-			if(arguments.newPassword == "")
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password cannot be blank"));
+			if(isNull(arguments.newPassword))
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password cannot be null"));
 
 			// can't change to a password that contains any 3 character substring of old password
 			if(structKeyExists(arguments, "oldPassword") && !isNull(arguments.oldPassword)) {

@@ -32,7 +32,7 @@
 				throw(object=newJava("java.lang.RuntimeException").init("Context (" & context & ") already exists, programmer error"));
 			}
 
-			if((arguments.context != "") && (structCount(arguments.ve))) {
+			if(!isNull(arguments.context) && structCount(arguments.ve)) {
 				variables.errorList[arguments.context] = arguments.ve;
 			}
 		</cfscript>
@@ -53,8 +53,9 @@
 		<cfargument required="true" type="String" name="context" hint="unique name for each error"/>
 
 		<cfscript>
-			if(structKeyExists(variables.errorList, arguments.context)) {
-				return variables.errorList[arguments.context];
+			if (isNull(arguments.context)) return;
+			if (structKeyExists(variables.errorList, arguments.context)) {
+				return variables.errorList.get(arguments.context);
 			}
 			return structNew();
 		</cfscript>

@@ -457,7 +457,7 @@
 			if(structKeyExists(variables.parameters, arguments.name)) {
 				values = variables.parameters[arguments.name];
 			}
-			if(arrayLen(values))
+			if(isArray(values) && arrayLen(values))
 				return values[1];
 			return "";
 		</cfscript>

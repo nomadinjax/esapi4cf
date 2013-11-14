@@ -59,18 +59,26 @@
 				// success
 			}
 			try {
-				instance.createUser("", "weak1", "weak1");// null username
+				// Railo 4.1 has full NULL support
+				instance.createUser(javaCast("null", ""), "weak1", "weak1");// null username
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationAccountsException e) {
 				// success
 			}
+			catch(application e) {
+				// fails if NULL support is not available - just skip
+			}
 			try {
-				instance.createUser(variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), "", "");// null password
+				// Railo 4.1 has full NULL support
+				instance.createUser(variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), javaCast("null", ""), javaCast("null", ""));// null password
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
+			}
+			catch(application e) {
+				// fails if NULL support is not available - just skip
 			}
 		</cfscript>
 

@@ -34,8 +34,8 @@
 			for(i = 0; i < 100; i++) {
 				result = instance.getRandomString(length, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 				for(j = 0; j < result.length(); j++) {
-					if(!variables.ESAPI.encoder().isContained(newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS, result.charAt(j))) {
-						fail();
+					if(!containsCharacter(result.charAt(j), newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS)) {
+						fail("");
 					}
 				}
 				assertEquals(length, result.length());
@@ -127,6 +127,18 @@
 			}
 		</cfscript>
 
+	</cffunction>
+
+	<cffunction access="private" returntype="boolean" name="containsCharacter" output="false">
+		<cfargument required="true" name="c">
+		<cfargument required="true" name="arr">
+		<cfscript>
+			var i = 1;
+			for (i=1; i<=arrayLen(arguments.arr); i++) {
+				if (arguments.c == arguments.arr[i]) return true;
+			}
+			return false;
+		</cfscript>
 	</cffunction>
 
 </cfcomponent>

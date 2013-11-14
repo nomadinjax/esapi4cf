@@ -230,6 +230,11 @@
 				// continue
 			}
 
+			// ensure there's something to log
+			if (isNull(message)) {
+				message = "";
+			}
+
 			// ensure no CRLF injection into logs for forging records
 			clean = arguments.message.replace('\n', '_').replace('\r', '_');
 			if(variables.ESAPI.securityConfiguration().getLogEncodingRequired()) {

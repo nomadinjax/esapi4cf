@@ -61,7 +61,7 @@
 		 * Load properties from properties file. Set this with setResourceDirectory
 		 * from your web application or ESAPI filter.
 		 */
-		variables.resourceDirectory = System.getProperty(this.RESOURCE_DIRECTORY);
+		variables.resourceDirectory = "";
 	</cfscript>
 
 	<cffunction access="public" returntype="org.owasp.esapi.SecurityConfiguration" name="init" output="false"
@@ -118,15 +118,9 @@
 	<cffunction access="public" returntype="String" name="getResourceDirectory" output="false">
 
 		<cfscript>
-			// CF8 requires 'var' at the top
-			var fileSeparator = "";
-
-			if(!structKeyExists(variables, "resourceDirectory")) {
-				variables.resourceDirectory = "";
-			}
-			fileSeparator = newJava("java.io.File").separator;
-			if(trim(len(variables.resourceDirectory)) && !variables.resourceDirectory.endsWith(fileSeparator)) {
-				variables.resourceDirectory &= fileSeparator;
+			var jFile = newJava("java.io.File");
+			if(len(trim(variables.resourceDirectory)) && !variables.resourceDirectory.endsWith(jFile.separator)) {
+				variables.resourceDirectory &= jFile.separator;
 			}
 			return variables.resourceDirectory;
 		</cfscript>
@@ -539,7 +533,7 @@
 			while(i.hasNext()) {
 				name = i.next();
 				if(name.startsWith("Validator.")) {
-					list.add(name.substring(name.indexOf('.') + 1));
+					list.add(name.substring(name.indexOf(".") + 1));
 				}
 			}
 			return list.iterator();
@@ -627,7 +621,7 @@
 
 			// check specific setting first
 			// (this defaults to SystemResource directory/RESOURCE_FILE)
-			if(structKeyExists(variables, "resourceDirectory")) {
+			if(len(trim(variables.resourceDirectory))) {
 				fileLocation = expandPath(variables.resourceDirectory & fileSeparator & arguments.filename);
 				if(fileExists(fileLocation)) {
 					f = newJava("java.io.File").init(fileLocation);
@@ -643,6 +637,24 @@
 					logSpecial("Not found in SystemResource Directory/resourceDirectory: " & fileLocation);
 				}
 			}
+
+			// falls back on unit test resources location
+			// NEVER allow this to occur in an actual application
+			fileLocation = expandPath("/test/resources/" & fileSeparator & arguments.filename);
+			if(fileExists(fileLocation)) {
+				f = newJava("java.io.File").init(fileLocation);
+				if(f.exists()) {
+					logSpecial("Found in Default Directory/resourceDirectory: " & f.getAbsolutePath());
+					return f;
+				}
+				else {
+					logSpecial("Not found in Default Directory/resourceDirectory (this should never happen): " & f.getAbsolutePath());
+				}
+			}
+			else {
+				logSpecial("Not found in Default Directory/resourceDirectory: " & fileLocation);
+			}
+
 
 			// return empty if not found
 			return "";

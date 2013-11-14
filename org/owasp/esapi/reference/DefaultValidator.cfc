@@ -200,36 +200,7 @@
 
 			try {
 				if(!isObject(variables.antiSamyPolicy)) {
-					if(variables.ESAPI.securityConfiguration().getResourceDirectory() == "") {
-
-						//load via classpath
-						loader = getClass().getClassLoader();
-
-						ins = "";
-						try {
-							ins = loader.getResourceAsStream("antisamy-esapi.xml");
-							if(ins != "") {
-								variables.antiSamyPolicy = newJava("org.owasp.validator.html.Policy").getInstance(ins);
-							}
-						}
-						catch(org.owasp.esapi.errors.ValidationException e) {
-							variables.antiSamyPolicy = "";
-						}
-						if(ins != "")
-							try {
-								ins.close();
-							}
-							catch(java.lang.Throwable ignore) {
-							}
-
-						if(variables.antiSamyPolicy == "") {
-							throw(object=newJava("java.lang.IllegalArgumentException").init("Can't load antisamy-esapi.xml as a classloader resource"));
-						}
-					}
-					else {
-						//load via fileio
-						variables.antiSamyPolicy = newJava("org.owasp.validator.html.Policy").getInstance(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory() & "antisamy-esapi.xml"));
-					}
+					variables.antiSamyPolicy = newJava("org.owasp.validator.html.Policy").getInstance(variables.ESAPI.securityConfiguration().getResourceFile("antisamy-esapi.xml"));
 				}
 				as = newJava("org.owasp.validator.html.AntiSamy").init();
 				test = as.scan(arguments.input, variables.antiSamyPolicy);
@@ -280,36 +251,7 @@
 
 				try {
 					if(!isObject(variables.antiSamyPolicy)) {
-						if(variables.ESAPI.securityConfiguration().getResourceDirectory() == "") {
-
-							//load via classpath
-							loader = getClass().getClassLoader();
-
-							ins = "";
-							try {
-								ins = loader.getResourceAsStream("antisamy-esapi.xml");
-								if(ins != "") {
-									variables.antiSamyPolicy = newJava("org.owasp.validator.html.Policy").getInstance(ins);
-								}
-							}
-							catch(org.owasp.esapi.errors.ValidationException e) {
-								variables.antiSamyPolicy = "";
-							}
-							if(ins != "") {
-								try {
-									ins.close();
-								}
-								catch(java.lang.Throwable ignore) {
-								}
-							}
-							if(variables.antiSamyPolicy == "") {
-								throw(object=newJava("java.lang.IllegalArgumentException").init("Can't load antisamy-esapi.xml as a classloader resource"));
-							}
-						}
-						else {
-							//load via fileio
-							variables.antiSamyPolicy = newJava("org.owasp.validator.html.Policy").getInstance(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory() & "antisamy-esapi.xml"));
-						}
+						variables.antiSamyPolicy = newJava("org.owasp.validator.html.Policy").getInstance(variables.ESAPI.securityConfiguration().getResourceFile("antisamy-esapi.xml"));
 					}
 					as = newJava("org.owasp.validator.html.AntiSamy").init();
 					test = as.scan(arguments.input, variables.antiSamyPolicy);
@@ -1228,7 +1170,7 @@
 					c = arguments.inputStream.read();
 					if(c == -1) {
 						if(sb.length() == 0)
-							return -1;
+							return;
 						break;
 					}
 					if(c == 13 || c == 10)
@@ -1253,8 +1195,11 @@
 		<cfargument required="true" name="input" hint="input value"/>
 
 		<cfscript>
+			if (isNull(arguments.input)) {
+				return true;
+			}
 			if(isSimpleValue(arguments.input)) {
-				return (arguments.input == "" || len(trim(arguments.input)) == 0);
+				return (len(trim(arguments.input)) == 0);
 			}
 			else if(isBinary(arguments.input)) {
 				return (arrayLen(arguments.input) == 0);

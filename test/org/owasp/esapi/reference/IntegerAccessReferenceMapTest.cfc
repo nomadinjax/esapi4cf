@@ -43,14 +43,14 @@
 			arm.update(auth.getUserNames());
 			indirect = arm.getIndirectReference(u.getAccountName());
 			if(indirect == "")
-				fail();
+				fail("");
 
 			// test to make sure update removes items that are no longer in the list
 			auth.removeUser(u.getAccountName());
 			arm.update(auth.getUserNames());
 			indirect = arm.getIndirectReference(u.getAccountName());
 			if(indirect != "")
-				fail();
+				fail("");
 
 			// test to make sure old indirect reference is maintained after an update
 			arm.update(auth.getUserNames());
@@ -81,7 +81,7 @@
 				userName = i.next();
 				u = auth.getUserByAccountName(userName);
 				if(!isObject(u))
-					fail();
+					fail("");
 			}
 		</cfscript>
 

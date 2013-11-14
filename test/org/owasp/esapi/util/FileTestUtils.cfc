@@ -83,7 +83,7 @@
 				arguments.suffix = variables.DEFAULT_SUFFIX;
 			else if(!arguments.suffix.startsWith("."))
 				arguments.suffix = "." & arguments.suffix;
-			if(!structKeyExists(arguments, "parent"))
+			if(!structKeyExists(arguments, "parent") || isNull(arguments.parent))
 				arguments.parent = newJava("java.io.File").init(System.getProperty("java.io.tmpdir"));
 			name = arguments.prefix & toHexString(variables.rand.nextLong()) & arguments.suffix;
 			dir = newJava("java.io.File").init(arguments.parent, name);
