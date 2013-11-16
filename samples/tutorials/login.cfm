@@ -1,7 +1,16 @@
-﻿<cfparam name="url.redirect" default="./">
+﻿<cfparam name="url.x" default="">
 <cfparam name="form.username" default="admin">
 <cfparam name="form.password" default="admin123">
-<cfset encoder = application.ESAPI.encoder() />
+<cfscript>
+	encoder = application.ESAPI.encoder();
+
+	urlX.redirect = "./";
+	try {
+		urlX = application.ESAPI.httpUtilities().decryptQueryString(url.x);
+	}
+	catch (org.owasp.esapi.errors.EncryptionException e) {}
+	catch(expression e) {}
+</cfscript>
 <cfoutput>
 	<!DOCTYPE html>
 	<html lang="en" class="no-js">
@@ -19,14 +28,14 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-3">
-						<form role="form" class="form-vertical" method="POST" action="#encoder.encodeForHTMLAttribute(url.redirect)#">
+						<form role="form" class="form-vertical" method="POST" action="#encoder.encodeForHTMLAttribute(urlX.redirect)#">
 							<fieldset>
 								<legend>
 									Sign In Form
 								</legend>
-								<cfif structKeyExists(url, "message")>
+								<cfif structKeyExists(urlX, "message")>
 									<div class="alert alert-danger">
-										#encoder.encodeForHTML(url.message)#
+										#encoder.encodeForHTML(urlX.message)#
 									</div>
 								</cfif>
 								<div class="form-group">
