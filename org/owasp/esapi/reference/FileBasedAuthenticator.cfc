@@ -182,12 +182,14 @@
 			if(isNull(arguments.password1)) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password"));
 			}
-			verifyPasswordStrength(newPassword=arguments.password1);
+
+			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, arguments.accountName);
+
+			verifyPasswordStrength(newPassword=arguments.password1, user=user);
 
 			if(!arguments.password1.equals(arguments.password2))
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match"));
 
-			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, arguments.accountName);
 			try {
 				setHashedPassword(user, hashPassword(arguments.password1, arguments.accountName));
 			}
@@ -250,13 +252,13 @@
 				if(isNull(arguments.newPassword) || isNull(arguments.newPassword2) || !arguments.newPassword.equals(arguments.newPassword2)) {
 					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & accountName));
 				}
-				verifyPasswordStrength(arguments.currentPassword, arguments.newPassword);
-				arguments.user.setLastPasswordChangeTime(newJava("java.util.Date").init());
+				verifyPasswordStrength(arguments.currentPassword, arguments.newPassword, arguments.user);
 				newHash = hashPassword(arguments.newPassword, accountName);
 				if(arrayFind(getOldPasswordHashes(arguments.user), newHash)) {
 					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Password change matches a recent password for user: " & accountName));
 				}
 				setHashedPassword(arguments.user, newHash);
+				arguments.user.setLastPasswordChangeTime(newJava("java.util.Date").init());
 				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Password changed for user: " & accountName);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException ee) {
@@ -549,7 +551,7 @@
 			user.accountId = accountId;
 
 			password = parts[3];
-			verifyPasswordStrength(newPassword=password);
+			verifyPasswordStrength(newPassword=password, user=user);
 			setHashedPassword(user, password);
 
 			roles = parts[4].toLowerCase().split(" *, *");
@@ -664,7 +666,7 @@
 				try {
 					printWriter = newJava("java.io.PrintWriter").init(newJava("java.io.FileWriter").init(variables.userDB));
 					printWriter.println("## This is the user file associated with the ESAPI library from http://www.owasp.org");
-					printWriter.println("## accountId | accountName | hashedPassword | roles | locked | enabled | csrfToken | oldPasswordHashes | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount");
+					printWriter.println("## accountId | accountName | hashedPassword | roles | locked | enabled | oldPasswordHashes | lastHostAddress | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount");
 					printWriter.println();
 					saveUsers(printWriter);
 					printWriter.flush();
@@ -861,6 +863,7 @@
 	            hint="This implementation checks: - for any 3 character substrings of the old password - for use of a length character sets &gt; 16 (where character sets are upper, lower, digit, and special">
 		<cfargument type="String" name="oldPassword"/>
 		<cfargument required="true" type="String" name="newPassword"/>
+		<cfargument required="true" type="org.owasp.esapi.User" name="user"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -869,6 +872,7 @@
 			var sub = "";
 			var charsets = "";
 			var strength = "";
+			var accountName = "";
 
 			if(isNull(arguments.newPassword))
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password cannot be null"));
@@ -886,31 +890,45 @@
 
 			// new password must have enough character sets and length
 			charsets = 0;
-			for(i = 0; i < arguments.newPassword.length(); i++)
-				if(newJava("java.util.Arrays").binarySearch(newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS, arguments.newPassword.charAt(i)) > 0) {
+			jArrays = newJava("java.util.Arrays");
+			jEncoder = newJava("org.owasp.esapi.reference.DefaultEncoder");
+			for(i = 0; i < arguments.newPassword.length(); i++) {
+				if(jArrays.binarySearch(jEncoder.CHAR_LOWERS, arguments.newPassword.charAt(i)) > 0) {
 					charsets++;
 					break;
 				}
-			for(i = 0; i < arguments.newPassword.length(); i++)
-				if(newJava("java.util.Arrays").binarySearch(newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_UPPERS, arguments.newPassword.charAt(i)) > 0) {
+			}
+			for(i = 0; i < arguments.newPassword.length(); i++) {
+				if(jArrays.binarySearch(jEncoder.CHAR_UPPERS, arguments.newPassword.charAt(i)) > 0) {
 					charsets++;
 					break;
 				}
-			for(i = 0; i < arguments.newPassword.length(); i++)
-				if(newJava("java.util.Arrays").binarySearch(newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_DIGITS, arguments.newPassword.charAt(i)) > 0) {
+			}
+			for(i = 0; i < arguments.newPassword.length(); i++) {
+				if(jArrays.binarySearch(jEncoder.CHAR_DIGITS, arguments.newPassword.charAt(i)) > 0) {
 					charsets++;
 					break;
 				}
-			for(i = 0; i < arguments.newPassword.length(); i++)
-				if(newJava("java.util.Arrays").binarySearch(newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS, arguments.newPassword.charAt(i)) > 0) {
+			}
+			for(i = 0; i < arguments.newPassword.length(); i++) {
+				if(jArrays.binarySearch(jEncoder.CHAR_SPECIALS, arguments.newPassword.charAt(i)) > 0) {
 					charsets++;
 					break;
 				}
+			}
 
 			// calculate and verify password strength
 			strength = arguments.newPassword.length() * charsets;
 			if(strength < 16) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password is not long and complex enough"));
+			}
+
+			accountName = arguments.user.getAccountName();
+
+			//jtm - 11/3/2010 - fix for bug http://code.google.com/p/owasp-esapi-java/issues/detail?id=108
+			if (accountName.equalsIgnoreCase(arguments.newPassword)) {
+				//password can't be account name
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "Password matches account name, irrespective of case"));
 			}
 		</cfscript>
 

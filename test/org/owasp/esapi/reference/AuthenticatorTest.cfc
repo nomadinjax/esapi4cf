@@ -92,24 +92,30 @@
 			var instance = "";
 			var oldPassword = "";
 			var newPassword = "";
+			var username = "";
+			var user = "";
 			var i = "";
 
 			System.out.println("generateStrongPassword");
 			instance = variables.ESAPI.authenticator();
 			oldPassword = "iiiiiiiiii";// i is not allowed in passwords - this prevents failures from containing pieces of old password
 			newPassword = "";
+			username = "FictionalEsapiUser";
+			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, username);
 			for(i = 0; i < 100; i++) {
 				try {
 					newPassword = instance.generateStrongPassword();
-					instance.verifyPasswordStrength(oldPassword, newPassword);
+					instance.verifyPasswordStrength(oldPassword, newPassword, user);
 				}
 				catch(org.owasp.esapi.errors.AuthenticationException e) {
 					System.out.println("  FAILED >> " & newPassword & " : " & e.getLogMessage());
 					fail("");
 				}
 			}
+
 			try {
-				instance.verifyPasswordStrength("test56^$test", "abcdx56^$sl");
+				instance.verifyPasswordStrength("test56^$test", "abcdx56^$sl", user);
+				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// expected
@@ -514,62 +520,67 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = "";
+			var username= "";
+			var user = "";
 
 			System.out.println("validatePasswordStrength");
 			instance = variables.ESAPI.authenticator();
 
+	        username = "FictionalEsapiUser";
+			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, username);
+
 			// should fail
 			try {
-				instance.verifyPasswordStrength("password", "jeff");
+				instance.verifyPasswordStrength("password", "jeff", user);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				instance.verifyPasswordStrength("diff123bang", "same123string");
+				instance.verifyPasswordStrength("diff123bang", "same123string", user);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				instance.verifyPasswordStrength("password", "JEFF");
+				instance.verifyPasswordStrength("password", "JEFF", user);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				instance.verifyPasswordStrength("password", "1234");
+				instance.verifyPasswordStrength("password", "1234", user);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				instance.verifyPasswordStrength("password", "password");
+				instance.verifyPasswordStrength("password", "password", user);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				instance.verifyPasswordStrength("password", "-1");
+				instance.verifyPasswordStrength("password", "-1", user);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				instance.verifyPasswordStrength("password", "password123");
+				instance.verifyPasswordStrength("password", "password123", user);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				instance.verifyPasswordStrength("password", "test123");
+				instance.verifyPasswordStrength("password", "test123", user);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
@@ -577,10 +588,18 @@
 			}
 
 			// should pass
-			instance.verifyPasswordStrength("password", "jeffJEFF12!");
-			instance.verifyPasswordStrength("password", "super calif ragil istic");
-			instance.verifyPasswordStrength("password", "TONYTONYTONYTONY");
-			instance.verifyPasswordStrength("password", instance.generateStrongPassword());
+			instance.verifyPasswordStrength("password", "jeffJEFF12!", user);
+			instance.verifyPasswordStrength("password", "super calif ragil istic", user);
+			instance.verifyPasswordStrength("password", "TONYTONYTONYTONY", user);
+			instance.verifyPasswordStrength("password", instance.generateStrongPassword(), user);
+
+			try {
+				instance.verifyPasswordStrength("password", uCase(user.getAccountName()), user);
+				fail("");
+			}
+			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+				// expected
+			}
 		</cfscript>
 
 	</cffunction>
