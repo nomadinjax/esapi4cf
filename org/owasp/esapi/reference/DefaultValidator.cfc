@@ -27,6 +27,8 @@
 		variables.MAX_CREDIT_CARD_LENGTH = 19;
 		this.MAX_PARAMETER_NAME_LENGTH = 100;
 		this.MAX_PARAMETER_VALUE_LENGTH = 65535;
+		this.MAX_HTTPHEADER_NAME_LENGTH = 150;
+		this.MAX_HTTPHEADER_VALUE_LENGTH = 1024;
 	</cfscript>
 
 	<cffunction access="public" returntype="org.owasp.esapi.Validator" name="init" output="false">

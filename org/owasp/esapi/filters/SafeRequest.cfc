@@ -189,7 +189,7 @@
 			var clean = "";
 			if (isDefined("value") && !isNull(value)) {
 				try {
-					clean = variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 150, true);
+					clean = variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", variables.ESAPI.validator().MAX_HTTPHEADER_VALUE_LENGTH, true);
 				}
 				catch(org.owasp.esapi.errors.ValidationException e) {
 					// already logged
@@ -215,7 +215,7 @@
 			while(en.hasMoreElements()) {
 				try {
 					name = en.nextElement();
-					clean = variables.ESAPI.validator().getValidInput("HTTP header name: " & name, name, "HTTPHeaderName", 150, true);
+					clean = variables.ESAPI.validator().getValidInput("HTTP header name: " & name, name, "HTTPHeaderName", variables.ESAPI.validator().MAX_HTTPHEADER_NAME_LENGTH, true);
 					v.add(clean);
 				}
 				catch(org.owasp.esapi.errors.ValidationException e) {
@@ -243,7 +243,7 @@
 			while(en.hasMoreElements()) {
 				try {
 					value = en.nextElement();
-					clean = variables.ESAPI.validator().getValidInput("HTTP header value (" & arguments.name & "): " & value, value, "HTTPHeaderValue", 150, true);
+					clean = variables.ESAPI.validator().getValidInput("HTTP header value (" & arguments.name & "): " & value, value, "HTTPHeaderValue", variables.ESAPI.validator().MAX_HTTPHEADER_VALUE_LENGTH, true);
 					v.add(clean);
 				}
 				catch(org.owasp.esapi.errors.ValidationException e) {
