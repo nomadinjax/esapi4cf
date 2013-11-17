@@ -292,10 +292,10 @@
 
 		<cfscript>
 			if(structKeyExists(arguments, "msg")) {
-				variables.httpResponse.sendError(HttpServletResponse.SC_OK, variables.ESAPI.encoder().encodeForHTML(arguments.msg));
+				variables.httpResponse.sendError(variables.httpResponse.SC_OK, variables.ESAPI.encoder().encodeForHTML(arguments.msg));
 			}
 			else {
-				variables.httpResponse.sendError(HttpServletResponse.SC_OK, getHTTPMessage(arguments.sc));
+				variables.httpResponse.sendError(variables.httpResponse.SC_OK, getHTTPMessage(arguments.sc));
 			}
 		</cfscript>
 
@@ -442,14 +442,14 @@
 			if(structKeyExists(arguments, "sm")) {
 				try {
 					// setStatus is deprecated so use sendError instead
-					sendError(HttpServletResponse.SC_OK, arguments.sm);
+					sendError(variables.httpResponse.SC_OK, arguments.sm);
 				}
 				catch(java.io.IOException e) {
 					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set response status failed", e);
 				}
 			}
 			else {
-				variables.httpResponse.setStatus(HttpServletResponse.SC_OK);
+				variables.httpResponse.setStatus(variables.httpResponse.SC_OK);
 			}
 		</cfscript>
 
