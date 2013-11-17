@@ -332,10 +332,21 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
+			var params = "";
 			var orig = "";
 			var clean = "";
 
-			orig = variables.httpRequest.getParameter(arguments.name);
+			// https://github.com/damonmiller/esapi4cf/issues/39
+			// Railo workaround for getParameter always returning null
+			//orig = variables.httpRequest.getParameter(arguments.name);
+			params = variables.httpRequest.getParameterMap();
+			if (structKeyExists(params, arguments.name)) {
+				orig = params[arguments.name];
+				// CF8 cannot handle a method call and array index reference on same line
+				orig = orig[1];
+			}
+			// end workaround
+
 			if(!(isDefined("orig") && !isNull(orig))) {
 				orig = "";
 			}
