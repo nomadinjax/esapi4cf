@@ -37,7 +37,7 @@
 				list.add(newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init());
 				list.add(newJava("org.owasp.esapi.codecs.PercentCodec").init());
 			}
-			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, list);
+			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(request.ESAPI, list);
 
 			// Test null paths
 			try {
@@ -161,7 +161,7 @@
 			else {
 				js.add(newJava("org.owasp.esapi.codecs.JavaScriptCodec").init());
 			}
-			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, js);
+			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(request.ESAPI, js);
 			System.out.println("JavaScript Decoding");
 
 			assertEquals(0, asc(instance.canonicalize("\0")));
@@ -194,7 +194,7 @@
 			else {
 				css.add(newJava("org.owasp.esapi.codecs.CSSCodec").init());
 			}
-			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(variables.ESAPI, css);
+			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(request.ESAPI, css);
 			System.out.println("CSS Decoding");
 
 			assertEquals("<", instance.canonicalize("\3c"));// add strings to prevent null byte
@@ -219,7 +219,7 @@
 			var instance = "";
 
 			System.out.println("doubleEncodingCanonicalization");
-			instance = variables.ESAPI.encoder();
+			instance = request.ESAPI.encoder();
 
 			// note these examples use the strict=false flag on canonicalize to allow
 			// full decoding without throwing an IntrusionException. Generally, you
@@ -273,7 +273,7 @@
 	            hint="Test of encodeForHTML method, of class org.owasp.esapi.Encoder.">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			try {
 				// Railo 4.1 has full NULL support
 				assertEquals("", instance.encodeForHTML(javaCast("null", "")));
@@ -296,7 +296,7 @@
 	            hint="Test of encodeForHTMLAttribute method, of class org.owasp.esapi.Encoder.">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("&lt;script&gt;", instance.encodeForHTMLAttribute("<script>"));
 			assertEquals(",.-_", instance.encodeForHTMLAttribute(",.-_"));
 			if (this.ESAPI4JVERSION == 2) {
@@ -312,7 +312,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForCSS" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("\3C script\3E ", instance.encodeForCSS("<script>"));
 			assertEquals("\21 \40 \24 \25 \28 \29 \3D \2B \7B \7D \5B \5D \22 ", instance.encodeForCSS('!@$%()=+{}[]"'));
 		</cfscript>
@@ -323,7 +323,7 @@
 	            hint="Test of encodeForJavaScript method, of class org.owasp.esapi.Encoder.">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("\x3Cscript\x3E", instance.encodeForJavaScript("<script>"));
 			if (this.ESAPI4JVERSION == 2) {
 				assertEquals(",.\x2D_\x20", instance.encodeForJavaScript(",.-_ "));
@@ -349,7 +349,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForVBScript" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			if (this.ESAPI4JVERSION == 2) {
 				assertEquals('chrw(60)&"script"&chrw(62)', instance.encodeForVBScript("<script>"));
 				assertEquals('x"&chrw(32)&chrw(33)&chrw(64)&chrw(36)&chrw(37)&chrw(40)&chrw(41)&chrw(61)&chrw(43)&chrw(123)&chrw(125)&chrw(91)&chrw(93)', instance.encodeForVBScript('x !@$%()=+{}[]'));
@@ -366,7 +366,7 @@
 	            hint="Test of encodeForXPath method, of class org.owasp.esapi.Encoder.">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("&##x27;or 1&##x3d;1", instance.encodeForXPath("'or 1=1"));
 		</cfscript>
 
@@ -381,7 +381,7 @@
 			var mySQL2 = "";
 			var oracle = "";
 
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			var MySQLCodec = newJava("org.owasp.esapi.codecs.MySQLCodec");
 
 			mySQL1 = MySQLCodec.init(MySQLCodec.ANSI_MODE);
@@ -400,7 +400,7 @@
 	            hint="Test of encodeForLDAP method, of class org.owasp.esapi.Encoder.">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("Hi This is a test ##��", instance.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
 			assertEquals( "Hi ", instance.encodeForLDAP( "Hi " & toUnicode("\u0000") ), "Zeros" );
 			assertEquals("Hi \28This\29 = is \2a a \5c test ## � � �", instance.encodeForLDAP("Hi (This) = is * a \ test ## � � �"), "LDAP Christams Tree");
@@ -412,7 +412,7 @@
 	            hint="Test of encodeForLDAP method, of class org.owasp.esapi.Encoder.">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("Hello�", instance.encodeForDN("Hello�"), "No special characters to escape");
 			assertEquals("\## Hello�", instance.encodeForDN("## Hello�"), "leading ##");
 			assertEquals("\ Hello�", instance.encodeForDN(" Hello�"), "leading space");
@@ -426,7 +426,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLNull" output="false">
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			try {
 				// Railo 4.1 has full NULL support
 				assertEquals("", instance.encodeForXML(javaCast("null", "")));
@@ -440,7 +440,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLSpace" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals(" ", instance.encodeForXML(" "));
 		</cfscript>
 
@@ -449,7 +449,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLScript" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("&##x3c;script&##x3e;", instance.encodeForXML("<script>"));
 		</cfscript>
 
@@ -458,7 +458,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLImmune" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals(",.-_", instance.encodeForXML(",.-_"));
 		</cfscript>
 
@@ -467,7 +467,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLSymbol" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForXML("!@$%()=+{}[]"));
 		</cfscript>
 
@@ -476,7 +476,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLPound" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("&##xa3;", instance.encodeForXML(toUnicode("\u00A3")));
 		</cfscript>
 
@@ -484,7 +484,7 @@
 
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeNull" output="false">
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			try {
 				// Railo 4.1 has full NULL support
 				assertEquals("", instance.encodeForXMLAttribute(javaCast("null", "")));
@@ -498,7 +498,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSpace" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals(" ", instance.encodeForXMLAttribute(" "));
 		</cfscript>
 
@@ -507,7 +507,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeScript" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("&##x3c;script&##x3e;", instance.encodeForXMLAttribute("<script>"));
 		</cfscript>
 
@@ -516,7 +516,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeImmune" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals(",.-_", instance.encodeForXMLAttribute(",.-_"));
 		</cfscript>
 
@@ -525,7 +525,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributeSymbol" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals(" &##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForXMLAttribute(" !@$%()=+{}[]"));
 		</cfscript>
 
@@ -534,7 +534,7 @@
 	<cffunction access="public" returntype="void" name="testEncodeForXMLAttributePound" output="false">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("&##xa3;", instance.encodeForXMLAttribute(toUnicode("\u00A3")));
 		</cfscript>
 
@@ -544,7 +544,7 @@
 	            hint="Test of encodeForURL method, of class org.owasp.esapi.Encoder.">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			assertEquals("%3Cscript%3E", instance.encodeForURL("<script>"));
 		</cfscript>
 
@@ -554,7 +554,7 @@
 	            hint="Test of decodeFromURL method, of class org.owasp.esapi.Encoder.">
 
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			try {
 				assertEquals("<script>", instance.decodeFromURL("%3Cscript%3E"));
 				assertEquals("     ", instance.decodeFromURL("+++++"));
@@ -576,11 +576,11 @@
 			var encoded = "";
 			var decoded = "";
 
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			try {
 				for(i = 0; i < 100; i++) {
-					r = variables.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
-					encoded = instance.encodeForBase64(r, variables.ESAPI.randomizer().getRandomBoolean());
+					r = request.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
+					encoded = instance.encodeForBase64(r, request.ESAPI.randomizer().getRandomBoolean());
 					decoded = instance.decodeFromBase64(encoded);
 					//assertTrue( Arrays.equals( r, decoded ) );
 					assertEquals(charsetEncode(r, "utf-8"), charsetEncode(decoded, "utf-8"));
@@ -603,11 +603,11 @@
 			var encoded = "";
 			var decoded = "";
 
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 			for(i = 0; i < 100; i++) {
 				try {
-					r = variables.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
-					encoded = instance.encodeForBase64(r, variables.ESAPI.randomizer().getRandomBoolean());
+					r = request.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
+					encoded = instance.encodeForBase64(r, request.ESAPI.randomizer().getRandomBoolean());
 					decoded = instance.decodeFromBase64(encoded);
 					assertEquals(charsetEncode(r, "utf-8"), charsetEncode(decoded, "utf-8"));
 				}
@@ -617,8 +617,8 @@
 			}
 			for(i = 0; i < 100; i++) {
 				try {
-					r = variables.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
-					encoded = variables.ESAPI.randomizer().getRandomString(1, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & instance.encodeForBase64(r, variables.ESAPI.randomizer().getRandomBoolean());
+					r = request.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
+					encoded = request.ESAPI.randomizer().getRandomString(1, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & instance.encodeForBase64(r, request.ESAPI.randomizer().getRandomBoolean());
 					decoded = instance.decodeFromBase64(encoded);
 					assertNotEquals(charsetEncode(r, "utf-8"), charsetEncode(decoded, "utf-8"));
 				}
@@ -634,7 +634,7 @@
 
 	<cffunction access="public" returntype="void" name="testIssue12" output="false" hint="https://github.com/damonmiller/esapi4cf/issues/12">
 		<cfscript>
-			var instance = variables.ESAPI.encoder();
+			var instance = request.ESAPI.encoder();
 
 			var testString1	= "dir=4&num=00000745'%20and%20char(124)%2Buser%2Bchar(124)=0%20and%20'%25'='";
 			// decodes to	= "dir=4?m=00000745' and char(124)+user+char(124)=0 and '%'='";

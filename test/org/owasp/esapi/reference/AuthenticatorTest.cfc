@@ -32,8 +32,8 @@
 			var user = "";
 
 			System.out.println("createUser");
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			instance = variables.ESAPI.authenticator();
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.authenticator();
 			password = instance.generateStrongPassword();
 			user = instance.createUser(accountName, password, password);
 			assertTrue(user.verifyPassword(password));
@@ -45,14 +45,14 @@
 				// success
 			}
 			try {
-				instance.createUser(variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), "password1", "password2");// don't match
+				instance.createUser(request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), "password1", "password2");// don't match
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// success
 			}
 			try {
-				instance.createUser(variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), "weak1", "weak1");// weak password
+				instance.createUser(request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), "weak1", "weak1");// weak password
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
@@ -71,7 +71,7 @@
 			}
 			try {
 				// Railo 4.1 has full NULL support
-				instance.createUser(variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), javaCast("null", ""), javaCast("null", ""));// null password
+				instance.createUser(request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS), javaCast("null", ""), javaCast("null", ""));// null password
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
@@ -97,11 +97,11 @@
 			var i = "";
 
 			System.out.println("generateStrongPassword");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			oldPassword = "iiiiiiiiii";// i is not allowed in passwords - this prevents failures from containing pieces of old password
 			newPassword = "";
 			username = "FictionalEsapiUser";
-			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, username);
+			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(request.ESAPI, username);
 			for(i = 0; i < 100; i++) {
 				try {
 					newPassword = instance.generateStrongPassword();
@@ -139,15 +139,15 @@
 			var currentUser = "";
 
 			System.out.println("getCurrentUser");
-			instance = variables.ESAPI.authenticator();
-			username1 = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			username2 = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.authenticator();
+			username1 = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			username2 = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			user1 = instance.createUser(username1, "getCurrentUser", "getCurrentUser");
 			user2 = instance.createUser(username2, "getCurrentUser", "getCurrentUser");
 			user1.enable();
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();;
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			user1.loginWithPassword("getCurrentUser");
 			currentUser = instance.getCurrentUser();
 			assertEquals(currentUser, user1);
@@ -159,7 +159,7 @@
 			    private int count = 1;
 			    private boolean result = false;
 			    public void run() {
-			        Authenticator instance = variables.ESAPI.authenticator();
+			        Authenticator instance = request.ESAPI.authenticator();
 			        User a = null;
 			        try {
 			            String password = instance.generateStrongPassword();
@@ -198,12 +198,12 @@
 			var accountName = "";
 
 			System.out.println("getUser");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			password = instance.generateStrongPassword();
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			instance.createUser(accountName, password, password);
 			assertTrue(isObject(instance.getUserByAccountName(accountName)));
-			assertFalse(isObject(instance.getUserByAccountName(variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS))));
+			assertFalse(isObject(instance.getUserByAccountName(request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS))));
 		</cfscript>
 
 	</cffunction>
@@ -222,30 +222,30 @@
 			var test2 = "";
 
 			System.out.println("getUserFromRememberToken");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			instance.logout();// in case anyone is logged in
 			password = instance.generateStrongPassword();
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			user = instance.createUser(accountName, password, password);
 			user.enable();
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();;
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 
-			httpRequest.setCookie(variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, "ridiculous");
+			httpRequest.setCookie(request.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, "ridiculous");
 			try {
-				instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());// wrong cookie will fail
+				instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());// wrong cookie will fail
 			}
 			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 				// expected
 			}
 
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			variables.ESAPI.authenticator().setCurrentUser(user);
-			newToken = variables.ESAPI.httpUtilities().setRememberToken(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse(), password, 10000, "esapi4cf.test.com", httpRequest.getContextPath());
-			httpRequest.setCookie(variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, newToken);
-			test2 = instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.authenticator().setCurrentUser(user);
+			newToken = request.ESAPI.httpUtilities().setRememberToken(request.ESAPI.currentRequest(), request.ESAPI.currentResponse(), password, 10000, "esapi4cf.test.com", httpRequest.getContextPath());
+			httpRequest.setCookie(request.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, newToken);
+			test2 = instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());
 			assertEquals(user.getAccountName(), test2.getAccountName());
 		</cfscript>
 
@@ -265,9 +265,9 @@
 			var test = "";
 
 			System.out.println("getUserFromSession");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			instance.logout();// in case anyone is logged in
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			password = instance.generateStrongPassword();
 			user = instance.createUser(accountName, password, password);
 			user.enable();
@@ -275,8 +275,8 @@
 			httpRequest.addParameter("username", accountName);
 			httpRequest.addParameter("password", password);
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();;
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());
 			test = instance.getUserFromSession();
 			assertEquals(user, test);
 		</cfscript>
@@ -295,12 +295,12 @@
 			var names = "";
 
 			System.out.println("getUserNames");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			password = instance.generateStrongPassword();
 			testnames = [];
 			arrayResize(testnames, 10);
 			for(i = 1; i <= arrayLen(testnames); i++) {
-				testnames[i] = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+				testnames[i] = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			}
 			for(i = 1; i <= arrayLen(testnames); i++) {
 				instance.createUser(testnames[i], password, password);
@@ -327,7 +327,7 @@
 			System.out.println("hashPassword");
 			username = "Jeff";
 			password = "test";
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			result1 = instance.hashPassword(password, username);
 			result2 = instance.hashPassword(password, username);
 			assertTrue(result1.equals(result2));
@@ -349,8 +349,8 @@
 			var test = "";
 
 			System.out.println("login");
-			instance = variables.ESAPI.authenticator();
-			username = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.authenticator();
+			username = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			password = instance.generateStrongPassword();
 			user = instance.createUser(username, password, password);
 			user.enable();
@@ -358,8 +358,8 @@
 			httpRequest.addParameter("username", username);
 			httpRequest.addParameter("password", password);
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			test = instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			test = instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());
 			assertTrue(test.isLoggedIn());
 		</cfscript>
 
@@ -374,8 +374,8 @@
 			var instance = "";
 			var password = "";
 			System.out.println("removeUser");
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			instance = variables.ESAPI.authenticator();
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.authenticator();
 			password = instance.generateStrongPassword();
 			instance.createUser(accountName, password, password);
 			assertTrue(instance.exists(accountName));
@@ -395,8 +395,8 @@
 			var password = "";
 
 			System.out.println("saveUsers");
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			instance = variables.ESAPI.authenticator();
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.authenticator();
 			password = instance.generateStrongPassword();
 			instance.createUser(accountName, password, password);
 			instance.saveUsers();
@@ -423,14 +423,14 @@
 			var userTwo = "";
 
 			System.out.println("setCurrentUser");
-			instance = variables.ESAPI.authenticator();
-			user1 = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_UPPERS);
-			user2 = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_UPPERS);
+			instance = request.ESAPI.authenticator();
+			user1 = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_UPPERS);
+			user2 = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_UPPERS);
 			userOne = instance.createUser(user1, "getCurrentUser", "getCurrentUser");
 			userOne.enable();
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();;
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			userOne.loginWithPassword("getCurrentUser");
 			currentUser = instance.getCurrentUser();
 			assertEquals(currentUser, userOne);
@@ -474,22 +474,22 @@
 			var httpResponse = "";
 
 			System.out.println("setCurrentUser(req,resp)");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			instance.logout();// in case anyone is logged in
 			password = instance.generateStrongPassword();
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			user = instance.createUser(accountName, password, password);
 			user.enable();
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpRequest.addParameter("username", accountName);
 			httpRequest.addParameter("password", password);
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());
 			assertEquals(user, instance.getCurrentUser());
 			try {
 				user.disable();
-				instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
+				instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
@@ -497,7 +497,7 @@
 			try {
 				user.enable();
 				user.lock();
-				instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
+				instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
@@ -505,7 +505,7 @@
 			try {
 				user.unlock();
 				user.setExpirationTime(newJava("java.util.Date").init());
-				instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
+				instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected`
@@ -524,10 +524,10 @@
 			var user = "";
 
 			System.out.println("validatePasswordStrength");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 
 	        username = "FictionalEsapiUser";
-			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, username);
+			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(request.ESAPI, username);
 
 			// should fail
 			try {
@@ -614,8 +614,8 @@
 			var password = "";
 
 			System.out.println("exists");
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			instance = variables.ESAPI.authenticator();
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.authenticator();
 			password = instance.generateStrongPassword();
 			instance.createUser(accountName, password, password);
 			assertTrue(instance.exists(accountName));
@@ -630,8 +630,8 @@
 	    <cffunction access="public" returntype="void" name="testMain" output="false" hint="Test of main method, of class org.owasp.esapi.Authenticator.">
 	    <cfscript>
 	    System.out.println( "Authenticator Main" );
-	    var instance = variables.ESAPI.authenticator();
-	    var accountName = variables.ESAPI.randomizer().getRandomString( 8, newJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS );
+	    var instance = request.ESAPI.authenticator();
+	    var accountName = request.ESAPI.randomizer().getRandomString( 8, newJava( "org.owasp.esapi.reference.DefaultEncoder" ).CHAR_ALPHANUMERICS );
 	    var password = instance.generateStrongPassword();
 	    var role = "test";
 	    // test wrong parameters - missing role parameter

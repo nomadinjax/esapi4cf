@@ -27,7 +27,7 @@
 			var result = "";
 
 			System.out.println("getProperty");
-			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
 			name = "name";
 			value = "value";
 			instance.setProperty(name, value);
@@ -48,7 +48,7 @@
 			var result = "";
 
 			System.out.println("setProperty");
-			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
 			name = "name";
 			value = "value";
 			instance.setProperty(name, value);
@@ -73,7 +73,7 @@
 	            hint="Test the behavior when the requested key does not exist.">
 
 		<cfscript>
-			var instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+			var instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
 			assertTrue(instance.getProperty("not.there") == "");
 		</cfscript>
 
@@ -92,7 +92,7 @@
 			var sawOne = false;
 
 			System.out.println("keySet");
-			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
 			instance.setProperty("one", "two");
 			instance.setProperty("two", "three");
 			i = instance.keySet().iterator();
@@ -128,14 +128,14 @@
         	var i = "";
         	var key = "";
 
-        	var toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
-        	var toLoad = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+        	var toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
+        	var toLoad = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
         	var baos = newJava("java.io.ByteArrayOutputStream").init();
         	var bais = "";
         	var sawOne = false;
         	var sawTwo = false;
 
-        	toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(variables.ESAPI);
+        	toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
         	toStore.setProperty("one", "two");
         	toStore.setProperty("two", "three");
         	toStore.store(baos, "testStore");

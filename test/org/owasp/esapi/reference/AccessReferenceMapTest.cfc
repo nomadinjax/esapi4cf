@@ -33,8 +33,8 @@
 			var newIndirect = "";
 
 			System.out.println("update");
-			arm = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(variables.ESAPI);
-			auth = variables.ESAPI.authenticator();
+			arm = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(request.ESAPI);
+			auth = request.ESAPI.authenticator();
 
 			pass = auth.generateStrongPassword();
 			u = auth.createUser("armUpdate", pass, pass);
@@ -71,8 +71,8 @@
 			var u = "";
 
 			System.out.println("iterator");
-			arm = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(variables.ESAPI);
-			auth = variables.ESAPI.authenticator();
+			arm = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(request.ESAPI);
+			auth = request.ESAPI.authenticator();
 
 			arm.update(auth.getUserNames());
 
@@ -104,7 +104,7 @@
 			list.add("123");
 			list.add(directReference);
 			list.add("345");
-			arm = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(variables.ESAPI, list);
+			arm = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(request.ESAPI, list);
 
 			expResult = directReference;
 			result = arm.getIndirectReference(directReference);
@@ -130,7 +130,7 @@
 			list.add("123");
 			list.add(directReference);
 			list.add("345");
-			instance = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(variables.ESAPI, list);
+			instance = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(request.ESAPI, list);
 
 			ind = instance.getIndirectReference(directReference);
 			dir = instance.getDirectReference(ind);
@@ -165,7 +165,7 @@
 			list.add("123");
 			list.add(directReference);
 			list.add("345");
-			instance = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(variables.ESAPI, list);
+			instance = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(request.ESAPI, list);
 
 			newDirect = instance.addDirectReference("newDirect");
 			assertFalse(newDirect == "");
@@ -195,7 +195,7 @@
 			list.add("123");
 			list.add(directReference);
 			list.add("345");
-			instance = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(variables.ESAPI, list);
+			instance = createObject("component", "org.owasp.esapi.reference.RandomAccessReferenceMap").init(request.ESAPI, list);
 
 			indirect = instance.getIndirectReference(directReference);
 			assertFalse(indirect == "");

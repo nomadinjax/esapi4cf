@@ -30,7 +30,7 @@
 
 			System.out.println("getRandomString");
 			length = 20;
-			instance = variables.ESAPI.randomizer();
+			instance = request.ESAPI.randomizer();
 			for(i = 0; i < 100; i++) {
 				result = instance.getRandomString(length, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 				for(j = 0; j < result.length(); j++) {
@@ -60,7 +60,7 @@
 			System.out.println("getRandomInteger");
 			min = -20;
 			max = 100;
-			instance = variables.ESAPI.randomizer();
+			instance = request.ESAPI.randomizer();
 			minResult = (max - min) / 2;
 			maxResult = (max - min) / 2;
 			for(i = 0; i < 100; i++) {
@@ -91,7 +91,7 @@
 			System.out.println("getRandomReal");
 			min = newJava("java.lang.Float").init("-20.5234F").floatValue();
 			max = newJava("java.lang.Float").init("100.12124F").floatValue();
-			instance = variables.ESAPI.randomizer();
+			instance = request.ESAPI.randomizer();
 			minResult = (max - min) / 2;
 			maxResult = (max - min) / 2;
 			for(i = 0; i < 100; i++) {
@@ -117,7 +117,7 @@
 			var guid = "";
 
 			System.out.println("getRandomGUID");
-			instance = variables.ESAPI.randomizer();
+			instance = request.ESAPI.randomizer();
 			list = newJava("java.util.ArrayList").init();
 			for(i = 0; i < 100; i++) {
 				guid = instance.getRandomGUID();

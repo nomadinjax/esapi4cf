@@ -25,7 +25,7 @@
 	<cffunction access="public" returntype="void" name="setUp" output="false">
 
 		<cfscript>
-			variables.conf = createObject("component", "org.owasp.esapi.reference.DefaultSecurityConfiguration").init(variables.ESAPI);
+			variables.conf = createObject("component", "org.owasp.esapi.reference.DefaultSecurityConfiguration").init(request.ESAPI);
 		</cfscript>
 
 	</cffunction>

@@ -25,7 +25,7 @@
 
 		<cfscript>
 			// save configuration as tests may change it
-			variables.origConfig = variables.ESAPI.securityConfiguration();
+			variables.origConfig = request.ESAPI.securityConfiguration();
 		</cfscript>
 
 	</cffunction>
@@ -34,7 +34,7 @@
 
 		<cfscript>
 			// restore configuration as test may change it
-			variables.ESAPI.setSecurityConfiguration(variables.origConfig);
+			request.ESAPI.setSecurityConfiguration(variables.origConfig);
 		</cfscript>
 
 	</cffunction>
@@ -61,7 +61,7 @@
 
 			codec = newJava("org.owasp.esapi.codecs.WindowsCodec").init();
 			System.out.println("executeSystemCommand");
-			instance = variables.ESAPI.executor();
+			instance = request.ESAPI.executor();
 			executable = newJava("java.io.File").init("C:\\Windows\\System32\\cmd.exe");
 			working = newJava("java.io.File").init("C:\\");
 			params = newJava("java.util.ArrayList").init();
@@ -159,9 +159,9 @@
 			// make sure we have what /bin/sh is pointing at in the allowed exes for the test
 			// and a usable working dir
 			binSh = newJava("java.io.File").init("/bin/sh").getCanonicalFile();
-			variables.ESAPI.setSecurityConfiguration(createObject("component", "ExecutorTest$Conf").init(variables.ESAPI.securityConfiguration(), newJava("java.util.Collections").singletonList(binSh.getPath()), workingDir));
+			request.ESAPI.setSecurityConfiguration(createObject("component", "ExecutorTest$Conf").init(request.ESAPI.securityConfiguration(), newJava("java.util.Collections").singletonList(binSh.getPath()), workingDir));
 
-			instance = variables.ESAPI.executor();
+			instance = request.ESAPI.executor();
 			executable = binSh;
 			params = [];
 			try {
@@ -213,7 +213,7 @@
 			var javaHome = "";
 			var javaHomeBin = "";
 			var javaHomeBinJava = "";
-			var instance = variables.ESAPI.executor();
+			var instance = request.ESAPI.executor();
 			var params = [];
 			var result = "";
 			var codec = "";
@@ -239,7 +239,7 @@
 			tmpDir = newJava("java.io.File").init(System.getProperty("java.io.tmpdir")).getCanonicalFile();
 			assertTrue(tmpDir.isDirectory(), "system property java.io.tmpdir does not point to a directory");
 
-			variables.ESAPI.setSecurityConfiguration(createObject("component", "ExecutorTest$Conf").init(variables.ESAPI.securityConfiguration(), newJava("java.util.Collections").singletonList(javaHomeBinJava.getPath()), tmpDir));
+			request.ESAPI.setSecurityConfiguration(createObject("component", "ExecutorTest$Conf").init(request.ESAPI.securityConfiguration(), newJava("java.util.Collections").singletonList(javaHomeBinJava.getPath()), tmpDir));
 			// -version goes to stderr which executeSystemCommand doesn't read...
 			// -help goes to stdout so we'll use that...
 			params.add("-help");

@@ -29,11 +29,11 @@
 			// CF8 requires 'var' at the top
 			var user = "";
 
-			var username = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var username = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			var ex = newJava("java.lang.Exception").init();
 			st = ex.getStackTrace();
 			System.out.println("Creating user " & username & " for " & st[1].getMethodName());
-			user = variables.ESAPI.authenticator().createUser(username, arguments.password, arguments.password);
+			user = request.ESAPI.authenticator().createUser(username, arguments.password, arguments.password);
 			return user;
 		</cfscript>
 
@@ -44,10 +44,10 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.authenticator();
-			var accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			var password = variables.ESAPI.authenticator().generateStrongPassword();
-			var role = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			var instance = request.ESAPI.authenticator();
+			var accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var password = request.ESAPI.authenticator().generateStrongPassword();
+			var role = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
 			var user = instance.createUser(accountName, password, password);
 
 			System.out.println("addRole");
@@ -63,7 +63,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.authenticator();
+			var instance = request.ESAPI.authenticator();
 			var oldPassword = instance.generateStrongPassword();
 			var user = createTestUser(oldPassword);
 			var set = [];
@@ -91,7 +91,7 @@
 			var password2 = "";
 
 			System.out.println("changePassword");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			oldPassword = "Password12!@";
 			user = createTestUser(oldPassword);
 			System.out.println("Hash of " & oldPassword & " = " & instance.getHashedPassword(user));
@@ -120,7 +120,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.authenticator();
+			var instance = request.ESAPI.authenticator();
 			var oldPassword = instance.generateStrongPassword();
 			var user = createTestUser(oldPassword);
 
@@ -138,7 +138,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.authenticator();
+			var instance = request.ESAPI.authenticator();
 			var oldPassword = instance.generateStrongPassword();
 			var user = createTestUser(oldPassword);
 
@@ -165,7 +165,7 @@
 			user.enable();
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 
 			user.loginWithPassword("failedLoginLockout");
 
@@ -205,7 +205,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = createTestUser("getAccountName");
-			var accountName = variables.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var accountName = request.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 
 			System.out.println("getAccountName");
 			user.setAccountName(accountName);
@@ -220,14 +220,14 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.authenticator();
+			var instance = request.ESAPI.authenticator();
 			var oldPassword = instance.generateStrongPassword();
 			var user = createTestUser(oldPassword);
 			var httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			var httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
 
 			System.out.println("getLastLoginTime");
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			try {
 				user.loginWithPassword("ridiculous");
 			}
@@ -260,7 +260,7 @@
 			var llt2 = "";
 
 			System.out.println("getLastLoginTime");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			oldPassword = instance.generateStrongPassword();
 			user = createTestUser(oldPassword);
 			user.verifyPassword(oldPassword);
@@ -287,7 +287,7 @@
 			user = createTestUser("getLastPasswordChangeTime");
 			t1 = user.getLastPasswordChangeTime();
 			sleep(10);// need a short delay to separate attempts
-			newPassword = variables.ESAPI.authenticator().generateStrongPassword(user, "getLastPasswordChangeTime");
+			newPassword = request.ESAPI.authenticator().generateStrongPassword(user, "getLastPasswordChangeTime");
 			user.changePassword("getLastPasswordChangeTime", newPassword, newPassword);
 			t2 = user.getLastPasswordChangeTime();
 			assertTrue(t2.after(t1));
@@ -308,10 +308,10 @@
 			var roles = "";
 
 			System.out.println("getRoles");
-			instance = variables.ESAPI.authenticator();
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			password = variables.ESAPI.authenticator().generateStrongPassword();
-			role = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			instance = request.ESAPI.authenticator();
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			password = request.ESAPI.authenticator().generateStrongPassword();
+			role = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
 			user = instance.createUser(accountName, password, password);
 			user.addRole(role);
 			roles = user.getRoles();
@@ -330,7 +330,7 @@
 
 			System.out.println("getScreenName");
 			user = createTestUser("getScreenName");
-			screenName = variables.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			screenName = request.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			user.setScreenName(screenName);
 			assertEquals(screenName, user.getScreenName());
 			assertFalse("ridiculous" == user.getScreenName());
@@ -358,18 +358,18 @@
 			var s = "";
 
 			System.out.println("getSessions");
-			instance = variables.ESAPI.authenticator();
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			password = variables.ESAPI.authenticator().generateStrongPassword();
+			instance = request.ESAPI.authenticator();
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			password = request.ESAPI.authenticator().generateStrongPassword();
 			user = instance.createUser(accountName, password, password);
 			jsession1 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession").init();
-			session1 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(variables.ESAPI, jsession1);
+			session1 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(request.ESAPI, jsession1);
 			user.addSession(session1);
 			jsession2 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession").init();
-			session2 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(variables.ESAPI, jsession1);
+			session2 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(request.ESAPI, jsession1);
 			user.addSession(session2);
 			jsession3 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession").init();
-			session3 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(variables.ESAPI, jsession1);
+			session3 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(request.ESAPI, jsession1);
 			user.addSession(session3);
 			httpSessions = user.getSessions();
 			i = httpSessions.iterator();
@@ -413,7 +413,7 @@
 			assertEquals(0, user.getFailedLoginCount());
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			try {
 				user.loginWithPassword("ridiculous");
 			}
@@ -513,14 +513,14 @@
 			var httpSession = "";
 
 			System.out.println("isSessionAbsoluteTimeout");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			oldPassword = instance.generateStrongPassword();
 			user = createTestUser(oldPassword);
 			timestamp = System.currentTimeMillis();
 			// setup request and response
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			httpSession = httpRequest.getSession();
 
 			// set session creation -3 hours (default is 2 hour timeout)
@@ -548,14 +548,14 @@
 			var httpSession = "";
 
 			System.out.println("isSessionTimeout");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			oldPassword = instance.generateStrongPassword();
 			user = createTestUser(oldPassword);
 			timestamp = System.currentTimeMillis();
 			// setup request and response
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			httpSession = httpRequest.getSession();
 
 			// set creation -30 mins (default is 20 min timeout)
@@ -579,7 +579,7 @@
 			var user = "";
 
 			System.out.println("lock");
-			instance = variables.ESAPI.authenticator();
+			instance = request.ESAPI.authenticator();
 			oldPassword = instance.generateStrongPassword();
 			user = createTestUser(oldPassword);
 			user.lock();
@@ -603,7 +603,7 @@
 			System.out.println("loginWithPassword");
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			httpSession = httpRequest.getSession();
 			assertFalse(httpSession.getInvalidated());
 			user = createTestUser("loginWithPassword");
@@ -656,8 +656,8 @@
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
 			httpSession = httpRequest.getSession();
 			assertFalse(httpSession.getInvalidated());
-			instance = variables.ESAPI.authenticator();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			instance = request.ESAPI.authenticator();
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			oldPassword = instance.generateStrongPassword();
 			user = createTestUser(oldPassword);
 			user.enable();
@@ -683,7 +683,7 @@
 			var user = "";
 
 			System.out.println("removeRole");
-			role = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			role = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
 			user = createTestUser("removeRole");
 			user.addRole(role);
 			assertTrue(user.isInRole(role));
@@ -714,7 +714,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = createTestUser("setAccountName");
-			var accountName = variables.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var accountName = request.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 
 			System.out.println("setAccountName");
 			user.setAccountName(accountName);
@@ -729,7 +729,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var password = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var password = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			var user = createTestUser(password);
 
 			System.out.println("setAccountName");
@@ -769,7 +769,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = createTestUser("setScreenName");
-			var screenName = variables.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var screenName = request.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 
 			System.out.println("setScreenName");
 			user.setScreenName(screenName);
@@ -784,7 +784,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.authenticator();
+			var instance = request.ESAPI.authenticator();
 			var oldPassword = instance.generateStrongPassword();
 			var user = createTestUser(oldPassword);
 

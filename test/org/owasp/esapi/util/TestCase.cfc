@@ -18,7 +18,10 @@
 <cfcomponent extends="mxunit.framework.TestCase" output="false">
 
 	<cfscript>
-		variables.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
+		// only initialize once
+		if (!structKeyExists(request, "ESAPI")) {
+			request.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
+		}
 
 		// ESAPI4J version
 		try {
@@ -34,29 +37,11 @@
 		System = createObject("java", "java.lang.System");
 	</cfscript>
 
-	<cffunction access="public" returntype="void" name="setUp" output="false">
-
-		<cfscript>
-			structClear(session);
-			structClear(request);
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="void" name="tearDown" output="false">
-
-		<cfscript>
-			structClear(session);
-			structClear(request);
-		</cfscript>
-
-	</cffunction>
-
 	<cffunction access="private" returntype="void" name="clearUserFile" output="false">
 		<!--- clear the User file to prep for tests --->
 
 		<cfscript>
-			var filePath = variables.ESAPI.securityConfiguration().getResourceDirectory() & "users.txt";
+			var filePath = request.ESAPI.securityConfiguration().getResourceDirectory() & "users.txt";
 			var writer = "";
 			writer &= "## This is the user file associated with the ESAPI library from http://www.owasp.org" & chr(13) & chr(10);
 			writer &= "## accountName | hashedPassword | roles | locked | enabled | rememberToken | csrfToken | oldPasswordHashes | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount" & chr(13) & chr(10);

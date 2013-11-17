@@ -32,7 +32,7 @@
 			var mitch = "";
 
 			// FIXME: this should probably be changed to be part of setUp()
-			var authenticator = variables.ESAPI.authenticator();
+			var authenticator = request.ESAPI.authenticator();
 			var password = authenticator.generateStrongPassword();
 
 			// create a user with the "user" role for this test
@@ -105,9 +105,9 @@
 			resDir = testDir & "/resources";
 			checkDir((resDir), "The resources directory");
 			testDir = "";
-			variables.origResDir = variables.ESAPI.securityConfiguration().getResourceDirectory();
+			variables.origResDir = request.ESAPI.securityConfiguration().getResourceDirectory();
 
-			variables.ESAPI.securityConfiguration().setResourceDirectory(resDir);
+			request.ESAPI.securityConfiguration().setResourceDirectory(resDir);
 		</cfscript>
 
 	</cffunction>
@@ -115,7 +115,7 @@
 	<cffunction access="public" returntype="void" name="tearDown" output="false">
 
 		<cfscript>
-			variables.ESAPI.securityConfiguration().setResourceDirectory(variables.origResDir);
+			request.ESAPI.securityConfiguration().setResourceDirectory(variables.origResDir);
 		</cfscript>
 
 	</cffunction>
@@ -123,9 +123,9 @@
 	<cffunction access="public" returntype="void" name="testMatchRule" output="false">
 
 		<cfscript>
-			//variables.ESAPI.authenticator().setCurrentUser( "" );
-			variables.ESAPI.authenticator().clearCurrent();
-			assertFalse(variables.ESAPI.accessController().isAuthorizedForURL("/nobody"));
+			//request.ESAPI.authenticator().setCurrentUser( "" );
+			request.ESAPI.authenticator().clearCurrent();
+			assertFalse(request.ESAPI.accessController().isAuthorizedForURL("/nobody"));
 		</cfscript>
 
 	</cffunction>
@@ -138,8 +138,8 @@
 			var auth = "";
 
 			System.out.println("isAuthorizedForURL");
-			instance = variables.ESAPI.accessController();
-			auth = variables.ESAPI.authenticator();
+			instance = request.ESAPI.accessController();
+			auth = request.ESAPI.authenticator();
 
 			auth.setCurrentUser(auth.getUserByAccountName("testuser1"));
 			assertFalse(instance.isAuthorizedForURL("/nobody"));
@@ -197,8 +197,8 @@
 			var auth = "";
 
 			System.out.println("isAuthorizedForFunction");
-			instance = variables.ESAPI.accessController();
-			auth = variables.ESAPI.authenticator();
+			instance = request.ESAPI.accessController();
+			auth = request.ESAPI.authenticator();
 
 			auth.setCurrentUser(auth.getUserByAccountName("testuser1"));
 			assertTrue(instance.isAuthorizedForFunction("/FunctionA"));
@@ -252,8 +252,8 @@
 			var undefined = "";
 
 			System.out.println("isAuthorizedForData");
-			instance = variables.ESAPI.accessController();
-			auth = variables.ESAPI.authenticator();
+			instance = request.ESAPI.accessController();
+			auth = request.ESAPI.authenticator();
 
 			try {
 				adminR = newJava("java.util.ArrayList");
@@ -328,8 +328,8 @@
 			var auth = "";
 
 			System.out.println("isAuthorizedForFile");
-			instance = variables.ESAPI.accessController();
-			auth = variables.ESAPI.authenticator();
+			instance = request.ESAPI.accessController();
+			auth = request.ESAPI.authenticator();
 
 			auth.setCurrentUser(auth.getUserByAccountName("testuser1"));
 			assertTrue(instance.isAuthorizedForFile("/Dir/File1"));
@@ -369,8 +369,8 @@
 			var auth = "";
 
 			System.out.println("isAuthorizedForBackendService");
-			instance = variables.ESAPI.accessController();
-			auth = variables.ESAPI.authenticator();
+			instance = request.ESAPI.accessController();
+			auth = request.ESAPI.authenticator();
 
 			auth.setCurrentUser(auth.getUserByAccountName("testuser1"));
 			assertTrue(instance.isAuthorizedForService("/services/ServiceA"));

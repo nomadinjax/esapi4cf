@@ -32,17 +32,17 @@
 			var csrf1 = "";
 			var csrf2 = "";
 
-			var instance = variables.ESAPI.authenticator();
-			var username = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var instance = request.ESAPI.authenticator();
+			var username = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			var user = instance.createUser(username, "addCSRFToken", "addCSRFToken");
 			instance.setCurrentUser(user);
 
 			System.out.println("addCSRFToken");
-			csrf1 = variables.ESAPI.httpUtilities().addCSRFToken("/test1");
+			csrf1 = request.ESAPI.httpUtilities().addCSRFToken("/test1");
 			System.out.println("CSRF1:" & csrf1);
 			assertTrue(csrf1.indexOf("?") > -1);
 
-			csrf2 = variables.ESAPI.httpUtilities().addCSRFToken("/test1?one=two");
+			csrf2 = request.ESAPI.httpUtilities().addCSRFToken("/test1?one=two");
 			System.out.println("CSRF2:" & csrf2);
 			assertTrue(csrf2.indexOf("&") > -1);
 		</cfscript>
@@ -64,12 +64,12 @@
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
 			httpSession = httpRequest.getSession();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			httpSession.setAttribute("one", "one");
 			httpSession.setAttribute("two", "two");
 			httpSession.setAttribute("three", "three");
 			id1 = httpSession.getId();
-			httpSession = variables.ESAPI.httpUtilities().changeSessionIdentifier(variables.ESAPI.currentRequest());
+			httpSession = request.ESAPI.httpUtilities().changeSessionIdentifier(request.ESAPI.currentRequest());
 			id2 = httpSession.getId();
 			assertTrue(!id1.equals(id2));
 			assertEquals("one", httpSession.getAttribute("one"));
@@ -100,9 +100,9 @@
 
 			httpRequest1 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init("/test", content.getBytes());
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest1, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest1, httpResponse);
 			try {
-				variables.ESAPI.httpUtilities().getSafeFileUploads(variables.ESAPI.currentRequest(), dir, dir);
+				request.ESAPI.httpUtilities().getSafeFileUploads(request.ESAPI.currentRequest(), dir, dir);
 				fail();
 			}
 			catch(org.owsap.esapi.errors.ValidationException e) {
@@ -111,9 +111,9 @@
 
 			httpRequest2 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init("/test", content.getBytes());
 			httpRequest2.setContentType("multipart/form-data; boundary=ridiculous");
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest2, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest2, httpResponse);
 			try {
-				list = variables.ESAPI.httpUtilities().getSafeFileUploads(variables.ESAPI.currentRequest(), dir, dir);
+				list = request.ESAPI.httpUtilities().getSafeFileUploads(request.ESAPI.currentRequest(), dir, dir);
 				i = list.iterator();
 				while(i.hasNext()) {
 					f = i.next();
@@ -127,9 +127,9 @@
 
 			httpRequest3 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init("/test", content.replaceAll("txt", "ridiculous").getBytes());
 			httpRequest3.setContentType("multipart/form-data; boundary=ridiculous");
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest3, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest3, httpResponse);
 			try {
-				variables.ESAPI.httpUtilities().getSafeFileUploads(variables.ESAPI.currentRequest(), dir, dir);
+				request.ESAPI.httpUtilities().getSafeFileUploads(request.ESAPI.currentRequest(), dir, dir);
 				fail();
 			}
 			catch(org.owsap.esapi.errors.ValidationException e) {
@@ -161,21 +161,21 @@
 			list.add(newJava("javax.servlet.http.Cookie").init("c2", "v2"));
 			list.add(newJava("javax.servlet.http.Cookie").init("c3", "v3"));
 			httpRequest.setCookies(list);
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init());
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init());
 
 			// should throw IntrusionException which will be caught in isValidHTTPRequest and return false
 			httpRequest.setMethod("JEFF");
-			//assertFalse( variables.ESAPI.validator().isValidHTTPRequest() );
+			//assertFalse( request.ESAPI.validator().isValidHTTPRequest() );
 			httpRequest.setMethod("POST");
-			//assertTrue( variables.ESAPI.validator().isValidHTTPRequest() );
+			//assertTrue( request.ESAPI.validator().isValidHTTPRequest() );
 			httpRequest.setMethod("GET");
-			//assertTrue( variables.ESAPI.validator().isValidHTTPRequest() );
+			//assertTrue( request.ESAPI.validator().isValidHTTPRequest() );
 			httpRequest.addParameter("bad_name", "bad##value");
 			httpRequest.addHeader("bad_name", "bad##value");
 			list.add(newJava("javax.servlet.http.Cookie").init("bad_name", "bad##value"));
 
 			// call the validator directly, since the safe request will shield this from failing
-			assertFalse(variables.ESAPI.validator().isValidHTTPRequest(httpRequest));
+			assertFalse(request.ESAPI.validator().isValidHTTPRequest(httpRequest));
 		</cfscript>
 
 	</cffunction>
@@ -192,15 +192,15 @@
 			System.out.println("killAllCookies");
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(variables.ESAPI, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(request.ESAPI, httpResponse);
 			assertTrue(httpResponse.getCookies().isEmpty());
 			list = [];
 			list.add(newJava("javax.servlet.http.Cookie").init("test1", "1"));
 			list.add(newJava("javax.servlet.http.Cookie").init("test2", "2"));
 			list.add(newJava("javax.servlet.http.Cookie").init("test3", "3"));
 			httpRequest.setCookies(list);
-			variables.ESAPI.httpUtilities().killAllCookies(variables.ESAPI.currentRequest(), safeResponse);
+			request.ESAPI.httpUtilities().killAllCookies(request.ESAPI.currentRequest(), safeResponse);
 			// this tests getHeaders because we're using addHeader in our setCookie method
 			assertTrue(httpResponse.getHeaderNames().size() == 3);
 		</cfscript>
@@ -219,15 +219,15 @@
 			System.out.println("killCookie");
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(variables.ESAPI, httpResponse);
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(request.ESAPI, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			assertTrue(httpResponse.getCookies().isEmpty());
 			list = [];
 			list.add(newJava("javax.servlet.http.Cookie").init("test1", "1"));
 			list.add(newJava("javax.servlet.http.Cookie").init("test2", "2"));
 			list.add(newJava("javax.servlet.http.Cookie").init("test3", "3"));
 			httpRequest.setCookies(list);
-			variables.ESAPI.httpUtilities().killCookie(variables.ESAPI.currentRequest(), safeResponse, "test1");
+			request.ESAPI.httpUtilities().killCookie(request.ESAPI.currentRequest(), safeResponse, "test1");
 			// this tests getHeaders because we're using addHeader in our setCookie method
 			assertTrue(httpResponse.getHeaderNames().size() == 1);
 		</cfscript>
@@ -244,7 +244,7 @@
 
 			System.out.println("sendSafeRedirect");
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(variables.ESAPI, httpResponse);
+			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(request.ESAPI, httpResponse);
 			try {
 				safeResponse.sendRedirect("/test1/abcdefg");
 				safeResponse.sendRedirect("/test2/1234567");
@@ -280,7 +280,7 @@
 
 			System.out.println("setCookie");
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(variables.ESAPI, httpResponse);
+			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(request.ESAPI, httpResponse);
 			assertTrue(httpResponse.getCookies().isEmpty());
 
 			safeResponse.addCookie(newJava("javax.servlet.http.Cookie").init("test1", "test1"));
@@ -321,18 +321,18 @@
 			System.out.println("getStateFromEncryptedCookie");
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(variables.ESAPI, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(request.ESAPI, httpResponse);
 			map = {};
 			map.put("one", "aspect");
 			map.put("two", "ridiculous");
 			map.put("test_hard", "&(@##*!^|;,.");
 			try {
-				variables.ESAPI.httpUtilities().encryptStateInCookie(safeResponse, map);
+				request.ESAPI.httpUtilities().encryptStateInCookie(safeResponse, map);
 				value = httpResponse.getHeader("Set-Cookie");
 				encrypted = value.substring(value.indexOf("=") + 1, value.indexOf(";"));
 				httpRequest.setCookie("state", encrypted);
-				state = variables.ESAPI.httpUtilities().decryptStateFromCookie(variables.ESAPI.currentRequest());
+				state = request.ESAPI.httpUtilities().decryptStateFromCookie(request.ESAPI.currentRequest());
 				i = map.entrySet().iterator();
 				while(i.hasNext()) {
 					entry = i.next();
@@ -369,17 +369,17 @@
 			System.out.println("saveStateInEncryptedCookie");
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(variables.ESAPI, httpResponse);
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(request.ESAPI, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			map = {};
 			map.put("one", "aspect");
 			map.put("two", "ridiculous");
 			map.put("test_hard", "&(@##*!^|;,.");
 			try {
-				variables.ESAPI.httpUtilities().encryptStateInCookie(safeResponse, map);
+				request.ESAPI.httpUtilities().encryptStateInCookie(safeResponse, map);
 				value = httpResponse.getHeader("Set-Cookie");
 				encrypted = value.substring(value.indexOf("=") + 1, value.indexOf(";"));
-				variables.ESAPI.encryptor().decryptString(encrypted);
+				request.ESAPI.encryptor().decryptString(encrypted);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
 				fail();
@@ -399,13 +399,13 @@
 			System.out.println("setNoCacheHeaders");
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			assertTrue(httpResponse.getHeaderNames().isEmpty());
 			httpResponse.addHeader("test1", "1");
 			httpResponse.addHeader("test2", "2");
 			httpResponse.addHeader("test3", "3");
 			assertFalse(httpResponse.getHeaderNames().isEmpty());
-			variables.ESAPI.httpUtilities().setNoCacheHeaders(variables.ESAPI.currentResponse());
+			request.ESAPI.httpUtilities().setNoCacheHeaders(request.ESAPI.currentResponse());
 			assertTrue(httpResponse.containsHeader("Cache-Control"));
 			assertTrue(httpResponse.containsHeader("Expires"));
 		</cfscript>
@@ -425,8 +425,8 @@
 			var maxAge = "";
 
 			System.out.println("setRememberToken");
-			instance = variables.ESAPI.authenticator();
-			accountName = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.authenticator();
+			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			password = instance.generateStrongPassword();
 			user = instance.createUser(accountName, password, password);
 			user.enable();
@@ -434,11 +434,11 @@
 			httpRequest.addParameter("username", accountName);
 			httpRequest.addParameter("password", password);
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			instance.login(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse());
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			instance.login(request.ESAPI.currentRequest(), request.ESAPI.currentResponse());
 
 			maxAge = (60 * 60 * 24 * 14);
-			variables.ESAPI.httpUtilities().setRememberToken(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse(), password, maxAge, "domain", "/");
+			request.ESAPI.httpUtilities().setRememberToken(request.ESAPI.currentRequest(), request.ESAPI.currentResponse(), password, maxAge, "domain", "/");
 			// Can't test this because we're using safeSetCookie, which sets a header, not a real cookie!
 			// String value = httpResponse.getCookie( Authenticator.REMEMBER_TOKEN_COOKIE_NAME ).getValue();
 			// assertEquals( user.getRememberToken(), value );

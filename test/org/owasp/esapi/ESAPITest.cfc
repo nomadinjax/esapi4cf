@@ -22,16 +22,16 @@
 
 		<cfscript>
 			System.out.println("testSetters");
-			variables.ESAPI.setAccessController(variables.ESAPI.accessController());
-			variables.ESAPI.setAuthenticator(variables.ESAPI.authenticator());
-			variables.ESAPI.setEncoder(variables.ESAPI.encoder());
-			variables.ESAPI.setEncryptor(variables.ESAPI.encryptor());
-			variables.ESAPI.setExecutor(variables.ESAPI.executor());
-			variables.ESAPI.setHttpUtilities(variables.ESAPI.httpUtilities());
-			variables.ESAPI.setIntrusionDetector(variables.ESAPI.intrusionDetector());
-			variables.ESAPI.setRandomizer(variables.ESAPI.randomizer());
-			variables.ESAPI.setSecurityConfiguration(variables.ESAPI.securityConfiguration());
-			variables.ESAPI.setValidator(variables.ESAPI.validator());
+			request.ESAPI.setAccessController(request.ESAPI.accessController());
+			request.ESAPI.setAuthenticator(request.ESAPI.authenticator());
+			request.ESAPI.setEncoder(request.ESAPI.encoder());
+			request.ESAPI.setEncryptor(request.ESAPI.encryptor());
+			request.ESAPI.setExecutor(request.ESAPI.executor());
+			request.ESAPI.setHttpUtilities(request.ESAPI.httpUtilities());
+			request.ESAPI.setIntrusionDetector(request.ESAPI.intrusionDetector());
+			request.ESAPI.setRandomizer(request.ESAPI.randomizer());
+			request.ESAPI.setSecurityConfiguration(request.ESAPI.securityConfiguration());
+			request.ESAPI.setValidator(request.ESAPI.validator());
 		</cfscript>
 
 	</cffunction>

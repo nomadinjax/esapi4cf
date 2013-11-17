@@ -22,7 +22,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidCreditCard");
 			assertTrue(instance.isValidCreditCard("test", "1234 9876 0000 0008", false));
@@ -38,7 +38,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidInput");
 			assertTrue(instance.isValidInput("test", "jeff.williams@aspectsecurity.com", "Email", 100, false));
@@ -76,7 +76,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidSafeHTML");
 
@@ -105,7 +105,7 @@
 			var result3 = "";
 
 			System.out.println("getValidSafeHTML");
-			instance = variables.ESAPI.validator();
+			instance = request.ESAPI.validator();
 			test1 = "<b>Jeff</b>";
 			result1 = instance.getValidSafeHTML("test", test1, 100, false);
 			assertEquals(test1, result1);
@@ -132,7 +132,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 			var list = [];
 
 			System.out.println("isValidListItem");
@@ -149,7 +149,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidNumber");
 			//testing negative range
@@ -196,7 +196,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidInteger");
 			//testing negative range
@@ -243,7 +243,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 			var errors = createObject("component", "org.owasp.esapi.ValidationErrorList").init();
 
 			System.out.println("getValidDate");
@@ -268,7 +268,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidFileName");
 			assertTrue(instance.isValidFileName("test", "aspect.jar", false));
@@ -289,7 +289,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var isWindows = iif(System.getProperty("os.name").indexOf("Windows") != -1, de(true), de(false));
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidDirectoryPath");
 
@@ -340,7 +340,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidPrintable");
 			assertTrue(instance.isValidPrintable("name", "abcDEF", 100, false));
@@ -358,7 +358,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var content = newJava("java.lang.String").init("This is some file content").getBytes();
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidFileContent");
 			assertTrue(instance.isValidFileContent("test", content, 100, false));
@@ -372,7 +372,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var isWindows = iif(System.getProperty("os.name").indexOf("Windows") != -1, de(true), de(false));
-			var instance = variables.ESAPI.validator();
+			var instance = request.ESAPI.validator();
 			var filepath = "";
 			var filename = "";
 			var content = "";
@@ -428,8 +428,8 @@
 			httpRequest.addParameter("p1", "value");
 			httpRequest.addParameter("p2", "value");
 			httpRequest.addParameter("p3", "value");
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			instance = variables.ESAPI.validator();
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			instance = request.ESAPI.validator();
 			assertTrue(instance.isValidHTTPRequestParameterSet("HTTPParameters", requiredNames, optionalNames));
 			httpRequest.addParameter("p4", "value");
 			httpRequest.addParameter("p5", "value");
@@ -453,7 +453,7 @@
 			System.out.println("safeReadLine");
 
 			s = newJava("java.io.ByteArrayInputStream").init(newJava("java.lang.String").init("testString").getBytes());
-			instance = variables.ESAPI.validator();
+			instance = request.ESAPI.validator();
 			try {
 				instance.safeReadLine(s, -1);
 				fail();

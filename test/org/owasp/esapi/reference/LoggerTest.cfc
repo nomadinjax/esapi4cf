@@ -18,7 +18,7 @@
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		variables.testLogger = variables.ESAPI.getLogger("test");
+		variables.testLogger = request.ESAPI.getLogger("test");
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testLogHTTPRequest" output="false"
@@ -35,14 +35,14 @@
 			ignore = ["password", "ssn", "ccn"];
 			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
-			variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			logger = variables.ESAPI.getLogger("logger");
-			variables.ESAPI.httpUtilities().logHTTPRequest(variables.ESAPI.currentRequest(), logger, ignore);
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
+			logger = request.ESAPI.getLogger("logger");
+			request.ESAPI.httpUtilities().logHTTPRequest(request.ESAPI.currentRequest(), logger, ignore);
 			httpRequest.addParameter("one", "one");
 			httpRequest.addParameter("two", "two1");
 			httpRequest.addParameter("two", "two2");
 			httpRequest.addParameter("password", "jwilliams");
-			variables.ESAPI.httpUtilities().logHTTPRequest(variables.ESAPI.currentRequest(), logger, ignore);
+			request.ESAPI.httpUtilities().logHTTPRequest(request.ESAPI.currentRequest(), logger, ignore);
 		</cfscript>
 
 	</cffunction>
@@ -127,7 +127,7 @@
 			assertFalse(variables.testLogger.isTraceEnabled());
 
 			//Now test to see if a change to the logging level in one log affects other logs
-			newLogger = variables.ESAPI.getLogger("test_num2");
+			newLogger = request.ESAPI.getLogger("test_num2");
 			newLogger.setLevel(newJava("org.owasp.esapi.Logger").INFO);
 			assertFalse(variables.testLogger.isFatalEnabled());
 			assertFalse(variables.testLogger.isErrorEnabled());
@@ -144,7 +144,7 @@
 			assertFalse(newLogger.isTraceEnabled());
 
 			// Set the logging level back to whatever it is configured to be.
-			variables.testLogger.setLevel(variables.ESAPI.securityConfiguration().getLogLevel());
+			variables.testLogger.setLevel(request.ESAPI.securityConfiguration().getLogLevel());
 
 			// Normally, the default is Logger.WARNING, but if the default was changed, these tests would fail,
 			// so there are commented out for now. But you can enable to test.

@@ -29,7 +29,7 @@
 			var hash4 = "";
 
 			System.out.println("hash");
-			instance = variables.ESAPI.encryptor();
+			instance = request.ESAPI.encryptor();
 			hash1 = instance.hashString("test1", "salt");
 			hash2 = instance.hashString("test2", "salt");
 			assertFalse(hash1.equals(hash2));
@@ -51,7 +51,7 @@
 			var result = "";
 
 			System.out.println("encrypt");
-			instance = variables.ESAPI.encryptor();
+			instance = request.ESAPI.encryptor();
 			plaintext = "test123";
 			ciphertext = instance.encryptString(plaintext);
 			result = instance.decryptString(ciphertext);
@@ -71,7 +71,7 @@
 			var result = "";
 
 			System.out.println("decrypt");
-			instance = variables.ESAPI.encryptor();
+			instance = request.ESAPI.encryptor();
 			try {
 				plaintext = "test123";
 				ciphertext = instance.encryptString(plaintext);
@@ -96,8 +96,8 @@
 			var signature = "";
 
 			System.out.println("sign");
-			instance = variables.ESAPI.encryptor();
-			plaintext = variables.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.encryptor();
+			plaintext = request.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			signature = instance.sign(plaintext);
 			assertTrue(instance.verifySignature(signature, plaintext));
 			assertFalse(instance.verifySignature(signature, "ridiculous"));
@@ -116,8 +116,8 @@
 			var signature = "";
 
 			System.out.println("verifySignature");
-			instance = variables.ESAPI.encryptor();
-			plaintext = variables.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.encryptor();
+			plaintext = request.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			signature = instance.sign(plaintext);
 			assertTrue(instance.verifySignature(signature, plaintext));
 		</cfscript>
@@ -134,8 +134,8 @@
 			var seal = "";
 
 			System.out.println("seal");
-			instance = variables.ESAPI.encryptor();
-			plaintext = variables.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.encryptor();
+			plaintext = request.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			seal = instance.seal(plaintext, newJava("java.lang.Long").init(instance.getTimeStamp() + 1000 * 60));
 			instance.verifySeal(seal);
 		</cfscript>
@@ -152,8 +152,8 @@
 			var seal = "";
 
 			System.out.println("verifySeal");
-			instance = variables.ESAPI.encryptor();
-			plaintext = variables.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			instance = request.ESAPI.encryptor();
+			plaintext = request.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			seal = instance.seal(plaintext, instance.getRelativeTimeStamp(1000 * 60));
 			assertTrue(instance.verifySeal(seal));
 			assertFalse(instance.verifySeal("ridiculous"));
