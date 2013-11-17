@@ -42,8 +42,7 @@
 
 		<cfscript>
 			if(cgi.request_method == "post") {
-				ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
-				ESAPI.securityConfiguration().setResourceDirectory("../test/resources/");
+				ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("/test/resources/");
 
 				if(listLen(form.fieldNames) != 3) {
 					writeOutput("<p>Usage: Authenticator accountname password role</p>");

@@ -70,8 +70,7 @@
 					}
 				}
 
-				ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
-				ESAPI.securityConfiguration().setResourceDirectory(expandPath("../../../../test/resources/"));
+				ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("/test/resources/");
 
 				f = createObject("java", "java.io.File").init(form.file);
 				ESAPI.getLogger("EncryptedProperties.main").debug(getSecurityType("SECURITY_SUCCESS"), true, "Loading encrypted properties from " & f.getAbsolutePath());
