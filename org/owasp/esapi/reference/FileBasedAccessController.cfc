@@ -429,7 +429,7 @@
 			var map = {};
 			var ins = "";
 			try {
-				ins = newJava("java.io.FileInputStream").init(newJava("java.io.File").init(variables.ESAPI.securityConfiguration().getResourceDirectory(), arguments.ruleset));
+				ins = newJava("java.io.FileInputStream").init(newJava("java.io.File").init(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory()), arguments.ruleset));
 				line = variables.ESAPI.validator().safeReadLine(ins, 500);
 				while(isDefined("line") && !isNull(line)) {
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
@@ -489,7 +489,7 @@
 			var ins = "";
 
 			try {
-				ins = newJava("java.io.FileInputStream").init(newJava("java.io.File").init(variables.ESAPI.securityConfiguration().getResourceDirectory(), arguments.ruleset));
+				ins = newJava("java.io.FileInputStream").init(newJava("java.io.File").init(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory()), arguments.ruleset));
 				line = variables.ESAPI.validator().safeReadLine(ins, 500);
 				while(isDefined("line") && !isNull(line)) {
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
