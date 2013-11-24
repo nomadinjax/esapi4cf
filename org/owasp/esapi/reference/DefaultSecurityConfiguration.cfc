@@ -640,11 +640,12 @@
 
 			// falls back on unit test resources location
 			// NEVER allow this to occur in an actual application
-			fileLocation = expandPath("/test/resources/" & fileSeparator & arguments.filename);
+			fileLocation = expandPath(fileSeparator & "test" & fileSeparator & "resources" & fileSeparator & arguments.filename);
 			if(fileExists(fileLocation)) {
 				f = newJava("java.io.File").init(fileLocation);
 				if(f.exists()) {
 					logSpecial("Found in Default Directory/resourceDirectory: " & f.getAbsolutePath());
+					variables.resourceDirectory = fileSeparator & "test" & fileSeparator & "resources";
 					return f;
 				}
 				else {
