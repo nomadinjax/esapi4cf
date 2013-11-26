@@ -28,6 +28,7 @@ RELEASE NOTES
 - SafeFile - full File method support
 - verifyPasswordStrength() now validates the password does not match accountName
 - added 'format' argument to is/getValidNumber for I18N support
+- HttpOnly and Secure now set on JSESSIONID cookie for all CFML versions
 
 Addition of more unit tests
 - Railo4: 7 failures; 3 errors (11-22s)

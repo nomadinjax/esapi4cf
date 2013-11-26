@@ -44,7 +44,7 @@
 			var cfSession = "";
 			if(applicationName != "") {
 				cfSession = variables.httpSession.getAttribute(applicationName);
-				if(!isNUll(cfSession) && structKeyExists(cfSession, lCase(arguments.name))) {
+				if(isDefined("cfSession") && !isNull(cfSession) && structKeyExists(cfSession, lCase(arguments.name))) {
 					return cfSession[lCase(arguments.name)];
 				}
 			}
@@ -171,13 +171,14 @@
 			*
 			* CF10 has a sessionInvalidate() method.  Will this work and can we mimic this in CF8/9?
 			*/
+			//sessionInvalidate();
 			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
 			var cfSession = "";
 			// this technique will not harm session state for other CF applications
 			if(applicationName != "") {
 				cfSession = variables.httpSession.getAttribute(applicationName);
 				// Railo sessions are empty unless you have explicitly set session vars so check for it first
-				if(!isNull(cfSession)) {
+				if(isDefined("cfSession") && !isNull(cfSession)) {
 					structClear(cfSession);
 				}
 			}
@@ -235,7 +236,7 @@
 			var cfSession = "";
 			if(applicationName != "") {
 				cfSession = variables.httpSession.getAttribute(applicationName);
-				if(isNull(cfSession)) {
+				if(!(isDefined("cfSession") && !isNull(cfSession))) {
 					variables.httpSession.setAttribute(applicationName, structNew());
 				}
 				cfSession[lCase(arguments.name)] = arguments.value;
