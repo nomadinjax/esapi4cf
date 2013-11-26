@@ -20,7 +20,8 @@ More info: http://damonmiller.github.io/esapi4cf/
 RELEASE NOTES
 =============
 
-1.1.0a - 2013-?-?
+1.1.0a - 2013-11-26
+- Authentication now working in Railo 4.1 - workaround in Issue 39; ColdFusion 10 workaround not yet available
 - ResourceDirectory can now be passed with ESAPI.init() rather than separate setResourceDirectory() call
 - improved method backport for CF8 allowing newer CFML engines to use native methods: arrayFind(), isNull(), throw(), writeDump(), writeLog()
 - added NULL unit tests from ESAPI4J due to improved NULL support in Railo 4.1 
@@ -28,13 +29,16 @@ RELEASE NOTES
 - SafeFile - full File method support
 - verifyPasswordStrength() now validates the password does not match accountName
 - added 'format' argument to is/getValidNumber for I18N support
-- HttpOnly and Secure now set on JSESSIONID cookie for all CFML versions
+- [Issue 3] HttpOnly and Secure now set on JSESSIONID cookie for all CFML versions
+- [Issue 38] context now set in JSESSIONID cookie path
+- [Issue 42] ESAPIUserSessionKey now stored under CF session instead of Java session
+- [Issue 45] ESAPI4J-version detection now cleaner - no more try/catch
 
-Addition of more unit tests
-- Railo4: 7 failures; 3 errors (11-22s)
-- CF10: 7 failures; 3 errors (14-21s)
+Unit Tests Result Improvements
+- Railo4: 7 failures; 3 errors (10-22s)
+- CF10: 7 failures; 3 errors (10-21s)
 - CF9: 7 failures; 3 errors (17-31s)
-- CF8: 7 failures; 4 errors (22-32s)
+- CF8: 7 failures; 4 errors (21-32s)
 
 1.0.3a - 2013-10-18
 - fixed SafeSession#getAttributeNames exception 'hasNext' not defined
