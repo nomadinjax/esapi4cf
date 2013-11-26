@@ -325,7 +325,7 @@
 	<cffunction access="public" returntype="boolean" name="isEnabled" output="false">
 
 		<cfscript>
-			return variables.enabled;
+			return getBoolean(variables.enabled);
 		</cfscript>
 
 	</cffunction>
@@ -333,7 +333,7 @@
 	<cffunction access="public" returntype="boolean" name="isExpired" output="false">
 
 		<cfscript>
-			return getExpirationTime().before(newJava("java.util.Date").init());
+			return getBoolean(getExpirationTime().before(newJava("java.util.Date").init()));
 
 			// If expiration should happen automatically or based on lastPasswordChangeTime?
 			//long from = lastPasswordChangeTime.getTime();
@@ -349,7 +349,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			return variables.roles.contains(arguments.role.toLowerCase());
+			return getBoolean(variables.roles.contains(arguments.role.toLowerCase()));
 		</cfscript>
 
 	</cffunction>
@@ -357,7 +357,7 @@
 	<cffunction access="public" returntype="boolean" name="isLocked" output="false">
 
 		<cfscript>
-			return variables.locked;
+			return getBoolean(variables.locked);
 		</cfscript>
 
 	</cffunction>
@@ -365,7 +365,7 @@
 	<cffunction access="public" returntype="boolean" name="isLoggedIn" output="false">
 
 		<cfscript>
-			return variables.loggedIn;
+			return getBoolean(variables.loggedIn);
 		</cfscript>
 
 	</cffunction>
@@ -383,7 +383,7 @@
 				return true;
 			deadline = newJava("java.util.Date").init(javaCast("long", httpSession.getCreationTime() + variables.ABSOLUTE_TIMEOUT_LENGTH));
 			timestamp = newJava("java.util.Date").init();
-			return timestamp.after(deadline);
+			return getBoolean(timestamp.after(deadline));
 		</cfscript>
 
 	</cffunction>
@@ -401,7 +401,7 @@
 				return true;
 			deadline = newJava("java.util.Date").init(javaCast("long", httpSession.getLastAccessedTime() + variables.IDLE_TIMEOUT_LENGTH));
 			timestamp = newJava("java.util.Date").init();
-			return timestamp.after(deadline);
+			return getBoolean(timestamp.after(deadline));
 		</cfscript>
 
 	</cffunction>
@@ -629,7 +629,7 @@
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			return variables.ESAPI.authenticator().verifyPassword(this, arguments.password);
+			return getBoolean(variables.ESAPI.authenticator().verifyPassword(this, arguments.password));
 		</cfscript>
 
 	</cffunction>

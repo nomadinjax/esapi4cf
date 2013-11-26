@@ -39,6 +39,23 @@
 
 </cffunction>
 
+<cffunction access="private" returntype="String" name="getBoolean" output="false"
+	hint="Provides a consistent true/false return for a boolean value regardless of whether true/false, yes/no, 1/0, or on/off were provided.">
+	<cfargument required="true" type="String" name="bool">
+
+	<cfscript>
+		if (!len(trim(arguments.bool)) || !isBoolean(arguments.bool)) {
+			return "";
+		}
+
+		if (listFindNoCase("false,no,0,off", arguments.bool)) {
+			return false;
+		}
+		return true;
+	</cfscript>
+
+</cffunction>
+
 <cffunction access="public" name="getSecurityType" output="false">
 	<cfargument required="true" type="String" name="type"/>
 
