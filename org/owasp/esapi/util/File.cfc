@@ -49,7 +49,7 @@
 	<cffunction access="public" returntype="boolean" name="canRead" output="false">
 
 		<cfscript>
-			return variables.safeFile.canRead();
+			return variables.File.canRead();
 		</cfscript>
 
 	</cffunction>
@@ -57,7 +57,7 @@
 	<cffunction access="public" returntype="boolean" name="canWrite" output="false">
 
 		<cfscript>
-			return variables.safeFile.canWrite();
+			return variables.File.canWrite();
 		</cfscript>
 
 	</cffunction>
@@ -66,7 +66,7 @@
 		<cfargument required="true" name="o">
 
 		<cfscript>
-			return variables.safeFile.compareTo(arguments.o);
+			return variables.File.compareTo(arguments.o);
 		</cfscript>
 
 	</cffunction>
@@ -74,7 +74,7 @@
 	<cffunction access="public" returntype="boolean" name="createNewFile" output="false">
 
 		<cfscript>
-			return variables.safeFile.createNewFile();
+			return variables.File.createNewFile();
 		</cfscript>
 
 	</cffunction>
@@ -86,10 +86,10 @@
 
 		<cfscript>
 			if (structKeyExists(arguments, "directory")) {
-				return variables.safeFile.createTempFile(javaCast("string", arguments.prefix), javaCast("string", arguments.suffix), arguments.directory);
+				return variables.File.createTempFile(javaCast("string", arguments.prefix), javaCast("string", arguments.suffix), arguments.directory);
 			}
 			else {
-				return variables.safeFile.createTempFile(javaCast("string", arguments.prefix), javaCast("string", arguments.suffix));
+				return variables.File.createTempFile(javaCast("string", arguments.prefix), javaCast("string", arguments.suffix));
 			}
 		</cfscript>
 
@@ -98,7 +98,7 @@
 	<cffunction access="public" returntype="boolean" name="delete" output="false">
 
 		<cfscript>
-			return variables.safeFile.delete();
+			return variables.File.delete();
 		</cfscript>
 
 	</cffunction>
@@ -106,7 +106,7 @@
 	<cffunction access="public" returntype="void" name="deleteOnExit" output="false">
 
 		<cfscript>
-			return variables.safeFile.deleteOnExit();
+			return variables.File.deleteOnExit();
 		</cfscript>
 
 	</cffunction>
@@ -115,7 +115,7 @@
 		<cfargument required="true" name="obj">
 
 		<cfscript>
-			return variables.safeFile.equals(obj);
+			return variables.File.equals(obj);
 		</cfscript>
 
 	</cffunction>
@@ -131,7 +131,7 @@
 	<cffunction access="public" name="getAbsoluteFile" output="false">
 
 		<cfscript>
-			return variables.safeFile.getAbsoluteFile();
+			return variables.File.getAbsoluteFile();
 		</cfscript>
 
 	</cffunction>
@@ -139,7 +139,7 @@
 	<cffunction access="public" returntype="String" name="getAbsolutePath" output="false">
 
 		<cfscript>
-			return variables.safeFile.getAbsolutePath();
+			return variables.File.getAbsolutePath();
 		</cfscript>
 
 	</cffunction>
@@ -147,7 +147,7 @@
 	<cffunction access="public" name="getCanonicalFile" output="false">
 
 		<cfscript>
-			return variables.safeFile.getCanonicalFile();
+			return variables.File.getCanonicalFile();
 		</cfscript>
 
 	</cffunction>
@@ -155,7 +155,7 @@
 	<cffunction access="public" returntype="String" name="getCanonicalPath" output="false">
 
 		<cfscript>
-			return variables.safeFile.getCanonicalPath();
+			return variables.File.getCanonicalPath();
 		</cfscript>
 
 	</cffunction>
@@ -179,7 +179,7 @@
 	<cffunction access="public" name="getParentFile" output="false">
 
 		<cfscript>
-			return variables.safeFile.getParentFile();
+			return variables.File.getParentFile();
 		</cfscript>
 
 	</cffunction>
@@ -196,7 +196,7 @@
 	<cffunction access="public" returntype="numeric" name="hashCode" output="false">
 
 		<cfscript>
-			return variables.safeFile.hashCode();
+			return variables.File.hashCode();
 		</cfscript>
 
 	</cffunction> --->
@@ -204,7 +204,7 @@
 	<cffunction access="public" returntype="boolean" name="isAbsolute" output="false">
 
 		<cfscript>
-			return variables.safeFile.isAbsolute();
+			return variables.File.isAbsolute();
 		</cfscript>
 
 	</cffunction>
@@ -212,7 +212,7 @@
 	<cffunction access="public" returntype="boolean" name="isDirectory" output="false">
 
 		<cfscript>
-			return variables.safeFile.isDirectory();
+			return variables.File.isDirectory();
 		</cfscript>
 
 	</cffunction>
@@ -220,7 +220,7 @@
 	<cffunction access="public" returntype="boolean" name="isFile" output="false">
 
 		<cfscript>
-			return variables.safeFile.isFile();
+			return variables.File.isFile();
 		</cfscript>
 
 	</cffunction>
@@ -228,7 +228,7 @@
 	<cffunction access="public" returntype="String" name="isHidden" output="false">
 
 		<cfscript>
-			return variables.safeFile.isHidden();
+			return variables.File.isHidden();
 		</cfscript>
 
 	</cffunction>
@@ -236,7 +236,7 @@
 	<cffunction access="public" returntype="Date" name="lastModified" output="false">
 
 		<cfscript>
-			return variables.safeFile.lastModified();
+			return variables.File.lastModified();
 		</cfscript>
 
 	</cffunction>
@@ -244,7 +244,7 @@
 	<cffunction access="public" returntype="numeric" name="length" output="false">
 
 		<cfscript>
-			return variables.safeFile.length();
+			return variables.File.length();
 		</cfscript>
 
 	</cffunction>
@@ -254,10 +254,10 @@
 
 		<cfscript>
 			if (structKeyExists(arguments, "filter")) {
-				return variables.safeFile.list(arguments.filter);
+				return variables.File.list(arguments.filter);
 			}
 			else {
-				return variables.safeFile.list();
+				return variables.File.list();
 			}
 		</cfscript>
 
@@ -268,10 +268,10 @@
 
 		<cfscript>
 			if (structKeyExists(arguments, "filter")) {
-				return variables.safeFile.listFiles(arguments.filter);
+				return variables.File.listFiles(arguments.filter);
 			}
 			else {
-				return variables.safeFile.listFiles();
+				return variables.File.listFiles();
 			}
 		</cfscript>
 
@@ -280,7 +280,7 @@
 	<cffunction access="public" returntype="Array" name="listRoots" output="false">
 
 		<cfscript>
-			return variables.safeFile.listRoots();
+			return variables.File.listRoots();
 		</cfscript>
 
 	</cffunction>
@@ -288,7 +288,7 @@
 	<cffunction access="public" returntype="boolean" name="mkdir" output="false">
 
 		<cfscript>
-			return variables.safeFile.mkdir();
+			return variables.File.mkdir();
 		</cfscript>
 
 	</cffunction>
@@ -296,7 +296,7 @@
 	<cffunction access="public" returntype="boolean" name="mkdirs" output="false">
 
 		<cfscript>
-			return variables.safeFile.mkdirs();
+			return variables.File.mkdirs();
 		</cfscript>
 
 	</cffunction>
@@ -305,7 +305,7 @@
 		<cfargument required="true" name="dest">
 
 		<cfscript>
-			return variables.safeFile.renameTo(arguments.dest);
+			return variables.File.renameTo(arguments.dest);
 		</cfscript>
 
 	</cffunction>
@@ -314,7 +314,7 @@
 		<cfargument required="true" type="Date" name="time">
 
 		<cfscript>
-			return variables.safeFile.setLastModified(javaCast("long", arguments.time.getTime()));
+			return variables.File.setLastModified(javaCast("long", arguments.time.getTime()));
 		</cfscript>
 
 	</cffunction>
@@ -322,7 +322,7 @@
 	<cffunction access="public" returntype="boolean" name="setReadOnly" output="false">
 
 		<cfscript>
-			return variables.safeFile.setReadOnly();
+			return variables.File.setReadOnly();
 		</cfscript>
 
 	</cffunction>
@@ -331,7 +331,7 @@
 	<cffunction access="public" returntype="String" name="toString" output="false">
 
 		<cfscript>
-			return variables.safeFile.toString();
+			return variables.File.toString();
 		</cfscript>
 
 	</cffunction> --->
@@ -339,7 +339,7 @@
 	<cffunction access="public" name="toURI" output="false">
 
 		<cfscript>
-			return variables.safeFile.toURI();
+			return variables.File.toURI();
 		</cfscript>
 
 	</cffunction>
@@ -347,7 +347,7 @@
 	<cffunction access="public" name="toURL" output="false">
 
 		<cfscript>
-			return variables.safeFile.toURL();
+			return variables.File.toURL();
 		</cfscript>
 
 	</cffunction>
