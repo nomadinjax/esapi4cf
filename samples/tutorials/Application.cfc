@@ -23,7 +23,7 @@
 
 			// define an application specific logger instance
 			// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
-			application.logger = application.ESAPI.getLogger(application.applicationName & "-Logger");
+			application.ESAPILogger = application.ESAPI.getLogger(application.applicationName & "-Logger");
 
 			// define any input parameters that should be ignored by the logger.
 			// we never want a user's password to get logged
@@ -31,8 +31,22 @@
 		}
 
 		function onRequestStart() {
+			var httpHeaders = "";
 			var httpRequest = "";
 			var httpResponse = "";
+
+			// for debugging, allow reload of application
+			if (structKeyExists(url, "reload") && url["reload"] == "true") {
+				onApplicationStart();
+			}
+
+			// determine whether this was an AJAX request and save boolean to a request scope variable for use
+			// any frontend library worth using sets the X-Requested-With HTTP header so we can detect that
+			httpHeaders = getHttpRequestData().headers;
+			request.isAjax = false;
+			if (structKeyExists(httpHeaders, "X-Requested-With") && httpHeaders["X-Requested-With"] == "XMLHttpRequest") {
+				request.isAjax = true;
+			}
 
 			try {
 				// register request and response in ESAPI4CF
@@ -56,14 +70,14 @@
 					// Attempt to login with an insecure request : Received non-SSL request
 					// Attempt to login with an insecure request : Received request using GET when only POST is allowed
 					// Attempt to access secure content with an insecure request : Received non-SSL request
-					loginFailure(e);
+					redirectToLogin(e);
 				}
 				catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 					// Possible exceptions:
 					// Invalid request : Request or response objects were empty
 					// Authentication failed : blank username/password
 					// Authentication failed : username does not exist
-					loginFailure(e);
+					redirectToLogin(e);
 				}
 				catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 					// Possible exceptions:
@@ -78,17 +92,32 @@
 					// Login failed : Expired user cannot be set to current user
 					// Login failed : Session inactivity timeout
 					// Login failed : Session absolute timeout
-					loginFailure(e);
+					redirectToLogin(e);
 				}
 
 				// log this request, obfuscating any parameter named password
-				application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
+				application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.ESAPILogger, application.ignoredByLogger);
 			}
 			catch(Any e) {
-				application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+				application.ESAPILogger.error(application.ESAPILogger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
 				// let's rethrow this error so your global error handler catches it if you have one
-				throw(e.message, e.type != "Expression" ? e.type : "Expression-", e.detail);
+				// not sure why throw chokes on 'Expression'
+				if (e.type == "Expression") {
+					throw(e.message, e.type & "!", e.detail);
+				}
+				else {
+					throw(e.message, e.type, e.detail);
+				}
 			}
+
+			// handle logout from any page
+			isLogout = httpRequest.getParameter("logout");
+			if (len(trim(isLogout)) && isBoolean(isLogout) && isLogout) {
+				application.ESAPI.authenticator().logout();
+				ex = {message = "You have been logged out successfully."};
+				redirectToLogin(ex);
+			}
+
 		}
 
 		function onRequestEnd() {
@@ -99,7 +128,7 @@
 
 	</cfscript>
 
-	<cffunction name="loginFailure">
+	<cffunction name="redirectToLogin">
 		<cfargument required="true" name="ex">
 		<cfscript>
 			var encoder = application.ESAPI.encoder();
@@ -116,9 +145,16 @@
 			// we were not in the whitelist so we must fail this request
 			params &= "redirect=" & encoder.encodeForURL(cgi.script_name);
 			params &= "&message=" & encoder.encodeForURL(ex.message);
-
 		</cfscript>
-		<cflocation addtoken="false" url="login.cfm?x=#encoder.encodeForURL(httpUtilities.encryptQueryString(params))#" />
+		<!--- send appropriate Authentication Required/Failed HTTP status code --->
+		<cfheader statuscode="401">
+		<!---
+			Only perform a redirect on non-AJAX requests.
+			Your global AJAX handler should be able to detect a 401 response and handle appropriately from frontend.
+		--->
+		<cfif not request.isAjax>
+			<cflocation addtoken="false" url="login.cfm?x=#encoder.encodeForURL(httpUtilities.encryptQueryString(params))#" />
+		</cfif>
 	</cffunction>
 
 </cfcomponent>
