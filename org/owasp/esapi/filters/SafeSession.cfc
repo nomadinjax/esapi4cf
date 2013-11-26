@@ -236,7 +236,7 @@
 			if(applicationName != "") {
 				cfSession = variables.httpSession.getAttribute(applicationName);
 				if(isNull(cfSession)) {
-					variables.httpSession.setAttribute(applicationName, {});
+					variables.httpSession.setAttribute(applicationName, structNew());
 				}
 				cfSession[lCase(arguments.name)] = arguments.value;
 			}
