@@ -44,11 +44,11 @@
 
 	<cfscript>
 		var logger = newJava("org.owasp.esapi.Logger");
-		if(this.ESAPI4JVERSION EQ 1) {
-			return logger.SECURITY;
+		if(this.ESAPI4JVERSION == 2) {
+			return logger[arguments.type];
 		}
 		else {
-			return logger[arguments.type];
+			return logger.SECURITY;
 		}
 	</cfscript>
 

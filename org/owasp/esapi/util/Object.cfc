@@ -19,21 +19,12 @@
 
 	<cfscript>
 		// all ESAPI components will have these
-
 		this.ESAPINAME = "ESAPI4CF";				// ESAPI library name
-		this.VERSION = "1.0.3a";					// ESAPI library version
-
-		// ESAPI4J version
-		try {
-			// cannot use newJava() here
-			createObject("java", "org.owasp.esapi.util.ObjFactory");
+		this.VERSION = "1.1.0a";					// ESAPI library version
+		this.ESAPI4JVERSION = 1;					// ESAPI4J version
+		if (structKeyExists(createObject("java", "org.owasp.esapi.ESAPI").securityConfiguration(), "APPLICATION_NAME")) {
 			this.ESAPI4JVERSION = 2;
 		}
-		catch(Object e) {
-			// occurs if this version is less than 2.0
-			this.ESAPI4JVERSION = 1;
-		}
-
 		System = createObject("java", "java.lang.System");
 	</cfscript>
 
