@@ -131,6 +131,7 @@
 	            hint="Returns true if input is a valid number within the range of minValue to maxValue.">
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
+		<cfargument required="true" name="format" hint="Required formatting of number inputted."/>
 		<cfargument required="true" type="numeric" name="minValue" hint="Lowest legal value for input."/>
 		<cfargument required="true" type="numeric" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
@@ -141,6 +142,7 @@
 	            hint="Returns a validated number as a double within the range of minValue to maxValue. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException. Instead of throwing a ValidationException on error, this variant will store the exception inside of the ValidationErrorList.">
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
+		<cfargument required="true" name="format" hint="Required formatting of number inputted."/>
 		<cfargument required="true" type="numeric" name="minValue" hint="Lowest legal value for input."/>
 		<cfargument required="true" type="numeric" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>

@@ -24,17 +24,24 @@ RELEASE NOTES
 - ResourceDirectory can now be passed with ESAPI.init() rather than separate setResourceDirectory() call
 - improved method backport for CF8 allowing newer CFML engines to use native methods: arrayFind(), isNull(), throw(), writeDump(), writeLog()
 - added NULL unit tests from ESAPI4J due to improved NULL support in Railo 4.1 
-- DefaultEncoder - now fully dependent on ESAPI4J which resolved Issues 25, 26 & 28 and improved performance
-- SafeFile - now fully dependent on ESAPIJ and full File method support
-- DefaultExecutor - new fully dependent on ESAPIJ
-- 
+- DefaultEncoder - now fully dependent on ESAPI4J which resolved Issues 25, 26 & 28 along with improved encoder performance
+- SafeFile - full File method support
+- verifyPasswordStrength() now validates the password does not match accountName
+- added 'format' argument to is/getValidNumber for I18N support
+
+Addition of more unit tests
+- Railo4: 7 failures; 3 errors (11-22s)
+- CF10: 7 failures; 3 errors (14-21s)
+- CF9: 7 failures; 3 errors (17-31s)
+- CF8: 7 failures; 4 errors (22-32s)
 
 1.0.3a - 2013-10-18
 - fixed SafeSession#getAttributeNames exception 'hasNext' not defined
 - ValidateErrorList#errors() was not returning an array
 - [Issue 20] none of the AccessController unit tests were passing - all now pass for all supported CFML versions
 - Railo 4.1 compatibility - with and without Null support
-- Unit Tests Result Improvements
+
+Unit Tests Result Improvements
 - Railo4: 11 failures; 1 error (with Issue 28 workaround)
 - CF10: 11 failures; 1 error
 - CF9: 11 failures; 1 error
@@ -59,7 +66,8 @@ RELEASE NOTES
 - Initial alpha release
 - Majority feature complete
 - file upload validation not completed (see Issue 22)
-- Outstanding unit tests not passing
+
+Outstanding unit tests not passing
 - Railo4: 10 failures; 71 errors (see Issue 28)
 - CF10: 11 failures; 7 errors
 - CF9: 11 failures; 7 errors

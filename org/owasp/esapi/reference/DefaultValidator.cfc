@@ -178,8 +178,8 @@
 					date = arguments.format.parse(arguments.input);
 					return createDateTime(year(date), month(date), day(date), hour(date), minute(date), second(date));
 				}
-				catch(java.lang.Exception e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid date must follow " & arguments.format & " format", "Invalid date: context=" & arguments.context & ", format=" & arguments.format & ", input=" & arguments.input, e, arguments.context));
+				catch(java.text.ParseException e) {
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid date must follow " & arguments.format.toLocalizedPattern() & " format", "Invalid date: context=" & arguments.context & ", format=" & arguments.format.toLocalizedPattern() & ", input=" & arguments.input, e, arguments.context));
 				}
 			}
 		</cfscript>
@@ -537,13 +537,14 @@
 	            hint="Returns true if input is a valid number.">
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
+		<cfargument required="true" name="format"/>
 		<cfargument required="true" type="numeric" name="minValue"/>
 		<cfargument required="true" type="numeric" name="maxValue"/>
 		<cfargument required="true" type="boolean" name="allowNull"/>
 
 		<cfscript>
 			try {
-				getValidNumber(arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
+				getValidNumber(arguments.context, arguments.input, arguments.format, arguments.minValue, arguments.maxValue, arguments.allowNull);
 				return true;
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
@@ -557,6 +558,7 @@
 	            hint="Returns a validated number as a double. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
+		<cfargument required="true" name="format"/>
 		<cfargument required="true" type="numeric" name="minValue"/>
 		<cfargument required="true" type="numeric" name="maxValue"/>
 		<cfargument required="true" type="boolean" name="allowNull"/>
@@ -564,6 +566,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
+			var number = "";
 			var minDoubleValue = "";
 			var maxDoubleValue = "";
 
@@ -579,9 +582,21 @@
 				return newJava("java.lang.Double").init(0);
 			}
 			else {
+				if(isEmptyInput(arguments.input)) {
+					if(arguments.allowNull)
+						return "";
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Input required", logMessage="Input required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
+				}
+
+				try {
+					number = arguments.format.parse(javaCast("string", arguments.input));
+				}
+				catch(java.text.ParseException e) {
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid number must follow " & arguments.format.toLocalizedPattern() & " format", "Invalid number: context=" & arguments.context & ", format=" & arguments.format.toLocalizedPattern() & ", input=" & arguments.input, e, arguments.context));
+				}
 				minDoubleValue = newJava("java.lang.Double").init(arguments.minValue);
 				maxDoubleValue = newJava("java.lang.Double").init(arguments.maxValue);
-				return getValidDouble(arguments.context, arguments.input, minDoubleValue.doubleValue(), maxDoubleValue.doubleValue(), arguments.allowNull);
+				return getValidDouble(arguments.context, number, minDoubleValue.doubleValue(), maxDoubleValue.doubleValue(), arguments.allowNull);
 			}
 		</cfscript>
 
@@ -644,7 +659,7 @@
 				}
 
 				try {
-					d = newJava("java.lang.Double").init(newJava("java.lang.Double").parseDouble(arguments.input));
+					d = newJava("java.lang.Double").init(newJava("java.lang.Double").parseDouble(javaCast("string", arguments.input)));
 					if(d.isInfinite())
 						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage="Invalid double input: context=" & arguments.context, logMessage="Invalid double input is infinite: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
 					if(d.isNaN())
