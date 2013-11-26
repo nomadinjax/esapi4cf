@@ -112,7 +112,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Date" name="getExpirationTime" output="false">
+	<cffunction access="public" name="getExpirationTime" output="false">
 
 		<cfscript>
 			return "";
@@ -128,7 +128,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Date" name="getLastFailedLoginTime" output="false">
+	<cffunction access="public" name="getLastFailedLoginTime" output="false">
 
 		<cfscript>
 			return "";
@@ -144,7 +144,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Date" name="getLastLoginTime" output="false">
+	<cffunction access="public" name="getLastLoginTime" output="false">
 
 		<cfscript>
 			return "";
@@ -152,7 +152,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Date" name="getLastPasswordChangeTime" output="false">
+	<cffunction access="public" name="getLastPasswordChangeTime" output="false">
 
 		<cfscript>
 			return "";

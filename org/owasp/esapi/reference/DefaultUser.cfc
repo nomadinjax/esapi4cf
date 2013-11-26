@@ -190,7 +190,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Date" name="getExpirationTime" output="false">
+	<cffunction access="public" name="getExpirationTime" output="false">
 
 		<cfscript>
 			return duplicate(variables.expirationTime);
@@ -216,7 +216,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Date" name="getLastFailedLoginTime" output="false">
+	<cffunction access="public" name="getLastFailedLoginTime" output="false">
 
 		<cfscript>
 			return duplicate(variables.lastFailedLoginTime);
@@ -235,7 +235,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Date" name="getLastLoginTime" output="false">
+	<cffunction access="public" name="getLastLoginTime" output="false">
 
 		<cfscript>
 			return duplicate(variables.lastLoginTime);
@@ -243,7 +243,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Date" name="getLastPasswordChangeTime" output="false">
+	<cffunction access="public" name="getLastPasswordChangeTime" output="false">
 
 		<cfscript>
 			return duplicate(variables.lastPasswordChangeTime);
