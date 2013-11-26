@@ -41,9 +41,11 @@
 
 		<cfscript>
 			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
+			var cfSession = "";
 			if(applicationName != "") {
-				if(structKeyExists(variables.httpSession, applicationName) && structKeyExists(variables.httpSession[applicationName], lCase(arguments.name))) {
-					return variables.httpSession[applicationName][lCase(arguments.name)];
+				cfSession = variables.httpSession.getAttribute(applicationName);
+				if(!isNUll(cfSession) && structKeyExists(cfSession, lCase(arguments.name))) {
+					return cfSession[lCase(arguments.name)];
 				}
 			}
 			else {
@@ -170,11 +172,13 @@
 			* CF10 has a sessionInvalidate() method.  Will this work and can we mimic this in CF8/9?
 			*/
 			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
+			var cfSession = "";
 			// this technique will not harm session state for other CF applications
 			if(applicationName != "") {
+				cfSession = variables.httpSession.getAttribute(applicationName);
 				// Railo sessions are empty unless you have explicitly set session vars so check for it first
-				if(structKeyExists(variables.httpSession, applicationName)) {
-					structClear(variables.httpSession[applicationName]);
+				if(!isNull(cfSession)) {
+					structClear(cfSession);
 				}
 			}
 			else {
@@ -228,11 +232,13 @@
 
 		<cfscript>
 			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
+			var cfSession = "";
 			if(applicationName != "") {
-				if(!structKeyExists(variables.httpSession, applicationName)) {
-					variables.httpSession[applicationName] = {};
+				cfSession = variables.httpSession.getAttribute(applicationName);
+				if(isNull(cfSession)) {
+					variables.httpSession.setAttribute(applicationName, {});
 				}
-				variables.httpSession[applicationName][lCase(arguments.name)] = arguments.value;
+				cfSession[lCase(arguments.name)] = arguments.value;
 			}
 			else {
 				variables.httpSession.setAttribute(javaCast("string", arguments.name), arguments.value);
