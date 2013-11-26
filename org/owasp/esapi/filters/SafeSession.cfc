@@ -1,4 +1,4 @@
-﻿<!---
+<!---
 /**
  * OWASP Enterprise Security API (ESAPI)
  *
@@ -40,7 +40,16 @@
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
-			return variables.httpSession.getAttribute(javaCast("string", arguments.name));
+			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
+			if(applicationName != "") {
+				if(structKeyExists(variables.httpSession, applicationName) && structKeyExists(variables.httpSession[applicationName], lCase(arguments.name))) {
+					return variables.httpSession[applicationName][lCase(arguments.name)];
+				}
+			}
+			else {
+				return variables.httpSession.getAttribute(javaCast("string", arguments.name));
+			}
+			return "";
 		</cfscript>
 
 	</cffunction>
@@ -132,7 +141,45 @@
 	<cffunction access="public" returntype="void" name="invalidate" output="false">
 
 		<cfscript>
-			variables.httpSession.invalidate();
+			/*
+			* Discussion:
+			* The way CF sessions function is they use the J2EE sessions which contain a struct.  The keys of that struct
+			* are the CF application names which contain the session variables that we commonly refer to via the CF session scope.
+			* This means that we cannot use the below for multiple reasons:
+			*
+			*     variables.httpSession.invalidate();
+			*
+			* 1) You cannot destroy the session and create a session on the same request, as creating a new session involves sending session cookies
+			*     back. http://livedocs.adobe.com/coldfusion/8/htmldocs/help.html?content=sharedVars_17.html
+			* 2) The variables.httpSession references the J2EE session which contains all of your CF applications. Invalidating variables.httpSession would
+			*     kill all CF application sessions, not just the one you are actively using esapi within.
+			* 3) Currently when you do call invalidate(), any references to the session scope after this call within the same request result in a
+			*     "Invalid session" error being thrown.
+			*
+			* What are the alternatives?
+			*     http://stackoverflow.com/questions/3686116/invalidate-session-how-to-use-correctly
+			*     http://www.bennadel.com/blog/1847-Explicitly-Ending-A-ColdFusion-Session.htm
+			*     https://github.com/misterdai/cfbackport/blob/master/cf10.cfm#SessionInvalidate
+			*
+			* Possibilities?
+			*     structClear(varivariables.httpSessionlicationName]);
+			*     variables.httpSession[applicationName].setMaxInterval(javaCast("long", 1)); -- throws CF exception 'setMaxInterval' undefined
+			*
+			* Are there any better (or more secure) ways to handle this???
+			*
+			* CF10 has a sessionInvalidate() method.  Will this work and can we mimic this in CF8/9?
+			*/
+			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
+			// this technique will not harm session state for other CF applications
+			if(applicationName != "") {
+				// Railo sessions are empty unless you have explicitly set session vars so check for it first
+				if(structKeyExists(variables.httpSession, applicationName)) {
+					structClear(variables.httpSession[applicationName]);
+				}
+			}
+			else {
+				structClear(variables.httpSession);
+			}
 		</cfscript>
 
 	</cffunction>
@@ -180,7 +227,16 @@
 		<cfargument required="true" name="value"/>
 
 		<cfscript>
-			return variables.httpSession.setAttribute(javaCast("string", arguments.name), arguments.value);
+			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
+			if(applicationName != "") {
+				if(!structKeyExists(variables.httpSession, applicationName)) {
+					variables.httpSession[applicationName] = {};
+				}
+				variables.httpSession[applicationName][lCase(arguments.name)] = arguments.value;
+			}
+			else {
+				variables.httpSession.setAttribute(javaCast("string", arguments.name), arguments.value);
+			}
 		</cfscript>
 
 	</cffunction>
