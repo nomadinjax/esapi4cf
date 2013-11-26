@@ -44,7 +44,7 @@
 			var cfSession = "";
 			if(applicationName != "") {
 				cfSession = variables.httpSession.getAttribute(applicationName);
-				if(isDefined("cfSession") && !isNull(cfSession) && structKeyExists(cfSession, lCase(arguments.name))) {
+				if(isDefined("cfSession") && !isNull(cfSession) && isStruct(cfSession) && structKeyExists(cfSession, lCase(arguments.name))) {
 					return cfSession[lCase(arguments.name)];
 				}
 			}
@@ -236,8 +236,9 @@
 			var cfSession = "";
 			if(applicationName != "") {
 				cfSession = variables.httpSession.getAttribute(applicationName);
-				if(!(isDefined("cfSession") && !isNull(cfSession))) {
+				if(!(isDefined("cfSession") && !isNull(cfSession) && isStruct(cfSession))) {
 					variables.httpSession.setAttribute(applicationName, structNew());
+					cfSession = variables.httpSession.getAttribute(applicationName);
 				}
 				cfSession[lCase(arguments.name)] = arguments.value;
 			}
