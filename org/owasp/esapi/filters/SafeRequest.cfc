@@ -738,12 +738,11 @@
 
 			// send a new cookie header with HttpOnly on first and second responses
 			// NOTE: DO NOT attempt an httpUtilities.getCookie() at this point - can cause a stack overflow exception
-			isHttpOnly = safeSession.getAttribute("HTTP_ONLY");
-			if(!isDefined("isHttpOnly") || isNull(isHttpOnly)) {
+			if(safeSession.getAttribute("HTTP_ONLY") == "") {
 				safeSession.setAttribute("HTTP_ONLY", "set");
 				httpCookie = newJava("javax.servlet.http.Cookie").init("JSESSIONID", safeSession.getId());
 				httpCookie.setMaxAge(-1);// session cookie
-				httpCookie.setPath("/");
+				httpCookie.setPath(getContextPath() & "/");
 				httpResponse = variables.ESAPI.currentResponse();
 				if(isObject(httpResponse)) {
 					variables.ESAPI.currentResponse().addCookie(httpCookie);
