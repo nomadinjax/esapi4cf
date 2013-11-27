@@ -39,7 +39,7 @@
 			<p>
 				There are additional configuration files here named *Rules.txt and we will get to these under the <a href="AccessControl.html">AccessControl Tutorial</a>.  If you have already run the MXUnit tests, you probably also see a users.txt file.  This will be covered under the <a href="Login.html">Authentication Tutorial</a>.
 			</p>
-			<p>Now let's open up your copy of the ESAPI.properties file.  There is lots of good stuff in here that we will go over under its relevant tutorial and you can play with these on your own.  Right now, there are two very important values that we MUST change before we begin using ESAPI4CF - MasterPassword and MasterSalt.</p>
+			<p>Now let's open up your copy of the ESAPI.properties file.  There is lots of good stuff in here that we will go over under its relevant tutorial and you can play with these on your own.  Right now, there are two very important values that we MUST change before we begin using ESAPI4CF - MasterPassword and MasterSalt.  Be aware that MasterSalt must be 8 characters - no more, no less.</p>
 			<p>CHANGE THESE IMMEDIATELY!!!</p>
 			<pre>
 # Encryption
@@ -51,7 +51,7 @@ MasterSalt=testtest
 			<div class="page-header">
 				<h2>CFAdmin configuration</h2>
 			</div>
-			<p>The only setting that ESAPI4CF requires that you turn on in your CF instance is J2EE sessions.  Don't trust CFID/CFTOKEN sessions.  In fact, turn client management off if you can and do not even set the CFID/CFTOKEN cookies if you are able. We only need the JSESSIONID cookie.</p>
+			<p>If you plan to use ESAPI4CF on a stateful application (persist user's across requests) you will need to enable J2EE sessions in the CFAdmin.  Don't trust CFID/CFTOKEN sessions.  In fact, turn client management off if you can and do not even set the CFID/CFTOKEN cookies if you are able. We only need the JSESSIONID cookie. For those Railo users, ensure Session type is set to "J2EE".</p>
 			<div class="page-header">
 				<h2>Application.cfc</h2>
 			</div>
@@ -70,13 +70,9 @@ component {
 }
 </pre>
 			<h3>onApplicationStart</h3>
-			<p>So starting out in onApplicationStart, we first need an reference to the main ESAPI4CF component. All of the ESAPI4CF modules are accessed via this main instance.</p>
+			<p>So starting out in onApplicationStart, we first need a reference to the main ESAPI4CF component. All of the ESAPI4CF modules are accessed via this main instance. We initialize this main reference with the path to our resources, right now, specifically just our ESAPI.properties configuration file.</p>
 			<pre>
-application.ESAPI = new org.owasp.esapi.ESAPI();
-</pre>
-			<p>Next we have to tell ESAPI4CF where our resources exist, right now, specifically just our ESAPI.properties configuration file.</p>
-			<pre>
-application.ESAPI.securityConfiguration().setResourceDirectory("/WEB-INF/esapi/");
+application.ESAPI = new org.owasp.esapi.ESAPI("/WEB-INF/esapi-resources/");
 </pre>
 			<p>
 				Now there is lots of logged events built into the various modules but you will want a logging reference for your own application so you can log events against your application.  Logging events in ESAPI4CF automatically contain vital information like the date/time, current user, IP and more.  We will get more into that when we cover the <a href="Logging.html">Logging Tutorial</a>
@@ -93,12 +89,10 @@ application.ignoredByLogger = ["password"];
 			<pre>
 function onApplicationStart() {
 	// this is your main reference point to ESAPI4CF that you will use throughout your application
-	application.ESAPI = new org.owasp.esapi.ESAPI();
-
 	// tell ESAPI4CF where you config files are stored
-	// you want your security config in a place not accessible from your web application like /WEB-INF/
-	// but for the sake of simplicity in our examples, it is not
-	application.ESAPI.securityConfiguration().setResourceDirectory("/samples/esapi-resources/");
+	// You want your security config in a place not accessible from your web application like /WEB-INF/esapi-resources/
+	// but for the sake of simplicity in our samples, it is not
+	application.ESAPI = new org.owasp.esapi.ESAPI("/samples/esapi-resources/");
 
 	// define an application specific logger instance
 	// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
@@ -124,6 +118,7 @@ function onApplicationStart() {
 				accept the <em>safe</em>
 				instances registered by ESAPI4CF.
 			</p>
+			<p>While we are on the subject of a "safe" request, let's not forget to mention the magic under the hood here.  By simply registering our request/response, ESAPI4CF ensures that our JSESSIONID cookie is also "safe" by adding the HttpOnly and Secure attributes to the cookie if they are not already there.  For those of you stuck on CF8 (no cookie attribute support) and CF9 (HttpOnly cookie attribute support) that is very good news.</p>
 			<pre>
 application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
 </pre>
@@ -194,11 +189,11 @@ function onRequestStart() {
 			<h3>onRequestEnd</h3>
 			<p>Almost done.  One last thing and its again in the name of being safe.  During our request cycle we registered the request/response instances with ESAPI4CF which were stored in the request scope for easy access by ESAPI4CF.  If there were any references to the current user (which the logging does) then ESAPI4CF is holding onto a reference to the current user in the request scope as well even though we are not yet authenticating.  An unauthenticated user is called an anonymous user but again we'll get to that later.  Yes, CF will automatically release anything in the request scope once the request completes but that means putting your faith in CF performing cleanup.  Let's eliminate any doubt and do this ourselves.</p>
 			<p>
-				In the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				In the <a href="../apiref/v1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
 				there is a clearCurrent() method which will destroy the request scope variables which held onto the current user.  Don't worry, we are only talking about the request scope.  The session scope is still used to persist an authenticated user between requests.
 			</p>
 			<p>
-				And in the <a href="../apiref/1/org/owasp/esapi/HTTPUtilities.html">HTTPUtilities module</a>
+				And in the <a href="../apiref/v1/org/owasp/esapi/HTTPUtilities.html">HTTPUtilities module</a>
 				we can just call the same setCurrentHTTP() method we did to register the request/response instances but this time set them to empty in order to destroy the request scope references.
 			</p>
 			<pre>

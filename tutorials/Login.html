@@ -20,11 +20,11 @@
 			</div>
 			<p>
 				<span class="label label-info">NOTE</span>
-				As with all of the modules in ESAPI4CF, Authentication is not required for you to implement the library.  You can implement any one or more of the modules.  However, let me say that without authentication your security logging will lack an accountName and IP address tied to each event which will make all of that nice logging pretty worthless.  So I would highly recommend implementing the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				As with all of the modules in ESAPI4CF, Authentication is not required for you to implement the library.  You can implement any one or more of the modules.  However, let me say that without authentication your security logging will lack an accountName and IP address tied to each event which will make all of that nice logging pretty worthless.  So I would highly recommend implementing the <a href="../apiref/v1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
 				but the final decision is all yours.
 			</p>
 			<p>
-				In this tutorial we are going to cover the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				In this tutorial we are going to cover the <a href="../apiref/v1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
 				in ESAPI4CF.  We will be diving into the what the login process does under the hood, adding onto our Application.cfc that we defined in the <a href="Setup.html">Setup Tutorial</a>
 				in order to authenticate users, going over the other functionality provided by this module, and lastly covering how to implement your own user base into ESAPI4CF.
 			</p>
@@ -39,7 +39,7 @@ application.ESAPI.authenticator()
 				<h2>Creating Users and Passwords</h2>
 			</div>
 			<p>
-				At some point in your application you will have to create users and you will have certain business logic in order to do so.  But what type of validation do you have that the accountName and password being created are in fact strong enough?  Well luckily the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				At some point in your application you will have to create users and you will have certain business logic in order to do so.  But what type of validation do you have that the accountName and password being created are in fact strong enough?  Well luckily the <a href="../apiref/v1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
 				has got you covered. There is a method call included which will validate the accountName and password to ensure their strength.
 			</p>
 			<pre>
@@ -94,7 +94,7 @@ application.ESAPI.authenticator().getCurrentUser()
 				<h2>The User</h2>
 			</div>
 			<p>
-				So all this talk about users within ESAPI4CF, what exactly does this user instance look like?  The user is pretty basic so there is not really a point in going through them all.  You can view the methods in the <a href="..//apiref/1/org/owasp/esapi/User.html">User module</a>.
+				So all this talk about users within ESAPI4CF, what exactly does this user instance look like?  The user is pretty basic so there is not really a point in going through them all.  You can view the methods in the <a href="..//apiref/v1/org/owasp/esapi/User.html">User module</a>.
 			</p>
 			<div class="page-header">
 				<h2>Changing Passwords</h2>
@@ -182,12 +182,12 @@ application.ESAPI.authenticator().login(application.ESAPI.currentRequest(), appl
 			<p>Most requests will fall under this scenario as this is where ESAPI4CF stores the persisted user.</p>
 			<h4>3. Checks for a RememberToken cookie</h4>
 			<p>
-				The RememberToken cookie is checked for existence and is attempted to be unsealed.  The seal/unseal process is part of the <a href="../apiref/1/org/owasp/esapi/Encryptor.html">Encryptor module</a>
+				The RememberToken cookie is checked for existence and is attempted to be unsealed.  The seal/unseal process is part of the <a href="../apiref/v1/org/owasp/esapi/Encryptor.html">Encryptor module</a>
 				but the short explanation is that the unseal process decrypts the data and checks that the timestamp has not expired.  If data was able to be unsealed, it verifies the user exists then attempts to log that user in with their password. If all goes well, proceed to Step 5.
 			</p>
 			<p>
 				<span class="label label-warning">IMPORTANT</span>
-				Implementing a RememberToken is optional and is not on by default in ESAPI4CF.  If you choose to set the RememberToken, which is in the <a href="../apiref/1/org/owasp/esapi/HTTPUtilities.html">HTTPUtilities module</a>, the login method is already set up to check for it.
+				Implementing a RememberToken is optional and is not on by default in ESAPI4CF.  If you choose to set the RememberToken, which is in the <a href="../apiref/v1/org/owasp/esapi/HTTPUtilities.html">HTTPUtilities module</a>, the login method is already set up to check for it.
 			</p>
 			<p>You can also configure how many days the RememberToken persists in the user's cookie in the ESAPI.properties.</p>
 			<pre>
@@ -228,7 +228,7 @@ AllowedLoginAttempts=3
 			<h4>7. Success</h4>
 			<p>
 				If your user made it this far they have successfully passed validation and is considered a valid, authenticated user.  You should keep in mind that this is the <em>default</em>
-				implementation of the <a href="../apiref/1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+				implementation of the <a href="../apiref/v1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
 				and with all of the ESAPI4CF modules it can be overridden with your own implementiation.  You will want to do this if you need to also include SSO or API authentication into the login method.  You will certainly have to override this module in order to implement your own user base.  More on how to use your own implementations will be at the end of this tutorial.
 			</p>
 			<div class="page-header">
@@ -243,7 +243,7 @@ application.ESAPI.authenticator().logout()
 				<h1 class="text-center">Sample App</h1>
 			</div>
 			<p>
-				So now let's take what we just learned and apply it to our sample app we started in the <a href="Setup.html">Setup Tutorial</a>. Do you remember how we left a spot in our <em>onRequestEnd</em>
+				So now let's take what we just learned and apply it to our sample app we started in the <a href="Setup.html">Setup Tutorial</a>. Do you remember how we left a spot in our <em>onRequestStart</em>
 				method to authentication?  Well now it's time to fill that void.
 			</p>
 			<p>
@@ -277,14 +277,14 @@ function onRequestStart() {
 			// Attempt to login with an insecure request : Received non-SSL request
 			// Attempt to login with an insecure request : Received request using GET when only POST is allowed
 			// Attempt to access secure content with an insecure request : Received non-SSL request
-			loginFailure(e);
+			redirectToLogin(e);
 		}
 		catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
 			// Possible exceptions:
 			// Invalid request : Request or response objects were empty
 			// Authentication failed : blank username/password
 			// Authentication failed : username does not exist
-			loginFailure(e);
+			redirectToLogin(e);
 		}
 		catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 			// Possible exceptions:
@@ -299,7 +299,7 @@ function onRequestStart() {
 			// Login failed : Expired user cannot be set to current user
 			// Login failed : Session inactivity timeout
 			// Login failed : Session absolute timeout
-			loginFailure(e);
+			redirectToLogin(e);
 		}
 		
 		// log this request, obfuscating any parameter named password
@@ -316,8 +316,12 @@ function onRequestStart() {
 }
 			</pre>
 			<p>Since we have 3 separate catches which need to perform the same action, fail authentication, we are going to send them all off to a single method to handle this.</p>
+			<p>Take notice that we call encodeForURL for each parameter we wish to pass via the URL then to keep these extra safe from URL tampering we will encrypt the parameters and pass this via a single URL encoded parameter.  Encoding the encrpyted string is very important in ColdFusion since without the encoding CF chokes on the parameter.  Railo on the other hand automatically encodes the encrypted string without the explicit call.  So to be safe your best bet is to just encode the encrypted string.</p>
 			<pre>
-function loginFailure(required ex) {
+function redirectToLogin(required ex) {
+	var encoder = application.ESAPI.encoder();
+	var httpUtilities = application.ESAPI.httpUtilities();
+
 	// the ESAPI4CF login exception was already logged so we do not have to do anything with the message/detail
 	// unless you have specific business requirements to do so.
 
@@ -327,11 +331,20 @@ function loginFailure(required ex) {
 	}
 
 	// we were not in the whitelist so we must fail this request
-	var params = "redirect=" & application.ESAPI.encoder().encodeForURL(cgi.script_name);
-	params &= "&message=" & application.ESAPI.encoder().encodeForURL(ex.message);
+	var params = "redirect=" & encoder.encodeForURL(cgi.script_name);
+	params &= "&message=" & encoder.encodeForURL(ex.message);
 	
-	location(addtoken=false, url="login.cfm?" & params);
+	location(addtoken=false, url="login.cfm?x=" & encoder.encodeForURL(httpUtilities.encryptQueryString(params)));
 }
+</pre>
+			<p>Now on your login.cfm page you will simply have to call decryptQueryString() in order to retrieve this data into a nice structure for your use.</p>
+			<pre>
+urlX = {};
+try {
+	urlX = application.ESAPI.httpUtilities().decryptQueryString(url.x);
+}
+catch (org.owasp.esapi.errors.EncryptionException e) {}
+catch(expression e) {}
 </pre>
 			<div class="page-header">
 				<h1 class="text-center">Make it your own</h1>
