@@ -642,4 +642,21 @@
 
 	</cffunction>
 
+	<cffunction access="public" name="getLocaleData" output="false"
+		hint="the locale">
+
+		<cfscript>
+			return variables.locale;
+		</cfscript>
+
+	</cffunction>
+
+	<cffunction access="public" returntype="void" name="setLocaleData" output="false">
+		<cfargument required="true" name="locale" hint="the locale to set">
+
+		<cfscript>
+			variables.locale = arguments.locale;
+		</cfscript>
+	</cffunction>
+
 </cfcomponent>
