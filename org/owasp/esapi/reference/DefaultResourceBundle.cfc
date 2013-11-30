@@ -62,7 +62,13 @@
 		<cfargument required="true" type="String" name="key">
 
 		<cfscript>
-			return getRBInstance().getString(arguments.key);
+			try {
+				return getRBInstance().getString(arguments.key);
+			}
+			catch (java.util.MissingResourceException  e) {
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Missing resource bundle for key: [" & arguments.key & "].");
+				return "***" & arguments.key & "***";
+			}
 		</cfscript>
 
 	</cffunction>
