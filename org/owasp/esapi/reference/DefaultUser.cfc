@@ -76,6 +76,9 @@
 		/** The failed login count for this user's account. */
 		variables.failedLoginCount = 0;
 
+		/** This user's Locale. */
+		variables.locale = "";
+
 		variables.MAX_ROLE_LENGTH = 250;
 	</cfscript>
 

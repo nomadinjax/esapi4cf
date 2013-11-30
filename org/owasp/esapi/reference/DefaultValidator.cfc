@@ -157,6 +157,8 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var date = "";
+			var userParams = [];
+			var logParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
@@ -172,14 +174,18 @@
 					if(isEmptyInput(arguments.input)) {
 						if(arguments.allowNull)
 							return "";
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Input date required", "Input date required: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
+						userParams = [arguments.context];
+						logParams = [arguments.context, arguments.input];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.dateValueMissing.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.dateValueMissing.logMessage", logParams), arguments.context));
 					}
 
 					date = arguments.format.parse(arguments.input);
 					return createDateTime(year(date), month(date), day(date), hour(date), minute(date), second(date));
 				}
 				catch(java.text.ParseException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid date must follow " & arguments.format.toLocalizedPattern() & " format", "Invalid date: context=" & arguments.context & ", format=" & arguments.format.toLocalizedPattern() & ", input=" & arguments.input, e, arguments.context));
+					userParams = [arguments.context, arguments.format.toLocalizedPattern()];
+					logParams = [arguments.context, arguments.format.toLocalizedPattern(), arguments.input];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.dateValueMissing.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.datePatternMismatch.logMessage", logParams), e, arguments.context));
 				}
 			}
 		</cfscript>
