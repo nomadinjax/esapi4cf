@@ -29,6 +29,7 @@
 	System.out.println("INITIALIZING ALL TESTS");
 
 	suite = createObject("component", "mxunit.framework.TestSuite").TestSuite();
+	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.ResourceBundleTest");
 	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.DefaultSecurityConfigurationTest");
 	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.LoggerTest");
 	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.SafeFileTest");

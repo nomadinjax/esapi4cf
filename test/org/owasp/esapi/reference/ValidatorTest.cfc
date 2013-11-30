@@ -261,6 +261,9 @@
 			catch(org.owasp.esapi.errors.ValidationException e) {
 				// expected
 			}
+
+			// test empty value
+			instance.getValidDate("test", "", newJava("java.text.DateFormat").getDateInstance(), false);
 		</cfscript>
 
 	</cffunction>

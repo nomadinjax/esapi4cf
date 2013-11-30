@@ -17,4 +17,15 @@
 --->
 <cfinterface>
 
+	<cffunction access="public" returntype="String" name="getMessage" output="false">
+		<cfargument required="true" type="String" name="key">
+
+	</cffunction>
+
+	<cffunction access="public" returntype="String" name="messageFormat" output="false">
+		<cfargument required="true" type="String" name="key">
+		<cfargument required="true" type="Array" name="data">
+
+	</cffunction>
+
 </cfinterface>
