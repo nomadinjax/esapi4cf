@@ -74,6 +74,9 @@
 			// CF8 requires 'var' at the top
 			var canonical = "";
 			var p = "";
+			var params = [];
+			var userParams = [];
+			var logParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
@@ -90,17 +93,22 @@
 					canonical = variables.ESAPI.encoder().canonicalize(arguments.input);
 
 					if(arguments.type == "" || arguments.type.length() == 0) {
-						throw(object=newJava("java.lang.RuntimeException").init("Validation misconfiguration, specified type to validate against was null: context=" & arguments.context & ", type=" & arguments.type & "), input=" & arguments.input));
+						params = [arguments.context, arguments.type, arguments.input];
+						throw(object=newJava("java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator.typeMismatch.message", params)));
 					}
 
 					if(isEmptyInput(canonical)) {
 						if(arguments.allowNull)
 							return "";
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Input required.", logMessage="Input required: context=" & arguments.context & ", type=" & arguments.type & "), input=" & arguments.input, context=arguments.context));
+						userParams = [arguments.context];
+						logParams = [arguments.context, arguments.type, arguments.input];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.valueMissing.userMessage", userParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.valueMissing.logMessage", logParams), context=arguments.context));
 					}
 
 					if(canonical.length() > arguments.maxLength) {
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Invalid input. The maximum length of " & arguments.maxLength & " characters was exceeded.", logMessage="Input exceeds maximum allowed length of " & arguments.maxLength & " by " & (canonical.length() - arguments.maxLength) & " characters: context=" & arguments.context & ", type=" & arguments.type & "), input=" & arguments.input, context=arguments.context));
+						userParams = [arguments.context, arguments.maxLength];
+						logParams = [arguments.context, arguments.maxLength, canonical.length() - arguments.maxLength, arguments.type, arguments.input];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.tooLong.userMessage", userParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.tooLong.logMessage", logParams), context=arguments.context));
 					}
 
 					p = variables.ESAPI.securityConfiguration().getValidationPattern(arguments.type);
@@ -109,18 +117,22 @@
 							p = newJava("java.util.regex.Pattern").compile(arguments.type);
 						}
 						catch(java.util.regex.PatternSyntaxException e) {
-							throw(object=newJava("java.lang.RuntimeException").init("Validation misconfiguration, specified type to validate against was null: context=" & arguments.context & ", type=" & arguments.type & "), input=" & arguments.input));
+							params = [arguments.context, arguments.type, arguments.input];
+							throw(object=newJava("java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator.patternMismatch.message", params)));
 						}
 					}
 
 					if(!p.matcher(canonical).matches()) {
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Invalid input. Please conform to: " & p.pattern() & " with a maximum length of " & arguments.maxLength, logMessage="Invalid input: context=" & arguments.context & ", type=" & arguments.type & "(" & p.pattern() & "), input=" & arguments.input, context=arguments.context));
+						userParams = [arguments.context, p.pattern(), arguments.maxLength];
+						logParams = [arguments.context, p.pattern(), arguments.type, arguments.input];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.patternMismatch.userMessage", userParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.patternMismatch.logMessage", logParams), context=arguments.context));
 					}
 
 					return canonical;
 				}
 				catch(org.owasp.esapi.errors.EncodingException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid input. An encoding error occurred.", "Error canonicalizing user input", e, arguments.context));
+					userParams = [arguments.context];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.badInput.userMessage", userParams), variables.ESAPI.resourceBundle().getMessage("Validator.badInput.logMessage"), e, arguments.context));
 				}
 			}
 		</cfscript>
@@ -236,6 +248,8 @@
 			var as = "";
 			var test = "";
 			var errors = "";
+			var userParams = [];
+			var logParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
@@ -250,11 +264,15 @@
 				if(isEmptyInput(arguments.input)) {
 					if(arguments.allowNull)
 						return "";
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Input HTML required", "Input HTML required: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
+					userParams = [arguments.context];
+					logParams = [arguments.context, arguments.input];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.htmlValueMissing.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.htmlValueMissing.logMessage", logParams), arguments.context));
 				}
 
 				if(arguments.input.length() > arguments.maxLength) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid HTML. You enterted " & arguments.input.length() & " characters. Input can not exceed " & arguments.maxLength & " characters.", arguments.context & " arguments.input exceedes maxLength by " & (arguments.input.length() - arguments.maxLength) & " characters", arguments.context));
+					userParams = [arguments.context, arguments.input.length(), arguments.maxLength];
+					logParams = [arguments.context, arguments.input.length() - arguments.maxLength];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.htmlTooLong.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.htmlTooLong.logMessage", userParams), arguments.context));
 				}
 
 				try {
@@ -267,18 +285,24 @@
 
 					if(errors.size() > 0) {
 						// just create new exception to get it logged and intrusion detected
-						createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage="Invalid HTML input: context=" & arguments.context, logMessage="Invalid HTML input: context=" & arguments.context & ", errors=" & arrayToList(errors), context=arguments.context);
+						userParams = [arguments.context];
+						logParams = [arguments.context, arrayToList(errors)];
+						createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.htmlBadInput.userMessage", userParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.htmlBadInput.logMessage", logParams), context=arguments.context);
 					}
 
-					return (test.getCleanHTML().trim());
+					return test.getCleanHTML().trim();
 				}
 				catch(org.owasp.validator.html.ScanException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input: context=" & arguments.context & " error=" & e.getMessage(), e, arguments.context));
+					userParams = [arguments.context];
+					logParams = [arguments.context, e.getMessage()];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.htmlError.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.htmlScanError.logMessage", logParams), e, arguments.context));
 				}
 				catch(org.owasp.validator.html.PolicyException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input does not follow rules in antisamy-esapi.xml: context=" & arguments.context & " error=" & e.getMessage(), e, arguments.context));
+					userParams = [arguments.context];
+					logParams = [arguments.context, e.getMessage()];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.htmlError.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.htmlPolicyError.logMessage", logParams), e, arguments.context));
 				}
-				}
+			}
 		</cfscript>
 
 	</cffunction>
