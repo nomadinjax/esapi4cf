@@ -295,12 +295,12 @@
 				catch(org.owasp.validator.html.ScanException e) {
 					userParams = [arguments.context];
 					logParams = [arguments.context, e.getMessage()];
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.htmlError.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.htmlScanError.logMessage", logParams), e, arguments.context));
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.htmlScanError.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.htmlScanError.logMessage", logParams), e, arguments.context));
 				}
 				catch(org.owasp.validator.html.PolicyException e) {
 					userParams = [arguments.context];
 					logParams = [arguments.context, e.getMessage()];
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.htmlError.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.htmlPolicyError.logMessage", logParams), e, arguments.context));
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.htmlPolicyError.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.htmlPolicyError.logMessage", logParams), e, arguments.context));
 				}
 			}
 		</cfscript>
@@ -343,6 +343,8 @@
 			var addend = "";
 			var timesTwo = "";
 			var modulus = "";
+			var userParams = [];
+			var logParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 
@@ -358,47 +360,52 @@
 				if(isEmptyInput(arguments.input)) {
 					if(arguments.allowNull)
 						return "";
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Input credit card required", "Input credit card required: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
+					userParams = [arguments.context];
+					logParams = [arguments.context, arguments.input];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.creditCardValueMissing.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.creditCardValueMissing.logMessage", logParams), arguments.context));
 				}
 
 				canonical = getValidInput(arguments.context, arguments.input, "CreditCard", variables.MAX_CREDIT_CARD_LENGTH, arguments.allowNull);
 
 				// perform Luhn algorithm checking
-					digitsOnly = newJava("java.lang.StringBuffer").init();
-					c = "";
-					for(i = 0; i < canonical.length(); i++) {
-						c = canonical.charAt(i);
-						if(newJava("java.lang.Character").isDigit(c)) {
-							digitsOnly.append(c);
-						}
+				digitsOnly = newJava("java.lang.StringBuffer").init();
+				c = "";
+				for(i = 0; i < canonical.length(); i++) {
+					c = canonical.charAt(i);
+					if(newJava("java.lang.Character").isDigit(c)) {
+						digitsOnly.append(c);
 					}
-
-					sum = 0;
-					digit = 0;
-					addend = 0;
-					timesTwo = false;
-
-					for(i = digitsOnly.length() - 1; i >= 0; i--) {
-						digit = newJava("java.lang.Integer").parseInt(digitsOnly.substring(i, i + 1));
-						if(timesTwo) {
-							addend = digit * 2;
-							if(addend > 9) {
-								addend -= 9;
-							}
-						}
-						else {
-							addend = digit;
-						}
-						sum += addend;
-						timesTwo = !timesTwo;
-					}
-
-					modulus = sum % 10;
-					if(modulus != 0)
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid credit card input", "Invalid credit card input: context=" & arguments.context, arguments.context));
-
-					return canonical;
 				}
+
+				sum = 0;
+				digit = 0;
+				addend = 0;
+				timesTwo = false;
+
+				for(i = digitsOnly.length() - 1; i >= 0; i--) {
+					digit = newJava("java.lang.Integer").parseInt(digitsOnly.substring(i, i + 1));
+					if(timesTwo) {
+						addend = digit * 2;
+						if(addend > 9) {
+							addend -= 9;
+						}
+					}
+					else {
+						addend = digit;
+					}
+					sum += addend;
+					timesTwo = !timesTwo;
+				}
+
+				modulus = sum % 10;
+				if(modulus != 0) {
+					userParams = [arguments.context];
+					logParams = [arguments.context];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.creditCardBadInput.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.creditCardBadInput.logMessage", logParams), arguments.context));
+				}
+
+				return canonical;
+			}
 		</cfscript>
 
 	</cffunction>
@@ -431,7 +438,10 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var dir = "";
+			var canonicalPath = "";
 			var canonical = "";
+			var userParams = [];
+			var logParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
@@ -447,29 +457,40 @@
 					if(isEmptyInput(arguments.input)) {
 						if(arguments.allowNull)
 							return "";
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Input directory path required", logMessage="Input directory path required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
+						userParams = [arguments.context];
+						logParams = [arguments.context, arguments.input];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathValueMissing.userMessage", userParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathValueMissing.logMessage", logParams), context=arguments.context));
 					}
 
 					dir = newJava("java.io.File").init(arguments.input);
 
 					// check dir exists and parent exists and dir is inside parent
 					if(!dir.exists()) {
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, does not exist: context=" & arguments.context & ", input=" & arguments.input));
+						userParams = [arguments.context];
+						logParams = [arguments.context, arguments.input];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathBadInput.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathBadInput.logMessage", logParams)));
 					}
 					if(!dir.isDirectory()) {
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not a directory: context=" & arguments.context & ", input=" & arguments.input));
+						userParams = [arguments.context];
+						logParams = [arguments.context, arguments.input];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathTypeMismatch.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathTypeMismatch.logMessage", logParams)));
 					}
 
 					// check canonical form matches input
-					canonical = dir.getCanonicalPath();
-					//String canonical = getValidInput( arguments.context, canonicalPath, "DirectoryName", 255, false);
+					canonicalPath = dir.getCanonicalPath();
+					//canonical = getValidInput(arguments.context, canonicalPath, "DirectoryName", 255, false);
+					canonical = canonicalPath;
 					if(canonical != arguments.input) {
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Invalid directory name", logMessage="Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & canonical, context=arguments.context));
+						userParams = [arguments.context];
+						logParams = [arguments.context, arguments.input, canonical];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathPatternMismatch.userMessage", userParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathPatternMismatch.logMessage", logParams), context=arguments.context));
 					}
 					return canonical;
 				}
 				catch(org.owasp.esapi.errors.ValidationException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid directory name", "Failure to validate directory path: context=" & arguments.context & ", input=" & arguments.input, e, arguments.context));
+					userParams = [arguments.context];
+					logParams = [arguments.context, arguments.input];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathFailure.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.directoryPathFailure.logMessage", logParams), e, arguments.context));
 				}
 			}
 		</cfscript>
@@ -510,6 +531,9 @@
 			var extensions = "";
 			var i = "";
 			var ext = "";
+			var userParams = [];
+			var logParams = [];
+
 			if(structKeyExists(arguments, "errorList")) {
 				try {
 					return getValidFileName(arguments.context, arguments.input, arguments.allowNull);
@@ -526,7 +550,9 @@
 					if(isEmptyInput(arguments.input)) {
 						if(arguments.allowNull)
 							return "";
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Input file name required", logMessage="Input required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
+						userParams = [arguments.context];
+						logParams = [arguments.context, arguments.input];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.fileNameValueMissing.userMessage", userParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.fileNameValueMissing.logMessage", logParams), context=arguments.context));
 					}
 
 					// do basic validation
@@ -539,14 +565,20 @@
 
 					// the path is valid if the input matches the canonical path
 					if(!arguments.input.equals(cpath.toLowerCase())) {
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Invalid file name", logMessage="Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & canonical, context=arguments.context));
+						userParams = [arguments.context];
+						logParams = [arguments.context, arguments.input, canonical];
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.fileNamePatternMismatch.userMessage", userParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.fileNamePatternMismatch.logMessage", logParams), context=arguments.context));
 					}
 				}
 				catch(java.io.IOException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid file name", "Invalid file name does not exist: context=" & arguments.context & ", canonical=" & canonical, e, arguments.context));
+					userParams = [arguments.context];
+					logParams = [arguments.context, canonical];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.fileNameBadInput.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.fileNameBadInput.logMessage", logParams), e, arguments.context));
 				}
 				catch(org.owasp.esapi.errors.EncodingException ee) {
-					throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, arguments.context & ": Invalid file name", "Invalid file name: context=" & arguments.context & ", canonical=" & canonical, ee));
+					userParams = [arguments.context];
+					logParams = [arguments.context, canonical];
+					throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.fileNameFailure.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.fileNameFailure.logMessage", logParams), ee));
 				}
 
 				// verify extensions
@@ -557,7 +589,9 @@
 						return canonical;
 					}
 				}
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid file name does not have valid extension ( " & variables.ESAPI.securityConfiguration().getAllowedFileExtensions() & ")", "Invalid file name does not have valid extension ( " & variables.ESAPI.securityConfiguration().getAllowedFileExtensions() & "): context=" & arguments.context & ", input=" & arguments.input, arguments.context));
+				userParams = [arguments.context, variables.ESAPI.securityConfiguration().getAllowedFileExtensions()];
+				logParams = [arguments.context, variables.ESAPI.securityConfiguration().getAllowedFileExtensions(), arguments.input];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.fileNameTypeMismatch.userMessage", userParams), variables.ESAPI.resourceBundle().messageFormat("Validator.fileNameTypeMismatch.logMessage", logParams), arguments.context));
 			}
 		</cfscript>
 
