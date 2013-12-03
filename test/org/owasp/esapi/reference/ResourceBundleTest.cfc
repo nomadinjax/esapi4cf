@@ -47,15 +47,15 @@
 			var en_GB = variables.locale.init(variables.locale.ENGLISH.toString(), variables.locale.UK.toString());
 			var fr_FR = variables.locale.init(variables.locale.FRENCH.toString(), variables.locale.FRANCE.toString());
 
-			assertEquals("Test Basic Message", instance.getMessage("Test.message.basic"));
+			assertEquals("Test Basic Message", instance.getMessage("Unit.Test.message.basic"));
 
 			// test inheritance with another English locale
 			request.ESAPI.authenticator().getCurrentUser().setLocaleData(en_GB);
-			assertEquals("Test Basic Message", instance.getMessage("Test.message.basic"));
+			assertEquals("Test Basic Message", instance.getMessage("Unit.Test.message.basic"));
 
 			// test overrides with non-English locale
 			request.ESAPI.authenticator().getCurrentUser().setLocaleData(fr_FR);
-			assertEquals("Test de message de base", instance.getMessage("Test.message.basic"));
+			assertEquals("Test de message de base", instance.getMessage("Unit.Test.message.basic"));
 		</cfscript>
 
 	</cffunction>
@@ -69,15 +69,15 @@
 			var en_GB = variables.locale.init(variables.locale.ENGLISH.toString(), variables.locale.UK.toString());
 			var fr_FR = variables.locale.init(variables.locale.FRENCH.toString(), variables.locale.FRANCE.toString());
 
-			assertEquals("zeroTest one Message two Formatzero", instance.messageFormat("Test.message.format", params));
+			assertEquals("zeroTest one Message two Formatzero", instance.messageFormat("Unit.Test.message.format", params));
 
 			// test inheritance with another English locale
 			request.ESAPI.authenticator().getCurrentUser().setLocaleData(en_GB);
-			assertEquals("zeroTest one Message two Formatzero", instance.messageFormat("Test.message.format", params));
+			assertEquals("zeroTest one Message two Formatzero", instance.messageFormat("Unit.Test.message.format", params));
 
 			// test overrides with non-English locale
 			request.ESAPI.authenticator().getCurrentUser().setLocaleData(fr_FR);
-			assertEquals("zero one test message two zero Format", instance.messageFormat("Test.message.format", params));
+			assertEquals("zero one test message two zero Format", instance.messageFormat("Unit.Test.message.format", params));
 		</cfscript>
 
 	</cffunction>
