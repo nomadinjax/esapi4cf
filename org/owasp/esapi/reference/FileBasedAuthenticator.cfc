@@ -41,6 +41,19 @@
 		variables.MAX_ACCOUNT_NAME_LENGTH = 250;
 	</cfscript>
 
+	<cffunction access="private" returntype="org.owasp.esapi.User$ANONYMOUS" name="getAnonymousUserInstance" output="false">
+		<cfscript>
+			return createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI);
+		</cfscript>
+	</cffunction>
+
+	<cffunction access="private" returntype="org.owasp.esapi.reference.DefaultUser" name="getDefaultUserInstance" output="false">
+		<cfargument required="true" type="String" name="accountName">
+		<cfscript>
+			return createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, arguments.accountName);
+		</cfscript>
+	</cffunction>
+
 	<cffunction access="public" returntype="void" name="setHashedPassword" output="false"
 	            hint="Add a hash to a User's hashed password list.  This method is used to store a user's old password hashes to be sure that any new passwords are not too similar to old passwords.">
 		<cfargument required="true" type="org.owasp.esapi.User" name="user" hint="the user to associate with the new hash"/>
@@ -183,7 +196,7 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password"));
 			}
 
-			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, arguments.accountName);
+			user = getDefaultUserInstance(arguments.accountName);
 
 			verifyPasswordStrength(newPassword=arguments.password1, user=user);
 
@@ -324,7 +337,7 @@
 		<cfscript>
 			var user = variables.currentUser.get();
 			if(!isObject(user)) {
-				user = createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI);
+				user = getAnonymousUserInstance();
 			}
 			return user;
 		</cfscript>
@@ -336,7 +349,7 @@
 
 		<cfscript>
 			if(arguments.accountId == 0) {
-				return createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI);
+				return getAnonymousUserInstance();
 			}
 			loadUsersIfNecessary();
 			if(structKeyExists(this.userMap, arguments.accountId)) {
@@ -355,7 +368,7 @@
 			var u = "";
 
 			if(isNull(arguments.accountName)) {
-				return createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI);
+				return getAnonymousUserInstance();
 			}
 			loadUsersIfNecessary();
 			for(u in this.userMap) {
@@ -372,7 +385,7 @@
 
 		<cfscript>
 			var httpSession = arguments.httpRequest.getSession(false);
-			if(!isObject(httpSession))
+			if(isNull(httpSession) || !isObject(httpSession))
 				return "";
 			return httpSession.getAttribute(variables.USER);
 		</cfscript>
@@ -547,7 +560,7 @@
 			var accountName = parts[2];
 
 			verifyAccountNameStrength(accountName);
-			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, accountName);
+			user = getDefaultUserInstance(accountName);
 			user.accountId = accountId;
 
 			password = parts[3];

@@ -17,95 +17,53 @@
 --->
 
 <cfscript>
-	serverVersion = "[CF " & server.coldfusion.ProductVersion & "]";
+	ESAPI = createObject("component", "org.owasp.esapi.ESAPI");
+
+	serverVersion = "CF " & server.coldfusion.ProductVersion;
 	if(structKeyExists(server, "railo")) {
-		serverVersion = "[Railo " & server.railo.version & "]";
+		serverVersion = "Railo " & server.railo.version;
 	}
 </cfscript>
 
 <cfoutput>
-	<!DOCTYPE html>
-	<html>
-		<head>
-			<meta charset="utf-8"/>
-			<title>
-				ESAPI4CF
-				#serverVersion#
-			</title>
-		</head>
-		<body>
-			<h1>
-				ESAPI for ColdFusion/CFML (ESAPI4CF) Links
-			</h1>
-			<p>
-				Please refer to the
-				<a href="http://damonmiller.github.io/esapi4cf/">
-					ESAPI4CF GitHub.io pages
-				</a>
-				for more information.
-			</p>
-			<h2>
-				Tests
-			</h2>
-			<dl>
-				<dt>
-					<a href="test/org/owasp/esapi/AllTests.cfm">
-						Unit Tests
-					</a>
-				</dt>
-				<dd>
-					The ESAPI Unit Tests ported into ColdFusion/CFML using MXUnit (not included).
-				</dd>
-			</dl>
-			<h2>
-				Utilities
-			</h2>
-			<dl>
-				<dt>
-					<a href="utilities/DefaultEncryptedProperties.cfm">
-						Encrypted Properties files
-					</a>
-				</dt>
-				<dd>
-					Loads encrypted properties file based on the location passed in args then prompts the user to
-					input key-value pairs.
-				</dd>
-				<dt>
-					<a href="utilities/FileBasedAuthenticator.cfm">
-						Fail safe main program to add or update an account in an emergency
-					</a>
-				</dt>
-				<dd>
-					WARNING: this method does not perform the level of validation and checks generally required in
-					ESAPI, and can therefore be used to create a username and password that do not comply with the
-					username and password strength requirements.
-				</dd>
-			</dl>
-			<h2>
-				Samples
-			</h2>
-			<dl>
-				<dt>
-					<a href="samples/tutorials/">
-						Tutorials Code
-					</a>
-				</dt>
-				<dd>
-					This is the sample code referenced by the
-					<a href="http://damonmiller.github.io/esapi4cf/tutorials/Introduction.html">
-						ESAPI4CF tutorials
-					</a>
-					.
-				</dd>
-				<!-- <dt>
-					<a href="samples/rest-taffy/">
-						REST with Taffy
-					</a>
-				</dt>
-				<dd>
-					Example of how to implement ESAPI4CF with Taffy REST framework (not included).
-				</dd> -->
-			</dl>
-		</body>
-	</html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>#ESAPI.ESAPINAME# #ESAPI.VERSION# [#serverVersion#]</title>
+</head>
+<body>
+
+<h1>ESAPI for ColdFusion/CFML (#ESAPI.ESAPINAME#)</h1>
+<ul>
+	<li><strong>CFML Server:</strong> #serverVersion#</li>
+	<li><strong>#ESAPI.ESAPINAME# Version:</strong> #ESAPI.VERSION#</li>
+	<li><strong>ESAPI4J Version:</strong> #ESAPI.ESAPI4JVERSION#</li>
+</ul>
+<p>Please refer to the <a href="http://damonmiller.github.io/esapi4cf/">#ESAPI.ESAPINAME# GitHub.io pages</a> for more information.</p>
+
+<h2>Tests</h2>
+<dl>
+	<dt><a href="test/org/owasp/esapi/AllTests.cfm">Unit Tests</a></dt>
+	<dd>The ESAPI Unit Tests ported into ColdFusion/CFML using MXUnit (not included).</dd>
+</dl>
+
+<h2>Utilities</h2>
+<dl>
+	<dt><a href="utilities/DefaultEncryptedProperties.cfm">Encrypted Properties files</a></dt>
+	<dd>Loads encrypted properties file based on the location passed in args then prompts the user to input key-value pairs.</dd>
+	<dt><a href="utilities/FileBasedAuthenticator.cfm">Fail safe main program to add or update an account in an emergency</a></dt>
+	<dd>WARNING: this method does not perform the level of validation and checks generally required in ESAPI, and can therefore be used to create a username and password that do not comply with the username and password strength requirements.</dd>
+</dl>
+
+<h2>Samples</h2>
+<dl>
+	<dt><a href="samples/tutorials/">Tutorials Code</a></dt>
+	<dd>This is the sample code referenced by the <a href="http://damonmiller.github.io/esapi4cf/tutorials/Introduction.html">#ESAPI.ESAPINAME# tutorials</a>.</dd>
+	<!--- <dt><a href="samples/rest-taffy/">REST with Taffy</a></dt>
+	<dd>Example of how to implement #ESAPI.ESAPINAME# with Taffy REST framework (not included).</dd> --->
+</dl>
+
+</body>
+</html>
 </cfoutput>

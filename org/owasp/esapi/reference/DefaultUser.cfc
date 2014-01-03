@@ -57,16 +57,16 @@
 		variables.lastHostAddress = "";
 
 		/** The last password change time for this user. */
-		variables.lastPasswordChangeTime = newJava("java.util.Date").init(javaCast("long", 0));
+		variables.lastPasswordChangeTime = createDateTime(1000, 1, 1, 0, 0, 0);
 
 		/** The last login time for this user. */
-		variables.lastLoginTime = newJava("java.util.Date").init(javaCast("long", 0));
+		variables.lastLoginTime = createDateTime(1000, 1, 1, 0, 0, 0);
 
 		/** The last failed login time for this user. */
-		variables.lastFailedLoginTime = newJava("java.util.Date").init(javaCast("long", 0));
+		variables.lastFailedLoginTime = createDateTime(1000, 1, 1, 0, 0, 0);
 
 		/** The expiration date/time for this user's account. */
-		variables.expirationTime = newJava("java.util.Date").init(javaCast("long", newJava("java.lang.Long").MAX_VALUE));
+		variables.expirationTime = createDateTime(9999, 12, 31, 23, 59, 59);
 
 		/** The session's this user is associated with */
 		variables.sessions = [];
@@ -75,9 +75,6 @@
 		// variables.requiresPasswordChange = true;
 		/** The failed login count for this user's account. */
 		variables.failedLoginCount = 0;
-
-		/** This user's Locale. */
-		variables.locale = "";
 
 		variables.MAX_ROLE_LENGTH = 250;
 	</cfscript>
@@ -643,23 +640,6 @@
 			throw(object=newJava("java.lang.CloneNotSupportedException").init());
 		</cfscript>
 
-	</cffunction>
-
-	<cffunction access="public" name="getLocaleData" output="false"
-		hint="the locale">
-
-		<cfscript>
-			return variables.locale;
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="void" name="setLocaleData" output="false">
-		<cfargument required="true" name="locale" hint="the locale to set">
-
-		<cfscript>
-			variables.locale = arguments.locale;
-		</cfscript>
 	</cffunction>
 
 </cfcomponent>

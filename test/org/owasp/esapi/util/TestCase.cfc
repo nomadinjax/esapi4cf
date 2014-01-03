@@ -26,7 +26,6 @@
 		// only initialize once
 		if (!structKeyExists(request, "ESAPI")) {
 			request.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();
-			request.ESAPI.authenticator().getCurrentUser().setLocaleData(createObject("java", "java.util.Locale").getDefault());
 		}
 
 		System = createObject("java", "java.lang.System");

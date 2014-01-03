@@ -156,7 +156,7 @@
 			httpRequest.addHeader("h1", "v1");
 			httpRequest.addHeader("h2", "v1");
 			httpRequest.addHeader("h3", "v1");
-			list = [];
+			list = newJava("java.util.ArrayList").init();
 			list.add(newJava("javax.servlet.http.Cookie").init("c1", "v1"));
 			list.add(newJava("javax.servlet.http.Cookie").init("c2", "v2"));
 			list.add(newJava("javax.servlet.http.Cookie").init("c3", "v3"));
@@ -170,9 +170,9 @@
 			//assertTrue( request.ESAPI.validator().isValidHTTPRequest() );
 			httpRequest.setMethod("GET");
 			//assertTrue( request.ESAPI.validator().isValidHTTPRequest() );
-			httpRequest.addParameter("bad_name", "bad##value");
-			httpRequest.addHeader("bad_name", "bad##value");
-			list.add(newJava("javax.servlet.http.Cookie").init("bad_name", "bad##value"));
+			httpRequest.addParameter("bad_name", "bad*value");
+			httpRequest.addHeader("bad_name", "bad*value");
+			list.add(newJava("javax.servlet.http.Cookie").init("bad_name", "bad*value"));
 
 			// call the validator directly, since the safe request will shield this from failing
 			assertFalse(request.ESAPI.validator().isValidHTTPRequest(httpRequest));
@@ -195,7 +195,7 @@
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(request.ESAPI, httpResponse);
 			assertTrue(httpResponse.getCookies().isEmpty());
-			list = [];
+			list = newJava("java.util.ArrayList").init();
 			list.add(newJava("javax.servlet.http.Cookie").init("test1", "1"));
 			list.add(newJava("javax.servlet.http.Cookie").init("test2", "2"));
 			list.add(newJava("javax.servlet.http.Cookie").init("test3", "3"));
@@ -222,7 +222,7 @@
 			safeResponse = createObject("component", "org.owasp.esapi.filters.SafeResponse").init(request.ESAPI, httpResponse);
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			assertTrue(httpResponse.getCookies().isEmpty());
-			list = [];
+			list = newJava("java.util.ArrayList").init();
 			list.add(newJava("javax.servlet.http.Cookie").init("test1", "1"));
 			list.add(newJava("javax.servlet.http.Cookie").init("test2", "2"));
 			list.add(newJava("javax.servlet.http.Cookie").init("test3", "3"));
@@ -347,7 +347,7 @@
 					}
 				}
 			}
-			catch(org.owsap.esapi.errors.EncryptionException e) {
+			catch(org.owasp.esapi.errors.EncryptionException e) {
 				fail("");
 			}
 		</cfscript>
