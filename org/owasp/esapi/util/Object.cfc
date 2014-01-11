@@ -25,7 +25,6 @@
 		if (structKeyExists(createObject("java", "org.owasp.esapi.ESAPI").securityConfiguration(), "APPLICATION_NAME")) {
 			this.ESAPI4JVERSION = 2;
 		}
-		System = createObject("java", "java.lang.System");
 	</cfscript>
 
 	<cffunction access="public" name="init" output="false" hint="Default constructor">

@@ -18,6 +18,8 @@
 <cfcomponent implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Authenticator interface. This reference implementation is backed by a simple text file that contains serialized information about users. Many organizations will want to create their own implementation of the methods provided in the Authenticator interface backed by their own user repository. This reference implementation captures information about users in a simple text file format that contains user information separated by the pipe '|' character.">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		variables.ESAPI = "";
 
 		/** Key for user in session */

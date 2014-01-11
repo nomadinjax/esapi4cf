@@ -18,6 +18,8 @@
 <cfcomponent implements="org.owasp.esapi.SecurityConfiguration" extends="org.owasp.esapi.util.Object" output="false" hint="The SecurityConfiguration manages all the settings used by the ESAPI in a single place. Initializing the Configuration is critically important to getting the ESAPI working properly. You must set a system property before invoking any part of the ESAPI. You may have to add this to the batch script that starts your web server. For example, in the 'catalina' script that starts Tomcat, you can set the JAVA_OPTS variable to the -D string above. Once the Configuration is initialized with a resource directory, you can edit it to set things like master keys and passwords, logging locations, error thresholds, and allowed file extensions.">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		/** The properties. */
 		variables.properties = newJava("java.util.Properties").init();
 
