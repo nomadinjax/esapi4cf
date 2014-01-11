@@ -19,6 +19,8 @@ More info: http://damonmiller.github.io/esapi4cf/
 
 RELEASE NOTES
 =============
+1.1.1a - 2014-?
+- [Issue 46] getValidDate & getValidNumber now allow null/blank format argument
 
 1.1.0a - 2013-11-26
 - Authentication now working in Railo 4.1 - workaround in Issue 39; ColdFusion 10 workaround not yet available

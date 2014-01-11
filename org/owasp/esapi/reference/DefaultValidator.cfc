@@ -168,19 +168,28 @@
 				return "";
 			}
 			else {
-				try {
-					if(isEmptyInput(arguments.input)) {
-						if(arguments.allowNull)
-							return "";
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Input date required", "Input date required: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
-					}
+				if(isEmptyInput(arguments.input)) {
+					if(arguments.allowNull)
+						return "";
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Input date required", "Input date required: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
+				}
 
-					date = arguments.format.parse(arguments.input);
-					return createDateTime(year(date), month(date), day(date), hour(date), minute(date), second(date));
+				date = arguments.input;
+				if (!isDate(date) && !isNull(arguments.format) && isObject(arguments.format)) {
+					try {
+						date = arguments.format.parse(javaCast("string", date));
+					}
+					catch(java.text.ParseException e) {
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid date must follow " & arguments.format.toLocalizedPattern() & " format", "Invalid date: context=" & arguments.context & ", format=" & arguments.format.toLocalizedPattern() & ", input=" & arguments.input, e, arguments.context));
+					}
+					date = createDateTime(year(date), month(date), day(date), hour(date), minute(date), second(date));
 				}
-				catch(java.text.ParseException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid date must follow " & arguments.format.toLocalizedPattern() & " format", "Invalid date: context=" & arguments.context & ", format=" & arguments.format.toLocalizedPattern() & ", input=" & arguments.input, e, arguments.context));
+
+				if (isDate(date)) {
+					return date;
 				}
+
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid date", "Unable to result in valid date object: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
 			}
 		</cfscript>
 
@@ -572,7 +581,7 @@
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
-					return getValidNumber(arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
+					return getValidNumber(arguments.context, arguments.input, arguments.format, arguments.minValue, arguments.maxValue, arguments.allowNull);
 				}
 				catch(org.owasp.esapi.errors.ValidationException e) {
 					arguments.errorList.addError(arguments.context, e);
@@ -588,15 +597,23 @@
 					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=arguments.context & ": Input required", logMessage="Input required: context=" & arguments.context & ", input=" & arguments.input, context=arguments.context));
 				}
 
-				try {
-					number = arguments.format.parse(javaCast("string", arguments.input));
+				number = arguments.input;
+				if (!isNumeric(number) && !isNull(arguments.format) && isObject(arguments.format)) {
+					try {
+						number = arguments.format.parse(javaCast("string", number));
+					}
+					catch(java.text.ParseException e) {
+						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid number must follow " & arguments.format.toLocalizedPattern() & " format", "Invalid number: context=" & arguments.context & ", format=" & arguments.format.toLocalizedPattern() & ", input=" & arguments.input, e, arguments.context));
+					}
 				}
-				catch(java.text.ParseException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid number must follow " & arguments.format.toLocalizedPattern() & " format", "Invalid number: context=" & arguments.context & ", format=" & arguments.format.toLocalizedPattern() & ", input=" & arguments.input, e, arguments.context));
+
+				if (isNumeric(number)) {
+					minDoubleValue = newJava("java.lang.Double").init(arguments.minValue);
+					maxDoubleValue = newJava("java.lang.Double").init(arguments.maxValue);
+					return getValidDouble(arguments.context, number, minDoubleValue.doubleValue(), maxDoubleValue.doubleValue(), arguments.allowNull);
 				}
-				minDoubleValue = newJava("java.lang.Double").init(arguments.minValue);
-				maxDoubleValue = newJava("java.lang.Double").init(arguments.maxValue);
-				return getValidDouble(arguments.context, number, minDoubleValue.doubleValue(), maxDoubleValue.doubleValue(), arguments.allowNull);
+
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid number", "Unable to result in valid number object: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
 			}
 		</cfscript>
 
