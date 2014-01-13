@@ -333,11 +333,11 @@
 	<cffunction access="public" returntype="boolean" name="isExpired" output="false">
 
 		<cfscript>
-			return getBoolean(getExpirationTime().before(newJava("java.util.Date").init()));
+			return getBoolean(getExpirationTime().before(now()));
 
 			// If expiration should happen automatically or based on lastPasswordChangeTime?
 			//long from = lastPasswordChangeTime.getTime();
-			//long to = newJava("java.util.Date").init().getTime();
+			//long to = now().getTime();
 			//double difference = to - from;
 			//long days = Math.round((difference / (1000 * 60 * 60 * 24)));
 			//return days > 60;
@@ -381,8 +381,8 @@
 			httpSession = variables.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
 			if(!isObject(httpSession))
 				return true;
-			deadline = newJava("java.util.Date").init(javaCast("long", httpSession.getCreationTime() + variables.ABSOLUTE_TIMEOUT_LENGTH));
-			timestamp = newJava("java.util.Date").init();
+			deadline = createObject("java", "java.util.Date").init(javaCast("long", httpSession.getCreationTime() + variables.ABSOLUTE_TIMEOUT_LENGTH));
+			timestamp = now();
 			return getBoolean(timestamp.after(deadline));
 		</cfscript>
 
@@ -399,8 +399,8 @@
 			httpSession = variables.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
 			if(!isObject(httpSession))
 				return true;
-			deadline = newJava("java.util.Date").init(javaCast("long", httpSession.getLastAccessedTime() + variables.IDLE_TIMEOUT_LENGTH));
-			timestamp = newJava("java.util.Date").init();
+			deadline = createObject("java", "java.util.Date").init(javaCast("long", httpSession.getLastAccessedTime() + variables.IDLE_TIMEOUT_LENGTH));
+			timestamp = now();
 			return getBoolean(timestamp.after(deadline));
 		</cfscript>
 
@@ -420,28 +420,28 @@
 
 		<cfscript>
 			if(arguments.password == "" || arguments.password.equals("")) {
-				setLastFailedLoginTime(newJava("java.util.Date").init());
+				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Missing password: " & variables.accountName));
 			}
 
 			// don't let disabled users log in
 			if(!isEnabled()) {
-				setLastFailedLoginTime(newJava("java.util.Date").init());
+				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Disabled user attempt to login: " & variables.accountName));
 			}
 
 			// don't let locked users log in
 			if(isLocked()) {
-				setLastFailedLoginTime(newJava("java.util.Date").init());
+				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Locked user attempt to login: " & variables.accountName));
 			}
 
 			// don't let expired users log in
 			if(isExpired()) {
-				setLastFailedLoginTime(newJava("java.util.Date").init());
+				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Expired user attempt to login: " & variables.accountName));
 			}
@@ -452,13 +452,13 @@
 				variables.loggedIn = true;
 				variables.ESAPI.httpUtilities().changeSessionIdentifier(variables.ESAPI.currentRequest());
 				variables.ESAPI.authenticator().setCurrentUser(this);
-				setLastLoginTime(newJava("java.util.Date").init());
+				setLastLoginTime(now());
 				setLastHostAddress(variables.ESAPI.httpUtilities().getCurrentRequest().getRemoteHost());
 				variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "User logged in: " & variables.accountName);
 			}
 			else {
 				variables.loggedIn = false;
-				setLastFailedLoginTime(newJava("java.util.Date").init());
+				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
 				if(getFailedLoginCount() >= variables.ESAPI.securityConfiguration().getAllowedLoginAttempts()) {
 					this.lock();
@@ -506,7 +506,7 @@
 		<cfscript>
 			// user.csrfToken = variables.ESAPI.encryptor().hash( session.getId(),user.name );
 			// user.csrfToken = variables.ESAPI.encryptor().encrypt( address & ":" & variables.ESAPI.encryptor().getTimeStamp();
-			variables.csrfToken = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			variables.csrfToken = variables.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			return variables.csrfToken;
 		</cfscript>
 
@@ -527,8 +527,9 @@
 		<cfscript>
 			var old = getAccountName();
 			variables.accountName = arguments.accountName.toLowerCase();
-			if(old != "")
+			if(old != "") {
 				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Account name changed from " & old & " to " & getAccountName());
+			}
 		</cfscript>
 
 	</cffunction>
@@ -537,7 +538,7 @@
 		<cfargument required="true" type="Date" name="expirationTime"/>
 
 		<cfscript>
-			variables.expirationTime = newJava("java.util.Date").init(javaCast("long", arguments.expirationTime.getTime()));
+			variables.expirationTime = createObject("java", "java.util.Date").init(javaCast("long", arguments.expirationTime.getTime()));
 			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Account expiration time set to " & arguments.expirationTime & " for " & getAccountName());
 		</cfscript>
 
@@ -637,7 +638,7 @@
 	<cffunction access="public" name="clone" output="false" hint="Override clone and make final to prevent duplicate user objects.">
 
 		<cfscript>
-			throw(object=newJava("java.lang.CloneNotSupportedException").init());
+			throw(object=createObject("java", "java.lang.CloneNotSupportedException").init());
 		</cfscript>
 
 	</cffunction>

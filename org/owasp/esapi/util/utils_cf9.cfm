@@ -1,4 +1,4 @@
-﻿<cffunction access="private" returntype="numeric" name="arrayFind" output="false" hint="CF9 Supplement">
+﻿<cffunction access="private" returntype="numeric" name="arrayFind" output="false" hint="CF9 Backport">
 	<cfargument required="true" type="Array" name="array" hint="Name of an array"/>
 	<cfargument required="true" name="object" hint="Object to search"/>
 
@@ -7,7 +7,7 @@
 	</cfscript>
 </cffunction>
 
-<cffunction access="private" returntype="boolean" name="isNull" output="false" hint="CF9 Supplement">
+<cffunction access="private" returntype="boolean" name="isNull" output="false" hint="CF9 Backport">
 	<cfargument required="true" name="obj" hint="Object for which you perform the null check." />
 
 	<!--- CF8 lacks support for isNull() so don't check it --->
@@ -16,7 +16,72 @@
 
 </cffunction>
 
-<cffunction access="private" returntype="void" name="throw" output="false" hint="CF9 Supplement">
+<cffunction access="private" name="objectLoad" output="false" hint="CF9 Backport">
+	<cfargument required="true" name="input">
+	<cfscript>
+		var ins = "";
+		var closeStream = true;
+		var res = "";
+		var ois = "";
+		var ret = "";
+
+		if(isBinary(arguments.input)) {
+			ins = createObject("java", "java.io.ByteArrayInputStream").init(toBinary(arguments.input));
+		}
+		// NOTE:  we don't need this for unit testing
+		/*else if(isInstanceOf(arguments.input, "java.io.InputStream")) {
+			ins = arguments.input;
+			closeStream = false;
+		}
+		else {
+			res = ResourceUtil.toResourceExisting(pc, Caster.toString(arguments.input));
+			pc.getConfig().getSecurityManager().checkFileLocation(res);
+			try {
+				ins = res.getInputStream();
+			}
+			catch (java.io.IOException e) {
+				throw(e.message, e.type, e.detail);
+			}
+		}*/
+
+		ois = createObject("java", "java.io.ObjectInputStream").init(ins);
+		ret = ois.readObject();
+
+		if(closeStream) {
+			ois.close();
+		}
+		return ret;
+	</cfscript>
+</cffunction>
+
+<cffunction access="private" name="objectSave" output="false" hint="CF9 Backport">
+	<cfargument required="true" name="input">
+	<cfargument type="String" name="filepath">
+	<cfscript>
+		var baos = "";
+		var oos = "";
+		var barr = "";
+
+		baos = createObject("java", "java.io.ByteArrayOutputStream").init();
+		oos = createObject("java", "java.io.ObjectOutputStream");
+		oos.init(baos);
+		oos.writeObject(arguments.input);
+		oos.close();
+
+		barr = baos.toByteArray();
+
+		// NOTE: we don't need this for unit testing
+		// store to file
+		/*if(structKeyExists(arguments, "filepath")) {
+			var res = ResourceUtil.toResourceNotExisting(pc, arguments.filepath);
+			pc.getConfig().getSecurityManager().checkFileLocation(res);
+			IOUtil.copy(createObject("java", "java.io.ByteArrayInputStream").init(barr), res, true);
+		}*/
+		return barr;
+	</cfscript>
+</cffunction>
+
+<cffunction access="private" returntype="void" name="throw" output="false" hint="CF9 Backport">
 	<cfargument type="string" name="message">
 	<cfargument type="string" name="type">
 	<cfargument type="string" name="detail">
@@ -48,7 +113,7 @@
 	<cfthrow attributecollection="#atts#"/>
 </cffunction>
 
-<cffunction access="private" returntype="void" name="writeDump" output="true" hint="CF9 Supplement: for cfdump">
+<cffunction access="private" returntype="void" name="writeDump" output="true" hint="CF9 Backport">
 	<cfargument required="true" name="var"/>
 	<cfargument type="string" name="output"/>
 	<cfargument type="string" name="format"/>
@@ -101,7 +166,7 @@
 	</cfif>
 </cffunction>
 
-<cffunction access="private" returntype="void" name="writeLog" output="false" hint="CF9 Supplement: for cflog">
+<cffunction access="private" returntype="void" name="writeLog" output="false" hint="CF9 Backport">
 	<cfargument required="true" type="string" name="text"/>
 	<cfargument type="string" name="type"/>
 	<cfargument type="boolean" name="application"/>

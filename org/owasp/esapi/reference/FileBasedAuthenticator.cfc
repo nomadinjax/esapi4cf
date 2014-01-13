@@ -117,7 +117,7 @@
 				variables.passwordMap.put(arguments.user.getAccountId(), hashes);
 				return hashes;
 			}
-			throw(object=newJava("java.lang.RuntimeException").init("No hashes found for " & arguments.user.getAccountName() & ". Is User.hashcode() and equals() implemented correctly?"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("No hashes found for " & arguments.user.getAccountName() & ". Is User.hashcode() and equals() implemented correctly?"));
 		</cfscript>
 
 	</cffunction>
@@ -169,7 +169,7 @@
 	<cffunction access="public" returntype="void" name="clearCurrent" output="false">
 
 		<cfscript>
-			// variables.logger.logWarning(newJava("org.owasp.esapi.Logger").SECURITY, "************Clearing threadlocals. Thread" & Thread.currentThread().getName() );
+			// variables.logger.logWarning(createObject("java", "org.owasp.esapi.Logger").SECURITY, "************Clearing threadlocals. Thread" & Thread.currentThread().getName() );
 			variables.currentUser.remove();
 		</cfscript>
 
@@ -236,9 +236,9 @@
 			var r = variables.ESAPI.randomizer();
 			var letters = r.getRandomInteger(4, 6);// inclusive, exclusive
 			var digits = 7 - letters;
-			var passLetters = r.getRandomString(letters, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_LETTERS);
-			var passDigits = r.getRandomString(digits, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_DIGITS);
-			var passSpecial = r.getRandomString(1, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_SPECIALS);
+			var passLetters = r.getRandomString(letters, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_LETTERS);
+			var passDigits = r.getRandomString(digits, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_DIGITS);
+			var passSpecial = r.getRandomString(1, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_SPECIALS);
 			var newPassword = passLetters & passSpecial & passDigits;
 			return newPassword;
 		</cfscript>
@@ -273,7 +273,7 @@
 					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Password change matches a recent password for user: " & accountName));
 				}
 				setHashedPassword(arguments.user, newHash);
-				arguments.user.setLastPasswordChangeTime(newJava("java.util.Date").init());
+				arguments.user.setLastPasswordChangeTime(now());
 				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Password changed for user: " & accountName);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException ee) {
@@ -297,7 +297,7 @@
 				attemptedHash = hashPassword(arguments.password, accountName);
 				currentHash = getHashedPassword(arguments.user);
 				if(attemptedHash.equals(currentHash)) {
-					arguments.user.setLastLoginTime(newJava("java.util.Date").init());
+					arguments.user.setLastLoginTime(now());
 					arguments.user.setFailedLoginCount(0);
 					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Password verified for " & accountName);
 					return true;
@@ -481,7 +481,7 @@
 			var timestamp = "";
 
 			if(isNull(variables.userDB) || !isObject(variables.userDB)) {
-				variables.userDB = newJava("java.io.File").init(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory()), "users.txt");
+				variables.userDB = createObject("java", "java.io.File").init(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory()), "users.txt");
 			}
 
 			// We only check at most every checkInterval milliseconds
@@ -514,7 +514,7 @@
 			reader = "";
 			try {
 				map = {};
-				reader = newJava("java.io.BufferedReader").init(newJava("java.io.FileReader").init(variables.userDB));
+				reader = createObject("java", "java.io.BufferedReader").init(createObject("java", "java.io.FileReader").init(variables.userDB));
 				line = reader.readLine();
 				while(isDefined("line") && !isNull(line)) {
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
@@ -587,10 +587,10 @@
 
 			setOldPasswordHashes(user, parts[7].split(" *, *"));
 			user.setLastHostAddress(iif("local" == parts[8], de(''), de(parts[8])));
-			user.setLastPasswordChangeTime(newJava("java.util.Date").init(javaCast("long", parts[9])));
-			user.setLastLoginTime(newJava("java.util.Date").init(javaCast("long", parts[10])));
-			user.setLastFailedLoginTime(newJava("java.util.Date").init(javaCast("long", parts[11])));
-			user.setExpirationTime(newJava("java.util.Date").init(javaCast("long", parts[12])));
+			user.setLastPasswordChangeTime(createObject("java", "java.util.Date").init(javaCast("long", parts[9])));
+			user.setLastLoginTime(createObject("java", "java.util.Date").init(javaCast("long", parts[10])));
+			user.setLastFailedLoginTime(createObject("java", "java.util.Date").init(javaCast("long", parts[11])));
+			user.setExpirationTime(createObject("java", "java.util.Date").init(javaCast("long", parts[12])));
 			user.setFailedLoginCount(int(parts[13]));
 			return user;
 		</cfscript>
@@ -644,7 +644,7 @@
 			if(!isObject(user)) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName));
 			}
-			this.userMap.remove(newJava("java.lang.Long").init(user.getAccountId()));
+			this.userMap.remove(createObject("java", "java.lang.Long").init(user.getAccountId()));
 			System.out.println("Removing user " & user.getAccountName());
 			variables.passwordMap.remove(user.getAccountId());
 			saveUsers();
@@ -679,7 +679,7 @@
 			else {
 				printWriter = "";
 				try {
-					printWriter = newJava("java.io.PrintWriter").init(newJava("java.io.FileWriter").init(variables.userDB));
+					printWriter = createObject("java", "java.io.PrintWriter").init(createObject("java", "java.io.FileWriter").init(variables.userDB));
 					printWriter.println("## This is the user file associated with the ESAPI library from http://www.owasp.org");
 					printWriter.println("## accountId | accountName | hashedPassword | roles | locked | enabled | oldPasswordHashes | lastHostAddress | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount");
 					printWriter.println();
@@ -706,7 +706,7 @@
 		<cfargument required="true" type="org.owasp.esapi.reference.DefaultUser" name="user" hint="the User to save"/>
 
 		<cfscript>
-			var sb = newJava("java.lang.StringBuffer").init();
+			var sb = createObject("java", "java.lang.StringBuffer").init();
 			sb.append(arguments.user.getAccountId());
 			sb.append(" | ");
 			sb.append(arguments.user.getAccountName());
@@ -793,7 +793,7 @@
 			if(!user.isEnabled()) {
 				user.logout();
 				user.incrementFailedLoginCount();
-				user.setLastFailedLoginTime(newJava("java.util.Date").init());
+				user.setLastFailedLoginTime(now());
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & user.getAccountName()));
 			}
 
@@ -801,7 +801,7 @@
 			if(user.isLocked()) {
 				user.logout();
 				user.incrementFailedLoginCount();
-				user.setLastFailedLoginTime(newJava("java.util.Date").init());
+				user.setLastFailedLoginTime(now());
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & user.getAccountName()));
 			}
 
@@ -809,7 +809,7 @@
 			if(user.isExpired()) {
 				user.logout();
 				user.incrementFailedLoginCount();
-				user.setLastFailedLoginTime(newJava("java.util.Date").init());
+				user.setLastFailedLoginTime(now());
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Expired user cannot be set to current user. User: " & user.getAccountName()));
 			}
 
@@ -817,7 +817,7 @@
 			if(user.isSessionTimeout()) {
 				user.logout();
 				user.incrementFailedLoginCount();
-				user.setLastFailedLoginTime(newJava("java.util.Date").init());
+				user.setLastFailedLoginTime(now());
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Session inactivity timeout: " & user.getAccountName()));
 			}
 
@@ -825,7 +825,7 @@
 			if(user.isSessionAbsoluteTimeout()) {
 				user.logout();
 				user.incrementFailedLoginCount();
-				user.setLastFailedLoginTime(newJava("java.util.Date").init());
+				user.setLastFailedLoginTime(now());
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Session absolute timeout: " & user.getAccountName()));
 			}
 
@@ -905,8 +905,8 @@
 
 			// new password must have enough character sets and length
 			charsets = 0;
-			jArrays = newJava("java.util.Arrays");
-			jEncoder = newJava("org.owasp.esapi.reference.DefaultEncoder");
+			jArrays = createObject("java", "java.util.Arrays");
+			jEncoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 			for(i = 0; i < arguments.newPassword.length(); i++) {
 				if(jArrays.binarySearch(jEncoder.CHAR_LOWERS, arguments.newPassword.charAt(i)) > 0) {
 					charsets++;
@@ -931,6 +931,9 @@
 					break;
 				}
 			}
+
+			// [serialization] release reference
+			jEncoder = "";
 
 			// calculate and verify password strength
 			strength = arguments.newPassword.length() * charsets;
