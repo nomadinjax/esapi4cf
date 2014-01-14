@@ -32,7 +32,6 @@
 		variables.instance.randomizer = "";
 		variables.instance.securityConfiguration = "";
 		variables.instance.validator = "";
-		variables.instance.resourceBundle = "";
 
 		variables.resourceDirectory = "";
 	</cfscript>
@@ -339,28 +338,6 @@
 
 		<cfscript>
 			variables.instance.validator = arguments.validator;
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="ResourceBundle" name="resourceBundle" output="false"
-	            hint="return the current ESAPI ResourceBundle being used to translate error messages in this application.">
-
-		<cfscript>
-			if(!isObject(variables.instance.resourceBundle)) {
-				variables.instance.resourceBundle = createObject("component", "org.owasp.esapi.reference.DefaultResourceBundle").init(this);
-			}
-			return variables.instance.resourceBundle;
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" returntype="void" name="setResourceBundle" output="false"
-	            hint="Change the current ESAPI ResourceBundle to the ResourceBundle provided.">
-		<cfargument required="true" type="ResourceBundle" name="resourceBundle" hint="the ResourceBundle to set to be the current ESAPI ResourceBundle."/>
-
-		<cfscript>
-			variables.instance.resourceBundle = arguments.resourceBundle;
 		</cfscript>
 
 	</cffunction>

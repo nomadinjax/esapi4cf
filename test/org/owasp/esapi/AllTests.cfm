@@ -18,18 +18,18 @@
 <cfsetting requesttimeout="120">
 
 <cfscript>
-	serverVersion = "[CF " & server.coldfusion.ProductVersion & "]";
+	serverVersion = "CF " & server.coldfusion.ProductVersion;
 	if(structKeyExists(server, "railo")) {
-		serverVersion = "[Railo " & server.railo.version & "]";
+		serverVersion = "Railo " & server.railo.version;
 	}
-	writeOutput("<h1>ESAPI4CF " & serverVersion & " Test Results</h1>");
+	ESAPI = createObject("component", "org.owasp.esapi.ESAPI");
+	writeOutput("<h1> " & ESAPI.ESAPINAME & " " & ESAPI.VERSION & " [" & serverVersion & "] Test Results</h1>");
 
 	System = createObject("java", "java.lang.System");
 
 	System.out.println("INITIALIZING ALL TESTS");
 
 	suite = createObject("component", "mxunit.framework.TestSuite").TestSuite();
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.ResourceBundleTest");
 	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.DefaultSecurityConfigurationTest");
 	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.LoggerTest");
 	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.SafeFileTest");
@@ -55,5 +55,5 @@
 
 	results = suite.run();
 	writeOutput(results.getResultsOutput("html"));
-	writeOutput("<p>Total Test Time: #(getTickCount() - startTestSuiteRunTime) / 1000# seconds</p><br/>");
+	writeOutput("<p>Execution Time: #(getTickCount() - startTestSuiteRunTime) / 1000#s</p><br/>");
 </cfscript>

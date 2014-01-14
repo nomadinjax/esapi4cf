@@ -18,6 +18,8 @@
 <cfcomponent extends="org.owasp.esapi.util.Object" output="false" hint="Utilities to help with tests that involve files or directories.">
 
 	<cfscript>
+		System = createObject("java", "java.lang.System");
+
 		variables.CLASS = getMetaData(this);
 		variables.CLASS_NAME = listLast(variables.CLASS.name, ".");
 		variables.DEFAULT_PREFIX = variables.CLASS_NAME & '.';

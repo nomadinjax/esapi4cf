@@ -15,10 +15,6 @@
 
 </cffunction>
 
-<cfscript>
-	variables.javaObjectCache = {};
-</cfscript>
-
 <cffunction access="private" name="newJava" output="false">
 	<cfargument required="true" type="String" name="classpath"/>
 
@@ -30,11 +26,8 @@
 			cp = "java.lang.StringBuilder";
 		}
 
-		if(!structKeyExists(variables.javaObjectCache, cp)) {
-			variables.javaObjectCache[cp] = createObject("java", cp);
-		}
-
-		return variables.javaObjectCache[cp];
+		// NOTE: we cannot cache these due to serialization
+		return createObject("java", cp);
 	</cfscript>
 
 </cffunction>

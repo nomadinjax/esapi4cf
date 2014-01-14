@@ -56,8 +56,16 @@
 				httpRequest = application.ESAPI.currentRequest();
 				httpResponse = application.ESAPI.currentResponse();
 
-				// validate the current request to ensure nothing is suspicious
-				application.ESAPI.validator().assertIsValidHTTPRequest();
+				// verify if this request meets the baseline input requirements
+				try {
+					application.ESAPI.validator().assertIsValidHTTPRequest();
+				}
+				catch(org.owasp.esapi.errors.ValidationException e) {
+					redirectToLogin(e, 500);
+				}
+				catch(org.owasp.esapi.errors.IntrusionException e) {
+					redirectToLogin(e, 500);
+				}
 
 				try {
 					// this will verify authentication for your entire web application
@@ -97,6 +105,17 @@
 
 				// log this request, obfuscating any parameter named password
 				application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.ESAPILogger, application.ignoredByLogger);
+
+				// check for CSRF attacks
+				application.ESAPI.httpUtilities().verifyCSRFToken(httpRequest);
+
+				// set up response with content type
+				application.ESAPI.httpUtilities().setSafeContentType(httpResponse);
+
+				// set no-cache headers on every response
+	            // only do this if the entire site should not be cached
+	            // otherwise you should do this strategically in your controller or actions
+				application.ESAPI.httpUtilities().setNoCacheHeaders(httpResponse);
 			}
 			catch(Any e) {
 				application.ESAPILogger.error(application.ESAPILogger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
@@ -121,6 +140,7 @@
 		}
 
 		function onRequestEnd() {
+			// VERY IMPORTANT
 			// clear thread references to user and request/response data
 			application.ESAPI.authenticator().clearCurrent();
 			application.ESAPI.httpUtilities().setCurrentHTTP("", "");
@@ -130,6 +150,7 @@
 
 	<cffunction name="redirectToLogin">
 		<cfargument required="true" name="ex">
+		<cfargument name="statusCode" default="401">
 		<cfscript>
 			var encoder = application.ESAPI.encoder();
 			var httpUtilities = application.ESAPI.httpUtilities();
@@ -146,11 +167,11 @@
 			params &= "redirect=" & encoder.encodeForURL(cgi.script_name);
 			params &= "&message=" & encoder.encodeForURL(ex.message);
 		</cfscript>
-		<!--- send appropriate Authentication Required/Failed HTTP status code --->
-		<cfheader statuscode="401">
+		<!--- send appropriate HTTP status code --->
+		<cfheader statuscode="#arguments.statusCode#">
 		<!---
 			Only perform a redirect on non-AJAX requests.
-			Your global AJAX handler should be able to detect a 401 response and handle appropriately from frontend.
+			Your global AJAX handler should be able to detect the HTTP status code and handle appropriately from frontend.
 		--->
 		<cfif not request.isAjax>
 			<cflocation addtoken="false" url="login.cfm?x=#encoder.encodeForURL(httpUtilities.encryptQueryString(params))#" />
