@@ -80,7 +80,7 @@
 	</cffunction>
 
 	<cffunction access="public" name="getCookie" output="false" hint="Returns the first cookie matching the provided name.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
@@ -117,8 +117,8 @@
 
 	<cffunction access="public" returntype="String" name="setRememberToken" output="false"
 	            hint="Save the user's remember me data in an encrypted cookie and send it to the user. Any old remember me cookie is destroyed first. Setting this cookie will keep the user logged in until the maxAge passes, the password is changed, or the cookie is deleted. If the cookie exists for the current user, it will automatically be used by ESAPI to log the user in, if the data is valid and not expired.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 		<cfargument required="true" type="String" name="password"/>
 		<cfargument required="true" type="numeric" name="maxAge"/>
 		<cfargument required="true" type="String" name="domain"/>
@@ -158,7 +158,7 @@
 
 	<cffunction access="public" returntype="void" name="assertSecureRequest" output="false"
 	            hint="Verifies that the request is 'secure' by checking that the method is a POST and that SSL has been used.  The POST ensures that the data does not end up in bookmarks, web logs, referer headers, and other exposed sources.  The SSL ensures that data has not been exposed in transit.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -178,7 +178,7 @@
 	</cffunction>
 
 	<cffunction access="public" name="changeSessionIdentifier" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -197,8 +197,8 @@
 			// make a copy of the session content
 			temp = {};
 			attrs = oldSession.getAttributeNames();
-			for(i = 1; i <= arrayLen(attrs); i++) {
-				name = attrs[i];
+			while (!isNull(attrs) && attrs.hasMoreElements()) {
+				name = attrs.nextElement();
 				value = oldSession.getAttribute(name);
 				temp.put(name, value);
 			}
@@ -221,7 +221,7 @@
 
 	<cffunction access="public" returntype="void" name="verifyCSRFToken" output="false"
 	            hint="This implementation uses the parameter name to store the token. This makes the CSRF token a bit harder to search for in an XSS attack.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			var user = variables.ESAPI.authenticator().getCurrentUser();
@@ -262,7 +262,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="Struct" name="decryptStateFromCookie" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -306,7 +306,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="encryptStateInCookie" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpResponse"/>
 		<cfargument required="true" type="Struct" name="cleartext"/>
 
 		<cfscript>
@@ -343,7 +343,7 @@
 
 	<cffunction access="public" returntype="Array" name="getSafeFileUploads" output="false"
 	            hint="Uses the Apache Commons FileUploader to parse the multipart HTTP request and extract any files therein. Note that the progress of any uploads is put into a session attribute, where it can be retrieved with a simple JSP.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 		<cfargument required="true" name="tempDir"/>
 		<cfargument required="true" name="finalDir"/>
 
@@ -374,7 +374,7 @@
 			newFiles = [];
 			try {
 				httpSession = arguments.httpRequest.getSession(false);
-				if(!newJava("org.apache.commons.fileupload.servlet.ServletFileUpload").isMultipartContent(arguments.httpRequest.getHttpServletRequest())) {
+				if(!newJava("org.apache.commons.fileupload.servlet.ServletFileUpload").isMultipartContent(arguments.httpRequest)) {
 					throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, "Upload failed", "Not a multipart request"));
 				}
 
@@ -383,7 +383,7 @@
 				upload = newJava("org.apache.commons.fileupload.servlet.ServletFileUpload").init(factory);
 				upload.setSizeMax(variables.maxBytes);
 
-				/* TODO
+				/* TODO: no idea how to make this work in CF
 				// Create a progress listener
 				ProgressListener progressListener = new ProgressListener() {
 				    private long megaBytes = -1;
@@ -397,13 +397,13 @@
 				            return;
 				        megaBytes = mBytes;
 				        progress = (long) (((double) pBytesRead / (double) pContentLength) * 100);
-				        if ( httpSession != "" ) {
+				        if ( httpSession != null ) {
 				            httpSession.setAttribute("progress", Long.toString(progress));
 				        }
 				        // logger.logSuccess(Logger.SECURITY, "   Item " & pItems & " (" & progress & "% of " & pContentLength & " bytes]");
 				    }
-				}; */
-				upload.setProgressListener(progressListener);
+				};
+				upload.setProgressListener(progressListener); */
 
 				items = upload.parseRequest(arguments.httpRequest);
 				i = items.iterator();
@@ -452,7 +452,7 @@
 
 	<cffunction access="public" returntype="boolean" name="isSecureChannel" output="false"
 	            hint="Returns true if the request was transmitted over an SSL enabled connection. This implementation ignores the built-in isSecure() method and uses the URL to determine if the request was transmitted over SSL.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			if(!isObject(arguments.httpRequest.getRequestURL()) || arguments.httpRequest.getRequestURL().toString().length() == 0)
@@ -463,8 +463,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="killAllCookies" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -484,8 +484,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="killCookie" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
@@ -545,8 +545,8 @@
 
 	<cffunction access="public" returntype="void" name="safeSendForward" output="false"
 	            hint="This implementation simply checks to make sure that the forward location starts with 'WEB-INF' and is intended for use in frameworks that forward to JSP files inside the WEB-INF folder.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="location"/>
 
@@ -564,7 +564,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setSafeContentType" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpResponse"/>
 
 		<cfscript>
 			arguments.httpResponse.setContentType(variables.ESAPI.securityConfiguration().getResponseContentType());
@@ -573,7 +573,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setNoCacheHeaders" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpResponse"/>
 
 		<cfscript>
 			// HTTP 1.1
@@ -644,7 +644,7 @@
 
 	<cffunction access="public" returntype="void" name="logHTTPRequest" output="false"
 	            hint="Formats an HTTP request into a log suitable string. This implementation logs the remote host IP address (or hostname if available), the request method (GET/POST), the URL, and all the querystring and form parameters. All the parameters are presented as though they were in the URL even if they were in a form. Any parameters that match items in the parameterNamesToObfuscate are shown as eight asterisks.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 		<cfargument required="true" type="org.owasp.esapi.Logger" name="logger"/>
 		<cfargument required="false" type="Array" name="parameterNamesToObfuscate"/>
 

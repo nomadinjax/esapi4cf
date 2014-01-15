@@ -434,8 +434,8 @@
 			optionalNames.add("p4");
 			optionalNames.add("p5");
 			optionalNames.add("p6");
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			httpRequest.addParameter("p1", "value");
 			httpRequest.addParameter("p2", "value");
 			httpRequest.addParameter("p3", "value");

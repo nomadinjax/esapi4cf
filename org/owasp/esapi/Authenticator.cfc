@@ -23,8 +23,8 @@
 
 	<cffunction access="public" returntype="org.owasp.esapi.User" name="login" output="false"
 	            hint="This method should be called for every HTTP request, to login the current user either from the session of HTTP request. This method will set the current user so that getCurrentUser() will work properly. Authenticates the user's credentials from the HttpServletRequest if necessary, creates a session if necessary, and sets the user as the current user. Specification:  The implementation should do the following: 1) Check if the User is already stored in the session a. If so, check that session absolute and inactivity timeout have not expired b. Step 2 may not be required if 1a has been satisfied 2) Verify User credentials a. It is recommended that you use loginWithUsernameAndPassword(HttpServletRequest, HttpServletResponse) to verify credentials 3) Set the last host of the User (ex.  user.setLastHostAddress(address) ) 4) Verify that the request is secure (ex. over SSL) 5) Verify the User account is allowed to be logged in a. Verify the User is not disabled, expired or locked 6) Assign User to session variable">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest" hint="the current HTTP request"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse" hint="the HTTP response"/>
+		<cfargument required="true" name="httpRequest" hint="the current HTTP request"/>
+		<cfargument required="true" name="httpResponse" hint="the HTTP response"/>
 
 	</cffunction>
 

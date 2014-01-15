@@ -34,8 +34,8 @@
 			var i = "";
 
 			System.out.println("addException");
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			request.ESAPI.intrusionDetector().addException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(request.ESAPI, "user message", "log message"));
 			username = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
@@ -71,8 +71,8 @@
 			auth = request.ESAPI.authenticator();
 			user = auth.createUser(username, "addEvent", "addEvent");
 			user.enable();
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			user.loginWithPassword(password="addEvent");
 

@@ -33,16 +33,16 @@
 
 			System.out.println("logHTTPRequest");
 			ignore = ["password", "ssn", "ccn"];
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			logger = request.ESAPI.getLogger("logger");
-			request.ESAPI.httpUtilities().logHTTPRequest(request.ESAPI.currentRequest(), logger, ignore);
+			request.ESAPI.httpUtilities().logHTTPRequest(httpRequest, logger, ignore);
 			httpRequest.addParameter("one", "one");
 			httpRequest.addParameter("two", "two1");
 			httpRequest.addParameter("two", "two2");
 			httpRequest.addParameter("password", "jwilliams");
-			request.ESAPI.httpUtilities().logHTTPRequest(request.ESAPI.currentRequest(), logger, ignore);
+			request.ESAPI.httpUtilities().logHTTPRequest(httpRequest, logger, ignore);
 		</cfscript>
 
 	</cffunction>

@@ -56,20 +56,10 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Array" name="getAttributeNames" output="false">
+	<cffunction access="public" name="getAttributeNames" output="false">
 
 		<cfscript>
-			var ret = [];
-			var atts = variables.httpSession.getAttributeNames();
-			if(isArray(atts)) {
-				ret = atts;
-			}
-			else if(isDefined("atts") && !isNull(atts)) {
-				while(atts.hasMoreElements()) {
-					arrayAppend(ret, atts.nextElement());
-				}
-			}
-			return ret;
+			return variables.httpSession.getAttributeNames();
 		</cfscript>
 
 	</cffunction>

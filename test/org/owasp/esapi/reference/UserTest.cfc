@@ -163,8 +163,8 @@
 			System.out.println("failedLoginLockout");
 			user = createTestUser("failedLoginLockout");
 			user.enable();
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 
 			user.loginWithPassword("failedLoginLockout");
@@ -223,8 +223,8 @@
 			var instance = request.ESAPI.authenticator();
 			var oldPassword = instance.generateStrongPassword();
 			var user = createTestUser(oldPassword);
-			var httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			var httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			var httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			var httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 
 			System.out.println("getLastLoginTime");
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
@@ -362,13 +362,13 @@
 			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			password = request.ESAPI.authenticator().generateStrongPassword();
 			user = instance.createUser(accountName, password, password);
-			jsession1 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession").init();
+			jsession1 = newJava("org.owasp.esapi.http.TestHttpSession").init();
 			session1 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(request.ESAPI, jsession1);
 			user.addSession(session1);
-			jsession2 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession").init();
+			jsession2 = newJava("org.owasp.esapi.http.TestHttpSession").init();
 			session2 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(request.ESAPI, jsession1);
 			user.addSession(session2);
-			jsession3 = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpSession").init();
+			jsession3 = newJava("org.owasp.esapi.http.TestHttpSession").init();
 			session3 = createObject("component", "org.owasp.esapi.filters.SafeSession").init(request.ESAPI, jsession1);
 			user.addSession(session3);
 			httpSessions = user.getSessions();
@@ -411,8 +411,8 @@
 			user = createTestUser("incrementFailedLoginCount");
 			user.enable();
 			assertEquals(0, user.getFailedLoginCount());
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			try {
 				user.loginWithPassword("ridiculous");
@@ -518,8 +518,8 @@
 			user = createTestUser(oldPassword);
 			timestamp = System.currentTimeMillis();
 			// setup request and response
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			httpSession = httpRequest.getSession();
 
@@ -553,8 +553,8 @@
 			user = createTestUser(oldPassword);
 			timestamp = System.currentTimeMillis();
 			// setup request and response
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			httpSession = httpRequest.getSession();
 
@@ -601,8 +601,8 @@
 			var user = "";
 
 			System.out.println("loginWithPassword");
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			httpSession = httpRequest.getSession();
 			assertFalse(httpSession.getInvalidated());
@@ -652,8 +652,8 @@
 			var user = "";
 
 			System.out.println("logout");
-			httpRequest = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("component", "esapi4cf.test.org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
 			httpSession = httpRequest.getSession();
 			assertFalse(httpSession.getInvalidated());
 			instance = request.ESAPI.authenticator();
