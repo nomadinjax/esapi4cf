@@ -193,6 +193,48 @@
 
 	</cffunction>
 
+	<cffunction access="public" returntype="void" name="testGetValidNumber" output="false">
+		<cfscript>
+			var instance = request.ESAPI.validator();
+			var errors = "";
+			var nf = newJava("java.text.NumberFormat").getNumberInstance();
+
+	        System.out.println("getValidNumber");
+	        errors = createObject("component", "org.owasp.esapi.ValidationErrorList").init();
+	        assertEquals(-4, instance.getValidNumber("test", "-4", nf, -10, 10, false, errors));
+
+	        //testing null value
+			try {
+				// Railo 4.1 has full NULL support
+				assertEquals("", instance.getValidNumber( "test", javaCast("null", ""), nf, -10, 10, true ) );
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
+
+			try {
+				// Railo 4.1 has full NULL support
+				assertEquals("", instance.getValidNumber( "test", javaCast("null", ""), nf, -10, 10, false ) );
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
+			catch (org.owasp.esapi.errors.ValidationException e) {
+				// expected
+			}
+
+			// null/blank format arg
+			try {
+				// Railo 4.1 has full NULL support
+				assertTrue(instance.getValidNumber("test", -4, javaCast("null", ""), -10, 10, false) != "");
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
+			assertTrue(instance.getValidNumber("test", -4, "", -10, 10, false) != "");
+    	</cfscript>
+	</cffunction>
+
 	<cffunction access="public" returntype="void" name="testIsValidInteger" output="false"
 	            hint="">
 
@@ -252,6 +294,16 @@
 			assertTrue(instance.getValidDate("test", "June 23, 1967", newJava("java.text.DateFormat").getDateInstance(newJava("java.text.DateFormat").MEDIUM, newJava("java.util.Locale").US), false) != "");
 			instance.getValidDate("test", "freakshow", newJava("java.text.DateFormat").getDateInstance(), false, errors);
 			assertEquals(1, errors.size());
+
+			// null/blank format arg
+			try {
+				// Railo 4.1 has full NULL support
+				assertTrue(instance.getValidDate("test", now(), javaCast("null", ""), false) != "");
+			}
+			catch (application e) {
+				// fails if NULL support is not available - just skip
+			}
+			assertTrue(instance.getValidDate("test", now(), "", false) != "");
 
 			// This test case fails due to an apparent bug in SimpleDateFormat
 			try {

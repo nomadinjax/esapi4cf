@@ -29,8 +29,8 @@
 			// CF8 requires 'var' at the top
 			var user = "";
 
-			var username = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			var ex = newJava("java.lang.Exception").init();
+			var username = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var ex = createObject("java", "java.lang.Exception").init();
 			st = ex.getStackTrace();
 			System.out.println("Creating user " & username & " for " & st[1].getMethodName());
 			user = request.ESAPI.authenticator().createUser(username, arguments.password, arguments.password);
@@ -45,9 +45,9 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = request.ESAPI.authenticator();
-			var accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var accountName = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			var password = request.ESAPI.authenticator().generateStrongPassword();
-			var role = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			var role = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
 			var user = instance.createUser(accountName, password, password);
 
 			System.out.println("addRole");
@@ -205,7 +205,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = createTestUser("getAccountName");
-			var accountName = request.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var accountName = request.ESAPI.randomizer().getRandomString(7, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 
 			System.out.println("getAccountName");
 			user.setAccountName(accountName);
@@ -309,9 +309,9 @@
 
 			System.out.println("getRoles");
 			instance = request.ESAPI.authenticator();
-			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			accountName = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			password = request.ESAPI.authenticator().generateStrongPassword();
-			role = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			role = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
 			user = instance.createUser(accountName, password, password);
 			user.addRole(role);
 			roles = user.getRoles();
@@ -330,7 +330,7 @@
 
 			System.out.println("getScreenName");
 			user = createTestUser("getScreenName");
-			screenName = request.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			screenName = request.ESAPI.randomizer().getRandomString(7, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			user.setScreenName(screenName);
 			assertEquals(screenName, user.getScreenName());
 			assertFalse("ridiculous" == user.getScreenName());
@@ -359,7 +359,7 @@
 
 			System.out.println("getSessions");
 			instance = request.ESAPI.authenticator();
-			accountName = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			accountName = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			password = request.ESAPI.authenticator().generateStrongPassword();
 			user = instance.createUser(accountName, password, password);
 			jsession1 = newJava("org.owasp.esapi.http.TestHttpSession").init();
@@ -683,7 +683,7 @@
 			var user = "";
 
 			System.out.println("removeRole");
-			role = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
+			role = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_LOWERS);
 			user = createTestUser("removeRole");
 			user.addRole(role);
 			assertTrue(user.isInRole(role));
@@ -714,7 +714,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = createTestUser("setAccountName");
-			var accountName = request.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var accountName = request.ESAPI.randomizer().getRandomString(7, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 
 			System.out.println("setAccountName");
 			user.setAccountName(accountName);
@@ -729,11 +729,11 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var password = request.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var password = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			var user = createTestUser(password);
 
 			System.out.println("setAccountName");
-			user.setExpirationTime(newJava("java.util.Date").init(javaCast("long", 0)));
+			user.setExpirationTime(createObject("java", "java.util.Date").init(javaCast("long", 0)));
 			assertTrue(user.isExpired());
 		</cfscript>
 
@@ -769,7 +769,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = createTestUser("setScreenName");
-			var screenName = request.ESAPI.randomizer().getRandomString(7, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			var screenName = request.ESAPI.randomizer().getRandomString(7, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 
 			System.out.println("setScreenName");
 			user.setScreenName(screenName);
@@ -795,6 +795,41 @@
 			assertFalse(user.isLocked());
 		</cfscript>
 
+	</cffunction>
+
+	<cffunction access="public" returntype="void" name="testSerialization" output="false">
+		<cfscript>
+			// CF8 requires 'var' at the top
+			var user = "";
+			var serializedUser = "";
+			var deserializedUser = "";
+
+			// test AnonymousUser
+			user = request.ESAPI.authenticator().getCurrentUser();
+			assertTrue(isInstanceOf(user, "org.owasp.esapi.User"), "Instance of AnonymousUser failed.");
+
+			serializedUser = objectSave(user);
+			assertTrue(isBinary(serializedUser), "Serialization of AnonymousUser failed.");
+
+			deserializedUser = objectLoad(serializedUser);
+			// NOTE: CFC exists but instanceOf fails ???
+			//assertTrue(isInstanceOf(deserializedUser, "org.owasp.esapi.User$ANONYMOUS"), "Deserialization of AnonymousUser failed.");
+			assertEquals(user.getAccountId(), deserializedUser.getAccountId(), "AnonymousUser accountId failed to persist.");
+			assertEquals(user.getAccountName(), deserializedUser.getAccountName(), "AnonymousUser accountName failed to persist.");
+
+			// test DefaultUser
+			user = createTestUser(request.ESAPI.authenticator().generateStrongPassword());
+			assertTrue(isInstanceOf(user, "org.owasp.esapi.User"), "Instance of DefaultUser failed.");
+
+			serializedUser = objectSave(user);
+			assertTrue(isBinary(serializedUser), "Serialization of DefaultUser failed.");
+
+			deserializedUser = objectLoad(serializedUser);
+			// NOTE: CFC exists but instanceOf fails ???
+			//assertTrue(isInstanceOf(deserializedUser, "org.owasp.esapi.reference.DefaultUser"), "Deserialization of DefaultUser failed.");
+			assertEquals(user.getAccountId(), deserializedUser.getAccountId(), "DefaultUser accountId failed to persist.");
+			assertEquals(user.getAccountName(), deserializedUser.getAccountName(), "DefaultUser accountName failed to persist.");
+		</cfscript>
 	</cffunction>
 
 </cfcomponent>
