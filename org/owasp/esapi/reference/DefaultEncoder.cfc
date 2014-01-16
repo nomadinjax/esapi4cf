@@ -52,6 +52,7 @@
 				return variables.encoder.canonicalize(javaCast("string", arguments.input), javaCast("boolean", arguments.strict));
 			}
 			catch (org.owasp.esapi.errors.IntrusionException e) {
+				// TODO: this does not seem flexible to handle various errors returned from Java
 				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.canonicalize.badInput.userMessage"), e.getLogMessage()));
 			}
 		</cfscript>
