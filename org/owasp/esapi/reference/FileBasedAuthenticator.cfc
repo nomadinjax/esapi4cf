@@ -383,7 +383,7 @@
 	</cffunction>
 
 	<cffunction access="public" name="getUserFromSession" output="false" hint="Gets the user from session.">
-		<cfargument type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest" default="#variables.ESAPI.httpUtilities().getCurrentRequest()#"/>
+		<cfargument name="httpRequest" default="#variables.ESAPI.httpUtilities().getCurrentRequest()#"/>
 
 		<cfscript>
 			var httpSession = arguments.httpRequest.getSession(false);
@@ -395,8 +395,8 @@
 	</cffunction>
 
 	<cffunction access="public" name="getUserFromRememberToken" output="false" hint="Returns the user if a matching remember token is found, or null if the token is missing, token is corrupt, token is expired, account name does not match and existing account, or hashed password does not match user's hashed password.">
-		<cfargument type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest" default="#variables.ESAPI.httpUtilities().getCurrentRequest()#"/>
-		<cfargument type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse" default="#variables.ESAPI.httpUtilities().getCurrentResponse()#"/>
+		<cfargument name="httpRequest" default="#variables.ESAPI.httpUtilities().getCurrentRequest()#"/>
+		<cfargument name="httpResponse" default="#variables.ESAPI.httpUtilities().getCurrentResponse()#"/>
 
 		<cfscript>
 			var data = "";
@@ -599,8 +599,8 @@
 
 	<cffunction access="private" returntype="org.owasp.esapi.User" name="loginWithUsernameAndPassword" output="false"
 	            hint="Utility method to extract credentials and verify them.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest" hint="The current HTTP request"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse" hint="The HTTP response being prepared"/>
+		<cfargument required="true" name="httpRequest" hint="The current HTTP request"/>
+		<cfargument required="true" name="httpResponse" hint="The HTTP response being prepared"/>
 
 		<cfscript>
 			var username = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getUsernameParameterName());
@@ -738,8 +738,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="org.owasp.esapi.User" name="login" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
