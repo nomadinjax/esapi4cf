@@ -12,7 +12,7 @@ ESAPI (The OWASP Enterprise Security API) is a free, open source, web applicatio
 This project source code is licensed under the BSD license, which is very permissive and about as close to public domain as is possible. The project documentation is licensed under the Creative Commons license. You can use or modify ESAPI however you want, even include it in commercial products.
 
 GETTING STARTED
-=
+-
 Adding ESAPI4CF to your ColdFusion application can be as simple as just one line of code...
 ```
 application.ESAPI = new org.owasp.esapi.ESAPI("/WEB-INF/esapi-resources/");
@@ -20,16 +20,16 @@ application.ESAPI = new org.owasp.esapi.ESAPI("/WEB-INF/esapi-resources/");
 ...or choose to implement your own components based on the provided interfaces.
 
 DOCUMENTATION
-=
+-
 Compatibility information, setup, tutorials, API reference, and links to latest download are available here:<br>
 http://damonmiller.github.io/esapi4cf/
 
 RELEASE NOTES
-=
+-
 Information on bug fixes and improvements for each release are available here:<br>
 https://github.com/damonmiller/esapi4cf/releases
 
 ISSUES
-=
+-
 You can find known issues or report new issues here:<br>
 https://github.com/damonmiller/esapi4cf/issues
