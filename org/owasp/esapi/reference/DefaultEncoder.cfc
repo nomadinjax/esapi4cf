@@ -52,7 +52,7 @@
 				return variables.encoder.canonicalize(javaCast("string", arguments.input), javaCast("boolean", arguments.strict));
 			}
 			catch (org.owasp.esapi.errors.IntrusionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, e.getUserMessage(), e.getLogMessage()));
+				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.canonicalize.badInput.userMessage"), e.getLogMessage()));
 			}
 		</cfscript>
 
@@ -189,10 +189,10 @@
 				return newJava("java.net.URLEncoder").encode(javaCast("string", arguments.input), variables.ESAPI.securityConfiguration().getCharacterEncoding());
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, "Encoding failure", "Encoding not supported", ex));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.typeMismatch.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.typeMismatch.logMessage"), ex));
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, "Encoding failure", "Problem URL decoding input", e));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.badInput.logMessage"), e));
 			}
 		</cfscript>
 
@@ -210,10 +210,10 @@
 				return newJava("java.net.URLDecoder").decode(canonical, variables.ESAPI.securityConfiguration().getCharacterEncoding());
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, "Decoding failed", "Encoding not supported", ex));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.typeMismatch.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.typeMismatch.logMessage"), ex));
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, "Decoding failed", "Problem URL decoding input", e));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.badInput.logMessage"), e));
 			}
 		</cfscript>
 
