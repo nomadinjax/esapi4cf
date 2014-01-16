@@ -54,8 +54,8 @@
 					return "";
 				return variables.ESAPI.encryptor().decryptString(encryptedValue);
 			}
-			catch(Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Property retrieval failure", "Couldn't decrypt property", e));
+			catch(java.lang.Exception e) {
+				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("EncryptedProperties.getProperty.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("EncryptedProperties.getProperty.badInput.logMessage"), e));
 			}
 		</cfscript>
 
@@ -70,7 +70,7 @@
 				return variables.properties.setProperty(arguments.key, variables.ESAPI.encryptor().encryptString(arguments.value));
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Property setting failure", "Couldn't encrypt property", e));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("EncryptedProperties.setProperty.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("EncryptedProperties.setProperty.badInput.logMessage"), e));
 			}
 		</cfscript>
 
