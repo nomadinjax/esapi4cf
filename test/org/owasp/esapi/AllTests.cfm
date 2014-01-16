@@ -16,44 +16,24 @@
  */
 --->
 <cfsetting requesttimeout="120">
-
 <cfscript>
 	serverVersion = "CF " & server.coldfusion.ProductVersion;
 	if(structKeyExists(server, "railo")) {
 		serverVersion = "Railo " & server.railo.version;
 	}
 	ESAPI = createObject("component", "org.owasp.esapi.ESAPI");
-	writeOutput("<h1> " & ESAPI.ESAPINAME & " " & ESAPI.VERSION & " [" & serverVersion & "] Test Results</h1>");
 
-	System = createObject("java", "java.lang.System");
-
-	System.out.println("INITIALIZING ALL TESTS");
-
-	suite = createObject("component", "mxunit.framework.TestSuite").TestSuite();
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.DefaultSecurityConfigurationTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.LoggerTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.SafeFileTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.UserTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.ESAPITest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.RandomizerTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.AccessControllerTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.HTTPUtilitiesTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.ValidatorTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.EncryptorTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.IntrusionDetectorTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.AccessReferenceMapTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.IntegerAccessReferenceMapTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.ExecutorTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.EncoderTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.EncryptedPropertiesTest");
-	suite.addAll("esapi4cf.test.org.owasp.esapi.reference.AuthenticatorTest");
-
-	// exceptions
-	suite.addAll("esapi4cf.test.org.owasp.esapi.errors.EnterpriseSecurityExceptionTest");
-
-	startTestSuiteRunTime = getTickCount();
-
-	results = suite.run();
-	writeOutput(results.getResultsOutput("html"));
-	writeOutput("<p>Execution Time: #(getTickCount() - startTestSuiteRunTime) / 1000#s</p><br/>");
+	results = createObject("component", "mxunit.runner.DirectoryTestSuite").run(directory=expandPath("."), componentPath="esapi4cf.test.org.owasp.esapi", recurse=true);
 </cfscript>
+<cfoutput><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>#ESAPI.ESAPINAME# #ESAPI.VERSION# [#serverVersion#] Results</title>
+</head>
+<body>
+<h1>#ESAPI.ESAPINAME# #ESAPI.VERSION# [#serverVersion#] Results</h1>
+#results.getResultsOutput("html")#
+</body>
+</html>
+</cfoutput>
