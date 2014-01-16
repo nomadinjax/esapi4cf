@@ -141,11 +141,13 @@
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
 		<cfargument required="true" name="format"/>
+		<cfargument required="true" name="minValue"/>
+		<cfargument required="true" name="maxValue"/>
 		<cfargument required="true" type="boolean" name="allowNull"/>
 
 		<cfscript>
 			try {
-				getValidDate(arguments.context, arguments.input, arguments.format, arguments.allowNull);
+				getValidDate(arguments.context, arguments.input, arguments.format, arguments.minValue, arguments.maxValue, arguments.allowNull);
 				return true;
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
@@ -160,6 +162,8 @@
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="input"/>
 		<cfargument required="true" name="format"/>
+		<cfargument required="true" name="minValue"/>
+		<cfargument required="true" name="maxValue"/>
 		<cfargument required="true" type="boolean" name="allowNull"/>
 		<cfargument type="org.owasp.esapi.ValidationErrorList" name="errorList"/>
 
@@ -171,7 +175,7 @@
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
-					return getValidDate(arguments.context, arguments.input, arguments.format, arguments.allowNull);
+					return getValidDate(arguments.context, arguments.input, arguments.format, arguments.minValue, arguments.maxValue, arguments.allowNull);
 				}
 				catch(org.owasp.esapi.errors.ValidationException e) {
 					arguments.errorList.addError(arguments.context, e);
@@ -179,6 +183,12 @@
 				return "";
 			}
 			else {
+				if(arguments.minValue > arguments.maxValue) {
+					//should this be a RunTime?
+					msgParams = [arguments.context, arguments.minValue, arguments.maxValue];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDate.rangeInvalid.userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDate.rangeInvalid.logMessage", msgParams), arguments.context));
+				}
+
 				if(isEmptyInput(arguments.input)) {
 					if(arguments.allowNull)
 						return "";
@@ -196,6 +206,11 @@
 						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDate.patternMismatch.userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDate.patternMismatch.logMessage", msgParams), e, arguments.context));
 					}
 					date = createDateTime(year(date), month(date), day(date), hour(date), minute(date), second(date));
+				}
+
+				if(date < arguments.minValue || date > arguments.maxValue) {
+					msgParams = [arguments.context, arguments.input, arguments.minValue, arguments.maxValue];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDate.rangeUnderflowOverflow.userMessage", msgParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDate.rangeUnderflowOverflow.logMessage", msgParams), context=arguments.context));
 				}
 
 				if (isDate(date)) {

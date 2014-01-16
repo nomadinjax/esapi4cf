@@ -43,6 +43,8 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" name="format" hint="Required formatting of date inputted."/>
+		<cfargument required="true" name="minValue" hint="Lowest legal value for input."/>
+		<cfargument required="true" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
 
 	</cffunction>
@@ -52,6 +54,8 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" name="format" hint="Required formatting of date inputted."/>
+		<cfargument required="true" name="minValue" hint="Lowest legal value for input."/>
+		<cfargument required="true" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
 		<cfargument type="org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 

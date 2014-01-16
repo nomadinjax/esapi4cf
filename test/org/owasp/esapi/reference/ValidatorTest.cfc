@@ -289,25 +289,28 @@
 			// CF8 requires 'var' at the top
 			var instance = request.ESAPI.validator();
 			var errors = createObject("component", "org.owasp.esapi.ValidationErrorList").init();
+			var df = createObject("java", "java.text.DateFormat");
+			var minValue = createDateTime(1000, 1, 1, 0, 0, 0);
+			var maxValue = createDateTime(9999, 12, 31, 23, 59, 59);
 
 			System.out.println("getValidDate");
-			assertTrue(instance.getValidDate("test", "June 23, 1967", createObject("java", "java.text.DateFormat").getDateInstance(createObject("java", "java.text.DateFormat").MEDIUM, createObject("java", "java.util.Locale").US), false) != "");
-			instance.getValidDate("test", "freakshow", createObject("java", "java.text.DateFormat").getDateInstance(), false, errors);
+			assertTrue(instance.getValidDate("test", "June 23, 1967", df.getDateInstance(df.MEDIUM, createObject("java", "java.util.Locale").US), minValue, maxValue, false) != "");
+			instance.getValidDate("test", "freakshow", df.getDateInstance(), minValue, maxValue, false, errors);
 			assertEquals(1, errors.size());
 
 			// null/blank format arg
 			try {
 				// Railo 4.1 has full NULL support
-				assertTrue(instance.getValidDate("test", now(), javaCast("null", ""), false) != "");
+				assertTrue(instance.getValidDate("test", now(), javaCast("null", ""), minValue, maxValue, false) != "");
 			}
 			catch (application e) {
 				// fails if NULL support is not available - just skip
 			}
-			assertTrue(instance.getValidDate("test", now(), "", false) != "");
+			assertTrue(instance.getValidDate("test", now(), "", minValue, maxValue, false) != "");
 
 			// This test case fails due to an apparent bug in SimpleDateFormat
 			try {
-				instance.getValidDate("test", "June 32, 2008", createObject("java", "java.text.DateFormat").getDateInstance(), false);
+				instance.getValidDate("test", "June 32, 2008", df.getDateInstance(), minValue, maxValue, false);
 				// fail("");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
@@ -316,7 +319,25 @@
 
 			// test empty value
 			try {
-				instance.getValidDate("test", "", createObject("java", "java.text.DateFormat").getDateInstance(), false);
+				instance.getValidDate("test", "", df.getDateInstance(), minValue, maxValue, false);
+				fail("");
+			}
+			catch(org.owasp.esapi.errors.ValidationException e) {
+				// expected
+			}
+
+			// test underflow
+			try {
+				instance.getValidDate("test", "2014-01-15", df.getDateInstance(), createDateTime(2015, 1, 1, 0, 0, 0), maxValue, false);
+				fail("");
+			}
+			catch(org.owasp.esapi.errors.ValidationException e) {
+				// expected
+			}
+
+			// test overflow
+			try {
+				instance.getValidDate("test", "2014-01-15", df.getDateInstance(), minValue, createDateTime(2013, 12, 31, 23, 59, 59), false);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
