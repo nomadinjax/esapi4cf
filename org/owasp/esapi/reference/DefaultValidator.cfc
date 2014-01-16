@@ -94,7 +94,7 @@
 
 					if(arguments.type == "" || arguments.type.length() == 0) {
 						params = [arguments.context, arguments.input, arguments.type];
-						throw(object=newJava("java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator.getValidInput.typeMismatch.message", params)));
+						throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator.getValidInput.typeMismatch.message", params)));
 					}
 
 					if(isEmptyInput(canonical)) {
@@ -112,11 +112,11 @@
 					p = variables.ESAPI.securityConfiguration().getValidationPattern(arguments.type);
 					if(!isObject(p)) {
 						try {
-							p = newJava("java.util.regex.Pattern").compile(arguments.type);
+							p = createObject("java", "java.util.regex.Pattern").compile(arguments.type);
 						}
 						catch(java.util.regex.PatternSyntaxException e) {
 							params = [arguments.context, arguments.input, arguments.type];
-							throw(object=newJava("java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator.getValidInput.patternMismatch.message", params)));
+							throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator.getValidInput.patternMismatch.message", params)));
 						}
 					}
 
@@ -224,9 +224,9 @@
 
 			try {
 				if(!isObject(variables.antiSamyPolicy)) {
-					variables.antiSamyPolicy = newJava("org.owasp.validator.html.Policy").getInstance(variables.ESAPI.securityConfiguration().getResourceFile("antisamy-esapi.xml"));
+					variables.antiSamyPolicy = createObject("java", "org.owasp.validator.html.Policy").getInstance(variables.ESAPI.securityConfiguration().getResourceFile("antisamy-esapi.xml"));
 				}
-				as = newJava("org.owasp.validator.html.AntiSamy").init();
+				as = createObject("java", "org.owasp.validator.html.AntiSamy").init();
 				test = as.scan(arguments.input, variables.antiSamyPolicy);
 				return (test.getErrorMessages().size() == 0);
 			}
@@ -279,9 +279,9 @@
 
 				try {
 					if(!isObject(variables.antiSamyPolicy)) {
-						variables.antiSamyPolicy = newJava("org.owasp.validator.html.Policy").getInstance(variables.ESAPI.securityConfiguration().getResourceFile("antisamy-esapi.xml"));
+						variables.antiSamyPolicy = createObject("java", "org.owasp.validator.html.Policy").getInstance(variables.ESAPI.securityConfiguration().getResourceFile("antisamy-esapi.xml"));
 					}
-					as = newJava("org.owasp.validator.html.AntiSamy").init();
+					as = createObject("java", "org.owasp.validator.html.AntiSamy").init();
 					test = as.scan(arguments.input, variables.antiSamyPolicy);
 					errors = test.getErrorMessages();
 
@@ -366,11 +366,11 @@
 				canonical = getValidInput(arguments.context, arguments.input, "CreditCard", variables.MAX_CREDIT_CARD_LENGTH, arguments.allowNull);
 
 				// perform Luhn algorithm checking
-				digitsOnly = newJava("java.lang.StringBuffer").init();
+				digitsOnly = createObject("java", "java.lang.StringBuffer").init();
 				c = "";
 				for(i = 0; i < canonical.length(); i++) {
 					c = canonical.charAt(i);
-					if(newJava("java.lang.Character").isDigit(c)) {
+					if(createObject("java", "java.lang.Character").isDigit(c)) {
 						digitsOnly.append(c);
 					}
 				}
@@ -381,7 +381,7 @@
 				timesTwo = false;
 
 				for(i = digitsOnly.length() - 1; i >= 0; i--) {
-					digit = newJava("java.lang.Integer").parseInt(digitsOnly.substring(i, i + 1));
+					digit = createObject("java", "java.lang.Integer").parseInt(digitsOnly.substring(i, i + 1));
 					if(timesTwo) {
 						addend = digit * 2;
 						if(addend > 9) {
@@ -457,7 +457,7 @@
 						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDirectoryPath.valueMissing.userMessage", msgParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDirectoryPath.valueMissing.logMessage", msgParams), context=arguments.context));
 					}
 
-					dir = newJava("java.io.File").init(arguments.input);
+					dir = createObject("java", "java.io.File").init(arguments.input);
 
 					// check dir exists and parent exists and dir is inside parent
 					if(!dir.exists()) {
@@ -548,9 +548,9 @@
 					canonical = variables.ESAPI.encoder().canonicalize(arguments.input);
 					getValidInput(arguments.context, arguments.input, "FileName", 255, true);
 
-					f = newJava("java.io.File").init(canonical);
+					f = createObject("java", "java.io.File").init(canonical);
 					c = f.getCanonicalPath();
-					cpath = c.substring(c.lastIndexOf(newJava("java.io.File").separator) + 1);
+					cpath = c.substring(c.lastIndexOf(createObject("java", "java.io.File").separator) + 1);
 
 					// the path is valid if the input matches the canonical path
 					if(!arguments.input.equals(cpath.toLowerCase())) {
@@ -629,7 +629,7 @@
 				}
 
 				//not sure what to return on error
-				return newJava("java.lang.Double").init(0);
+				return createObject("java", "java.lang.Double").init(0);
 			}
 			else {
 				if(isEmptyInput(arguments.input)) {
@@ -651,8 +651,8 @@
 				}
 
 				if (isNumeric(number)) {
-					minDoubleValue = newJava("java.lang.Double").init(arguments.minValue);
-					maxDoubleValue = newJava("java.lang.Double").init(arguments.maxValue);
+					minDoubleValue = createObject("java", "java.lang.Double").init(arguments.minValue);
+					maxDoubleValue = createObject("java", "java.lang.Double").init(arguments.maxValue);
 					return getValidDouble(arguments.context, number, minDoubleValue.doubleValue(), maxDoubleValue.doubleValue(), arguments.allowNull);
 				}
 
@@ -705,7 +705,7 @@
 				}
 
 				//not sure what to return on error
-				return newJava("java.lang.Double").init(0);
+				return createObject("java", "java.lang.Double").init(0);
 			}
 			else {
 				if(arguments.minValue > arguments.maxValue) {
@@ -722,7 +722,7 @@
 				}
 
 				try {
-					d = newJava("java.lang.Double").init(newJava("java.lang.Double").parseDouble(javaCast("string", arguments.input)));
+					d = createObject("java", "java.lang.Double").init(createObject("java", "java.lang.Double").parseDouble(javaCast("string", arguments.input)));
 					if(d.isInfinite()) {
 						msgParams = [arguments.context, arguments.input];
 						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDouble.isInfinite.userMessage", msgParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDouble.isInfinite.logMessage", msgParams), context=arguments.context));
@@ -793,7 +793,7 @@
 				}
 
 				//not sure what to return on error
-				return newJava("java.lang.Integer").init(0);
+				return createObject("java", "java.lang.Integer").init(0);
 			}
 			else {
 				if(arguments.minValue > arguments.maxValue) {
@@ -810,7 +810,7 @@
 				}
 
 				try {
-					i = newJava("java.lang.Integer").parseInt(javaCast("string", arguments.input));
+					i = createObject("java", "java.lang.Integer").parseInt(javaCast("string", arguments.input));
 					if(i < arguments.minValue || i > arguments.maxValue) {
 						msgParams = [arguments.context, arguments.input, arguments.minValue, arguments.maxValue];
 						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.getValidInteger.rangeUnderflowOverflow.userMessage", msgParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator.getValidInteger.rangeUnderflowOverflow.logMessage", msgParams), context=arguments.context));
@@ -1214,7 +1214,7 @@
 				canonical = "";
 				try {
 					canonical = variables.ESAPI.encoder().canonicalize(arguments.input);
-					return newJava("java.lang.String").init(getValidPrintable(arguments.context, canonical.getBytes(), arguments.maxLength, arguments.allowNull));
+					return createObject("java", "java.lang.String").init(getValidPrintable(arguments.context, canonical.getBytes(), arguments.maxLength, arguments.allowNull));
 				}
 				catch(org.owasp.esapi.errors.EncodingException e) {
 					msgParams = [arguments.context, arrayToList(arguments.input)];
@@ -1277,7 +1277,7 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.ValidationAvailabilityException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Validator.safeReadLine.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("Validator.safeReadLine.badInput.logMessage")));
 			}
 
-			sb = newJava("java.lang.StringBuffer").init();
+			sb = createObject("java", "java.lang.StringBuffer").init();
 			count = 0;
 			c = "";
 
@@ -1326,6 +1326,59 @@
 			}
 		</cfscript>
 
+	</cffunction>
+
+	<cffunction access="public" returntype="boolean" name="isValidBoolean" output="false"
+				hint="Returns true if input is a valid boolean.">
+		<cfargument required="true" type="String" name="context">
+		<cfargument required="true" type="String" name="input">
+		<cfargument required="true" type="boolean" name="allowNull">
+		<cfscript>
+			try {
+				getValidBoolean(arguments.context, arguments.input, arguments.allowNull);
+				return true;
+			}
+			catch(org.owasp.esapi.errors.ValidationException e) {
+				return false;
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction access="public" name="getValidBoolean" output="false"
+				hint="Returns a valid Boolean. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack will generate a descriptive IntrusionException.">
+		<cfargument required="true" type="String" name="context">
+		<cfargument required="true" type="String" name="input">
+		<cfargument required="true" type="boolean" name="allowNull">
+		<cfargument type="org.owasp.esapi.ValidationErrorList" name="errorList">
+		<cfscript>
+			var exception = {};
+			var msgParams = [];
+
+			if(structKeyExists(arguments, "errorList")) {
+				try {
+					return getValidBoolean(arguments.context, arguments.input, arguments.allowNull);
+				}
+				catch(org.owasp.esapi.errors.ValidationException e) {
+					arguments.errorList.addError(arguments.context, e);
+				}
+				return "";
+			}
+			else {
+				if(isEmptyInput(arguments.input)) {
+					if(arguments.allowNull)
+						return "";
+					msgParams = [arguments.context, arguments.input];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.getValidBoolean.valueMissing.userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Validator.getValidBoolean.valueMissing.logMessage", msgParams)));
+				}
+
+				if (!isBoolean(arguments.input)) {
+					msgParams = [arguments.context, arguments.input];
+					throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.getValidBoolean.badInput.userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Validator.getValidBoolean.badInput.logMessage", msgParams)));
+				}
+
+				return getBoolean(arguments.input);
+			}
+		</cfscript>
 	</cffunction>
 
 </cfcomponent>

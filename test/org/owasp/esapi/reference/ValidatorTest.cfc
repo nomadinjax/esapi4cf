@@ -150,7 +150,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var instance = request.ESAPI.validator();
-			var nf = newJava("java.text.NumberFormat").getNumberInstance();
+			var nf = createObject("java", "java.text.NumberFormat").getNumberInstance();
 
 			System.out.println("isValidNumber");
 			//testing negative range
@@ -197,7 +197,7 @@
 		<cfscript>
 			var instance = request.ESAPI.validator();
 			var errors = "";
-			var nf = newJava("java.text.NumberFormat").getNumberInstance();
+			var nf = createObject("java", "java.text.NumberFormat").getNumberInstance();
 
 	        System.out.println("getValidNumber");
 	        errors = createObject("component", "org.owasp.esapi.ValidationErrorList").init();
@@ -291,8 +291,8 @@
 			var errors = createObject("component", "org.owasp.esapi.ValidationErrorList").init();
 
 			System.out.println("getValidDate");
-			assertTrue(instance.getValidDate("test", "June 23, 1967", newJava("java.text.DateFormat").getDateInstance(newJava("java.text.DateFormat").MEDIUM, newJava("java.util.Locale").US), false) != "");
-			instance.getValidDate("test", "freakshow", newJava("java.text.DateFormat").getDateInstance(), false, errors);
+			assertTrue(instance.getValidDate("test", "June 23, 1967", createObject("java", "java.text.DateFormat").getDateInstance(createObject("java", "java.text.DateFormat").MEDIUM, createObject("java", "java.util.Locale").US), false) != "");
+			instance.getValidDate("test", "freakshow", createObject("java", "java.text.DateFormat").getDateInstance(), false, errors);
 			assertEquals(1, errors.size());
 
 			// null/blank format arg
@@ -307,8 +307,8 @@
 
 			// This test case fails due to an apparent bug in SimpleDateFormat
 			try {
-				instance.getValidDate("test", "June 32, 2008", newJava("java.text.DateFormat").getDateInstance(), false);
-				// fail();
+				instance.getValidDate("test", "June 32, 2008", createObject("java", "java.text.DateFormat").getDateInstance(), false);
+				// fail("");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
 				// expected
@@ -316,7 +316,7 @@
 
 			// test empty value
 			try {
-				instance.getValidDate("test", "", newJava("java.text.DateFormat").getDateInstance(), false);
+				instance.getValidDate("test", "", createObject("java", "java.text.DateFormat").getDateInstance(), false);
 				fail("");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
@@ -420,7 +420,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var content = newJava("java.lang.String").init("This is some file content").getBytes();
+			var content = createObject("java", "java.lang.String").init("This is some file content").getBytes();
 			var instance = request.ESAPI.validator();
 
 			System.out.println("isValidFileContent");
@@ -445,20 +445,20 @@
 			if(isWindows) {
 				filepath = "C:\WINDOWS\system32";
 				filename = "cmd.exe";
-				content = newJava("java.lang.String").init("This is some file content").getBytes();
+				content = createObject("java", "java.lang.String").init("This is some file content").getBytes();
 				assertTrue(instance.isValidFileUpload("test", filepath, filename, content, 100, false));
 			}
 			else {
 				filepath = "/bin";
 				filename = "aspect.jar";
-				content = newJava("java.lang.String").init("Thisi is some file content").getBytes();
+				content = createObject("java", "java.lang.String").init("Thisi is some file content").getBytes();
 				assertTrue(instance.isValidFileUpload("test", filepath, filename, content, 100, false));
 
 				// This will fail on MacOS X, as /etc is actually /private/etc
 				// TODO: Fix canonicalization of symlinks on MacOS X
 				filepath = "/etc";
 				filename = "aspect.jar";
-				content = newJava("java.lang.String").init("Thisi is some file content").getBytes();
+				content = createObject("java", "java.lang.String").init("Thisi is some file content").getBytes();
 				assertTrue(instance.isValidFileUpload("test", filepath, filename, content, 100, false));
 			}
 		</cfscript>
@@ -486,8 +486,8 @@
 			optionalNames.add("p4");
 			optionalNames.add("p5");
 			optionalNames.add("p6");
-			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
 			httpRequest.addParameter("p1", "value");
 			httpRequest.addParameter("p2", "value");
 			httpRequest.addParameter("p3", "value");
@@ -515,11 +515,11 @@
 
 			System.out.println("safeReadLine");
 
-			s = newJava("java.io.ByteArrayInputStream").init(newJava("java.lang.String").init("testString").getBytes());
+			s = createObject("java", "java.io.ByteArrayInputStream").init(createObject("java", "java.lang.String").init("testString").getBytes());
 			instance = request.ESAPI.validator();
 			try {
 				instance.safeReadLine(s, -1);
-				fail();
+				fail("");
 			}
 			catch(org.owasp.esapi.errors.ValidationAvailabilityException e) {
 				// Expected
@@ -527,7 +527,7 @@
 			s.reset();
 			try {
 				instance.safeReadLine(s, 4);
-				fail();
+				fail("");
 			}
 			catch(org.owasp.esapi.errors.ValidationAvailabilityException e) {
 				// Expected
@@ -538,10 +538,54 @@
 				assertEquals("testString", u);
 			}
 			catch(org.owasp.esapi.errors.ValidationAvailabilityException e) {
-				fail();
+				fail("");
 			}
 		</cfscript>
 
+	</cffunction>
+
+	<cffunction access="public" returntype="void" name="testGetValidBoolean" output="false">
+		<cfscript>
+			// CF8 requires 'var' at the top
+			var instance = "";
+
+			System.out.println("getValidBoolean");
+
+			instance = request.ESAPI.validator();
+
+			instance.getValidBoolean("test", 1, false);
+			instance.getValidBoolean("test", 0, false);
+			instance.getValidBoolean("test", true, false);
+			instance.getValidBoolean("test", false, false);
+			instance.getValidBoolean("test", "yes", false);
+			instance.getValidBoolean("test", "no", false);
+
+			instance.getValidBoolean("test", "", true);
+			try {
+				instance.getValidBoolean("test", "", false);
+				fail("");
+			}
+			catch (org.owasp.esapi.errors.ValidationException e) {
+				// expected
+			}
+
+			// NOTE: on/off are not valid
+			try {
+				instance.getValidBoolean("test", "on", true);
+				fail("");
+			}
+			catch (org.owasp.esapi.errors.ValidationException e) {
+				// expected
+			}
+
+			try {
+				instance.getValidBoolean("test", "off", true);
+				fail("");
+			}
+			catch (org.owasp.esapi.errors.ValidationException e) {
+				// expected
+			}
+		</cfscript>
 	</cffunction>
 
 </cfcomponent>
