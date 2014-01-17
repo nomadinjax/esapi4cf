@@ -149,7 +149,7 @@
 						domain = c.getDomain();
 						path = c.getPath();
 
-						n = newJava("javax.servlet.http.Cookie").init(name, value);
+						n = createObject("java", "javax.servlet.http.Cookie").init(name, value);
 						n.setMaxAge(maxAge);
 
 						if(isDefined("domain") && !isNull(domain)) {
@@ -641,7 +641,7 @@
 			catch(org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
-			return newJava("java.lang.StringBuffer").init(clean);
+			return createObject("java", "java.lang.StringBuffer").init(clean);
 		</cfscript>
 
 	</cffunction>
@@ -740,7 +740,7 @@
 			// NOTE: DO NOT attempt an httpUtilities.getCookie() at this point - can cause a stack overflow exception
 			if(safeSession.getAttribute("HTTP_ONLY") == "") {
 				safeSession.setAttribute("HTTP_ONLY", "set");
-				httpCookie = newJava("javax.servlet.http.Cookie").init("JSESSIONID", safeSession.getId());
+				httpCookie = createObject("java", "javax.servlet.http.Cookie").init("JSESSIONID", safeSession.getId());
 				httpCookie.setMaxAge(-1);// session cookie
 				httpCookie.setPath(getContextPath() & "/");
 				httpResponse = variables.ESAPI.currentResponse();

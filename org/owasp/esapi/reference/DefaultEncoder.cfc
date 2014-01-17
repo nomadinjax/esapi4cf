@@ -31,10 +31,10 @@
 			variables.ESAPI = arguments.ESAPI;
 
 			if(structKeyExists(arguments, "codecs")) {
-				variables.encoder = newJava("org.owasp.esapi.reference.DefaultEncoder").init(arguments.codecs);
+				variables.encoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder").init(arguments.codecs);
 			}
 			else {
-				variables.encoder = newJava("org.owasp.esapi.ESAPI").encoder();
+				variables.encoder = createObject("java", "org.owasp.esapi.ESAPI").encoder();
 			}
 
 			return this;
@@ -187,7 +187,7 @@
 		<cfscript>
 			if (isNull(arguments.input)) return "";
 			try {
-				return newJava("java.net.URLEncoder").encode(javaCast("string", arguments.input), variables.ESAPI.securityConfiguration().getCharacterEncoding());
+				return createObject("java", "java.net.URLEncoder").encode(javaCast("string", arguments.input), variables.ESAPI.securityConfiguration().getCharacterEncoding());
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
 				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.typeMismatch.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.typeMismatch.logMessage"), ex));
@@ -208,7 +208,7 @@
 			if (isNull(arguments.input)) return "";
 			canonical = this.canonicalize(arguments.input);
 			try {
-				return newJava("java.net.URLDecoder").decode(canonical, variables.ESAPI.securityConfiguration().getCharacterEncoding());
+				return createObject("java", "java.net.URLDecoder").decode(canonical, variables.ESAPI.securityConfiguration().getCharacterEncoding());
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
 				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.typeMismatch.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.typeMismatch.logMessage"), ex));

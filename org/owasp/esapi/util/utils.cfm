@@ -15,23 +15,6 @@
 
 </cffunction>
 
-<cffunction access="private" name="newJava" output="false">
-	<cfargument required="true" type="String" name="classpath"/>
-
-	<cfscript>
-		var cp = arguments.classpath;
-		var data = getCFMLMetaData();
-		// prefer StringBuilder in newer CFML engines
-		if(cp == "java.lang.StringBuffer" && !(data.engine == "ColdFusion" && listFirst(data.version, ",") == "8")) {
-			cp = "java.lang.StringBuilder";
-		}
-
-		// NOTE: we cannot cache these due to serialization
-		return createObject("java", cp);
-	</cfscript>
-
-</cffunction>
-
 <cffunction access="private" returntype="String" name="getBoolean" output="false"
 	hint="Provides a consistent true/false return for a boolean value regardless of whether true/false, yes/no, 1/0, or on/off were provided.">
 	<cfargument required="true" type="String" name="bool">
@@ -53,7 +36,7 @@
 	<cfargument required="true" type="String" name="type"/>
 
 	<cfscript>
-		var logger = newJava("org.owasp.esapi.Logger");
+		var logger = createObject("java", "org.owasp.esapi.Logger");
 		if(this.ESAPI4JVERSION == 2) {
 			return logger[arguments.type];
 		}
@@ -84,7 +67,7 @@
 		var i = "";
 		var thisChr = "";
 
-		var sb = newJava("java.lang.StringBuffer").init();
+		var sb = createObject("java", "java.lang.StringBuffer").init();
 		for(i = 1; i <= len(arguments.string); i++) {
 			thisChr = mid(arguments.string, i, 6);
 			if(left(thisChr, 2) == "\u") {

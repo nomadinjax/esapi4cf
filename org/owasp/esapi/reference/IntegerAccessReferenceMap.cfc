@@ -50,7 +50,7 @@
 	<cffunction access="public" name="iterator" output="false">
 
 		<cfscript>
-			var sorted = newJava("java.util.TreeSet").init(variables.dtoi.keySet());
+			var sorted = createObject("java", "java.util.TreeSet").init(variables.dtoi.keySet());
 			return sorted.iterator();
 		</cfscript>
 

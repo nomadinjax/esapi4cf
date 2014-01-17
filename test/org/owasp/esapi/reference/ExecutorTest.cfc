@@ -43,6 +43,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
+			var jFile = createObject("java", "java.io.File");
 			var codec = "";
 			var instance = "";
 			var executable = "";
@@ -59,12 +60,12 @@
 				return;// Not windows, not going to execute this path
 			}
 
-			codec = newJava("org.owasp.esapi.codecs.WindowsCodec").init();
+			codec = createObject("java", "org.owasp.esapi.codecs.WindowsCodec").init();
 			System.out.println("executeSystemCommand");
 			instance = request.ESAPI.executor();
-			executable = newJava("java.io.File").init("C:\\Windows\\System32\\cmd.exe");
-			working = newJava("java.io.File").init("C:\\");
-			params = newJava("java.util.ArrayList").init();
+			executable = jFile.init("C:\\Windows\\System32\\cmd.exe");
+			working = jFile.init("C:\\");
+			params = createObject("java", "java.util.ArrayList").init();
 			try {
 				params.add("dir");
 				params.add("/C");
@@ -76,7 +77,7 @@
 				fail(e.getMessage());
 			}
 			try {
-				exec2 = newJava("java.io.File").init(executable.getPath() & ";inject.exe");
+				exec2 = jFile.init(executable.getPath() & ";inject.exe");
 				result = instance.executeSystemCommand(exec2, params, working, codec);
 				System.out.println("RESULT: " & result);
 				fail("");
@@ -85,7 +86,7 @@
 				// expected
 			}
 			try {
-				exec2 = newJava("java.io.File").init(executable.getPath() & "\\..\\cmd.exe");
+				exec2 = jFile.init(executable.getPath() & "\\..\\cmd.exe");
 				result = instance.executeSystemCommand(exec2, params, working, codec);
 				System.out.println("RESULT: " & result);
 				fail("");
@@ -94,7 +95,7 @@
 				// expected
 			}
 			try {
-				workdir = newJava("java.io.File").init("ridiculous");
+				workdir = jFile.init("ridiculous");
 				result = instance.executeSystemCommand(executable, params, workdir, codec);
 				System.out.println("RESULT: " & result);
 				fail("");
@@ -136,6 +137,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
+			var jFile = createObject("java", "java.io.File");
 			var workingDir = "";
 			var codec = "";
 			var binSh = "";
@@ -146,7 +148,7 @@
 			var exec2 = "";
 
 			System.out.println("executeUnixSystemCommand");
-			workingDir = newJava("java.io.File").init("/tmp");
+			workingDir = jFile.init("/tmp");
 
 			if(System.getProperty("os.name").indexOf("Windows") != -1) {
 				System.out.println("executeUnixSystemCommand - on Windows platform, exiting");
@@ -154,12 +156,12 @@
 			}
 
 			// FIXME: need more test cases to use this codec
-			codec = newJava("org.owasp.esapi.codecs.UnixCodec").init();
+			codec = createObject("java", "org.owasp.esapi.codecs.UnixCodec").init();
 
 			// make sure we have what /bin/sh is pointing at in the allowed exes for the test
 			// and a usable working dir
-			binSh = newJava("java.io.File").init("/bin/sh").getCanonicalFile();
-			request.ESAPI.setSecurityConfiguration(createObject("component", "ExecutorTest$Conf").init(request.ESAPI.securityConfiguration(), newJava("java.util.Collections").singletonList(binSh.getPath()), workingDir));
+			binSh = jFile.init("/bin/sh").getCanonicalFile();
+			request.ESAPI.setSecurityConfiguration(createObject("component", "ExecutorTest$Conf").init(request.ESAPI.securityConfiguration(), createObject("java", "java.util.Collections").singletonList(binSh.getPath()), workingDir));
 
 			instance = request.ESAPI.executor();
 			executable = binSh;
@@ -176,7 +178,7 @@
 				fail(e.getMessage());
 			}
 			try {
-				exec2 = newJava("java.io.File").init(executable.getPath() & ";./inject");
+				exec2 = jFile.init(executable.getPath() & ";./inject");
 				result = instance.executeSystemCommand(exec2, params, workingDir, codec);
 				System.out.println("RESULT: " & result);
 				fail("");
@@ -185,7 +187,7 @@
 				// expected
 			}
 			try {
-				exec2 = newJava("java.io.File").init(executable.getPath() & "/../bin/sh");
+				exec2 = jFile.init(executable.getPath() & "/../bin/sh");
 				result = instance.executeSystemCommand(exec2, params, workingDir, codec);
 				System.out.println("RESULT: " & result);
 				fail("");
@@ -209,6 +211,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
+			var jFile = createObject("java", "java.io.File");
 			var tmpDir = "";
 			var javaHome = "";
 			var javaHomeBin = "";
@@ -221,25 +224,25 @@
 			System.out.println("executeSystemCommand");
 
 			if(System.getProperty("os.name").indexOf("Windows") >= 0) {
-				codec = newJava("org.owasp.esapi.codecs.WindowsCodec").init();
+				codec = createObject("java", "org.owasp.esapi.codecs.WindowsCodec").init();
 				javaCmd = "java.exe";
 			}
 			else {
 				javaCmd = "java";
-				codec = newJava("org.owasp.esapi.codecs.UnixCodec").init();
+				codec = createObject("java", "org.owasp.esapi.codecs.UnixCodec").init();
 			}
 
-			javaHome = newJava("java.io.File").init(System.getProperty("java.home")).getCanonicalFile();
+			javaHome = jFile.init(System.getProperty("java.home")).getCanonicalFile();
 			assertTrue(javaHome.isDirectory(), "system property java.home does not point to a directory");
-			javaHomeBin = newJava("java.io.File").init(javaHome, "bin").getCanonicalFile();
-			assertTrue(javaHome.isDirectory(), javaHome.getPath() & newJava("java.io.File").separator & "bin does not exist");
-			javaHomeBinJava = newJava("java.io.File").init(javaHomeBin, javaCmd).getCanonicalFile();
-			assertTrue(javaHomeBinJava.exists(), javaHomeBinJava.getPath() & newJava("java.io.File").separator & "java does not exist");
+			javaHomeBin = jFile.init(javaHome, "bin").getCanonicalFile();
+			assertTrue(javaHome.isDirectory(), javaHome.getPath() & jFile.separator & "bin does not exist");
+			javaHomeBinJava = jFile.init(javaHomeBin, javaCmd).getCanonicalFile();
+			assertTrue(javaHomeBinJava.exists(), javaHomeBinJava.getPath() & jFile.separator & "java does not exist");
 
-			tmpDir = newJava("java.io.File").init(System.getProperty("java.io.tmpdir")).getCanonicalFile();
+			tmpDir = jFile.init(System.getProperty("java.io.tmpdir")).getCanonicalFile();
 			assertTrue(tmpDir.isDirectory(), "system property java.io.tmpdir does not point to a directory");
 
-			request.ESAPI.setSecurityConfiguration(createObject("component", "ExecutorTest$Conf").init(request.ESAPI.securityConfiguration(), newJava("java.util.Collections").singletonList(javaHomeBinJava.getPath()), tmpDir));
+			request.ESAPI.setSecurityConfiguration(createObject("component", "ExecutorTest$Conf").init(request.ESAPI.securityConfiguration(), createObject("java", "java.util.Collections").singletonList(javaHomeBinJava.getPath()), tmpDir));
 			// -version goes to stderr which executeSystemCommand doesn't read...
 			// -help goes to stdout so we'll use that...
 			params.add("-help");

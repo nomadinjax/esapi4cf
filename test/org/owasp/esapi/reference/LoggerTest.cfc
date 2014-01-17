@@ -33,8 +33,8 @@
 
 			System.out.println("logHTTPRequest");
 			ignore = ["password", "ssn", "ccn"];
-			httpRequest = newJava("org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = newJava("org.owasp.esapi.http.TestHttpServletResponse").init();
+			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			logger = request.ESAPI.getLogger("logger");
 			request.ESAPI.httpUtilities().logHTTPRequest(httpRequest, logger, ignore);
@@ -52,6 +52,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
+			var Logger = createObject("java", "org.owasp.esapi.Logger");
 			var newLogger = "";
 
 			System.out.println("setLevel");
@@ -62,7 +63,7 @@
 			assertFalse(variables.testLogger.isInfoEnabled());
 
 			// First, test all the different logging levels
-			variables.testLogger.setLevel(newJava("org.owasp.esapi.Logger").ALL);
+			variables.testLogger.setLevel(Logger.ALL);
 			assertTrue(variables.testLogger.isFatalEnabled());
 			assertTrue(variables.testLogger.isErrorEnabled());
 			assertTrue(variables.testLogger.isWarningEnabled());
@@ -70,7 +71,7 @@
 			assertTrue(variables.testLogger.isDebugEnabled());
 			assertTrue(variables.testLogger.isTraceEnabled());
 
-			variables.testLogger.setLevel(newJava("org.owasp.esapi.Logger").TRACE);
+			variables.testLogger.setLevel(Logger.TRACE);
 			assertTrue(variables.testLogger.isFatalEnabled());
 			assertTrue(variables.testLogger.isErrorEnabled());
 			assertTrue(variables.testLogger.isWarningEnabled());
@@ -78,7 +79,7 @@
 			assertTrue(variables.testLogger.isDebugEnabled());
 			assertTrue(variables.testLogger.isTraceEnabled());
 
-			variables.testLogger.setLevel(newJava("org.owasp.esapi.Logger").DEBUG);
+			variables.testLogger.setLevel(Logger.DEBUG);
 			assertTrue(variables.testLogger.isFatalEnabled());
 			assertTrue(variables.testLogger.isErrorEnabled());
 			assertTrue(variables.testLogger.isWarningEnabled());
@@ -86,7 +87,7 @@
 			assertTrue(variables.testLogger.isDebugEnabled());
 			assertFalse(variables.testLogger.isTraceEnabled());
 
-			variables.testLogger.setLevel(newJava("org.owasp.esapi.Logger").INFO);
+			variables.testLogger.setLevel(Logger.INFO);
 			assertTrue(variables.testLogger.isFatalEnabled());
 			assertTrue(variables.testLogger.isErrorEnabled());
 			assertTrue(variables.testLogger.isWarningEnabled());
@@ -94,7 +95,7 @@
 			assertFalse(variables.testLogger.isDebugEnabled());
 			assertFalse(variables.testLogger.isTraceEnabled());
 
-			variables.testLogger.setLevel(newJava("org.owasp.esapi.Logger").WARNING);
+			variables.testLogger.setLevel(Logger.WARNING);
 			assertTrue(variables.testLogger.isFatalEnabled());
 			assertTrue(variables.testLogger.isErrorEnabled());
 			assertTrue(variables.testLogger.isWarningEnabled());
@@ -102,7 +103,7 @@
 			assertFalse(variables.testLogger.isDebugEnabled());
 			assertFalse(variables.testLogger.isTraceEnabled());
 
-			variables.testLogger.setLevel(newJava("org.owasp.esapi.Logger").ERROR);
+			variables.testLogger.setLevel(Logger.ERROR);
 			assertTrue(variables.testLogger.isFatalEnabled());
 			assertTrue(variables.testLogger.isErrorEnabled());
 			assertFalse(variables.testLogger.isWarningEnabled());
@@ -110,7 +111,7 @@
 			assertFalse(variables.testLogger.isDebugEnabled());
 			assertFalse(variables.testLogger.isTraceEnabled());
 
-			variables.testLogger.setLevel(newJava("org.owasp.esapi.Logger").FATAL);
+			variables.testLogger.setLevel(Logger.FATAL);
 			assertTrue(variables.testLogger.isFatalEnabled());
 			assertFalse(variables.testLogger.isErrorEnabled());
 			assertFalse(variables.testLogger.isWarningEnabled());
@@ -118,7 +119,7 @@
 			assertFalse(variables.testLogger.isDebugEnabled());
 			assertFalse(variables.testLogger.isTraceEnabled());
 
-			variables.testLogger.setLevel(newJava("org.owasp.esapi.Logger").OFF);
+			variables.testLogger.setLevel(Logger.OFF);
 			assertFalse(variables.testLogger.isFatalEnabled());
 			assertFalse(variables.testLogger.isErrorEnabled());
 			assertFalse(variables.testLogger.isWarningEnabled());
@@ -128,7 +129,7 @@
 
 			//Now test to see if a change to the logging level in one log affects other logs
 			newLogger = request.ESAPI.getLogger("test_num2");
-			newLogger.setLevel(newJava("org.owasp.esapi.Logger").INFO);
+			newLogger.setLevel(Logger.INFO);
 			assertFalse(variables.testLogger.isFatalEnabled());
 			assertFalse(variables.testLogger.isErrorEnabled());
 			assertFalse(variables.testLogger.isWarningEnabled());

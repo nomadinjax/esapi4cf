@@ -32,23 +32,23 @@
 				if(structKeyExists(arguments, "cause") && !isNull(arguments.cause) && isObject(arguments.cause)) {
 					// CF exceptions extend java.lang.Exception
 					if(isInstanceOf(arguments.cause, "java.lang.Throwable")) {
-						variables.exception = newJava("java.lang.Exception").init(arguments.message, arguments.cause);
+						variables.exception = createObject("java", "java.lang.Exception").init(arguments.message, arguments.cause);
 					}
 					// RAILO exceptions do not extend java.lang.Exception
 					// ? is there a better way ? I hope so...
 					else if(isStruct(arguments.cause)) {
-						variables.exception = newJava("java.lang.Exception").init(arguments.message, newJava("java.lang.Exception").init(arguments.cause.message));
+						variables.exception = createObject("java", "java.lang.Exception").init(arguments.message, createObject("java", "java.lang.Exception").init(arguments.cause.message));
 					}
 					else {
-						variables.exception = newJava("java.lang.Exception").init(arguments.message);
+						variables.exception = createObject("java", "java.lang.Exception").init(arguments.message);
 					}
 				}
 				else {
-					variables.exception = newJava("java.lang.Exception").init(arguments.message);
+					variables.exception = createObject("java", "java.lang.Exception").init(arguments.message);
 				}
 			}
 			else {
-				variables.exception = newJava("java.lang.Exception").init();
+				variables.exception = createObject("java", "java.lang.Exception").init();
 			}
 
 			setType();

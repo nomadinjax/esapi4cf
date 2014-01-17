@@ -130,7 +130,7 @@
 
         	var toStore = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
         	var toLoad = createObject("component", "org.owasp.esapi.reference.DefaultEncryptedProperties").init(request.ESAPI);
-        	var baos = newJava("java.io.ByteArrayOutputStream").init();
+        	var baos = createObject("java", "java.io.ByteArrayOutputStream").init();
         	var bais = "";
         	var sawOne = false;
         	var sawTwo = false;
@@ -140,7 +140,7 @@
         	toStore.setProperty("two", "three");
         	toStore.store(baos, "testStore");
 
-        	bais = newJava("java.io.ByteArrayInputStream").init(baos.toByteArray());
+        	bais = createObject("java", "java.io.ByteArrayInputStream").init(baos.toByteArray());
         	toLoad.load(bais);
 
 			for(i=toLoad.keySet().iterator();i.hasNext();) {

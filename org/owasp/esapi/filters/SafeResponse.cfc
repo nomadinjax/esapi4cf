@@ -135,8 +135,8 @@
 
 			try {
 				// TODO: make stripping a global config
-				strippedName = newJava("org.owasp.esapi.StringUtilities").stripControls(arguments.name);
-				strippedValue = newJava("org.owasp.esapi.StringUtilities").stripControls(arguments.value);
+				strippedName = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.name);
+				strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.value);
 				safeName = variables.ESAPI.validator().getValidInput("addHeader", strippedName, "HTTPHeaderName", 20, false);
 				safeValue = variables.ESAPI.validator().getValidInput("addHeader", strippedValue, "HTTPHeaderValue", 500, false);
 				variables.httpResponse.setHeader(safeName, safeValue);
@@ -308,7 +308,7 @@
 		<cfscript>
 			if(!variables.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
 				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Bad redirect location: " & arguments.location);
-				throw(object=newJava("java.io.IOException").init("Redirect failed"));
+				throw(object=createObject("java", "java.io.IOException").init("Redirect failed"));
 			}
 			variables.httpResponse.sendRedirect(arguments.location);
 		</cfscript>
@@ -389,8 +389,8 @@
 			var safeValue = "";
 
 			try {
-				strippedName = newJava("org.owasp.esapi.StringUtilities").stripControls(arguments.name);
-				strippedValue = newJava("org.owasp.esapi.StringUtilities").stripControls(arguments.value);
+				strippedName = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.name);
+				strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.value);
 				safeName = variables.ESAPI.validator().getValidInput("setHeader", strippedName, "HTTPHeaderName", 20, false);
 				safeValue = variables.ESAPI.validator().getValidInput("setHeader", strippedValue, "HTTPHeaderValue", 500, false);
 				variables.httpResponse.setHeader(safeName, safeValue);

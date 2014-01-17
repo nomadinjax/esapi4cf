@@ -97,7 +97,7 @@
 
 			System.out.println("sign");
 			instance = request.ESAPI.encryptor();
-			plaintext = request.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			plaintext = request.ESAPI.randomizer().getRandomString(32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			signature = instance.sign(plaintext);
 			assertTrue(instance.verifySignature(signature, plaintext));
 			assertFalse(instance.verifySignature(signature, "ridiculous"));
@@ -117,7 +117,7 @@
 
 			System.out.println("verifySignature");
 			instance = request.ESAPI.encryptor();
-			plaintext = request.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			plaintext = request.ESAPI.randomizer().getRandomString(32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			signature = instance.sign(plaintext);
 			assertTrue(instance.verifySignature(signature, plaintext));
 		</cfscript>
@@ -135,8 +135,8 @@
 
 			System.out.println("seal");
 			instance = request.ESAPI.encryptor();
-			plaintext = request.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
-			seal = instance.seal(plaintext, newJava("java.lang.Long").init(instance.getTimeStamp() + 1000 * 60));
+			plaintext = request.ESAPI.randomizer().getRandomString(32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			seal = instance.seal(plaintext, createObject("java", "java.lang.Long").init(instance.getTimeStamp() + 1000 * 60));
 			instance.verifySeal(seal);
 		</cfscript>
 
@@ -153,13 +153,13 @@
 
 			System.out.println("verifySeal");
 			instance = request.ESAPI.encryptor();
-			plaintext = request.ESAPI.randomizer().getRandomString(32, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			plaintext = request.ESAPI.randomizer().getRandomString(32, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			seal = instance.seal(plaintext, instance.getRelativeTimeStamp(1000 * 60));
 			assertTrue(instance.verifySeal(seal));
 			assertFalse(instance.verifySeal("ridiculous"));
 			assertFalse(instance.verifySeal(instance.encryptString("ridiculous")));
 			assertFalse(instance.verifySeal(instance.encryptString(100 & ":" & "ridiculous")));
-			assertTrue(instance.verifySeal(instance.encryptString(newJava("java.lang.Long").MAX_VALUE & ":" & "ridiculous")));
+			assertTrue(instance.verifySeal(instance.encryptString(createObject("java", "java.lang.Long").MAX_VALUE & ":" & "ridiculous")));
 		</cfscript>
 
 	</cffunction>

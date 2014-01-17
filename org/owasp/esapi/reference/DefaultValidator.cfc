@@ -396,7 +396,7 @@
 				timesTwo = false;
 
 				for(i = digitsOnly.length() - 1; i >= 0; i--) {
-					digit = createObject("java", "java.lang.Integer").parseInt(digitsOnly.substring(i, i + 1));
+					digit = int(digitsOnly.substring(i, i + 1));
 					if(timesTwo) {
 						addend = digit * 2;
 						if(addend > 9) {

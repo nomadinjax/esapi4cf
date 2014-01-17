@@ -233,12 +233,13 @@
 		<cfargument required="true" type="String" name="oldPassword" hint="the password to be compared to the new password for similarity"/>
 
 		<cfscript>
+			var encoder = createObject("java", "org.owasp.esapi.reference.DefaultEncoder");
 			var r = variables.ESAPI.randomizer();
 			var letters = r.getRandomInteger(4, 6);// inclusive, exclusive
 			var digits = 7 - letters;
-			var passLetters = r.getRandomString(letters, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_LETTERS);
-			var passDigits = r.getRandomString(digits, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_DIGITS);
-			var passSpecial = r.getRandomString(1, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_PASSWORD_SPECIALS);
+			var passLetters = r.getRandomString(letters, encoder.CHAR_PASSWORD_LETTERS);
+			var passDigits = r.getRandomString(digits, encoder.CHAR_PASSWORD_DIGITS);
+			var passSpecial = r.getRandomString(1, encoder.CHAR_PASSWORD_SPECIALS);
 			var newPassword = passLetters & passSpecial & passDigits;
 			return newPassword;
 		</cfscript>
@@ -555,6 +556,7 @@
 			var password = "";
 			var roles = "";
 			var i = "";
+			var jDate = createObject("java", "java.util.Date");
 
 			var parts = arguments.line.split(" *\| *");
 			var accountIdString = parts[1];
@@ -587,10 +589,10 @@
 
 			setOldPasswordHashes(user, parts[7].split(" *, *"));
 			user.setLastHostAddress(iif("local" == parts[8], de(''), de(parts[8])));
-			user.setLastPasswordChangeTime(createObject("java", "java.util.Date").init(javaCast("long", parts[9])));
-			user.setLastLoginTime(createObject("java", "java.util.Date").init(javaCast("long", parts[10])));
-			user.setLastFailedLoginTime(createObject("java", "java.util.Date").init(javaCast("long", parts[11])));
-			user.setExpirationTime(createObject("java", "java.util.Date").init(javaCast("long", parts[12])));
+			user.setLastPasswordChangeTime(jDate.init(javaCast("long", parts[9])));
+			user.setLastLoginTime(jDate.init(javaCast("long", parts[10])));
+			user.setLastFailedLoginTime(jDate.init(javaCast("long", parts[11])));
+			user.setExpirationTime(jDate.init(javaCast("long", parts[12])));
 			user.setFailedLoginCount(int(parts[13]));
 			return user;
 		</cfscript>

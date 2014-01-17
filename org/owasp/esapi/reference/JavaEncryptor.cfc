@@ -61,14 +61,14 @@
 
 			try {
 				// Set up encryption and decryption
-				variables.parameterSpec = newJava("javax.crypto.spec.PBEParameterSpec").init(salt, 20);
-				kf = newJava("javax.crypto.SecretKeyFactory").getInstance(variables.encryptAlgorithm);
-				variables.secretKey = kf.generateSecret(newJava("javax.crypto.spec.PBEKeySpec").init(pass));
+				variables.parameterSpec = createObject("java", "javax.crypto.spec.PBEParameterSpec").init(salt, 20);
+				kf = createObject("java", "javax.crypto.SecretKeyFactory").getInstance(variables.encryptAlgorithm);
+				variables.secretKey = kf.generateSecret(createObject("java", "javax.crypto.spec.PBEKeySpec").init(pass));
 				variables.encoding = variables.ESAPI.securityConfiguration().getCharacterEncoding();
 
 				// Set up signing keypair using the master password and salt
-				keyGen = newJava("java.security.KeyPairGenerator").getInstance("DSA");
-				random = newJava("java.security.SecureRandom").getInstance(variables.randomAlgorithm);
+				keyGen = createObject("java", "java.security.KeyPairGenerator").getInstance("DSA");
+				random = createObject("java", "java.security.SecureRandom").getInstance(variables.randomAlgorithm);
 				seed = hashString(toString(pass), toString(salt)).getBytes();
 				random.setSeed(seed);
 				keyGen.initialize(1024, random);
@@ -99,11 +99,11 @@
 
 			var bytes = "";
 			try {
-				digest = newJava("java.security.MessageDigest").getInstance(variables.hashAlgorithm);
+				digest = createObject("java", "java.security.MessageDigest").getInstance(variables.hashAlgorithm);
 				digest.reset();
 				digest.update(variables.ESAPI.securityConfiguration().getMasterSalt());
-				digest.update(newJava("java.lang.String").init(arguments.salt).getBytes());
-				digest.update(newJava("java.lang.String").init(arguments.plaintext).getBytes());
+				digest.update(createObject("java", "java.lang.String").init(arguments.salt).getBytes());
+				digest.update(createObject("java", "java.lang.String").init(arguments.plaintext).getBytes());
 
 				// rehash a number of times to help strengthen weak passwords
 				bytes = digest.digest();
@@ -132,8 +132,8 @@
 
 			// Note - Cipher is not threadsafe so we create one locally
 			try {
-				encrypter = newJava("javax.crypto.Cipher").getInstance(variables.encryptAlgorithm);
-				encrypter.init(newJava("javax.crypto.Cipher").ENCRYPT_MODE, variables.secretKey, variables.parameterSpec);
+				encrypter = createObject("java", "javax.crypto.Cipher").getInstance(variables.encryptAlgorithm);
+				encrypter.init(createObject("java", "javax.crypto.Cipher").ENCRYPT_MODE, variables.secretKey, variables.parameterSpec);
 				output = arguments.plaintext.getBytes(variables.encoding);
 				enc = encrypter.doFinal(output);
 				return variables.ESAPI.encoder().encodeForBase64(enc, false);
@@ -156,11 +156,11 @@
 
 			// Note - Cipher is not threadsafe so we create one locally
 			try {
-				decrypter = newJava("javax.crypto.Cipher").getInstance(variables.encryptAlgorithm);
-				decrypter.init(newJava("javax.crypto.Cipher").DECRYPT_MODE, variables.secretKey, variables.parameterSpec);
+				decrypter = createObject("java", "javax.crypto.Cipher").getInstance(variables.encryptAlgorithm);
+				decrypter.init(createObject("java", "javax.crypto.Cipher").DECRYPT_MODE, variables.secretKey, variables.parameterSpec);
 				dec = variables.ESAPI.encoder().decodeFromBase64(arguments.ciphertext);
 				output = decrypter.doFinal(dec);
-				return newJava("java.lang.String").init(output, variables.encoding);
+				return createObject("java", "java.lang.String").init(output, variables.encoding);
 			}
 			catch(java.lang.Exception e) {
 				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Decryption failed", "Decryption problem: " & e.getMessage(), e));
@@ -178,9 +178,9 @@
 			var bytes = "";
 
 			try {
-				signer = newJava("java.security.Signature").getInstance(variables.signatureAlgorithm);
+				signer = createObject("java", "java.security.Signature").getInstance(variables.signatureAlgorithm);
 				signer.initSign(variables.privateKey);
-				signer.update(newJava("java.lang.String").init(arguments.data).getBytes());
+				signer.update(createObject("java", "java.lang.String").init(arguments.data).getBytes());
 				bytes = signer.sign();
 				return variables.ESAPI.encoder().encodeForBase64(bytes, true);
 			}
@@ -202,9 +202,9 @@
 
 			try {
 				bytes = variables.ESAPI.encoder().decodeFromBase64(arguments.signature);
-				signer = newJava("java.security.Signature").getInstance(variables.signatureAlgorithm);
+				signer = createObject("java", "java.security.Signature").getInstance(variables.signatureAlgorithm);
 				signer.initVerify(variables.publicKey);
-				signer.update(newJava("java.lang.String").init(arguments.data).getBytes());
+				signer.update(createObject("java", "java.lang.String").init(arguments.data).getBytes());
 				return signer.verify(bytes);
 			}
 			catch(java.lang.Exception e) {
@@ -225,7 +225,7 @@
 
 			try {
 				// mix in some random data so even identical data and timestamp produces different seals
-				random = variables.ESAPI.randomizer().getRandomString(10, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+				random = variables.ESAPI.randomizer().getRandomString(10, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 				return this.encryptString(arguments.timestamp & ":" & random & ":" & arguments.data);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
@@ -260,8 +260,8 @@
 			}
 
 			timestring = plaintext.substring(0, index);
-			timestamp = newJava("java.util.Date").init().getTime();
-			expiration = newJava("java.lang.Long").init(timestring);
+			timestamp = now().getTime();
+			expiration = createObject("java", "java.lang.Long").init(timestring);
 			if(timestamp > expiration) {
 				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Invalid seal", "Seal expiration date has expired"));
 			}
@@ -291,7 +291,7 @@
 	<cffunction access="public" returntype="numeric" name="getTimeStamp" output="false">
 
 		<cfscript>
-			return javaCast("long", newJava("java.util.Date").init().getTime());
+			return javaCast("long", now().getTime());
 		</cfscript>
 
 	</cffunction>
@@ -300,7 +300,7 @@
 		<cfargument required="true" type="numeric" name="offset"/>
 
 		<cfscript>
-			return javaCast("long", newJava("java.util.Date").init().getTime() + arguments.offset);
+			return javaCast("long", now().getTime() + arguments.offset);
 		</cfscript>
 
 	</cffunction>

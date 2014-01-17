@@ -21,7 +21,7 @@
 		System = createObject("java", "java.lang.System");
 
 		/** The properties. */
-		variables.properties = newJava("java.util.Properties").init();
+		variables.properties = createObject("java", "java.util.Properties").init();
 
 		/** The name of the ESAPI property file */
 		this.RESOURCE_FILE = "ESAPI.properties";
@@ -112,7 +112,7 @@
 	<cffunction access="public" name="getKeystore" output="false">
 
 		<cfscript>
-			return newJava("java.io.File").init(getResourceDirectory(), "keystore");
+			return createObject("java", "java.io.File").init(getResourceDirectory(), "keystore");
 		</cfscript>
 
 	</cffunction>
@@ -120,7 +120,7 @@
 	<cffunction access="public" returntype="String" name="getResourceDirectory" output="false">
 
 		<cfscript>
-			var jFile = newJava("java.io.File");
+			var jFile = createObject("java", "java.io.File");
 			if(len(trim(variables.resourceDirectory)) && !variables.resourceDirectory.endsWith(jFile.separator)) {
 				variables.resourceDirectory &= jFile.separator;
 			}
@@ -207,7 +207,7 @@
 
 			var result = "";
 			var ins = "";
-			var loaders = [newJava("java.lang.Thread").currentThread().getContextClassLoader(), newJava("java.lang.ClassLoader").getSystemClassLoader()];
+			var loaders = [createObject("java", "java.lang.Thread").currentThread().getContextClassLoader(), createObject("java", "java.lang.ClassLoader").getSystemClassLoader()];
 
 			var currentLoader = "";
 			for(i = 1; i <= arrayLen(loaders); i++) {
@@ -229,7 +229,7 @@
 
 						// now load the properties
 						if(isDefined("ins") && !isNull(ins)) {
-							result = newJava("java.util.Properties").init();
+							result = createObject("java", "java.util.Properties").init();
 							result.load(ins);// Can throw IOException
 							logSpecial("Successfully loaded " & arguments.fileName & " via the classpath! BOO-YA!");
 						}
@@ -248,7 +248,7 @@
 			}
 
 			if(!isObject(result)) {
-				throw(object=newJava("java.lang.IllegalArgumentException").init("[" & this.ESAPINAME & "] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
+				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("[" & this.ESAPINAME & "] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
 			}
 
 			return result;
@@ -327,7 +327,7 @@
 
 		<cfscript>
 			var attempts = variables.properties.getProperty(variables.ALLOWED_LOGIN_ATTEMPTS, "5");
-			return newJava("java.lang.Integer").parseInt(attempts);
+			return int(attempts);
 		</cfscript>
 
 	</cffunction>
@@ -336,7 +336,7 @@
 
 		<cfscript>
 			var max = variables.properties.getProperty(variables.MAX_OLD_PASSWORD_HASHES, "12");
-			return newJava("java.lang.Integer").parseInt(max);
+			return int(max);
 		</cfscript>
 
 	</cffunction>
@@ -369,23 +369,23 @@
 			count = 0;
 			countString = variables.properties.getProperty(arguments.eventName & ".count");
 			if(isDefined("countString") && !isNull(countString)) {
-				count = newJava("java.lang.Integer").parseInt(countString);
+				count = int(countString);
 			}
 
 			interval = 0;
 			intervalString = variables.properties.getProperty(arguments.eventName & ".interval");
 			if(isDefined("intervalString") && !isNull(intervalString)) {
-				interval = newJava("java.lang.Integer").parseInt(intervalString);
+				interval = int(intervalString);
 			}
 
 			actions = [];
 			actionString = variables.properties.getProperty(arguments.eventName & ".actions");
 			if(isDefined("actionString") && !isNull(actionString)) {
 				actionList = actionString.split(",");
-				actions = newJava("java.util.Arrays").asList(actionList);
+				actions = createObject("java", "java.util.Arrays").asList(actionList);
 			}
 
-			q = newJava("org.owasp.esapi.SecurityConfiguration$Threshold").init(javaCast("string", arguments.eventName), javaCast("int", count), javaCast("long", interval), actions);
+			q = createObject("java", "org.owasp.esapi.SecurityConfiguration$Threshold").init(javaCast("string", arguments.eventName), javaCast("int", count), javaCast("long", interval), actions);
 			return q;
 		</cfscript>
 
@@ -395,31 +395,32 @@
 
 		<cfscript>
 			var level = variables.properties.getProperty(variables.LOG_LEVEL);
+			var Logger = createObject("java", "org.owasp.esapi.Logger");
 			if(!(isDefined("level") && !isNull(level))) {
 				// This error is NOT logged the normal way because the logger constructor calls getLogLevel() and if this error occurred it would cause an infinite loop.
 				logSpecial("The LOG-LEVEL property in the ESAPI properties file is not defined.", "");
-				return newJava("org.owasp.esapi.Logger").WARNING;
+				return Logger.WARNING;
 			}
 			if(level.equalsIgnoreCase("OFF"))
-				return newJava("org.owasp.esapi.Logger").OFF;
+				return Logger.OFF;
 			if(level.equalsIgnoreCase("FATAL"))
-				return newJava("org.owasp.esapi.Logger").FATAL;
+				return Logger.FATAL;
 			if(level.equalsIgnoreCase("ERROR"))
-				return newJava("org.owasp.esapi.Logger").ERROR;
+				return Logger.ERROR;
 			if(level.equalsIgnoreCase("WARNING"))
-				return newJava("org.owasp.esapi.Logger").WARNING;
+				return Logger.WARNING;
 			if(level.equalsIgnoreCase("INFO"))
-				return newJava("org.owasp.esapi.Logger").INFO;
+				return Logger.INFO;
 			if(level.equalsIgnoreCase("DEBUG"))
-				return newJava("org.owasp.esapi.Logger").DEBUG;
+				return Logger.DEBUG;
 			if(level.equalsIgnoreCase("TRACE"))
-				return newJava("org.owasp.esapi.Logger").TRACE;
+				return Logger.TRACE;
 			if(level.equalsIgnoreCase("ALL"))
-				return newJava("org.owasp.esapi.Logger").ALL;
+				return Logger.ALL;
 
 			// This error is NOT logged the normal way because the logger constructor calls getLogLevel() and if this error occurred it would cause an infinite loop.
 			logSpecial("The LOG-LEVEL property in the ESAPI properties file has the unrecognized value: " & level, "");
-			return newJava("org.owasp.esapi.Logger").WARNING;// Note: The default logging level is WARNING.
+			return Logger.WARNING;// Note: The default logging level is WARNING.
 		</cfscript>
 
 	</cffunction>
@@ -495,7 +496,7 @@
 
 		<cfscript>
 			var value = variables.properties.getProperty(variables.REMEMBER_TOKEN_DURATION, "14");
-			var days = newJava("java.lang.Long").parseLong(value);
+			var days = createObject("java", "java.lang.Long").parseLong(value);
 			var duration = 1000 * 60 * 60 * 24 * days;
 			return duration;
 		</cfscript>
@@ -506,7 +507,7 @@
 
 		<cfscript>
 			var value = variables.properties.getProperty(variables.IDLE_TIMEOUT_DURATION, "20");
-			var minutes = newJava("java.lang.Integer").parseInt(value);
+			var minutes = int(value);
 			var duration = 1000 * 60 * minutes;
 			return duration;
 		</cfscript>
@@ -517,7 +518,7 @@
 
 		<cfscript>
 			var value = variables.properties.getProperty(variables.ABSOLUTE_TIMEOUT_DURATION, "120");
-			var minutes = newJava("java.lang.Integer").parseInt(value);
+			var minutes = int(value);
 			var duration = 1000 * 60 * minutes;
 			return duration;
 		</cfscript>
@@ -553,7 +554,7 @@
 			var value = variables.properties.getProperty("Validator." & arguments.key);
 			if(!(isDefined("value") && !isNull(value)) || value == "")
 				return "";
-			pattern = newJava("java.util.regex.Pattern").compile(value);
+			pattern = createObject("java", "java.util.regex.Pattern").compile(value);
 			return pattern;
 		</cfscript>
 
@@ -564,7 +565,7 @@
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
-			var config = newJava("java.util.Properties").init();
+			var config = createObject("java", "java.util.Properties").init();
 			try {
 				config.load(arguments.is);
 				logSpecial("successfully loaded '" & arguments.name & "' via an inputStream.");
@@ -594,12 +595,12 @@
 			try {
 				f = getResourceFile(arguments.filename);
 				if(isObject(f) && f.exists()) {
-					return newJava("java.io.FileInputStream").init(f);
+					return createObject("java", "java.io.FileInputStream").init(f);
 				}
 			}
 			catch(java.lang.Exception e) {
 			}
-			throw(object=newJava("java.io.FileNotFoundException").init());
+			throw(object=createObject("java", "java.io.FileNotFoundException").init());
 		</cfscript>
 
 	</cffunction>
@@ -611,7 +612,7 @@
 			// CF8 requires 'var' at the top
 			var fileLocation = "";
 
-			var fileSeparator = newJava("java.io.File").separator;
+			var fileSeparator = createObject("java", "java.io.File").separator;
 			var f = "";
 
 			logSpecial("Attempting to load " & arguments.filename & " via file io.");
@@ -626,7 +627,7 @@
 			if(len(trim(variables.resourceDirectory))) {
 				fileLocation = expandPath(variables.resourceDirectory & fileSeparator & arguments.filename);
 				if(fileExists(fileLocation)) {
-					f = newJava("java.io.File").init(fileLocation);
+					f = createObject("java", "java.io.File").init(fileLocation);
 					if(f.exists()) {
 						logSpecial("Found in SystemResource Directory/resourceDirectory: " & f.getAbsolutePath());
 						return f;
@@ -644,7 +645,7 @@
 			// NEVER allow this to occur in an actual application
 			fileLocation = expandPath(fileSeparator & "test" & fileSeparator & "resources" & fileSeparator & arguments.filename);
 			if(fileExists(fileLocation)) {
-				f = newJava("java.io.File").init(fileLocation);
+				f = createObject("java", "java.io.File").init(fileLocation);
 				if(f.exists()) {
 					logSpecial("Found in Default Directory/resourceDirectory: " & f.getAbsolutePath());
 					variables.resourceDirectory = fileSeparator & "test" & fileSeparator & "resources";

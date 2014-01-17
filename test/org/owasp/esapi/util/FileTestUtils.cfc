@@ -42,8 +42,8 @@
 		    entropy is collected (this is why moving the mouse speeds
 		    up unit tests).
 		*/
-		variables.secRand = newJava("java.security.SecureRandom").init();
-		variables.rand = newJava("java.util.Random").init(variables.secRand.nextLong());
+		variables.secRand = createObject("java", "java.security.SecureRandom").init();
+		variables.rand = createObject("java", "java.util.Random").init(variables.secRand.nextLong());
 	</cfscript>
 
 	<cffunction access="public" returntype="String" name="toHexString" output="false"
@@ -55,10 +55,10 @@
 			var initial = "";
 			var sb = "";
 
-			initial = newJava("java.lang.Long").toHexString(arguments.l);
+			initial = createObject("java", "java.lang.Long").toHexString(arguments.l);
 			if(initial.length() == 16)
 				return initial;
-			sb = newJava("java.lang.StringBuffer").init(16);
+			sb = createObject("java", "java.lang.StringBuffer").init(16);
 			sb.append(initial);
 			while(sb.length() < 16)
 				sb.insert(0, '0');
@@ -86,11 +86,11 @@
 			else if(!arguments.suffix.startsWith("."))
 				arguments.suffix = "." & arguments.suffix;
 			if(!structKeyExists(arguments, "parent") || isNull(arguments.parent))
-				arguments.parent = newJava("java.io.File").init(System.getProperty("java.io.tmpdir"));
+				arguments.parent = createObject("java", "java.io.File").init(System.getProperty("java.io.tmpdir"));
 			name = arguments.prefix & toHexString(variables.rand.nextLong()) & arguments.suffix;
-			dir = newJava("java.io.File").init(arguments.parent, name);
+			dir = createObject("java", "java.io.File").init(arguments.parent, name);
 			if(!dir.mkdir())
-				throw(object=newJava("java.io.IOException").init("Unable to create temporary directory " & dir));
+				throw(object=createObject("java", "java.io.IOException").init("Unable to create temporary directory " & dir));
 			return dir.getCanonicalFile();
 		</cfscript>
 
@@ -106,11 +106,11 @@
 			var childsParent = "";
 
 			if(!isObject(arguments.child))
-				throw(object=newJava("java.lang.NullPointerException").init("child argument is null"));
+				throw(object=createObject("java", "java.lang.NullPointerException").init("child argument is null"));
 			if(!arguments.child.isDirectory())
 				return false;
 			if(!isObject(arguments.parent))
-				throw(object=newJava("java.lang.NullPointerException").init("parent argument is null"));
+				throw(object=createObject("java", "java.lang.NullPointerException").init("parent argument is null"));
 			arguments.parent = arguments.parent.getCanonicalFile();
 			arguments.child = arguments.child.getCanonicalFile();
 			childsParent = arguments.child.getParentFile();
@@ -132,7 +132,7 @@
 			if(!isObject(arguments.file) || !arguments.file.exists())
 				return;
 			if(!arguments.file.delete())
-				throw(object=newJava("java.io.IOException").init("Unable to delete file " & arguments.file.getAbsolutePath()));
+				throw(object=createObject("java", "java.io.IOException").init("Unable to delete file " & arguments.file.getAbsolutePath()));
 		</cfscript>
 
 	</cffunction>

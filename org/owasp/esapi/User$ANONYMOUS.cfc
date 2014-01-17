@@ -39,7 +39,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -48,7 +48,7 @@
 		<cfargument required="true" type="Array" name="newRoles"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -59,7 +59,7 @@
 		<cfargument required="true" type="String" name="newPassword2"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -67,7 +67,7 @@
 	<cffunction access="public" returntype="void" name="disable" output="false">
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -75,7 +75,7 @@
 	<cffunction access="public" returntype="void" name="enable" output="false">
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -204,7 +204,7 @@
 	<cffunction access="public" returntype="void" name="incrementFailedLoginCount" output="false">
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -277,7 +277,7 @@
 	<cffunction access="public" returntype="void" name="lock" output="false">
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -286,7 +286,7 @@
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -294,7 +294,7 @@
 	<cffunction access="public" returntype="void" name="logout" output="false">
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -303,7 +303,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -311,7 +311,7 @@
 	<cffunction access="public" returntype="String" name="resetCSRFToken" output="false">
 
 		<cfscript>
-			variables.csrfToken = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
+			variables.csrfToken = variables.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.Encoder").CHAR_ALPHANUMERICS);
 			return variables.csrfToken;
 		</cfscript>
 
@@ -321,7 +321,7 @@
 		<cfargument required="true" type="String" name="accountName"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -330,7 +330,7 @@
 		<cfargument required="true" type="Date" name="expirationTime"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -339,7 +339,7 @@
 		<cfargument required="true" type="Array" name="roles"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -348,7 +348,7 @@
 		<cfargument required="true" type="String" name="screenName"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -356,7 +356,7 @@
 	<cffunction access="public" returntype="void" name="unlock" output="false">
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -365,7 +365,7 @@
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -374,7 +374,7 @@
 		<cfargument required="true" type="Date" name="lastFailedLoginTime"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -383,7 +383,7 @@
 		<cfargument required="true" type="Date" name="lastLoginTime"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -392,7 +392,7 @@
 		<cfargument required="true" type="String" name="remoteHost"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>
@@ -401,7 +401,7 @@
 		<cfargument required="true" type="Date" name="lastPasswordChangeTime"/>
 
 		<cfscript>
-			throw(object=newJava("java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 		</cfscript>
 
 	</cffunction>

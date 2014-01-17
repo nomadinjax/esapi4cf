@@ -18,7 +18,7 @@
 <cfcomponent extends="esapi4cf.test.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		variables.locale = newJava("java.util.Locale");
+		variables.locale = createObject("java", "java.util.Locale");
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="setUp" output="false">

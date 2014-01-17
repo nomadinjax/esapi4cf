@@ -51,7 +51,7 @@
 	<cffunction access="public" name="iterator" output="false">
 
 		<cfscript>
-			var sorted = newJava("java.util.TreeSet").init(variables.dtoi.keySet());
+			var sorted = createObject("java", "java.util.TreeSet").init(variables.dtoi.keySet());
 			return sorted.iterator();
 		</cfscript>
 
@@ -81,7 +81,7 @@
 		<cfscript>
 			var candidate = "";
 			do {
-				candidate = variables.random.getRandomString(6, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+				candidate = variables.random.getRandomString(6, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			}while(structKeyExists(variables.itod, candidate));
 			return candidate;
 		</cfscript>

@@ -79,7 +79,7 @@
 
 				arrayPrepend(arguments.params, arguments.executable.getCanonicalPath());
 				command = arguments.params;
-				process = newJava("java.lang.Runtime").getRuntime().exec(javaCast("string[]", command), javaCast("string[]", arrayNew(1)), arguments.workdir);
+				process = createObject("java", "java.lang.Runtime").getRuntime().exec(javaCast("string[]", command), javaCast("string[]", arrayNew(1)), arguments.workdir);
 				// Future - this is how to implement this in Java 1.5+
 				// ProcessBuilder pb = new ProcessBuilder(arguments.params);
 				// Map env = pb.environment();
@@ -108,13 +108,13 @@
 		<cfargument required="true" name="is" hint="input stream to read from"/>
 
 		<cfscript>
-			var isr = newJava("java.io.InputStreamReader").init(arguments.is);
-			var br = newJava("java.io.BufferedReader").init(isr);
-			var sb = newJava("java.lang.StringBuffer").init();
+			var isr = createObject("java", "java.io.InputStreamReader").init(arguments.is);
+			var br = createObject("java", "java.io.BufferedReader").init(isr);
+			var sb = createObject("java", "java.lang.StringBuffer").init();
 			var line = "";
 			// prevent lockups by checking ready state
 			if (!br.ready()) {
-				throw(object=newJava("java.lang.RuntimeException").init("BufferedReader not ready to be read."));
+				throw(object=createObject("java", "java.lang.RuntimeException").init("BufferedReader not ready to be read."));
 			}
 			line = br.readLine();
 			while(isDefined("line") && !isNull(line)) {

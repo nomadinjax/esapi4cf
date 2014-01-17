@@ -39,7 +39,7 @@
 		
 			algorithm = variables.ESAPI.securityConfiguration().getRandomAlgorithm();
 			try {
-				variables.secureRandom = newJava("java.security.SecureRandom").getInstance(algorithm);
+				variables.secureRandom = createObject("java", "java.security.SecureRandom").getInstance(algorithm);
 			}
 			catch(java.security.NoSuchAlgorithmException e) {
 				// Can't throw an exception from the constructor, but this will get
@@ -63,7 +63,7 @@
 			var index = "";
 			var nonce = "";
 		
-			sb = newJava("java.lang.StringBuffer").init();
+			sb = createObject("java", "java.lang.StringBuffer").init();
 			for(loop = 1; loop <= arguments.length; loop++) {
 				index = variables.secureRandom.nextInt(arrayLen(arguments.characterSet) - 1) + 1;
 				sb.append(arguments.characterSet[index]);
@@ -115,7 +115,7 @@
 		<cfargument required="true" type="String" name="extension"/>
 	
 		<cfscript>
-			return this.getRandomString(12, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & "." & arguments.extension;
+			return this.getRandomString(12, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & "." & arguments.extension;
 		</cfscript>
 		
 	</cffunction>

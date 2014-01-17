@@ -29,7 +29,7 @@
 
 		<cfscript>
 			if(structCount(getError(arguments.context))) {
-				throw(object=newJava("java.lang.RuntimeException").init("Context (" & context & ") already exists, programmer error"));
+				throw(object=createObject("java", "java.lang.RuntimeException").init("Context (" & arguments.context & ") already exists, programmer error"));
 			}
 
 			if(!isNull(arguments.context) && structCount(arguments.ve)) {

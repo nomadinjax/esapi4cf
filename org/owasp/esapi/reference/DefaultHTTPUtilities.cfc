@@ -136,11 +136,11 @@
 			user = variables.ESAPI.authenticator().getCurrentUser();
 			try {
 				killCookie(arguments.httpRequest, arguments.httpResponse, this.REMEMBER_TOKEN_COOKIE_NAME);
-				random = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+				random = variables.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 				clearToken = random & ":" & user.getAccountName() & ":" & arguments.password;
 				expiry = variables.ESAPI.encryptor().getRelativeTimeStamp(arguments.maxAge * 1000);
 				cryptToken = variables.ESAPI.encryptor().seal(clearToken, expiry);
-				httpCookie = newJava("javax.servlet.http.Cookie").init(this.REMEMBER_TOKEN_COOKIE_NAME, cryptToken);
+				httpCookie = createObject("java", "javax.servlet.http.Cookie").init(this.REMEMBER_TOKEN_COOKIE_NAME, cryptToken);
 				httpCookie.setMaxAge(arguments.maxAge);
 				httpCookie.setDomain(arguments.domain);
 				httpCookie.setPath(arguments.path);
@@ -319,7 +319,7 @@
 			var encrypted = "";
 			var httpCookie = "";
 
-			sb = newJava("java.lang.StringBuffer").init();
+			sb = createObject("java", "java.lang.StringBuffer").init();
 			i = arguments.cleartext.entrySet().iterator();
 			while(i.hasNext()) {
 				try {
@@ -335,7 +335,7 @@
 				}
 			}
 			encrypted = variables.ESAPI.encryptor().encryptString(sb.toString());
-			httpCookie = newJava("javax.servlet.http.Cookie").init("state", encrypted);
+			httpCookie = createObject("java", "javax.servlet.http.Cookie").init("state", encrypted);
 			arguments.httpResponse.addCookie(httpCookie);
 		</cfscript>
 
@@ -374,13 +374,13 @@
 			newFiles = [];
 			try {
 				httpSession = arguments.httpRequest.getSession(false);
-				if(!newJava("org.apache.commons.fileupload.servlet.ServletFileUpload").isMultipartContent(arguments.httpRequest)) {
+				if(!createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload").isMultipartContent(arguments.httpRequest)) {
 					throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, "Upload failed", "Not a multipart request"));
 				}
 
 				// this factory will store ALL files in the temp directory, regardless of size
-				factory = newJava("org.apache.commons.fileupload.disk.DiskFileItemFactory").init(0, arguments.tempDir);
-				upload = newJava("org.apache.commons.fileupload.servlet.ServletFileUpload").init(factory);
+				factory = createObject("java", "org.apache.commons.fileupload.disk.DiskFileItemFactory").init(0, arguments.tempDir);
+				upload = createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload").init(factory);
 				upload.setSizeMax(variables.maxBytes);
 
 				/* TODO: no idea how to make this work in CF
@@ -418,7 +418,7 @@
 						}
 
 						variables.logger.info(Logger.SECURITY, true, "File upload requested: " & filename);
-						f = newJava("java.io.File").init(arguments.finalDir, filename);
+						f = createObject("java", "java.io.File").init(arguments.finalDir, filename);
 						if(f.exists()) {
 							parts = filename.split("\\/.");
 							extension = "";
@@ -426,7 +426,7 @@
 								extension = parts[parts.length - 1];
 							}
 							filenm = filename.substring(0, filename.length() - extension.length());
-							f = newJava("java.io.File").createTempFile(filenm, "." & extension, arguments.finalDir);
+							f = createObject("java", "java.io.File").createTempFile(filenm, "." & extension, arguments.finalDir);
 						}
 						item.write(f);
 						newFiles.add(f);
@@ -502,7 +502,7 @@
 				path = httpCookie.getPath();
 				domain = httpCookie.getDomain();
 			}
-			deleter = newJava("javax.servlet.http.Cookie").init(arguments.name, "deleted");
+			deleter = createObject("java", "javax.servlet.http.Cookie").init(arguments.name, "deleted");
 			deleter.setMaxAge(0);
 			if(isDefined("domain") && !isNull(domain))
 				deleter.setDomain(domain);
@@ -591,7 +591,7 @@
 		<cfscript>
 			var httpRequest = variables.currentRequest.getRequest();
 			if(!isObject(httpRequest))
-				throw(object=newJava("java.lang.NullPointerException").init("Cannot use current request until it is set with HTTPUtilities.setCurrentHTTP()"));
+				throw(object=createObject("java", "java.lang.NullPointerException").init("Cannot use current request until it is set with HTTPUtilities.setCurrentHTTP()"));
 			return httpRequest;
 		</cfscript>
 
@@ -602,7 +602,7 @@
 		<cfscript>
 			var httpResponse = variables.currentResponse.getResponse();
 			if(!isObject(httpResponse))
-				throw(object=newJava("java.lang.NullPointerException").init("Cannot use current response until it is set with HTTPUtilities.setCurrentHTTP()"));
+				throw(object=createObject("java", "java.lang.NullPointerException").init("Cannot use current response until it is set with HTTPUtilities.setCurrentHTTP()"));
 			return httpResponse;
 		</cfscript>
 
@@ -659,7 +659,7 @@
 			var c = "";
 			var msg = "";
 
-			params = newJava("java.lang.StringBuffer").init();
+			params = createObject("java", "java.lang.StringBuffer").init();
 			i = arguments.httpRequest.getParameterMap().keySet().iterator();
 			while(i.hasNext()) {
 				key = i.next();

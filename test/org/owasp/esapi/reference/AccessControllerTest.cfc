@@ -67,9 +67,9 @@
 
 		<cfscript>
 			if(!directoryExists(arguments.dir))
-				throw(object=newJava("java.lang.IllegalStateException").init(arguments.prefix & " does not exist (was " & arguments.dir & ')'));
+				throw(object=createObject("java", "java.lang.IllegalStateException").init(arguments.prefix & " does not exist (was " & arguments.dir & ')'));
 			//if(!arguments.dir.isDirectory())
-			//    throw(object=newJava("java.lang.IllegalStateException" ).init( arguments.prefix & " is not a directory (was " & arguments.dir.getPath() & ')' ) );
+			//    throw(object=createObject("java", "java.lang.IllegalStateException" ).init( arguments.prefix & " is not a directory (was " & arguments.dir.getPath() & ')' ) );
 		</cfscript>
 
 	</cffunction>
@@ -94,7 +94,7 @@
 			resDir = "";
 
 			//if(isNull(basedir))
-			//	throw(object=newJava("java.lang.IllegalStateException").init("The basedir system property used to find the resource directory is not set"));
+			//	throw(object=createObject("java", "java.lang.IllegalStateException").init("The basedir system property used to find the resource directory is not set"));
 			checkDir((basedirFile), "The basedir system property defines a base directory that");
 			srcDir = expandPath("/org");
 			checkDir((srcDir), "The src directory");
@@ -256,14 +256,14 @@
 			auth = request.ESAPI.authenticator();
 
 			try {
-				adminR = newJava("java.util.ArrayList");
-				adminRW = newJava("java.lang.Math");
-				userW = newJava("java.util.Date");
-				userRW = newJava("java.lang.String");
-				anyR = newJava("java.io.BufferedReader");
-				userAdminR = newJava("java.util.Random");
-				userAdminRW = newJava("java.awt.event.MouseWheelEvent");
-				undefined = newJava("java.io.FileWriter");
+				adminR = createObject("java", "java.util.ArrayList");
+				adminRW = createObject("java", "java.lang.Math");
+				userW = createObject("java", "java.util.Date");
+				userRW = createObject("java", "java.lang.String");
+				anyR = createObject("java", "java.io.BufferedReader");
+				userAdminR = createObject("java", "java.util.Random");
+				userAdminRW = createObject("java", "java.awt.event.MouseWheelEvent");
+				undefined = createObject("java", "java.io.FileWriter");
 			}
 			catch(java.lang.ClassNotFoundException cnf) {
 				System.out.println("CLASS NOT FOUND.");

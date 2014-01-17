@@ -28,14 +28,14 @@
 
 			System.out.println("canonicalize");
 
-			list = newJava("java.util.ArrayList").init();
+			list = createObject("java", "java.util.ArrayList").init();
 			if (this.ESAPI4JVERSION == 2) {
 				list.add("org.owasp.esapi.codecs.HTMLEntityCodec");
 				list.add("org.owasp.esapi.codecs.PercentCodec");
 			}
 			else {
-				list.add(newJava("org.owasp.esapi.codecs.HTMLEntityCodec").init());
-				list.add(newJava("org.owasp.esapi.codecs.PercentCodec").init());
+				list.add(createObject("java", "org.owasp.esapi.codecs.HTMLEntityCodec").init());
+				list.add(createObject("java", "org.owasp.esapi.codecs.PercentCodec").init());
 			}
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(request.ESAPI, list);
 
@@ -154,12 +154,12 @@
 			assertEquals('<script>alert("hello");</script>', instance.canonicalize("%3Cscript&##x3E;alert%28%22hello&##34%29%3B%3C%2Fscript%3E", false));
 
 			// javascript escape syntax
-			js = newJava("java.util.ArrayList").init();
+			js = createObject("java", "java.util.ArrayList").init();
 			if (this.ESAPI4JVERSION == 2) {
 				js.add("org.owasp.esapi.codecs.JavaScriptCodec");
 			}
 			else {
-				js.add(newJava("org.owasp.esapi.codecs.JavaScriptCodec").init());
+				js.add(createObject("java", "org.owasp.esapi.codecs.JavaScriptCodec").init());
 			}
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(request.ESAPI, js);
 			System.out.println("JavaScript Decoding");
@@ -187,12 +187,12 @@
 
 			// css escape syntax
 			// be careful because some codecs see \0 as null byte
-			css = newJava("java.util.ArrayList").init();
+			css = createObject("java", "java.util.ArrayList").init();
 			if (this.ESAPI4JVERSION == 2) {
 				css.add("org.owasp.esapi.codecs.CSSCodec");
 			}
 			else {
-				css.add(newJava("org.owasp.esapi.codecs.CSSCodec").init());
+				css.add(createObject("java", "org.owasp.esapi.codecs.CSSCodec").init());
 			}
 			instance = createObject("component", "org.owasp.esapi.reference.DefaultEncoder").init(request.ESAPI, css);
 			System.out.println("CSS Decoding");
@@ -382,7 +382,7 @@
 			var oracle = "";
 
 			var instance = request.ESAPI.encoder();
-			var MySQLCodec = newJava("org.owasp.esapi.codecs.MySQLCodec");
+			var MySQLCodec = createObject("java", "org.owasp.esapi.codecs.MySQLCodec");
 
 			mySQL1 = MySQLCodec.init(MySQLCodec.ANSI_MODE);
 			assertEquals("Jeff'' or ''1''=''1", instance.encodeForSQL(mySQL1, "Jeff' or '1'='1"), "ANSI_MODE");
@@ -390,7 +390,7 @@
 			mySQL2 = MySQLCodec.init(MySQLCodec.MYSQL_MODE);
 			assertEquals("Jeff\' or \'1\'\=\'1", instance.encodeForSQL(mySQL2, "Jeff' or '1'='1"), "MYSQL_MODE");
 
-			oracle = newJava("org.owasp.esapi.codecs.OracleCodec").init();
+			oracle = createObject("java", "org.owasp.esapi.codecs.OracleCodec").init();
 			assertEquals("Jeff'' or ''1''=''1", instance.encodeForSQL(oracle, "Jeff' or '1'='1"), "Oracle");
 		</cfscript>
 
@@ -579,7 +579,7 @@
 			var instance = request.ESAPI.encoder();
 			try {
 				for(i = 0; i < 100; i++) {
-					r = request.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
+					r = request.ESAPI.randomizer().getRandomString(20, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
 					encoded = instance.encodeForBase64(r, request.ESAPI.randomizer().getRandomBoolean());
 					decoded = instance.decodeFromBase64(encoded);
 					//assertTrue( Arrays.equals( r, decoded ) );
@@ -606,7 +606,7 @@
 			var instance = request.ESAPI.encoder();
 			for(i = 0; i < 100; i++) {
 				try {
-					r = request.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
+					r = request.ESAPI.randomizer().getRandomString(20, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
 					encoded = instance.encodeForBase64(r, request.ESAPI.randomizer().getRandomBoolean());
 					decoded = instance.decodeFromBase64(encoded);
 					assertEquals(charsetEncode(r, "utf-8"), charsetEncode(decoded, "utf-8"));
@@ -617,8 +617,8 @@
 			}
 			for(i = 0; i < 100; i++) {
 				try {
-					r = request.ESAPI.randomizer().getRandomString(20, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
-					encoded = request.ESAPI.randomizer().getRandomString(1, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & instance.encodeForBase64(r, request.ESAPI.randomizer().getRandomBoolean());
+					r = request.ESAPI.randomizer().getRandomString(20, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS).getBytes();
+					encoded = request.ESAPI.randomizer().getRandomString(1, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS) & instance.encodeForBase64(r, request.ESAPI.randomizer().getRandomBoolean());
 					decoded = instance.decodeFromBase64(encoded);
 					assertNotEquals(charsetEncode(r, "utf-8"), charsetEncode(decoded, "utf-8"));
 				}

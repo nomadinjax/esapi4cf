@@ -21,7 +21,7 @@
 		variables.ESAPI = "";
 
 		/** The properties. */
-		variables.properties = newJava("java.util.Properties").init();
+		variables.properties = createObject("java", "java.util.Properties").init();
 
 		/** The logger. */
 		variables.logger = "";

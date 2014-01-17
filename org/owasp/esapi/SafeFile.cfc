@@ -20,9 +20,9 @@
 	<cfscript>
 		variables.ESAPI = "";
 
-		variables.PERCENTS_PAT = newJava("java.util.regex.Pattern").compile("(%)([0-9a-fA-F])([0-9a-fA-F])");
-		variables.FILE_BLACKLIST_PAT = newJava("java.util.regex.Pattern").compile("([\\\\/:*?<>|])");
-		variables.DIR_BLACKLIST_PAT = newJava("java.util.regex.Pattern").compile("([*?<>|])");
+		variables.PERCENTS_PAT = createObject("java", "java.util.regex.Pattern").compile("(%)([0-9a-fA-F])([0-9a-fA-F])");
+		variables.FILE_BLACKLIST_PAT = createObject("java", "java.util.regex.Pattern").compile("([\\\\/:*?<>|])");
+		variables.DIR_BLACKLIST_PAT = createObject("java", "java.util.regex.Pattern").compile("([*?<>|])");
 	</cfscript>
 
 	<cffunction access="public" returntype="SafeFile" name="init" output="false">
