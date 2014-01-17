@@ -34,7 +34,7 @@
 		variables.currentLevel = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="JavaLogFactory$JavaLogger" name="init" output="false"
+	<cffunction access="public" returntype="org.owasp.esapi.Logger" name="init" output="false"
 	            hint="Public constructor should only ever be called via the appropriate LogFactory">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="applicationName" hint="the application name"/>
@@ -46,7 +46,7 @@
 
 			variables.applicationName = arguments.applicationName;
 			variables.moduleName = arguments.moduleName;
-			variables.jlogger = newJava("java.util.logging.Logger").getLogger(arguments.applicationName & ":" & arguments.moduleName);
+			variables.jlogger = createObject("java", "java.util.logging.Logger").getLogger(arguments.applicationName & ":" & arguments.moduleName);
 
 			// Set the logging level defined in the config file.
 			// Beware getting info from SecurityConfiguration, since it logs. We made sure it doesn't log in
@@ -77,30 +77,30 @@
 		<cfargument required="true" type="numeric" name="level" hint="The ESAPI to convert."/>
 
 		<cfscript>
-
+			var Logger = createObject("java", "org.owasp.esapi.Logger");
+			var jLevel = createObject("java", "java.util.logging.Level");
 			switch(arguments.level) {
-				case 2147483647://Logger.OFF:
-					return newJava("java.util.logging.Level").OFF;
-				case 1000://Logger.FATAL:
-					return newJava("java.util.logging.Level").SEVERE;
-				case 800://Logger.ERROR:
+				case Logger.OFF:
+					return jLevel.OFF;
+				case Logger.FATAL:
+					return jLevel.SEVERE;
+				case Logger.ERROR:
 					// This is a custom level.
-					return newJava("org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL;
-				case 600://Logger.WARNING:
-					return newJava("java.util.logging.Level").WARNING;
-				case 400://Logger.INFO:
-					return newJava("java.util.logging.Level").INFO;
-				case 200://Logger.DEBUG:
-					return newJava("java.util.logging.Level").FINE;
-				case 100://Logger.TRACE:
-					return newJava("java.util.logging.Level").FINEST;
-				case -2147483648://Logger.ALL:
-					return newJava("java.util.logging.Level").ALL;
+					return createObject("java", "org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL;
+				case Logger.WARNING:
+					return jLevel.WARNING;
+				case Logger.INFO:
+					return jLevel.INFO;
+				case Logger.DEBUG:
+					return jLevel.FINE;
+				case Logger.TRACE:
+					return jLevel.FINEST;
+				case Logger.ALL:
+					return jLevel.ALL;
 				default: {
-					throw(object=newJava("java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));
+					throw(object=createObject("java", "java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));
 				}
 			}
-
 		</cfscript>
 
 	</cffunction>
@@ -112,7 +112,7 @@
 		<cfargument name="throwable"/>
 
 		<cfscript>
-			arguments.level = newJava("java.util.logging.Level").FINEST;
+			arguments.level = createObject("java", "java.util.logging.Level").FINEST;
 			logMessage(argumentCollection=arguments);
 		</cfscript>
 
@@ -125,7 +125,7 @@
 		<cfargument name="throwable"/>
 
 		<cfscript>
-			arguments.level = newJava("java.util.logging.Level").FINE;
+			arguments.level = createObject("java", "java.util.logging.Level").FINE;
 			logMessage(argumentCollection=arguments);
 		</cfscript>
 
@@ -138,7 +138,7 @@
 		<cfargument name="throwable"/>
 
 		<cfscript>
-			arguments.level = newJava("java.util.logging.Level").INFO;
+			arguments.level = createObject("java", "java.util.logging.Level").INFO;
 			logMessage(argumentCollection=arguments);
 		</cfscript>
 
@@ -151,7 +151,7 @@
 		<cfargument name="throwable"/>
 
 		<cfscript>
-			arguments.level = newJava("java.util.logging.Level").WARNING;
+			arguments.level = createObject("java", "java.util.logging.Level").WARNING;
 			logMessage(argumentCollection=arguments);
 		</cfscript>
 
@@ -164,7 +164,7 @@
 		<cfargument name="throwable"/>
 
 		<cfscript>
-			arguments.level = newJava("java.util.logging.Level").SEVERE;
+			arguments.level = createObject("java", "java.util.logging.Level").SEVERE;
 			logMessage(argumentCollection=arguments);
 		</cfscript>
 
@@ -177,7 +177,7 @@
 		<cfargument name="throwable"/>
 
 		<cfscript>
-			arguments.level = newJava("java.util.logging.Level").SEVERE;
+			arguments.level = createObject("java", "java.util.logging.Level").SEVERE;
 			logMessage(argumentCollection=arguments);
 		</cfscript>
 
@@ -194,6 +194,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = "";
+			var userSessionIDforLogging = "";
 			var httpSession = "";
 			var clean = "";
 			var fqn = "";
@@ -201,13 +202,11 @@
 			var ste = "";
 			var msg = "";
 
-			// Set the current logging level to the current value since it 'might' have been changed for some
-			// other log.
+			// Set the current logging level to the current value since it 'might' have been changed for some other log.
 			variables.jlogger.setLevel(variables.currentLevel);
 
-			// Before we waste all kinds of time preparing this event for the log, let check to see if its
-			//loggable
-			if(!variables.jlogger.isLoggable(arguments.level))
+			// Before we waste all kinds of time preparing this event for the log, let check to see if its loggable
+			if (!variables.jlogger.isLoggable(arguments.level))
 				return;
 
 			user = variables.ESAPI.authenticator().getCurrentUser();
@@ -231,12 +230,12 @@
 			}
 
 			// ensure there's something to log
-			if (isNull(message)) {
-				message = "";
+			if (isNull(arguments.message)) {
+				arguments.message = "";
 			}
 
 			// ensure no CRLF injection into logs for forging records
-			clean = arguments.message.replace('\n', '_').replace('\r', '_');
+			clean = arguments.message.replace("\n", "_").replace("\r", "_");
 			if(variables.ESAPI.securityConfiguration().getLogEncodingRequired()) {
 				clean = variables.ESAPI.encoder().encodeForHTML(arguments.message);
 				if(!arguments.message.equals(clean)) {
@@ -247,18 +246,18 @@
 			// convert the stack trace into something that can be logged
 			if(structKeyExists(arguments, "throwable") && !isNull(arguments.throwable) && isObject(arguments.throwable)) {
 				fqn = getMetaData(arguments.throwable).name;
-				index = fqn.lastIndexOf('.');
+				index = fqn.lastIndexOf(".");
 				if(index > 0)
 					fqn = fqn.substring(index + 1);
 				ste = arguments.throwable.getStackTrace();
 				if(arrayLen(ste)) {
 					ste = ste[1];
 					//clean &= "\n    " & fqn & " @ " & getMetaData( ste ).name & "." & ste.getMethodName() & "(" & ste.getFileName() & ":" & ste.getLineNumber() & ")";
-					clean &= "\n    " & fqn & " @ " & "(" & ste.getFileName() & ":" & ste.getLineNumber() & ")";
+					clean &= "\n    " & fqn & " @ " & replace(listLast(ste.getFileName(), "\"), ".cfc", "") & "(" & ste.getFileName() & ":" & ste.getLineNumber() & ")";
 				}
 				// NullPointerException falls into this
 				else {
-					clean &= "\n    " & fqn & " @ " & "(unknownFileName:-1)";
+					clean &= "\n    " & fqn & " @ unknownClassName(unknownFileName:-1)";
 				}
 			}
 
@@ -277,7 +276,7 @@
 
 		<cfscript>
 			variables.jlogger.setLevel(variables.currentLevel);
-			return variables.jlogger.isLoggable(newJava("java.util.logging.Level").FINE);
+			return variables.jlogger.isLoggable(createObject("java", "java.util.logging.Level").FINE);
 		</cfscript>
 
 	</cffunction>
@@ -286,7 +285,7 @@
 
 		<cfscript>
 			variables.jlogger.setLevel(variables.currentLevel);
-			return variables.jlogger.isLoggable(newJava("org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL);
+			return variables.jlogger.isLoggable(createObject("java", "org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL);
 		</cfscript>
 
 	</cffunction>
@@ -295,7 +294,7 @@
 
 		<cfscript>
 			variables.jlogger.setLevel(variables.currentLevel);
-			return variables.jlogger.isLoggable(newJava("java.util.logging.Level").SEVERE);
+			return variables.jlogger.isLoggable(createObject("java", "java.util.logging.Level").SEVERE);
 		</cfscript>
 
 	</cffunction>
@@ -304,7 +303,7 @@
 
 		<cfscript>
 			variables.jlogger.setLevel(variables.currentLevel);
-			return variables.jlogger.isLoggable(newJava("java.util.logging.Level").INFO);
+			return variables.jlogger.isLoggable(createObject("java", "java.util.logging.Level").INFO);
 		</cfscript>
 
 	</cffunction>
@@ -313,7 +312,7 @@
 
 		<cfscript>
 			variables.jlogger.setLevel(variables.currentLevel);
-			return variables.jlogger.isLoggable(newJava("java.util.logging.Level").FINEST);
+			return variables.jlogger.isLoggable(createObject("java", "java.util.logging.Level").FINEST);
 		</cfscript>
 
 	</cffunction>
@@ -322,7 +321,7 @@
 
 		<cfscript>
 			variables.jlogger.setLevel(variables.currentLevel);
-			return variables.jlogger.isLoggable(newJava("java.util.logging.Level").WARNING);
+			return variables.jlogger.isLoggable(createObject("java", "java.util.logging.Level").WARNING);
 		</cfscript>
 
 	</cffunction>

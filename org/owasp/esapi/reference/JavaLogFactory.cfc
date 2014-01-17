@@ -31,7 +31,7 @@
 
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
-			variables.applicationName = applicationName;
+			variables.applicationName = arguments.applicationName;
 			return this;
 		</cfscript>
 
