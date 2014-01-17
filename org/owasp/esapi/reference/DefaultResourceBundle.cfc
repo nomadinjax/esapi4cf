@@ -43,13 +43,14 @@
 
 			// fallback on server default
 			if (!isObject(locale)) {
-				locale = newJava("java.util.Locale").getDefault();
+				locale = createObject("java", "java.util.Locale").getDefault();
 				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failed to determine locale for user: " & variables.ESAPI.authenticator().getCurrentUser().getAccountName() & ". Using default locale [" & locale.toString() & "].");
+				variables.ESAPI.authenticator().getCurrentUser().setLocaleData(locale);
 			}
 
 			// in order to keep this thread safe for users of varying locales, we must store a ResourceBundle instance per locale
 			if (!structKeyExists(variables.resourceBundles, locale.toString())) {
-				variables.resourceBundles[locale.toString()] = newJava("java.util.ResourceBundle").getBundle("RB-ESAPI", locale);
+				variables.resourceBundles[locale.toString()] = createObject("java", "java.util.ResourceBundle").getBundle("RB-ESAPI", locale);
 				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "ResourceBundle for [" & locale.toString() & "] locale loaded.");
 			}
 
@@ -78,7 +79,7 @@
 		<cfargument required="true" type="Array" name="data">
 
 		<cfscript>
-			return newJava("java.text.MessageFormat").format(this.getMessage(arguments.key), arguments.data);
+			return createObject("java", "java.text.MessageFormat").format(this.getMessage(arguments.key), arguments.data);
 		</cfscript>
 
 	</cffunction>
