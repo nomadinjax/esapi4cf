@@ -259,6 +259,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionAbsoluteTimeout" output="false">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
 
 		<cfscript>
 			return false;
@@ -267,6 +268,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionTimeout" output="false">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
 
 		<cfscript>
 			return false;
@@ -283,6 +285,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="loginWithPassword" output="false">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" hint="The HTTP response being prepared"/>
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
@@ -292,6 +296,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="logout" output="false">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" hint="The HTTP response being prepared"/>
 
 		<cfscript>
 			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));

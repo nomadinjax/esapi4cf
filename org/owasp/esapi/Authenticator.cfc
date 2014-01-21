@@ -37,6 +37,8 @@
 
 	<cffunction access="public" returntype="void" name="logout" output="false"
 	            hint="Logs out the current user. This is usually done by calling User.logout on the current User.">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" hint="The HTTP response being prepared"/>
 	</cffunction>
 
 	<cffunction access="public" returntype="org.owasp.esapi.User" name="createUser" output="false"

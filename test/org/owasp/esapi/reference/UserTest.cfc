@@ -167,10 +167,10 @@
 			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 
-			user.loginWithPassword("failedLoginLockout");
+			user.loginWithPassword(password="failedLoginLockout");
 
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
@@ -179,7 +179,7 @@
 			assertFalse(user.isLocked());
 
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
@@ -188,7 +188,7 @@
 			assertFalse(user.isLocked());
 
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
@@ -229,7 +229,7 @@
 			System.out.println("getLastLoginTime");
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
@@ -237,7 +237,7 @@
 			llt1 = user.getLastFailedLoginTime();
 			sleep(100);// need a short delay to separate attempts
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
@@ -415,28 +415,28 @@
 			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertEquals(1, user.getFailedLoginCount());
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertEquals(2, user.getFailedLoginCount());
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertEquals(3, user.getFailedLoginCount());
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
@@ -608,26 +608,26 @@
 			assertFalse(httpSession.getInvalidated());
 			user = createTestUser("loginWithPassword");
 			user.enable();
-			user.loginWithPassword("loginWithPassword");
+			user.loginWithPassword(password="loginWithPassword");
 			assertTrue(user.isLoggedIn());
 			user.logout();
 			assertFalse(user.isLoggedIn());
 			assertFalse(user.isLocked());
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			assertFalse(user.isLoggedIn());
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected
 			}
 			try {
-				user.loginWithPassword("ridiculous");
+				user.loginWithPassword(password="ridiculous");
 			}
 			catch(org.owasp.esapi.errors.AuthenticationLoginException e) {
 				// expected

@@ -149,7 +149,7 @@
 			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			user1.loginWithPassword("getCurrentUser");
+			user1.loginWithPassword(password="getCurrentUser");
 			currentUser = instance.getCurrentUser();
 			assertEquals(currentUser, user1);
 			instance.setCurrentUser(user2);
@@ -219,6 +219,7 @@
 			var user = "";
 			var httpRequest = "";
 			var httpResponse = "";
+			var path = "";
 			var newToken = "";
 			var test2 = "";
 
@@ -244,7 +245,9 @@
 			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			request.ESAPI.authenticator().setCurrentUser(user);
-			newToken = request.ESAPI.httpUtilities().setRememberToken(httpRequest, httpResponse, password, 10000, "test.com", httpRequest.getContextPath());
+			path = httpRequest.getContextPath();
+			if (isNull(path)) path = "";
+			newToken = request.ESAPI.httpUtilities().setRememberToken(httpRequest, httpResponse, password, 10000, "test.com", path);
 			httpRequest.setCookie(request.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, newToken);
 			test2 = instance.login(httpRequest, httpResponse);
 			assertEquals(user.getAccountName(), test2.getAccountName());
@@ -431,7 +434,7 @@
 			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();;
 			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-			userOne.loginWithPassword("getCurrentUser");
+			userOne.loginWithPassword(password="getCurrentUser");
 			currentUser = instance.getCurrentUser();
 			assertEquals(currentUser, userOne);
 			userTwo = instance.createUser(user2, "getCurrentUser", "getCurrentUser");
@@ -474,16 +477,16 @@
 			var httpResponse = "";
 
 			System.out.println("setCurrentUser(req,resp)");
+			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
 			instance = request.ESAPI.authenticator();
-			instance.logout();// in case anyone is logged in
+			instance.logout(httpRequest, httpResponse);// in case anyone is logged in
 			password = instance.generateStrongPassword();
 			accountName = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			user = instance.createUser(accountName, password, password);
 			user.enable();
-			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
 			httpRequest.addParameter("username", accountName);
 			httpRequest.addParameter("password", password);
-			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
 			instance.login(httpRequest, httpResponse);
 			assertEquals(user, instance.getCurrentUser());
 			try {

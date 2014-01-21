@@ -146,10 +146,12 @@
 
 	<cffunction access="public" returntype="boolean" name="isSessionAbsoluteTimeout" output="false"
 	            hint="Tests to see if this user's session has exceeded the absolute time out based on ESAPI's configuration settings.">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionTimeout" output="false"
 	            hint="Tests to see if the user's session has timed out from inactivity based on ESAPI's configuration settings. A session may timeout prior to ESAPI's configuration setting due to the servlet container setting for session-timeout in web.xml. The following is an example of a web.xml session-timeout set for one hour. &lt;session-config&gt; &lt;session-timeout&gt;60&lt;/session-timeout&gt; &lt;/session-config&gt;">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="lock" output="false"
@@ -158,12 +160,16 @@
 
 	<cffunction access="public" returntype="void" name="loginWithPassword" output="false"
 	            hint="Login with password.">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" hint="The HTTP response being prepared"/>
 		<cfargument required="true" type="String" name="password" hint="the password"/>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="logout" output="false"
 	            hint="Logout this user.">
+		<cfargument name="httpRequest" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" hint="The HTTP response being prepared"/>
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="removeRole" output="false"

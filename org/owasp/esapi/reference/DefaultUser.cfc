@@ -374,6 +374,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionAbsoluteTimeout" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -381,7 +382,7 @@
 			var deadline = "";
 			var timestamp = "";
 
-			httpSession = variables.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
+			httpSession = arguments.httpRequest.getSession(false);
 			if(!isObject(httpSession))
 				return true;
 			deadline = createObject("java", "java.util.Date").init(javaCast("long", httpSession.getCreationTime() + variables.ABSOLUTE_TIMEOUT_LENGTH));
@@ -392,6 +393,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionTimeout" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -399,7 +401,7 @@
 			var deadline = "";
 			var timestamp = "";
 
-			httpSession = variables.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
+			httpSession = arguments.httpRequest.getSession(false);
 			if(!isObject(httpSession))
 				return true;
 			deadline = createObject("java", "java.util.Date").init(javaCast("long", httpSession.getLastAccessedTime() + variables.IDLE_TIMEOUT_LENGTH));
@@ -419,9 +421,14 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="loginWithPassword" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" default="#variables.ESAPI.currentResponse()#" hint="The HTTP response being prepared"/>
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
+			// CF8 requires 'var' at the top
+			var remoteHost = "";
+
 			if(arguments.password == "" || arguments.password.equals("")) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
@@ -449,14 +456,16 @@
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Expired user attempt to login: " & variables.accountName));
 			}
 
-			logout();
+			logout(arguments.httpRequest, arguments.httpResponse);
 
 			if(verifyPassword(arguments.password)) {
 				variables.loggedIn = true;
-				variables.ESAPI.httpUtilities().changeSessionIdentifier(variables.ESAPI.currentRequest());
+				variables.ESAPI.httpUtilities().changeSessionIdentifier(arguments.httpRequest);
 				variables.ESAPI.authenticator().setCurrentUser(this);
 				setLastLoginTime(now());
-				setLastHostAddress(variables.ESAPI.httpUtilities().getCurrentRequest().getRemoteHost());
+				remoteHost = arguments.httpRequest.getRemoteHost();
+				if (isNull(remoteHost)) remoteHost = "";
+				setLastHostAddress(remoteHost);
 				variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "User logged in: " & variables.accountName);
 			}
 			else {
@@ -473,19 +482,21 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="logout" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" default="#variables.ESAPI.currentResponse()#" hint="The HTTP response being prepared"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var httpSession = "";
 
-			variables.ESAPI.httpUtilities().killCookie(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse(), variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
+			variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 
-			httpSession = variables.ESAPI.currentRequest().getSession(false);
-			if(isObject(httpSession)) {
+			httpSession = arguments.httpRequest.getSession(false);
+			if(!isNull(httpSession) && isObject(httpSession)) {
 				removeSession(httpSession);
 				httpSession.invalidate();
 			}
-			variables.ESAPI.httpUtilities().killCookie(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse(), "JSESSIONID");
+			variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, "JSESSIONID");
 			variables.loggedIn = false;
 			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Logout successful");
 			variables.ESAPI.authenticator().setCurrentUser(variables.ESAPI.authenticator().getAnonymousUserInstance());

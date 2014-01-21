@@ -434,7 +434,7 @@
 
 			variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "Logging in user with remember token: " & user.getAccountName());
 			try {
-				user.loginWithPassword(password);
+				user.loginWithPassword(arguments.httpRequest, arguments.httpResponse, password);
 			}
 			catch(org.owasp.esapi.errors.AuthenticationException ae) {
 				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Login via remember me cookie failed for user " & username, ae);
@@ -612,7 +612,7 @@
 			var user = getCurrentUser();
 			if(isObject(user) && !user.isAnonymous()) {
 				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "User requested relogin. Performing logout then authentication");
-				user.logout();
+				user.logout(arguments.httpRequest, arguments.httpResponse);
 			}
 
 			// now authenticate with username and password
@@ -626,7 +626,7 @@
 			if(!isObject(user)) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Authentication failed", "Authentication failed because user " & username & " doesn't exist"));
 			}
-			user.loginWithPassword(password);
+			user.loginWithPassword(arguments.httpRequest, arguments.httpResponse, password);
 
 			arguments.httpRequest.setAttribute(user.getCSRFToken(), "authenticated");
 			return user;
@@ -747,6 +747,7 @@
 			// CF8 requires 'var' at the top
 			var user = "";
 			var httpSession = "";
+			var remoteHost = "";
 
 			if(!isObject(arguments.httpRequest) || !isObject(arguments.httpResponse)) {
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid request", "Request or response objects were null"));
@@ -783,7 +784,9 @@
 			}
 
 			// set last host address
-			user.setLastHostAddress(arguments.httpRequest.getRemoteHost());
+			remoteHost = arguments.httpRequest.getRemoteHost();
+			if (isNull(remoteHost)) remoteHost = "";
+			user.setLastHostAddress(remoteHost);
 
 			// don't let anonymous user log in
 			if(user.isAnonymous()) {
@@ -793,7 +796,7 @@
 
 			// don't let disabled users log in
 			if(!user.isEnabled()) {
-				user.logout();
+				user.logout(arguments.httpRequest, arguments.httpResponse);
 				user.incrementFailedLoginCount();
 				user.setLastFailedLoginTime(now());
 				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & user.getAccountName()));
@@ -816,7 +819,7 @@
 			}
 
 			// check session inactivity timeout
-			if(user.isSessionTimeout()) {
+			if(user.isSessionTimeout(arguments.httpRequest)) {
 				user.logout();
 				user.incrementFailedLoginCount();
 				user.setLastFailedLoginTime(now());
@@ -824,7 +827,7 @@
 			}
 
 			// check session absolute timeout
-			if(user.isSessionAbsoluteTimeout()) {
+			if(user.isSessionAbsoluteTimeout(arguments.httpRequest)) {
 				user.logout();
 				user.incrementFailedLoginCount();
 				user.setLastFailedLoginTime(now());
@@ -842,11 +845,13 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="logout" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" default="#variables.ESAPI.currentResponse()#" hint="The HTTP response being prepared"/>
 
 		<cfscript>
 			var user = getCurrentUser();
 			if(isObject(user) && !user.isAnonymous()) {
-				user.logout();
+				user.logout(arguments.httpRequest, arguments.httpResponse);
 			}
 		</cfscript>
 

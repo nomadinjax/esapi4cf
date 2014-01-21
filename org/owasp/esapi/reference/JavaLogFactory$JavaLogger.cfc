@@ -77,25 +77,26 @@
 		<cfargument required="true" type="numeric" name="level" hint="The ESAPI to convert."/>
 
 		<cfscript>
-			var Logger = createObject("java", "org.owasp.esapi.Logger");
+			// NOTE: CF-all does not allow this reference in the case statements - Railo works fine
+			//var Logger = createObject("java", "org.owasp.esapi.Logger");
 			var jLevel = createObject("java", "java.util.logging.Level");
 			switch(arguments.level) {
-				case Logger.OFF:
+				case 2147483647://Logger.OFF:
 					return jLevel.OFF;
-				case Logger.FATAL:
+				case 1000://Logger.FATAL:
 					return jLevel.SEVERE;
-				case Logger.ERROR:
+				case 800://Logger.ERROR:
 					// This is a custom level.
 					return createObject("java", "org.owasp.esapi.reference.JavaLogFactory$JavaLoggerLevel").ERROR_LEVEL;
-				case Logger.WARNING:
+				case 600://Logger.WARNING:
 					return jLevel.WARNING;
-				case Logger.INFO:
+				case 400://Logger.INFO:
 					return jLevel.INFO;
-				case Logger.DEBUG:
+				case 200://Logger.DEBUG:
 					return jLevel.FINE;
-				case Logger.TRACE:
+				case 100://Logger.TRACE:
 					return jLevel.FINEST;
-				case Logger.ALL:
+				case -2147483648://Logger.ALL:
 					return jLevel.ALL;
 				default: {
 					throw(object=createObject("java", "java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));

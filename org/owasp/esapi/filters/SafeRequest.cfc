@@ -107,6 +107,7 @@
 		<cfscript>
 			var path = variables.httpRequest.getContextPath();
 			var clean = "";
+			if (isNull(path)) path = "";
 			try {
 				clean = variables.ESAPI.validator().getValidInput("HTTP context path: " & path, path, "HTTPContextPath", 150, false);
 			}
