@@ -813,7 +813,7 @@
 
 			deserializedUser = objectLoad(serializedUser);
 			// NOTE: CFC exists but instanceOf fails ???
-			//assertTrue(isInstanceOf(deserializedUser, "org.owasp.esapi.User$ANONYMOUS"), "Deserialization of AnonymousUser failed.");
+			//assertTrue(isInstanceOf(deserializedUser, "org.owasp.esapi.reference.AnonymousUser"), "Deserialization of AnonymousUser failed.");
 			assertEquals(user.getAccountId(), deserializedUser.getAccountId(), "AnonymousUser accountId failed to persist.");
 			assertEquals(user.getAccountName(), deserializedUser.getAccountName(), "AnonymousUser accountName failed to persist.");
 

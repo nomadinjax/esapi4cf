@@ -102,7 +102,7 @@
 			oldPassword = "iiiiiiiiii";// i is not allowed in passwords - this prevents failures from containing pieces of old password
 			newPassword = "";
 			username = "FictionalEsapiUser";
-			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(request.ESAPI, username);
+			user = instance.getDefaultUserInstance(username);
 			for(i = 0; i < 100; i++) {
 				try {
 					newPassword = instance.generateStrongPassword();
@@ -526,7 +526,7 @@
 			instance = request.ESAPI.authenticator();
 
 	        username = "FictionalEsapiUser";
-			user = createObject("component", "org.owasp.esapi.reference.DefaultUser").init(request.ESAPI, username);
+			user = instance.getDefaultUserInstance(username);
 
 			// should fail
 			try {

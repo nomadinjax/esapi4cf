@@ -43,13 +43,13 @@
 		variables.MAX_ACCOUNT_NAME_LENGTH = 250;
 	</cfscript>
 
-	<cffunction access="private" returntype="org.owasp.esapi.User$ANONYMOUS" name="getAnonymousUserInstance" output="false">
+	<cffunction access="public" returntype="org.owasp.esapi.reference.AnonymousUser" name="getAnonymousUserInstance" output="false">
 		<cfscript>
-			return createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI);
+			return createObject("component", "org.owasp.esapi.reference.AnonymousUser").init(variables.ESAPI);
 		</cfscript>
 	</cffunction>
 
-	<cffunction access="private" returntype="org.owasp.esapi.reference.DefaultUser" name="getDefaultUserInstance" output="false">
+	<cffunction access="public" returntype="org.owasp.esapi.reference.DefaultUser" name="getDefaultUserInstance" output="false">
 		<cfargument required="true" type="String" name="accountName">
 		<cfscript>
 			return createObject("component", "org.owasp.esapi.reference.DefaultUser").init(variables.ESAPI, arguments.accountName);

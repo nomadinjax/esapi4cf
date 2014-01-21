@@ -133,7 +133,7 @@
 				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.message);
 			}
 			user = variables.ESAPI.authenticator().getCurrentUser();
-			if(isInstanceOf(user, "org.owasp.esapi.User$ANONYMOUS"))
+			if(isInstanceOf(user, "org.owasp.esapi.reference.AnonymousUser"))
 				return;
 			if(arguments.action.equals("disable")) {
 				user.disable();

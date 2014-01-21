@@ -488,7 +488,7 @@
 			variables.ESAPI.httpUtilities().killCookie(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse(), "JSESSIONID");
 			variables.loggedIn = false;
 			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Logout successful");
-			variables.ESAPI.authenticator().setCurrentUser(createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI));
+			variables.ESAPI.authenticator().setCurrentUser(variables.ESAPI.authenticator().getAnonymousUserInstance());
 		</cfscript>
 
 	</cffunction>
