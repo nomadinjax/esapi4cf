@@ -197,7 +197,7 @@
 				}
 
 				date = arguments.input;
-				if (!isDate(date) && !isNull(arguments.format) && isObject(arguments.format)) {
+				if (!isNull(arguments.format) && isObject(arguments.format)) {
 					try {
 						date = arguments.format.parse(javaCast("string", date));
 					}
@@ -205,7 +205,6 @@
 						msgParams = [arguments.context, arguments.input, arguments.format.toLocalizedPattern()];
 						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDate.patternMismatch.userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Validator.getValidDate.patternMismatch.logMessage", msgParams), e, arguments.context));
 					}
-					date = createDateTime(year(date), month(date), day(date), hour(date), minute(date), second(date));
 				}
 
 				if(date < arguments.minValue || date > arguments.maxValue) {
@@ -655,7 +654,7 @@
 				}
 
 				number = arguments.input;
-				if (!isNumeric(number) && !isNull(arguments.format) && isObject(arguments.format)) {
+				if (!isNull(arguments.format) && isObject(arguments.format)) {
 					try {
 						number = arguments.format.parse(javaCast("string", number));
 					}
