@@ -25,19 +25,14 @@
 
 	<cffunction access="public" returntype="org.owasp.esapi.ResourceBundle" name="init" output="false">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
-		<cfargument required="true" type="String" name="localeCode"/>
+		<cfargument required="true" name="locale"/>
 
 		<cfscript>
 			variables.ESAPI = arguments.ESAPI;
 			variables.logger = variables.ESAPI.getLogger("ResourceBundle");
 
-			if (len(arguments.localeCode)) {
-				variables.resourceBundle = createObject("java", "java.util.ResourceBundle").getBundle("RB-ESAPI", arguments.localeCode);
-			}
-			else {
-				variables.resourceBundle = createObject("java", "java.util.ResourceBundle").getBundle("RB-ESAPI");
-			}
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "ResourceBundle for [" & arguments.localeCode & "] locale loaded.");
+			variables.resourceBundle = createObject("java", "java.util.ResourceBundle").getBundle("RB-ESAPI", arguments.locale);
+			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "ResourceBundle for [" & arguments.locale.toString() & "] locale loaded.");
 
 			return this;
 		</cfscript>

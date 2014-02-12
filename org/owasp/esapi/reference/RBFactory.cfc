@@ -36,35 +36,25 @@
 	</cffunction>
 
     <cffunction access="public" returntype="org.owasp.esapi.ResourceBundle" name="getResourceBundle" output="false">
-		<cfargument type="String" name="localeCode"/>
+		<cfargument name="locale" default="#variables.ESAPI.authenticator().getCurrentUser().getLocaleData()#"/>
 
 		<cfscript>
-			var locale = "";
 			var useLocaleCode = "";
 			var localeCodeRB = "";
 
-			if (isNull(arguments.localeCode)) {
-				// grab currentUser locale
-				locale = variables.ESAPI.authenticator().getCurrentUser().getLocaleData();
-
+			if (isNull(arguments.locale) || !isObject(arguments.locale)) {
 				// fallback on server default
-				if (!(!isNull(locale) && isObject(locale))) {
-					locale = createObject("java", "java.util.Locale").getDefault();
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failed to determine locale for user: " & variables.ESAPI.authenticator().getCurrentUser().getAccountName() & ". Using default locale [" & locale.toString() & "].");
-					variables.ESAPI.authenticator().getCurrentUser().setLocaleData(locale);
-				}
-				useLocaleCode = locale.toString();
-			}
-			else {
-				useLocaleCode = arguments.localeCode;
+				arguments.locale = createObject("java", "java.util.Locale").getDefault();
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failed to determine locale for user: " & variables.ESAPI.authenticator().getCurrentUser().getAccountName() & ". Using default locale [" & arguments.locale.toString() & "].");
+				variables.ESAPI.authenticator().getCurrentUser().setLocaleData(arguments.locale);
 			}
 
 	    	// If a RB for this localeCode already exists, we return the same one, otherwise we create a new one.
-	    	if(structKeyExists(variables.localeCodesMap, useLocaleCode)) {
-	    		localeCodeRB = variables.localeCodesMap.get(useLocaleCode);
+	    	if(structKeyExists(variables.localeCodesMap, arguments.locale.toString())) {
+	    		localeCodeRB = variables.localeCodesMap.get(arguments.locale.toString());
 			}
 	    	if(isNull(localeCodeRB) || !isObject(localeCodeRB)) {
-	    		localeCodeRB = createObject("component", "RBFactory$ResourceBundle").init(variables.ESAPI, useLocaleCode);
+	    		localeCodeRB = createObject("component", "RBFactory$ResourceBundle").init(variables.ESAPI, arguments.locale);
 	    		variables.localeCodesMap.put(useLocaleCode, localeCodeRB);
 	    	}
 			return localeCodeRB;

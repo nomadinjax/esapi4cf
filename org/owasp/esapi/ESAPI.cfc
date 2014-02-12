@@ -366,14 +366,14 @@
 
 	<cffunction access="public" returntype="ResourceBundle" name="resourceBundle" output="false"
 	            hint="return the current ESAPI ResourceBundle being used to translate error messages in this application.">
-			<cfargument type="String" name="localeCode" hint="The localeCode of the ResourceBundle to retrieve."/>
+			<cfargument name="locale" hint="The Locale of the ResourceBundle to retrieve."/>
 
 		<cfscript>
-			if (isNull(arguments.localeCode)) {
+			if (isNull(arguments.locale)) {
 				return this.RBFactory().getResourceBundle();
 			}
 			else {
-				return this.RBFactory().getResourceBundle(arguments.localeCode);
+				return this.RBFactory().getResourceBundle(arguments.locale);
 			}
 		</cfscript>
 

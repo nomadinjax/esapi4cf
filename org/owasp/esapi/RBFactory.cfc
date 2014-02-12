@@ -18,7 +18,7 @@
 <cfinterface>
 
 	 <cffunction access="public" returntype="org.owasp.esapi.ResourceBundle" name="getResourceBundle" output="false">
-	 	 <cfargument type="String" name="localeCode"/>
+	 	 <cfargument name="locale"/>
 	 </cffunction>
 
 </cfinterface>
