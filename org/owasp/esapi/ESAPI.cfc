@@ -32,6 +32,7 @@
 		variables.instance.randomizer = "";
 		variables.instance.securityConfiguration = "";
 		variables.instance.validator = "";
+		variables.instance.RBFactory = "";
 		variables.instance.resourceBundle = "";
 
 		variables.resourceDirectory = "";
@@ -343,14 +344,37 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="ResourceBundle" name="resourceBundle" output="false"
-	            hint="return the current ESAPI ResourceBundle being used to translate error messages in this application.">
+	<cffunction access="public" returntype="RBFactory" name="RBFactory" output="false">
 
 		<cfscript>
-			if(!isObject(variables.instance.resourceBundle)) {
-				variables.instance.resourceBundle = createObject("component", "org.owasp.esapi.reference.DefaultResourceBundle").init(this);
+			if(!isObject(variables.instance.RBFactory)) {
+				variables.instance.RBFactory = createObject("component", "org.owasp.esapi.reference.RBFactory").init(this);
 			}
-			return variables.instance.resourceBundle;
+			return variables.instance.RBFactory;
+		</cfscript>
+
+	</cffunction>
+
+	<cffunction access="public" returntype="RBFactory" name="setRBFactory" output="false">
+		<cfargument required="true" type="RBFactory" name="factory"/>
+
+		<cfscript>
+			variables.instance.RBFactory = arguments.factory;
+		</cfscript>
+
+	</cffunction>
+
+	<cffunction access="public" returntype="ResourceBundle" name="resourceBundle" output="false"
+	            hint="return the current ESAPI ResourceBundle being used to translate error messages in this application.">
+			<cfargument type="String" name="localeCode" hint="The localeCode of the ResourceBundle to retrieve."/>
+
+		<cfscript>
+			if (isNull(arguments.localeCode)) {
+				return this.RBFactory().getResourceBundle();
+			}
+			else {
+				return this.RBFactory().getResourceBundle(arguments.localeCode);
+			}
 		</cfscript>
 
 	</cffunction>

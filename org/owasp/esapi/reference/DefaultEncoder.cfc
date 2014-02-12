@@ -53,7 +53,7 @@
 			}
 			catch (org.owasp.esapi.errors.IntrusionException e) {
 				// TODO: this does not seem flexible to handle various errors returned from Java
-				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.canonicalize.badInput.userMessage"), e.getLogMessage()));
+				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_canonicalize_badInput_userMessage"), e.getLogMessage()));
 			}
 		</cfscript>
 
@@ -190,10 +190,10 @@
 				return createObject("java", "java.net.URLEncoder").encode(javaCast("string", arguments.input), variables.ESAPI.securityConfiguration().getCharacterEncoding());
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.typeMismatch.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.typeMismatch.logMessage"), ex));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_typeMismatch_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_typeMismatch_logMessage"), ex));
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.encodeForURL.badInput.logMessage"), e));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_badInput_logMessage"), e));
 			}
 		</cfscript>
 
@@ -211,10 +211,10 @@
 				return createObject("java", "java.net.URLDecoder").decode(canonical, variables.ESAPI.securityConfiguration().getCharacterEncoding());
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.typeMismatch.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.typeMismatch.logMessage"), ex));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_typeMismatch_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_typeMismatch_logMessage"), ex));
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("Encoder.decodeFromURL.badInput.logMessage"), e));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_badInput_logMessage"), e));
 			}
 		</cfscript>
 

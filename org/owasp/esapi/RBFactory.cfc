@@ -17,18 +17,8 @@
 --->
 <cfinterface>
 
-	<cffunction access="public" returntype="String" name="getLocaleData" output="false">
-	</cffunction>
-
-	<cffunction access="public" returntype="String" name="getString" output="false">
-		<cfargument required="true" type="String" name="key">
-
-	</cffunction>
-
-	<cffunction access="public" returntype="String" name="messageFormat" output="false">
-		<cfargument required="true" type="String" name="key">
-		<cfargument required="true" type="Array" name="data">
-
-	</cffunction>
+	 <cffunction access="public" returntype="org.owasp.esapi.ResourceBundle" name="getResourceBundle" output="false">
+	 	 <cfargument type="String" name="localeCode"/>
+	 </cffunction>
 
 </cfinterface>

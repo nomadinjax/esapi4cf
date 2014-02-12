@@ -55,7 +55,7 @@
 				return variables.ESAPI.encryptor().decryptString(encryptedValue);
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("EncryptedProperties.getProperty.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("EncryptedProperties.getProperty.badInput.logMessage"), e));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("EncryptedProperties_getProperty_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("EncryptedProperties_getProperty_badInput_logMessage"), e));
 			}
 		</cfscript>
 
@@ -70,7 +70,7 @@
 				return variables.properties.setProperty(arguments.key, variables.ESAPI.encryptor().encryptString(arguments.value));
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getMessage("EncryptedProperties.setProperty.badInput.userMessage"), variables.ESAPI.resourceBundle().getMessage("EncryptedProperties.setProperty.badInput.logMessage"), e));
+				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("EncryptedProperties_setProperty_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("EncryptedProperties_setProperty_badInput_logMessage"), e));
 			}
 		</cfscript>
 
