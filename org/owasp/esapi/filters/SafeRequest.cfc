@@ -337,16 +337,37 @@
 			var orig = "";
 			var clean = "";
 
-			// https://github.com/damonmiller/esapi4cf/issues/39
-			// Railo workaround for getParameter always returning null
-			//orig = variables.httpRequest.getParameter(arguments.name);
-			params = variables.httpRequest.getParameterMap();
-			if (structKeyExists(params, arguments.name)) {
-				orig = params[arguments.name];
-				// CF8 cannot handle a method call and array index reference on same line
-				orig = orig[1];
+			/* *** begin workarounds ***
+				Reference: https://github.com/damonmiller/esapi4cf/issues/39
+
+				We do not want to punish all servers so the ones that can do it right, let's do it right!
+					1- CF8/9 prefer getParamter as-is
+					2- Railo workaround - if value is null, fallback on getParameterMap()
+					3- CF10 workaround  - if value is null, fallback on form scope <----- worst hack in ESAPI4CF by far!!!
+						referencing the form scope violates encapsulation but unit tests will never hit this condition thankfully
+
+			 */
+			// preferred - CF8/9
+			orig = variables.httpRequest.getParameter(arguments.name);
+
+			// fallback on getParameterMap() - Railo
+			if (isNull(orig)) {
+				params = variables.httpRequest.getParameterMap();
+				if (structKeyExists(params, arguments.name)) {
+					orig = params[arguments.name][1];
+					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Server incorrectly implements RequestContext. getParameterMap() fallback used - see Issue 39.");
+				}
 			}
-			// end workaround
+
+			// fallback on form scope - CF10
+			if (isNull(orig)) {
+				if (structKeyExists(form, arguments.name)) {
+					orig = form[arguments.name];
+					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Server incorrectly implements RequestContext. FORM scope fallback used - see Issue 39.");
+				}
+			}
+
+			// *** end workarounds ***
 
 			if(!(isDefined("orig") && !isNull(orig))) {
 				orig = "";
@@ -455,7 +476,7 @@
 						newValues.add(cleanValue);
 					}
 					catch(org.owasp.esapi.errors.ValidationException e) {
-						variables.logger.warning(Logger.SECURITY, false, "Skipping bad parameter");
+						variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Skipping bad parameter");
 					}
 				}
 			}
@@ -687,7 +708,7 @@
 		<cfscript>
 			var port = variables.httpRequest.getServerPort();
 			if(port < 0 || port > inputBaseN("FFFF", 16)) {
-				variables.logger.warning(Logger.SECURITY, false, "HTTP server port out of range: " & port);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "HTTP server port out of range: " & port);
 				port = 0;
 			}
 			return port;
