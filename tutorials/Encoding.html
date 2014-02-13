@@ -1,3403 +1,3737 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
-	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<title>Output Encoding/Escaping Tutorial :: ESAPI4CF</title>
-		<meta name="description" content="" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="../css/main.css" />
-		<script src="../js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-	</head>
-	<body>
-		<!--[if lt IE 9]><p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p><![endif]-->
-		<nav id="bannerNav" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation"></nav>
-		<div class="container">
-			<!-- BEGIN content -->
-			<div class="page-header">
-				<h1 class="text-center">Output Encoding/Escaping</h1>
-			</div>
-			<p>TODO</p>
-			
-			<table class="table table-striped table-hover">
-				<thead>
+<!--[if lt IE 7]>      <html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<title>Encoding Tutorial :: OWASP ESAPI for ColdFusion/CFML Project</title>
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../css/main.css" />
+<script src="../js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+</head>
+<body>
+<!--[if lt IE 8]><p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p><![endif]-->
+<nav id="bannerNav" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation"></nav>
+
+<div class="container-fluid"><!-- BEGIN content -->
+
+	<div class="page-header">
+		<h1 class="text-center">Output Encoding/Escaping</h1>
+	</div>
+	
+	<p>TODO - this page is incomplete</p>
+	
+	<div class="page-header">
+		<h3>Encoder Samples and Comparisons</h3>
+	</div>
+
+	<div class="page-header">
+		<h4>ASCII 0-255</h4>
+	</div>
+
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th rowspan="2"></th>
+					<th colspan="3" class="success">HTML</th>
+					<th colspan="2" class="warning">XML</th>
+					<th colspan="2" class="danger">URL</th>
+					<th colspan="2" class="info">JS</th>
+				</tr>
+				<tr>
+					<th class="success">CF:htmlEditFormat</th>
+					<th class="success">ESAPI:encodeForHTML</th>
+					<th class="success">ESAPI:encodeForHTMLAttribute</th>
+					<th class="warning">CF:xmlFormat</th>
+					<th class="warning">ESAPI:encodeForXML</th>
+					<th class="danger">CF:urlEncodedFormat</th>
+					<th class="danger">ESAPI:encodeForURL</th>
+					<th class="info">CF:jsStringFormat</th>
+					<th class="info">ESAPI:encodeForJavaScript</th>
+				</tr>
+			</thead>
+			<tbody>
+				
 					<tr>
-						<th rowspan="2">ASCII</th>
-						<th colspan="3">HTML</th>
-						<th colspan="2">XML</th>
-						<th colspan="2">URL</th>
-						<th colspan="2">JS</th>
+						<td>0&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success"></td>
+						<td class="success"></td>
+						<td class="warning"></td>
+						<td class="warning"></td>
+						<td class="danger"></td>
+						<td class="danger"></td>
+						<td class="info"></td>
+						<td class="info"></td>
 					</tr>
+				
 					<tr>
-						<th>CF:htmlEditFormat</th>
-						<th>ESAPI:encodeForHTML</th>
-						<th>ESAPI:encodeForHTMLAttribute</th>
-						<th>CF:xmlFormat</th>
-						<th>ESAPI:encodeForXML</th>
-						<th>CF:urlEncodedFormat</th>
-						<th>ESAPI:encodeForURL</th>
-						<th>CF:jsStringFormat</th>
-						<th>ESAPI:encodeForJavaScript</th>
+						<td>1&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x1;</td>
+						<td class="danger">%01</td>
+						<td class="danger">%01</td>
+						<td class="info"></td>
+						<td class="info">\x01</td>
 					</tr>
-				</thead>
-				<tbody>
-					
-						<tr>
-							<td>0&nbsp;:&nbsp;</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-					
-						<tr>
-							<td>1&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x1;</td>
-							<td>%01</td>
-							<td>%01</td>
-							<td></td>
-							<td>\x01</td>
-						</tr>
-					
-						<tr>
-							<td>2&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x2;</td>
-							<td>%02</td>
-							<td>%02</td>
-							<td></td>
-							<td>\x02</td>
-						</tr>
-					
-						<tr>
-							<td>3&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x3;</td>
-							<td>%03</td>
-							<td>%03</td>
-							<td></td>
-							<td>\x03</td>
-						</tr>
-					
-						<tr>
-							<td>4&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x4;</td>
-							<td>%04</td>
-							<td>%04</td>
-							<td></td>
-							<td>\x04</td>
-						</tr>
-					
-						<tr>
-							<td>5&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x5;</td>
-							<td>%05</td>
-							<td>%05</td>
-							<td></td>
-							<td>\x05</td>
-						</tr>
-					
-						<tr>
-							<td>6&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x6;</td>
-							<td>%06</td>
-							<td>%06</td>
-							<td></td>
-							<td>\x06</td>
-						</tr>
-					
-						<tr>
-							<td>7&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x7;</td>
-							<td>%07</td>
-							<td>%07</td>
-							<td></td>
-							<td>\x07</td>
-						</tr>
-					
-						<tr>
-							<td>8&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x8;</td>
-							<td>%08</td>
-							<td>%08</td>
-							<td>\b</td>
-							<td>\x08</td>
-						</tr>
-					
-						<tr>
-							<td>9&nbsp;:&nbsp;	</td>
-							<td>	</td>
-							<td>&amp;#x9;</td>
-							<td>&amp;#x9;</td>
-							<td>	</td>
-							<td>	</td>
-							<td>%09</td>
-							<td>%09</td>
-							<td>\t</td>
-							<td>\x09</td>
-						</tr>
-					
-						<tr>
-							<td>10&nbsp;:&nbsp;
+				
+					<tr>
+						<td>2&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x2;</td>
+						<td class="danger">%02</td>
+						<td class="danger">%02</td>
+						<td class="info"></td>
+						<td class="info">\x02</td>
+					</tr>
+				
+					<tr>
+						<td>3&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x3;</td>
+						<td class="danger">%03</td>
+						<td class="danger">%03</td>
+						<td class="info"></td>
+						<td class="info">\x03</td>
+					</tr>
+				
+					<tr>
+						<td>4&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x4;</td>
+						<td class="danger">%04</td>
+						<td class="danger">%04</td>
+						<td class="info"></td>
+						<td class="info">\x04</td>
+					</tr>
+				
+					<tr>
+						<td>5&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x5;</td>
+						<td class="danger">%05</td>
+						<td class="danger">%05</td>
+						<td class="info"></td>
+						<td class="info">\x05</td>
+					</tr>
+				
+					<tr>
+						<td>6&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x6;</td>
+						<td class="danger">%06</td>
+						<td class="danger">%06</td>
+						<td class="info"></td>
+						<td class="info">\x06</td>
+					</tr>
+				
+					<tr>
+						<td>7&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x7;</td>
+						<td class="danger">%07</td>
+						<td class="danger">%07</td>
+						<td class="info"></td>
+						<td class="info">\x07</td>
+					</tr>
+				
+					<tr>
+						<td>8&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x8;</td>
+						<td class="danger">%08</td>
+						<td class="danger">%08</td>
+						<td class="info">\b</td>
+						<td class="info">\x08</td>
+					</tr>
+				
+					<tr>
+						<td>9&nbsp;:&nbsp;	</td>
+						<td class="success">	</td>
+						<td class="success">&amp;#x9;</td>
+						<td class="success">&amp;#x9;</td>
+						<td class="warning">	</td>
+						<td class="warning">	</td>
+						<td class="danger">%09</td>
+						<td class="danger">%09</td>
+						<td class="info">\t</td>
+						<td class="info">\x09</td>
+					</tr>
+				
+					<tr>
+						<td>10&nbsp;:&nbsp;
 </td>
-							<td>
+						<td class="success">
 </td>
-							<td>&amp;#xa;</td>
-							<td>&amp;#xa;</td>
-							<td>
+						<td class="success">&amp;#xa;</td>
+						<td class="success">&amp;#xa;</td>
+						<td class="warning">
 </td>
-							<td>&amp;#xa;</td>
-							<td>%0A</td>
-							<td>%0A</td>
-							<td>\n</td>
-							<td>\x0A</td>
-						</tr>
-					
-						<tr>
-							<td>11&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#xb;</td>
-							<td>%0B</td>
-							<td>%0B</td>
-							<td></td>
-							<td>\x0B</td>
-						</tr>
-					
-						<tr>
-							<td>12&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#xc;</td>
-							<td>%0C</td>
-							<td>%0C</td>
-							<td>\f</td>
-							<td>\x0C</td>
-						</tr>
-					
-						<tr>
-							<td>13&nbsp;:&nbsp;
+						<td class="warning">&amp;#xa;</td>
+						<td class="danger">%0A</td>
+						<td class="danger">%0A</td>
+						<td class="info">\n</td>
+						<td class="info">\x0A</td>
+					</tr>
+				
+					<tr>
+						<td>11&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#xb;</td>
+						<td class="danger">%0B</td>
+						<td class="danger">%0B</td>
+						<td class="info"></td>
+						<td class="info">\x0B</td>
+					</tr>
+				
+					<tr>
+						<td>12&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#xc;</td>
+						<td class="danger">%0C</td>
+						<td class="danger">%0C</td>
+						<td class="info">\f</td>
+						<td class="info">\x0C</td>
+					</tr>
+				
+					<tr>
+						<td>13&nbsp;:&nbsp;
 </td>
-							<td></td>
-							<td>&amp;#xd;</td>
-							<td>&amp;#xd;</td>
-							<td></td>
-							<td>&amp;#xd;</td>
-							<td>%0D</td>
-							<td>%0D</td>
-							<td>\r</td>
-							<td>\x0D</td>
-						</tr>
-					
-						<tr>
-							<td>14&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#xe;</td>
-							<td>%0E</td>
-							<td>%0E</td>
-							<td></td>
-							<td>\x0E</td>
-						</tr>
-					
-						<tr>
-							<td>15&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#xf;</td>
-							<td>%0F</td>
-							<td>%0F</td>
-							<td></td>
-							<td>\x0F</td>
-						</tr>
-					
-						<tr>
-							<td>16&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x10;</td>
-							<td>%10</td>
-							<td>%10</td>
-							<td></td>
-							<td>\x10</td>
-						</tr>
-					
-						<tr>
-							<td>17&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x11;</td>
-							<td>%11</td>
-							<td>%11</td>
-							<td></td>
-							<td>\x11</td>
-						</tr>
-					
-						<tr>
-							<td>18&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x12;</td>
-							<td>%12</td>
-							<td>%12</td>
-							<td></td>
-							<td>\x12</td>
-						</tr>
-					
-						<tr>
-							<td>19&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x13;</td>
-							<td>%13</td>
-							<td>%13</td>
-							<td></td>
-							<td>\x13</td>
-						</tr>
-					
-						<tr>
-							<td>20&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x14;</td>
-							<td>%14</td>
-							<td>%14</td>
-							<td></td>
-							<td>\x14</td>
-						</tr>
-					
-						<tr>
-							<td>21&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x15;</td>
-							<td>%15</td>
-							<td>%15</td>
-							<td></td>
-							<td>\x15</td>
-						</tr>
-					
-						<tr>
-							<td>22&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x16;</td>
-							<td>%16</td>
-							<td>%16</td>
-							<td></td>
-							<td>\x16</td>
-						</tr>
-					
-						<tr>
-							<td>23&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x17;</td>
-							<td>%17</td>
-							<td>%17</td>
-							<td></td>
-							<td>\x17</td>
-						</tr>
-					
-						<tr>
-							<td>24&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x18;</td>
-							<td>%18</td>
-							<td>%18</td>
-							<td></td>
-							<td>\x18</td>
-						</tr>
-					
-						<tr>
-							<td>25&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x19;</td>
-							<td>%19</td>
-							<td>%19</td>
-							<td></td>
-							<td>\x19</td>
-						</tr>
-					
-						<tr>
-							<td>26&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x1a;</td>
-							<td>%1A</td>
-							<td>%1A</td>
-							<td></td>
-							<td>\x1A</td>
-						</tr>
-					
-						<tr>
-							<td>27&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x1b;</td>
-							<td>%1B</td>
-							<td>%1B</td>
-							<td></td>
-							<td>\x1B</td>
-						</tr>
-					
-						<tr>
-							<td>28&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x1c;</td>
-							<td>%1C</td>
-							<td>%1C</td>
-							<td></td>
-							<td>\x1C</td>
-						</tr>
-					
-						<tr>
-							<td>29&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x1d;</td>
-							<td>%1D</td>
-							<td>%1D</td>
-							<td></td>
-							<td>\x1D</td>
-						</tr>
-					
-						<tr>
-							<td>30&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x1e;</td>
-							<td>%1E</td>
-							<td>%1E</td>
-							<td></td>
-							<td>\x1E</td>
-						</tr>
-					
-						<tr>
-							<td>31&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x1f;</td>
-							<td>%1F</td>
-							<td>%1F</td>
-							<td></td>
-							<td>\x1F</td>
-						</tr>
-					
-						<tr>
-							<td>32&nbsp;:&nbsp; </td>
-							<td> </td>
-							<td> </td>
-							<td>&amp;#x20;</td>
-							<td> </td>
-							<td> </td>
-							<td>%20</td>
-							<td>+</td>
-							<td> </td>
-							<td>\x20</td>
-						</tr>
-					
-						<tr>
-							<td>33&nbsp;:&nbsp;!</td>
-							<td>!</td>
-							<td>&amp;#x21;</td>
-							<td>&amp;#x21;</td>
-							<td>!</td>
-							<td>&amp;#x21;</td>
-							<td>%21</td>
-							<td>%21</td>
-							<td>!</td>
-							<td>\x21</td>
-						</tr>
-					
-						<tr>
-							<td>34&nbsp;:&nbsp;"</td>
-							<td>&amp;quot;</td>
-							<td>&amp;quot;</td>
-							<td>&amp;quot;</td>
-							<td>&amp;quot;</td>
-							<td>&amp;#x22;</td>
-							<td>%22</td>
-							<td>%22</td>
-							<td>\"</td>
-							<td>\x22</td>
-						</tr>
-					
-						<tr>
-							<td>35&nbsp;:&nbsp;#</td>
-							<td>#</td>
-							<td>&amp;#x23;</td>
-							<td>&amp;#x23;</td>
-							<td>#</td>
-							<td>&amp;#x23;</td>
-							<td>%23</td>
-							<td>%23</td>
-							<td>#</td>
-							<td>\x23</td>
-						</tr>
-					
-						<tr>
-							<td>36&nbsp;:&nbsp;$</td>
-							<td>$</td>
-							<td>&amp;#x24;</td>
-							<td>&amp;#x24;</td>
-							<td>$</td>
-							<td>&amp;#x24;</td>
-							<td>%24</td>
-							<td>%24</td>
-							<td>$</td>
-							<td>\x24</td>
-						</tr>
-					
-						<tr>
-							<td>37&nbsp;:&nbsp;%</td>
-							<td>%</td>
-							<td>&amp;#x25;</td>
-							<td>&amp;#x25;</td>
-							<td>%</td>
-							<td>&amp;#x25;</td>
-							<td>%25</td>
-							<td>%25</td>
-							<td>%</td>
-							<td>\x25</td>
-						</tr>
-					
-						<tr>
-							<td>38&nbsp;:&nbsp;&</td>
-							<td>&amp;amp;</td>
-							<td>&amp;amp;</td>
-							<td>&amp;amp;</td>
-							<td>&amp;amp;</td>
-							<td>&amp;#x26;</td>
-							<td>%26</td>
-							<td>%26</td>
-							<td>&</td>
-							<td>\x26</td>
-						</tr>
-					
-						<tr>
-							<td>39&nbsp;:&nbsp;'</td>
-							<td>'</td>
-							<td>&amp;#x27;</td>
-							<td>&amp;#x27;</td>
-							<td>&amp;apos;</td>
-							<td>&amp;#x27;</td>
-							<td>%27</td>
-							<td>%27</td>
-							<td>\'</td>
-							<td>\x27</td>
-						</tr>
-					
-						<tr>
-							<td>40&nbsp;:&nbsp;(</td>
-							<td>(</td>
-							<td>&amp;#x28;</td>
-							<td>&amp;#x28;</td>
-							<td>(</td>
-							<td>&amp;#x28;</td>
-							<td>%28</td>
-							<td>%28</td>
-							<td>(</td>
-							<td>\x28</td>
-						</tr>
-					
-						<tr>
-							<td>41&nbsp;:&nbsp;)</td>
-							<td>)</td>
-							<td>&amp;#x29;</td>
-							<td>&amp;#x29;</td>
-							<td>)</td>
-							<td>&amp;#x29;</td>
-							<td>%29</td>
-							<td>%29</td>
-							<td>)</td>
-							<td>\x29</td>
-						</tr>
-					
-						<tr>
-							<td>42&nbsp;:&nbsp;*</td>
-							<td>*</td>
-							<td>&amp;#x2a;</td>
-							<td>&amp;#x2a;</td>
-							<td>*</td>
-							<td>&amp;#x2a;</td>
-							<td>%2A</td>
-							<td>*</td>
-							<td>*</td>
-							<td>\x2A</td>
-						</tr>
-					
-						<tr>
-							<td>43&nbsp;:&nbsp;+</td>
-							<td>+</td>
-							<td>&amp;#x2b;</td>
-							<td>&amp;#x2b;</td>
-							<td>+</td>
-							<td>&amp;#x2b;</td>
-							<td>%2B</td>
-							<td>%2B</td>
-							<td>+</td>
-							<td>\x2B</td>
-						</tr>
-					
-						<tr>
-							<td>44&nbsp;:&nbsp;,</td>
-							<td>,</td>
-							<td>,</td>
-							<td>,</td>
-							<td>,</td>
-							<td>,</td>
-							<td>%2C</td>
-							<td>%2C</td>
-							<td>,</td>
-							<td>,</td>
-						</tr>
-					
-						<tr>
-							<td>45&nbsp;:&nbsp;-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>%2D</td>
-							<td>-</td>
-							<td>-</td>
-							<td>\x2D</td>
-						</tr>
-					
-						<tr>
-							<td>46&nbsp;:&nbsp;.</td>
-							<td>.</td>
-							<td>.</td>
-							<td>.</td>
-							<td>.</td>
-							<td>.</td>
-							<td>%2E</td>
-							<td>.</td>
-							<td>.</td>
-							<td>.</td>
-						</tr>
-					
-						<tr>
-							<td>47&nbsp;:&nbsp;/</td>
-							<td>/</td>
-							<td>&amp;#x2f;</td>
-							<td>&amp;#x2f;</td>
-							<td>/</td>
-							<td>&amp;#x2f;</td>
-							<td>%2F</td>
-							<td>%2F</td>
-							<td>/</td>
-							<td>\x2F</td>
-						</tr>
-					
-						<tr>
-							<td>48&nbsp;:&nbsp;0</td>
-							<td>0</td>
-							<td>0</td>
-							<td>0</td>
-							<td>0</td>
-							<td>0</td>
-							<td>0</td>
-							<td>0</td>
-							<td>0</td>
-							<td>0</td>
-						</tr>
-					
-						<tr>
-							<td>49&nbsp;:&nbsp;1</td>
-							<td>1</td>
-							<td>1</td>
-							<td>1</td>
-							<td>1</td>
-							<td>1</td>
-							<td>1</td>
-							<td>1</td>
-							<td>1</td>
-							<td>1</td>
-						</tr>
-					
-						<tr>
-							<td>50&nbsp;:&nbsp;2</td>
-							<td>2</td>
-							<td>2</td>
-							<td>2</td>
-							<td>2</td>
-							<td>2</td>
-							<td>2</td>
-							<td>2</td>
-							<td>2</td>
-							<td>2</td>
-						</tr>
-					
-						<tr>
-							<td>51&nbsp;:&nbsp;3</td>
-							<td>3</td>
-							<td>3</td>
-							<td>3</td>
-							<td>3</td>
-							<td>3</td>
-							<td>3</td>
-							<td>3</td>
-							<td>3</td>
-							<td>3</td>
-						</tr>
-					
-						<tr>
-							<td>52&nbsp;:&nbsp;4</td>
-							<td>4</td>
-							<td>4</td>
-							<td>4</td>
-							<td>4</td>
-							<td>4</td>
-							<td>4</td>
-							<td>4</td>
-							<td>4</td>
-							<td>4</td>
-						</tr>
-					
-						<tr>
-							<td>53&nbsp;:&nbsp;5</td>
-							<td>5</td>
-							<td>5</td>
-							<td>5</td>
-							<td>5</td>
-							<td>5</td>
-							<td>5</td>
-							<td>5</td>
-							<td>5</td>
-							<td>5</td>
-						</tr>
-					
-						<tr>
-							<td>54&nbsp;:&nbsp;6</td>
-							<td>6</td>
-							<td>6</td>
-							<td>6</td>
-							<td>6</td>
-							<td>6</td>
-							<td>6</td>
-							<td>6</td>
-							<td>6</td>
-							<td>6</td>
-						</tr>
-					
-						<tr>
-							<td>55&nbsp;:&nbsp;7</td>
-							<td>7</td>
-							<td>7</td>
-							<td>7</td>
-							<td>7</td>
-							<td>7</td>
-							<td>7</td>
-							<td>7</td>
-							<td>7</td>
-							<td>7</td>
-						</tr>
-					
-						<tr>
-							<td>56&nbsp;:&nbsp;8</td>
-							<td>8</td>
-							<td>8</td>
-							<td>8</td>
-							<td>8</td>
-							<td>8</td>
-							<td>8</td>
-							<td>8</td>
-							<td>8</td>
-							<td>8</td>
-						</tr>
-					
-						<tr>
-							<td>57&nbsp;:&nbsp;9</td>
-							<td>9</td>
-							<td>9</td>
-							<td>9</td>
-							<td>9</td>
-							<td>9</td>
-							<td>9</td>
-							<td>9</td>
-							<td>9</td>
-							<td>9</td>
-						</tr>
-					
-						<tr>
-							<td>58&nbsp;:&nbsp;:</td>
-							<td>:</td>
-							<td>&amp;#x3a;</td>
-							<td>&amp;#x3a;</td>
-							<td>:</td>
-							<td>&amp;#x3a;</td>
-							<td>%3A</td>
-							<td>%3A</td>
-							<td>:</td>
-							<td>\x3A</td>
-						</tr>
-					
-						<tr>
-							<td>59&nbsp;:&nbsp;;</td>
-							<td>;</td>
-							<td>&amp;#x3b;</td>
-							<td>&amp;#x3b;</td>
-							<td>;</td>
-							<td>&amp;#x3b;</td>
-							<td>%3B</td>
-							<td>%3B</td>
-							<td>;</td>
-							<td>\x3B</td>
-						</tr>
-					
-						<tr>
-							<td>60&nbsp;:&nbsp;<</td>
-							<td>&amp;lt;</td>
-							<td>&amp;lt;</td>
-							<td>&amp;lt;</td>
-							<td>&amp;lt;</td>
-							<td>&amp;#x3c;</td>
-							<td>%3C</td>
-							<td>%3C</td>
-							<td><</td>
-							<td>\x3C</td>
-						</tr>
-					
-						<tr>
-							<td>61&nbsp;:&nbsp;=</td>
-							<td>=</td>
-							<td>&amp;#x3d;</td>
-							<td>&amp;#x3d;</td>
-							<td>=</td>
-							<td>&amp;#x3d;</td>
-							<td>%3D</td>
-							<td>%3D</td>
-							<td>=</td>
-							<td>\x3D</td>
-						</tr>
-					
-						<tr>
-							<td>62&nbsp;:&nbsp;></td>
-							<td>&amp;gt;</td>
-							<td>&amp;gt;</td>
-							<td>&amp;gt;</td>
-							<td>&amp;gt;</td>
-							<td>&amp;#x3e;</td>
-							<td>%3E</td>
-							<td>%3E</td>
-							<td>></td>
-							<td>\x3E</td>
-						</tr>
-					
-						<tr>
-							<td>63&nbsp;:&nbsp;?</td>
-							<td>?</td>
-							<td>&amp;#x3f;</td>
-							<td>&amp;#x3f;</td>
-							<td>?</td>
-							<td>&amp;#x3f;</td>
-							<td>%3F</td>
-							<td>%3F</td>
-							<td>?</td>
-							<td>\x3F</td>
-						</tr>
-					
-						<tr>
-							<td>64&nbsp;:&nbsp;@</td>
-							<td>@</td>
-							<td>&amp;#x40;</td>
-							<td>&amp;#x40;</td>
-							<td>@</td>
-							<td>&amp;#x40;</td>
-							<td>%40</td>
-							<td>%40</td>
-							<td>@</td>
-							<td>\x40</td>
-						</tr>
-					
-						<tr>
-							<td>65&nbsp;:&nbsp;A</td>
-							<td>A</td>
-							<td>A</td>
-							<td>A</td>
-							<td>A</td>
-							<td>A</td>
-							<td>A</td>
-							<td>A</td>
-							<td>A</td>
-							<td>A</td>
-						</tr>
-					
-						<tr>
-							<td>66&nbsp;:&nbsp;B</td>
-							<td>B</td>
-							<td>B</td>
-							<td>B</td>
-							<td>B</td>
-							<td>B</td>
-							<td>B</td>
-							<td>B</td>
-							<td>B</td>
-							<td>B</td>
-						</tr>
-					
-						<tr>
-							<td>67&nbsp;:&nbsp;C</td>
-							<td>C</td>
-							<td>C</td>
-							<td>C</td>
-							<td>C</td>
-							<td>C</td>
-							<td>C</td>
-							<td>C</td>
-							<td>C</td>
-							<td>C</td>
-						</tr>
-					
-						<tr>
-							<td>68&nbsp;:&nbsp;D</td>
-							<td>D</td>
-							<td>D</td>
-							<td>D</td>
-							<td>D</td>
-							<td>D</td>
-							<td>D</td>
-							<td>D</td>
-							<td>D</td>
-							<td>D</td>
-						</tr>
-					
-						<tr>
-							<td>69&nbsp;:&nbsp;E</td>
-							<td>E</td>
-							<td>E</td>
-							<td>E</td>
-							<td>E</td>
-							<td>E</td>
-							<td>E</td>
-							<td>E</td>
-							<td>E</td>
-							<td>E</td>
-						</tr>
-					
-						<tr>
-							<td>70&nbsp;:&nbsp;F</td>
-							<td>F</td>
-							<td>F</td>
-							<td>F</td>
-							<td>F</td>
-							<td>F</td>
-							<td>F</td>
-							<td>F</td>
-							<td>F</td>
-							<td>F</td>
-						</tr>
-					
-						<tr>
-							<td>71&nbsp;:&nbsp;G</td>
-							<td>G</td>
-							<td>G</td>
-							<td>G</td>
-							<td>G</td>
-							<td>G</td>
-							<td>G</td>
-							<td>G</td>
-							<td>G</td>
-							<td>G</td>
-						</tr>
-					
-						<tr>
-							<td>72&nbsp;:&nbsp;H</td>
-							<td>H</td>
-							<td>H</td>
-							<td>H</td>
-							<td>H</td>
-							<td>H</td>
-							<td>H</td>
-							<td>H</td>
-							<td>H</td>
-							<td>H</td>
-						</tr>
-					
-						<tr>
-							<td>73&nbsp;:&nbsp;I</td>
-							<td>I</td>
-							<td>I</td>
-							<td>I</td>
-							<td>I</td>
-							<td>I</td>
-							<td>I</td>
-							<td>I</td>
-							<td>I</td>
-							<td>I</td>
-						</tr>
-					
-						<tr>
-							<td>74&nbsp;:&nbsp;J</td>
-							<td>J</td>
-							<td>J</td>
-							<td>J</td>
-							<td>J</td>
-							<td>J</td>
-							<td>J</td>
-							<td>J</td>
-							<td>J</td>
-							<td>J</td>
-						</tr>
-					
-						<tr>
-							<td>75&nbsp;:&nbsp;K</td>
-							<td>K</td>
-							<td>K</td>
-							<td>K</td>
-							<td>K</td>
-							<td>K</td>
-							<td>K</td>
-							<td>K</td>
-							<td>K</td>
-							<td>K</td>
-						</tr>
-					
-						<tr>
-							<td>76&nbsp;:&nbsp;L</td>
-							<td>L</td>
-							<td>L</td>
-							<td>L</td>
-							<td>L</td>
-							<td>L</td>
-							<td>L</td>
-							<td>L</td>
-							<td>L</td>
-							<td>L</td>
-						</tr>
-					
-						<tr>
-							<td>77&nbsp;:&nbsp;M</td>
-							<td>M</td>
-							<td>M</td>
-							<td>M</td>
-							<td>M</td>
-							<td>M</td>
-							<td>M</td>
-							<td>M</td>
-							<td>M</td>
-							<td>M</td>
-						</tr>
-					
-						<tr>
-							<td>78&nbsp;:&nbsp;N</td>
-							<td>N</td>
-							<td>N</td>
-							<td>N</td>
-							<td>N</td>
-							<td>N</td>
-							<td>N</td>
-							<td>N</td>
-							<td>N</td>
-							<td>N</td>
-						</tr>
-					
-						<tr>
-							<td>79&nbsp;:&nbsp;O</td>
-							<td>O</td>
-							<td>O</td>
-							<td>O</td>
-							<td>O</td>
-							<td>O</td>
-							<td>O</td>
-							<td>O</td>
-							<td>O</td>
-							<td>O</td>
-						</tr>
-					
-						<tr>
-							<td>80&nbsp;:&nbsp;P</td>
-							<td>P</td>
-							<td>P</td>
-							<td>P</td>
-							<td>P</td>
-							<td>P</td>
-							<td>P</td>
-							<td>P</td>
-							<td>P</td>
-							<td>P</td>
-						</tr>
-					
-						<tr>
-							<td>81&nbsp;:&nbsp;Q</td>
-							<td>Q</td>
-							<td>Q</td>
-							<td>Q</td>
-							<td>Q</td>
-							<td>Q</td>
-							<td>Q</td>
-							<td>Q</td>
-							<td>Q</td>
-							<td>Q</td>
-						</tr>
-					
-						<tr>
-							<td>82&nbsp;:&nbsp;R</td>
-							<td>R</td>
-							<td>R</td>
-							<td>R</td>
-							<td>R</td>
-							<td>R</td>
-							<td>R</td>
-							<td>R</td>
-							<td>R</td>
-							<td>R</td>
-						</tr>
-					
-						<tr>
-							<td>83&nbsp;:&nbsp;S</td>
-							<td>S</td>
-							<td>S</td>
-							<td>S</td>
-							<td>S</td>
-							<td>S</td>
-							<td>S</td>
-							<td>S</td>
-							<td>S</td>
-							<td>S</td>
-						</tr>
-					
-						<tr>
-							<td>84&nbsp;:&nbsp;T</td>
-							<td>T</td>
-							<td>T</td>
-							<td>T</td>
-							<td>T</td>
-							<td>T</td>
-							<td>T</td>
-							<td>T</td>
-							<td>T</td>
-							<td>T</td>
-						</tr>
-					
-						<tr>
-							<td>85&nbsp;:&nbsp;U</td>
-							<td>U</td>
-							<td>U</td>
-							<td>U</td>
-							<td>U</td>
-							<td>U</td>
-							<td>U</td>
-							<td>U</td>
-							<td>U</td>
-							<td>U</td>
-						</tr>
-					
-						<tr>
-							<td>86&nbsp;:&nbsp;V</td>
-							<td>V</td>
-							<td>V</td>
-							<td>V</td>
-							<td>V</td>
-							<td>V</td>
-							<td>V</td>
-							<td>V</td>
-							<td>V</td>
-							<td>V</td>
-						</tr>
-					
-						<tr>
-							<td>87&nbsp;:&nbsp;W</td>
-							<td>W</td>
-							<td>W</td>
-							<td>W</td>
-							<td>W</td>
-							<td>W</td>
-							<td>W</td>
-							<td>W</td>
-							<td>W</td>
-							<td>W</td>
-						</tr>
-					
-						<tr>
-							<td>88&nbsp;:&nbsp;X</td>
-							<td>X</td>
-							<td>X</td>
-							<td>X</td>
-							<td>X</td>
-							<td>X</td>
-							<td>X</td>
-							<td>X</td>
-							<td>X</td>
-							<td>X</td>
-						</tr>
-					
-						<tr>
-							<td>89&nbsp;:&nbsp;Y</td>
-							<td>Y</td>
-							<td>Y</td>
-							<td>Y</td>
-							<td>Y</td>
-							<td>Y</td>
-							<td>Y</td>
-							<td>Y</td>
-							<td>Y</td>
-							<td>Y</td>
-						</tr>
-					
-						<tr>
-							<td>90&nbsp;:&nbsp;Z</td>
-							<td>Z</td>
-							<td>Z</td>
-							<td>Z</td>
-							<td>Z</td>
-							<td>Z</td>
-							<td>Z</td>
-							<td>Z</td>
-							<td>Z</td>
-							<td>Z</td>
-						</tr>
-					
-						<tr>
-							<td>91&nbsp;:&nbsp;[</td>
-							<td>[</td>
-							<td>&amp;#x5b;</td>
-							<td>&amp;#x5b;</td>
-							<td>[</td>
-							<td>&amp;#x5b;</td>
-							<td>%5B</td>
-							<td>%5B</td>
-							<td>[</td>
-							<td>\x5B</td>
-						</tr>
-					
-						<tr>
-							<td>92&nbsp;:&nbsp;\</td>
-							<td>\</td>
-							<td>&amp;#x5c;</td>
-							<td>&amp;#x5c;</td>
-							<td>\</td>
-							<td>&amp;#x5c;</td>
-							<td>%5C</td>
-							<td>%5C</td>
-							<td>\\</td>
-							<td>\x5C</td>
-						</tr>
-					
-						<tr>
-							<td>93&nbsp;:&nbsp;]</td>
-							<td>]</td>
-							<td>&amp;#x5d;</td>
-							<td>&amp;#x5d;</td>
-							<td>]</td>
-							<td>&amp;#x5d;</td>
-							<td>%5D</td>
-							<td>%5D</td>
-							<td>]</td>
-							<td>\x5D</td>
-						</tr>
-					
-						<tr>
-							<td>94&nbsp;:&nbsp;^</td>
-							<td>^</td>
-							<td>&amp;#x5e;</td>
-							<td>&amp;#x5e;</td>
-							<td>^</td>
-							<td>&amp;#x5e;</td>
-							<td>%5E</td>
-							<td>%5E</td>
-							<td>^</td>
-							<td>\x5E</td>
-						</tr>
-					
-						<tr>
-							<td>95&nbsp;:&nbsp;_</td>
-							<td>_</td>
-							<td>_</td>
-							<td>_</td>
-							<td>_</td>
-							<td>_</td>
-							<td>%5F</td>
-							<td>_</td>
-							<td>_</td>
-							<td>_</td>
-						</tr>
-					
-						<tr>
-							<td>96&nbsp;:&nbsp;`</td>
-							<td>`</td>
-							<td>&amp;#x60;</td>
-							<td>&amp;#x60;</td>
-							<td>`</td>
-							<td>&amp;#x60;</td>
-							<td>%60</td>
-							<td>%60</td>
-							<td>`</td>
-							<td>\x60</td>
-						</tr>
-					
-						<tr>
-							<td>97&nbsp;:&nbsp;a</td>
-							<td>a</td>
-							<td>a</td>
-							<td>a</td>
-							<td>a</td>
-							<td>a</td>
-							<td>a</td>
-							<td>a</td>
-							<td>a</td>
-							<td>a</td>
-						</tr>
-					
-						<tr>
-							<td>98&nbsp;:&nbsp;b</td>
-							<td>b</td>
-							<td>b</td>
-							<td>b</td>
-							<td>b</td>
-							<td>b</td>
-							<td>b</td>
-							<td>b</td>
-							<td>b</td>
-							<td>b</td>
-						</tr>
-					
-						<tr>
-							<td>99&nbsp;:&nbsp;c</td>
-							<td>c</td>
-							<td>c</td>
-							<td>c</td>
-							<td>c</td>
-							<td>c</td>
-							<td>c</td>
-							<td>c</td>
-							<td>c</td>
-							<td>c</td>
-						</tr>
-					
-						<tr>
-							<td>100&nbsp;:&nbsp;d</td>
-							<td>d</td>
-							<td>d</td>
-							<td>d</td>
-							<td>d</td>
-							<td>d</td>
-							<td>d</td>
-							<td>d</td>
-							<td>d</td>
-							<td>d</td>
-						</tr>
-					
-						<tr>
-							<td>101&nbsp;:&nbsp;e</td>
-							<td>e</td>
-							<td>e</td>
-							<td>e</td>
-							<td>e</td>
-							<td>e</td>
-							<td>e</td>
-							<td>e</td>
-							<td>e</td>
-							<td>e</td>
-						</tr>
-					
-						<tr>
-							<td>102&nbsp;:&nbsp;f</td>
-							<td>f</td>
-							<td>f</td>
-							<td>f</td>
-							<td>f</td>
-							<td>f</td>
-							<td>f</td>
-							<td>f</td>
-							<td>f</td>
-							<td>f</td>
-						</tr>
-					
-						<tr>
-							<td>103&nbsp;:&nbsp;g</td>
-							<td>g</td>
-							<td>g</td>
-							<td>g</td>
-							<td>g</td>
-							<td>g</td>
-							<td>g</td>
-							<td>g</td>
-							<td>g</td>
-							<td>g</td>
-						</tr>
-					
-						<tr>
-							<td>104&nbsp;:&nbsp;h</td>
-							<td>h</td>
-							<td>h</td>
-							<td>h</td>
-							<td>h</td>
-							<td>h</td>
-							<td>h</td>
-							<td>h</td>
-							<td>h</td>
-							<td>h</td>
-						</tr>
-					
-						<tr>
-							<td>105&nbsp;:&nbsp;i</td>
-							<td>i</td>
-							<td>i</td>
-							<td>i</td>
-							<td>i</td>
-							<td>i</td>
-							<td>i</td>
-							<td>i</td>
-							<td>i</td>
-							<td>i</td>
-						</tr>
-					
-						<tr>
-							<td>106&nbsp;:&nbsp;j</td>
-							<td>j</td>
-							<td>j</td>
-							<td>j</td>
-							<td>j</td>
-							<td>j</td>
-							<td>j</td>
-							<td>j</td>
-							<td>j</td>
-							<td>j</td>
-						</tr>
-					
-						<tr>
-							<td>107&nbsp;:&nbsp;k</td>
-							<td>k</td>
-							<td>k</td>
-							<td>k</td>
-							<td>k</td>
-							<td>k</td>
-							<td>k</td>
-							<td>k</td>
-							<td>k</td>
-							<td>k</td>
-						</tr>
-					
-						<tr>
-							<td>108&nbsp;:&nbsp;l</td>
-							<td>l</td>
-							<td>l</td>
-							<td>l</td>
-							<td>l</td>
-							<td>l</td>
-							<td>l</td>
-							<td>l</td>
-							<td>l</td>
-							<td>l</td>
-						</tr>
-					
-						<tr>
-							<td>109&nbsp;:&nbsp;m</td>
-							<td>m</td>
-							<td>m</td>
-							<td>m</td>
-							<td>m</td>
-							<td>m</td>
-							<td>m</td>
-							<td>m</td>
-							<td>m</td>
-							<td>m</td>
-						</tr>
-					
-						<tr>
-							<td>110&nbsp;:&nbsp;n</td>
-							<td>n</td>
-							<td>n</td>
-							<td>n</td>
-							<td>n</td>
-							<td>n</td>
-							<td>n</td>
-							<td>n</td>
-							<td>n</td>
-							<td>n</td>
-						</tr>
-					
-						<tr>
-							<td>111&nbsp;:&nbsp;o</td>
-							<td>o</td>
-							<td>o</td>
-							<td>o</td>
-							<td>o</td>
-							<td>o</td>
-							<td>o</td>
-							<td>o</td>
-							<td>o</td>
-							<td>o</td>
-						</tr>
-					
-						<tr>
-							<td>112&nbsp;:&nbsp;p</td>
-							<td>p</td>
-							<td>p</td>
-							<td>p</td>
-							<td>p</td>
-							<td>p</td>
-							<td>p</td>
-							<td>p</td>
-							<td>p</td>
-							<td>p</td>
-						</tr>
-					
-						<tr>
-							<td>113&nbsp;:&nbsp;q</td>
-							<td>q</td>
-							<td>q</td>
-							<td>q</td>
-							<td>q</td>
-							<td>q</td>
-							<td>q</td>
-							<td>q</td>
-							<td>q</td>
-							<td>q</td>
-						</tr>
-					
-						<tr>
-							<td>114&nbsp;:&nbsp;r</td>
-							<td>r</td>
-							<td>r</td>
-							<td>r</td>
-							<td>r</td>
-							<td>r</td>
-							<td>r</td>
-							<td>r</td>
-							<td>r</td>
-							<td>r</td>
-						</tr>
-					
-						<tr>
-							<td>115&nbsp;:&nbsp;s</td>
-							<td>s</td>
-							<td>s</td>
-							<td>s</td>
-							<td>s</td>
-							<td>s</td>
-							<td>s</td>
-							<td>s</td>
-							<td>s</td>
-							<td>s</td>
-						</tr>
-					
-						<tr>
-							<td>116&nbsp;:&nbsp;t</td>
-							<td>t</td>
-							<td>t</td>
-							<td>t</td>
-							<td>t</td>
-							<td>t</td>
-							<td>t</td>
-							<td>t</td>
-							<td>t</td>
-							<td>t</td>
-						</tr>
-					
-						<tr>
-							<td>117&nbsp;:&nbsp;u</td>
-							<td>u</td>
-							<td>u</td>
-							<td>u</td>
-							<td>u</td>
-							<td>u</td>
-							<td>u</td>
-							<td>u</td>
-							<td>u</td>
-							<td>u</td>
-						</tr>
-					
-						<tr>
-							<td>118&nbsp;:&nbsp;v</td>
-							<td>v</td>
-							<td>v</td>
-							<td>v</td>
-							<td>v</td>
-							<td>v</td>
-							<td>v</td>
-							<td>v</td>
-							<td>v</td>
-							<td>v</td>
-						</tr>
-					
-						<tr>
-							<td>119&nbsp;:&nbsp;w</td>
-							<td>w</td>
-							<td>w</td>
-							<td>w</td>
-							<td>w</td>
-							<td>w</td>
-							<td>w</td>
-							<td>w</td>
-							<td>w</td>
-							<td>w</td>
-						</tr>
-					
-						<tr>
-							<td>120&nbsp;:&nbsp;x</td>
-							<td>x</td>
-							<td>x</td>
-							<td>x</td>
-							<td>x</td>
-							<td>x</td>
-							<td>x</td>
-							<td>x</td>
-							<td>x</td>
-							<td>x</td>
-						</tr>
-					
-						<tr>
-							<td>121&nbsp;:&nbsp;y</td>
-							<td>y</td>
-							<td>y</td>
-							<td>y</td>
-							<td>y</td>
-							<td>y</td>
-							<td>y</td>
-							<td>y</td>
-							<td>y</td>
-							<td>y</td>
-						</tr>
-					
-						<tr>
-							<td>122&nbsp;:&nbsp;z</td>
-							<td>z</td>
-							<td>z</td>
-							<td>z</td>
-							<td>z</td>
-							<td>z</td>
-							<td>z</td>
-							<td>z</td>
-							<td>z</td>
-							<td>z</td>
-						</tr>
-					
-						<tr>
-							<td>123&nbsp;:&nbsp;{</td>
-							<td>{</td>
-							<td>&amp;#x7b;</td>
-							<td>&amp;#x7b;</td>
-							<td>{</td>
-							<td>&amp;#x7b;</td>
-							<td>%7B</td>
-							<td>%7B</td>
-							<td>{</td>
-							<td>\x7B</td>
-						</tr>
-					
-						<tr>
-							<td>124&nbsp;:&nbsp;|</td>
-							<td>|</td>
-							<td>&amp;#x7c;</td>
-							<td>&amp;#x7c;</td>
-							<td>|</td>
-							<td>&amp;#x7c;</td>
-							<td>%7C</td>
-							<td>%7C</td>
-							<td>|</td>
-							<td>\x7C</td>
-						</tr>
-					
-						<tr>
-							<td>125&nbsp;:&nbsp;}</td>
-							<td>}</td>
-							<td>&amp;#x7d;</td>
-							<td>&amp;#x7d;</td>
-							<td>}</td>
-							<td>&amp;#x7d;</td>
-							<td>%7D</td>
-							<td>%7D</td>
-							<td>}</td>
-							<td>\x7D</td>
-						</tr>
-					
-						<tr>
-							<td>126&nbsp;:&nbsp;~</td>
-							<td>~</td>
-							<td>&amp;#x7e;</td>
-							<td>&amp;#x7e;</td>
-							<td>~</td>
-							<td>&amp;#x7e;</td>
-							<td>%7E</td>
-							<td>%7E</td>
-							<td>~</td>
-							<td>\x7E</td>
-						</tr>
-					
-						<tr>
-							<td>127&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x7f;</td>
-							<td>%7F</td>
-							<td>%7F</td>
-							<td></td>
-							<td>\x7F</td>
-						</tr>
-					
-						<tr>
-							<td>128&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x80;</td>
-							<td>%C2%80</td>
-							<td>%C2%80</td>
-							<td></td>
-							<td>\x80</td>
-						</tr>
-					
-						<tr>
-							<td>129&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x81;</td>
-							<td>%C2%81</td>
-							<td>%C2%81</td>
-							<td></td>
-							<td>\x81</td>
-						</tr>
-					
-						<tr>
-							<td>130&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x82;</td>
-							<td>%C2%82</td>
-							<td>%C2%82</td>
-							<td></td>
-							<td>\x82</td>
-						</tr>
-					
-						<tr>
-							<td>131&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x83;</td>
-							<td>%C2%83</td>
-							<td>%C2%83</td>
-							<td></td>
-							<td>\x83</td>
-						</tr>
-					
-						<tr>
-							<td>132&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x84;</td>
-							<td>%C2%84</td>
-							<td>%C2%84</td>
-							<td></td>
-							<td>\x84</td>
-						</tr>
-					
-						<tr>
-							<td>133&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x85;</td>
-							<td>%C2%85</td>
-							<td>%C2%85</td>
-							<td></td>
-							<td>\x85</td>
-						</tr>
-					
-						<tr>
-							<td>134&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x86;</td>
-							<td>%C2%86</td>
-							<td>%C2%86</td>
-							<td></td>
-							<td>\x86</td>
-						</tr>
-					
-						<tr>
-							<td>135&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x87;</td>
-							<td>%C2%87</td>
-							<td>%C2%87</td>
-							<td></td>
-							<td>\x87</td>
-						</tr>
-					
-						<tr>
-							<td>136&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x88;</td>
-							<td>%C2%88</td>
-							<td>%C2%88</td>
-							<td></td>
-							<td>\x88</td>
-						</tr>
-					
-						<tr>
-							<td>137&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x89;</td>
-							<td>%C2%89</td>
-							<td>%C2%89</td>
-							<td></td>
-							<td>\x89</td>
-						</tr>
-					
-						<tr>
-							<td>138&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x8a;</td>
-							<td>%C2%8A</td>
-							<td>%C2%8A</td>
-							<td></td>
-							<td>\x8A</td>
-						</tr>
-					
-						<tr>
-							<td>139&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x8b;</td>
-							<td>%C2%8B</td>
-							<td>%C2%8B</td>
-							<td></td>
-							<td>\x8B</td>
-						</tr>
-					
-						<tr>
-							<td>140&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x8c;</td>
-							<td>%C2%8C</td>
-							<td>%C2%8C</td>
-							<td></td>
-							<td>\x8C</td>
-						</tr>
-					
-						<tr>
-							<td>141&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x8d;</td>
-							<td>%C2%8D</td>
-							<td>%C2%8D</td>
-							<td></td>
-							<td>\x8D</td>
-						</tr>
-					
-						<tr>
-							<td>142&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x8e;</td>
-							<td>%C2%8E</td>
-							<td>%C2%8E</td>
-							<td></td>
-							<td>\x8E</td>
-						</tr>
-					
-						<tr>
-							<td>143&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x8f;</td>
-							<td>%C2%8F</td>
-							<td>%C2%8F</td>
-							<td></td>
-							<td>\x8F</td>
-						</tr>
-					
-						<tr>
-							<td>144&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x90;</td>
-							<td>%C2%90</td>
-							<td>%C2%90</td>
-							<td></td>
-							<td>\x90</td>
-						</tr>
-					
-						<tr>
-							<td>145&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x91;</td>
-							<td>%C2%91</td>
-							<td>%C2%91</td>
-							<td></td>
-							<td>\x91</td>
-						</tr>
-					
-						<tr>
-							<td>146&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x92;</td>
-							<td>%C2%92</td>
-							<td>%C2%92</td>
-							<td></td>
-							<td>\x92</td>
-						</tr>
-					
-						<tr>
-							<td>147&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x93;</td>
-							<td>%C2%93</td>
-							<td>%C2%93</td>
-							<td></td>
-							<td>\x93</td>
-						</tr>
-					
-						<tr>
-							<td>148&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x94;</td>
-							<td>%C2%94</td>
-							<td>%C2%94</td>
-							<td></td>
-							<td>\x94</td>
-						</tr>
-					
-						<tr>
-							<td>149&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x95;</td>
-							<td>%C2%95</td>
-							<td>%C2%95</td>
-							<td></td>
-							<td>\x95</td>
-						</tr>
-					
-						<tr>
-							<td>150&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x96;</td>
-							<td>%C2%96</td>
-							<td>%C2%96</td>
-							<td></td>
-							<td>\x96</td>
-						</tr>
-					
-						<tr>
-							<td>151&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x97;</td>
-							<td>%C2%97</td>
-							<td>%C2%97</td>
-							<td></td>
-							<td>\x97</td>
-						</tr>
-					
-						<tr>
-							<td>152&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x98;</td>
-							<td>%C2%98</td>
-							<td>%C2%98</td>
-							<td></td>
-							<td>\x98</td>
-						</tr>
-					
-						<tr>
-							<td>153&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x99;</td>
-							<td>%C2%99</td>
-							<td>%C2%99</td>
-							<td></td>
-							<td>\x99</td>
-						</tr>
-					
-						<tr>
-							<td>154&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x9a;</td>
-							<td>%C2%9A</td>
-							<td>%C2%9A</td>
-							<td></td>
-							<td>\x9A</td>
-						</tr>
-					
-						<tr>
-							<td>155&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x9b;</td>
-							<td>%C2%9B</td>
-							<td>%C2%9B</td>
-							<td></td>
-							<td>\x9B</td>
-						</tr>
-					
-						<tr>
-							<td>156&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x9c;</td>
-							<td>%C2%9C</td>
-							<td>%C2%9C</td>
-							<td></td>
-							<td>\x9C</td>
-						</tr>
-					
-						<tr>
-							<td>157&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x9d;</td>
-							<td>%C2%9D</td>
-							<td>%C2%9D</td>
-							<td></td>
-							<td>\x9D</td>
-						</tr>
-					
-						<tr>
-							<td>158&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x9e;</td>
-							<td>%C2%9E</td>
-							<td>%C2%9E</td>
-							<td></td>
-							<td>\x9E</td>
-						</tr>
-					
-						<tr>
-							<td>159&nbsp;:&nbsp;</td>
-							<td></td>
-							<td>&amp;#xfffd;</td>
-							<td>&amp;#xfffd;</td>
-							<td></td>
-							<td>&amp;#x9f;</td>
-							<td>%C2%9F</td>
-							<td>%C2%9F</td>
-							<td></td>
-							<td>\x9F</td>
-						</tr>
-					
-						<tr>
-							<td>160&nbsp;:&nbsp; </td>
-							<td> </td>
-							<td>&amp;nbsp;</td>
-							<td>&amp;nbsp;</td>
-							<td>&amp;#xa0;</td>
-							<td>&amp;#xa0;</td>
-							<td>%C2%A0</td>
-							<td>%C2%A0</td>
-							<td> </td>
-							<td>\xA0</td>
-						</tr>
-					
-						<tr>
-							<td>161&nbsp;:&nbsp;¡</td>
-							<td>¡</td>
-							<td>&amp;iexcl;</td>
-							<td>&amp;iexcl;</td>
-							<td>&amp;#xa1;</td>
-							<td>&amp;#xa1;</td>
-							<td>%C2%A1</td>
-							<td>%C2%A1</td>
-							<td>¡</td>
-							<td>\xA1</td>
-						</tr>
-					
-						<tr>
-							<td>162&nbsp;:&nbsp;¢</td>
-							<td>¢</td>
-							<td>&amp;cent;</td>
-							<td>&amp;cent;</td>
-							<td>&amp;#xa2;</td>
-							<td>&amp;#xa2;</td>
-							<td>%C2%A2</td>
-							<td>%C2%A2</td>
-							<td>¢</td>
-							<td>\xA2</td>
-						</tr>
-					
-						<tr>
-							<td>163&nbsp;:&nbsp;£</td>
-							<td>£</td>
-							<td>&amp;pound;</td>
-							<td>&amp;pound;</td>
-							<td>&amp;#xa3;</td>
-							<td>&amp;#xa3;</td>
-							<td>%C2%A3</td>
-							<td>%C2%A3</td>
-							<td>£</td>
-							<td>\xA3</td>
-						</tr>
-					
-						<tr>
-							<td>164&nbsp;:&nbsp;¤</td>
-							<td>¤</td>
-							<td>&amp;curren;</td>
-							<td>&amp;curren;</td>
-							<td>&amp;#xa4;</td>
-							<td>&amp;#xa4;</td>
-							<td>%C2%A4</td>
-							<td>%C2%A4</td>
-							<td>¤</td>
-							<td>\xA4</td>
-						</tr>
-					
-						<tr>
-							<td>165&nbsp;:&nbsp;¥</td>
-							<td>¥</td>
-							<td>&amp;yen;</td>
-							<td>&amp;yen;</td>
-							<td>&amp;#xa5;</td>
-							<td>&amp;#xa5;</td>
-							<td>%C2%A5</td>
-							<td>%C2%A5</td>
-							<td>¥</td>
-							<td>\xA5</td>
-						</tr>
-					
-						<tr>
-							<td>166&nbsp;:&nbsp;¦</td>
-							<td>¦</td>
-							<td>&amp;brvbar;</td>
-							<td>&amp;brvbar;</td>
-							<td>&amp;#xa6;</td>
-							<td>&amp;#xa6;</td>
-							<td>%C2%A6</td>
-							<td>%C2%A6</td>
-							<td>¦</td>
-							<td>\xA6</td>
-						</tr>
-					
-						<tr>
-							<td>167&nbsp;:&nbsp;§</td>
-							<td>§</td>
-							<td>&amp;sect;</td>
-							<td>&amp;sect;</td>
-							<td>&amp;#xa7;</td>
-							<td>&amp;#xa7;</td>
-							<td>%C2%A7</td>
-							<td>%C2%A7</td>
-							<td>§</td>
-							<td>\xA7</td>
-						</tr>
-					
-						<tr>
-							<td>168&nbsp;:&nbsp;¨</td>
-							<td>¨</td>
-							<td>&amp;uml;</td>
-							<td>&amp;uml;</td>
-							<td>&amp;#xa8;</td>
-							<td>&amp;#xa8;</td>
-							<td>%C2%A8</td>
-							<td>%C2%A8</td>
-							<td>¨</td>
-							<td>\xA8</td>
-						</tr>
-					
-						<tr>
-							<td>169&nbsp;:&nbsp;©</td>
-							<td>©</td>
-							<td>&amp;copy;</td>
-							<td>&amp;copy;</td>
-							<td>&amp;#xa9;</td>
-							<td>&amp;#xa9;</td>
-							<td>%C2%A9</td>
-							<td>%C2%A9</td>
-							<td>©</td>
-							<td>\xA9</td>
-						</tr>
-					
-						<tr>
-							<td>170&nbsp;:&nbsp;ª</td>
-							<td>ª</td>
-							<td>&amp;ordf;</td>
-							<td>&amp;ordf;</td>
-							<td>&amp;#xaa;</td>
-							<td>&amp;#xaa;</td>
-							<td>%C2%AA</td>
-							<td>%C2%AA</td>
-							<td>ª</td>
-							<td>\xAA</td>
-						</tr>
-					
-						<tr>
-							<td>171&nbsp;:&nbsp;«</td>
-							<td>«</td>
-							<td>&amp;laquo;</td>
-							<td>&amp;laquo;</td>
-							<td>&amp;#xab;</td>
-							<td>&amp;#xab;</td>
-							<td>%C2%AB</td>
-							<td>%C2%AB</td>
-							<td>«</td>
-							<td>\xAB</td>
-						</tr>
-					
-						<tr>
-							<td>172&nbsp;:&nbsp;¬</td>
-							<td>¬</td>
-							<td>&amp;not;</td>
-							<td>&amp;not;</td>
-							<td>&amp;#xac;</td>
-							<td>&amp;#xac;</td>
-							<td>%C2%AC</td>
-							<td>%C2%AC</td>
-							<td>¬</td>
-							<td>\xAC</td>
-						</tr>
-					
-						<tr>
-							<td>173&nbsp;:&nbsp;­</td>
-							<td>­</td>
-							<td>&amp;shy;</td>
-							<td>&amp;shy;</td>
-							<td>&amp;#xad;</td>
-							<td>&amp;#xad;</td>
-							<td>%C2%AD</td>
-							<td>%C2%AD</td>
-							<td>­</td>
-							<td>\xAD</td>
-						</tr>
-					
-						<tr>
-							<td>174&nbsp;:&nbsp;®</td>
-							<td>®</td>
-							<td>&amp;reg;</td>
-							<td>&amp;reg;</td>
-							<td>&amp;#xae;</td>
-							<td>&amp;#xae;</td>
-							<td>%C2%AE</td>
-							<td>%C2%AE</td>
-							<td>®</td>
-							<td>\xAE</td>
-						</tr>
-					
-						<tr>
-							<td>175&nbsp;:&nbsp;¯</td>
-							<td>¯</td>
-							<td>&amp;macr;</td>
-							<td>&amp;macr;</td>
-							<td>&amp;#xaf;</td>
-							<td>&amp;#xaf;</td>
-							<td>%C2%AF</td>
-							<td>%C2%AF</td>
-							<td>¯</td>
-							<td>\xAF</td>
-						</tr>
-					
-						<tr>
-							<td>176&nbsp;:&nbsp;°</td>
-							<td>°</td>
-							<td>&amp;deg;</td>
-							<td>&amp;deg;</td>
-							<td>&amp;#xb0;</td>
-							<td>&amp;#xb0;</td>
-							<td>%C2%B0</td>
-							<td>%C2%B0</td>
-							<td>°</td>
-							<td>\xB0</td>
-						</tr>
-					
-						<tr>
-							<td>177&nbsp;:&nbsp;±</td>
-							<td>±</td>
-							<td>&amp;plusmn;</td>
-							<td>&amp;plusmn;</td>
-							<td>&amp;#xb1;</td>
-							<td>&amp;#xb1;</td>
-							<td>%C2%B1</td>
-							<td>%C2%B1</td>
-							<td>±</td>
-							<td>\xB1</td>
-						</tr>
-					
-						<tr>
-							<td>178&nbsp;:&nbsp;²</td>
-							<td>²</td>
-							<td>&amp;sup2;</td>
-							<td>&amp;sup2;</td>
-							<td>&amp;#xb2;</td>
-							<td>&amp;#xb2;</td>
-							<td>%C2%B2</td>
-							<td>%C2%B2</td>
-							<td>²</td>
-							<td>\xB2</td>
-						</tr>
-					
-						<tr>
-							<td>179&nbsp;:&nbsp;³</td>
-							<td>³</td>
-							<td>&amp;sup3;</td>
-							<td>&amp;sup3;</td>
-							<td>&amp;#xb3;</td>
-							<td>&amp;#xb3;</td>
-							<td>%C2%B3</td>
-							<td>%C2%B3</td>
-							<td>³</td>
-							<td>\xB3</td>
-						</tr>
-					
-						<tr>
-							<td>180&nbsp;:&nbsp;´</td>
-							<td>´</td>
-							<td>&amp;acute;</td>
-							<td>&amp;acute;</td>
-							<td>&amp;#xb4;</td>
-							<td>&amp;#xb4;</td>
-							<td>%C2%B4</td>
-							<td>%C2%B4</td>
-							<td>´</td>
-							<td>\xB4</td>
-						</tr>
-					
-						<tr>
-							<td>181&nbsp;:&nbsp;µ</td>
-							<td>µ</td>
-							<td>&amp;micro;</td>
-							<td>&amp;micro;</td>
-							<td>&amp;#xb5;</td>
-							<td>&amp;#xb5;</td>
-							<td>%C2%B5</td>
-							<td>%C2%B5</td>
-							<td>µ</td>
-							<td>\xB5</td>
-						</tr>
-					
-						<tr>
-							<td>182&nbsp;:&nbsp;¶</td>
-							<td>¶</td>
-							<td>&amp;para;</td>
-							<td>&amp;para;</td>
-							<td>&amp;#xb6;</td>
-							<td>&amp;#xb6;</td>
-							<td>%C2%B6</td>
-							<td>%C2%B6</td>
-							<td>¶</td>
-							<td>\xB6</td>
-						</tr>
-					
-						<tr>
-							<td>183&nbsp;:&nbsp;·</td>
-							<td>·</td>
-							<td>&amp;middot;</td>
-							<td>&amp;middot;</td>
-							<td>&amp;#xb7;</td>
-							<td>&amp;#xb7;</td>
-							<td>%C2%B7</td>
-							<td>%C2%B7</td>
-							<td>·</td>
-							<td>\xB7</td>
-						</tr>
-					
-						<tr>
-							<td>184&nbsp;:&nbsp;¸</td>
-							<td>¸</td>
-							<td>&amp;cedil;</td>
-							<td>&amp;cedil;</td>
-							<td>&amp;#xb8;</td>
-							<td>&amp;#xb8;</td>
-							<td>%C2%B8</td>
-							<td>%C2%B8</td>
-							<td>¸</td>
-							<td>\xB8</td>
-						</tr>
-					
-						<tr>
-							<td>185&nbsp;:&nbsp;¹</td>
-							<td>¹</td>
-							<td>&amp;sup1;</td>
-							<td>&amp;sup1;</td>
-							<td>&amp;#xb9;</td>
-							<td>&amp;#xb9;</td>
-							<td>%C2%B9</td>
-							<td>%C2%B9</td>
-							<td>¹</td>
-							<td>\xB9</td>
-						</tr>
-					
-						<tr>
-							<td>186&nbsp;:&nbsp;º</td>
-							<td>º</td>
-							<td>&amp;ordm;</td>
-							<td>&amp;ordm;</td>
-							<td>&amp;#xba;</td>
-							<td>&amp;#xba;</td>
-							<td>%C2%BA</td>
-							<td>%C2%BA</td>
-							<td>º</td>
-							<td>\xBA</td>
-						</tr>
-					
-						<tr>
-							<td>187&nbsp;:&nbsp;»</td>
-							<td>»</td>
-							<td>&amp;raquo;</td>
-							<td>&amp;raquo;</td>
-							<td>&amp;#xbb;</td>
-							<td>&amp;#xbb;</td>
-							<td>%C2%BB</td>
-							<td>%C2%BB</td>
-							<td>»</td>
-							<td>\xBB</td>
-						</tr>
-					
-						<tr>
-							<td>188&nbsp;:&nbsp;¼</td>
-							<td>¼</td>
-							<td>&amp;frac14;</td>
-							<td>&amp;frac14;</td>
-							<td>&amp;#xbc;</td>
-							<td>&amp;#xbc;</td>
-							<td>%C2%BC</td>
-							<td>%C2%BC</td>
-							<td>¼</td>
-							<td>\xBC</td>
-						</tr>
-					
-						<tr>
-							<td>189&nbsp;:&nbsp;½</td>
-							<td>½</td>
-							<td>&amp;frac12;</td>
-							<td>&amp;frac12;</td>
-							<td>&amp;#xbd;</td>
-							<td>&amp;#xbd;</td>
-							<td>%C2%BD</td>
-							<td>%C2%BD</td>
-							<td>½</td>
-							<td>\xBD</td>
-						</tr>
-					
-						<tr>
-							<td>190&nbsp;:&nbsp;¾</td>
-							<td>¾</td>
-							<td>&amp;frac34;</td>
-							<td>&amp;frac34;</td>
-							<td>&amp;#xbe;</td>
-							<td>&amp;#xbe;</td>
-							<td>%C2%BE</td>
-							<td>%C2%BE</td>
-							<td>¾</td>
-							<td>\xBE</td>
-						</tr>
-					
-						<tr>
-							<td>191&nbsp;:&nbsp;¿</td>
-							<td>¿</td>
-							<td>&amp;iquest;</td>
-							<td>&amp;iquest;</td>
-							<td>&amp;#xbf;</td>
-							<td>&amp;#xbf;</td>
-							<td>%C2%BF</td>
-							<td>%C2%BF</td>
-							<td>¿</td>
-							<td>\xBF</td>
-						</tr>
-					
-						<tr>
-							<td>192&nbsp;:&nbsp;À</td>
-							<td>À</td>
-							<td>&amp;Agrave;</td>
-							<td>&amp;Agrave;</td>
-							<td>&amp;#xc0;</td>
-							<td>&amp;#xc0;</td>
-							<td>%C3%80</td>
-							<td>%C3%80</td>
-							<td>À</td>
-							<td>\xC0</td>
-						</tr>
-					
-						<tr>
-							<td>193&nbsp;:&nbsp;Á</td>
-							<td>Á</td>
-							<td>&amp;Aacute;</td>
-							<td>&amp;Aacute;</td>
-							<td>&amp;#xc1;</td>
-							<td>&amp;#xc1;</td>
-							<td>%C3%81</td>
-							<td>%C3%81</td>
-							<td>Á</td>
-							<td>\xC1</td>
-						</tr>
-					
-						<tr>
-							<td>194&nbsp;:&nbsp;Â</td>
-							<td>Â</td>
-							<td>&amp;Acirc;</td>
-							<td>&amp;Acirc;</td>
-							<td>&amp;#xc2;</td>
-							<td>&amp;#xc2;</td>
-							<td>%C3%82</td>
-							<td>%C3%82</td>
-							<td>Â</td>
-							<td>\xC2</td>
-						</tr>
-					
-						<tr>
-							<td>195&nbsp;:&nbsp;Ã</td>
-							<td>Ã</td>
-							<td>&amp;Atilde;</td>
-							<td>&amp;Atilde;</td>
-							<td>&amp;#xc3;</td>
-							<td>&amp;#xc3;</td>
-							<td>%C3%83</td>
-							<td>%C3%83</td>
-							<td>Ã</td>
-							<td>\xC3</td>
-						</tr>
-					
-						<tr>
-							<td>196&nbsp;:&nbsp;Ä</td>
-							<td>Ä</td>
-							<td>&amp;Auml;</td>
-							<td>&amp;Auml;</td>
-							<td>&amp;#xc4;</td>
-							<td>&amp;#xc4;</td>
-							<td>%C3%84</td>
-							<td>%C3%84</td>
-							<td>Ä</td>
-							<td>\xC4</td>
-						</tr>
-					
-						<tr>
-							<td>197&nbsp;:&nbsp;Å</td>
-							<td>Å</td>
-							<td>&amp;Aring;</td>
-							<td>&amp;Aring;</td>
-							<td>&amp;#xc5;</td>
-							<td>&amp;#xc5;</td>
-							<td>%C3%85</td>
-							<td>%C3%85</td>
-							<td>Å</td>
-							<td>\xC5</td>
-						</tr>
-					
-						<tr>
-							<td>198&nbsp;:&nbsp;Æ</td>
-							<td>Æ</td>
-							<td>&amp;AElig;</td>
-							<td>&amp;AElig;</td>
-							<td>&amp;#xc6;</td>
-							<td>&amp;#xc6;</td>
-							<td>%C3%86</td>
-							<td>%C3%86</td>
-							<td>Æ</td>
-							<td>\xC6</td>
-						</tr>
-					
-						<tr>
-							<td>199&nbsp;:&nbsp;Ç</td>
-							<td>Ç</td>
-							<td>&amp;Ccedil;</td>
-							<td>&amp;Ccedil;</td>
-							<td>&amp;#xc7;</td>
-							<td>&amp;#xc7;</td>
-							<td>%C3%87</td>
-							<td>%C3%87</td>
-							<td>Ç</td>
-							<td>\xC7</td>
-						</tr>
-					
-						<tr>
-							<td>200&nbsp;:&nbsp;È</td>
-							<td>È</td>
-							<td>&amp;Egrave;</td>
-							<td>&amp;Egrave;</td>
-							<td>&amp;#xc8;</td>
-							<td>&amp;#xc8;</td>
-							<td>%C3%88</td>
-							<td>%C3%88</td>
-							<td>È</td>
-							<td>\xC8</td>
-						</tr>
-					
-						<tr>
-							<td>201&nbsp;:&nbsp;É</td>
-							<td>É</td>
-							<td>&amp;Eacute;</td>
-							<td>&amp;Eacute;</td>
-							<td>&amp;#xc9;</td>
-							<td>&amp;#xc9;</td>
-							<td>%C3%89</td>
-							<td>%C3%89</td>
-							<td>É</td>
-							<td>\xC9</td>
-						</tr>
-					
-						<tr>
-							<td>202&nbsp;:&nbsp;Ê</td>
-							<td>Ê</td>
-							<td>&amp;Ecirc;</td>
-							<td>&amp;Ecirc;</td>
-							<td>&amp;#xca;</td>
-							<td>&amp;#xca;</td>
-							<td>%C3%8A</td>
-							<td>%C3%8A</td>
-							<td>Ê</td>
-							<td>\xCA</td>
-						</tr>
-					
-						<tr>
-							<td>203&nbsp;:&nbsp;Ë</td>
-							<td>Ë</td>
-							<td>&amp;Euml;</td>
-							<td>&amp;Euml;</td>
-							<td>&amp;#xcb;</td>
-							<td>&amp;#xcb;</td>
-							<td>%C3%8B</td>
-							<td>%C3%8B</td>
-							<td>Ë</td>
-							<td>\xCB</td>
-						</tr>
-					
-						<tr>
-							<td>204&nbsp;:&nbsp;Ì</td>
-							<td>Ì</td>
-							<td>&amp;Igrave;</td>
-							<td>&amp;Igrave;</td>
-							<td>&amp;#xcc;</td>
-							<td>&amp;#xcc;</td>
-							<td>%C3%8C</td>
-							<td>%C3%8C</td>
-							<td>Ì</td>
-							<td>\xCC</td>
-						</tr>
-					
-						<tr>
-							<td>205&nbsp;:&nbsp;Í</td>
-							<td>Í</td>
-							<td>&amp;Iacute;</td>
-							<td>&amp;Iacute;</td>
-							<td>&amp;#xcd;</td>
-							<td>&amp;#xcd;</td>
-							<td>%C3%8D</td>
-							<td>%C3%8D</td>
-							<td>Í</td>
-							<td>\xCD</td>
-						</tr>
-					
-						<tr>
-							<td>206&nbsp;:&nbsp;Î</td>
-							<td>Î</td>
-							<td>&amp;Icirc;</td>
-							<td>&amp;Icirc;</td>
-							<td>&amp;#xce;</td>
-							<td>&amp;#xce;</td>
-							<td>%C3%8E</td>
-							<td>%C3%8E</td>
-							<td>Î</td>
-							<td>\xCE</td>
-						</tr>
-					
-						<tr>
-							<td>207&nbsp;:&nbsp;Ï</td>
-							<td>Ï</td>
-							<td>&amp;Iuml;</td>
-							<td>&amp;Iuml;</td>
-							<td>&amp;#xcf;</td>
-							<td>&amp;#xcf;</td>
-							<td>%C3%8F</td>
-							<td>%C3%8F</td>
-							<td>Ï</td>
-							<td>\xCF</td>
-						</tr>
-					
-						<tr>
-							<td>208&nbsp;:&nbsp;Ð</td>
-							<td>Ð</td>
-							<td>&amp;ETH;</td>
-							<td>&amp;ETH;</td>
-							<td>&amp;#xd0;</td>
-							<td>&amp;#xd0;</td>
-							<td>%C3%90</td>
-							<td>%C3%90</td>
-							<td>Ð</td>
-							<td>\xD0</td>
-						</tr>
-					
-						<tr>
-							<td>209&nbsp;:&nbsp;Ñ</td>
-							<td>Ñ</td>
-							<td>&amp;Ntilde;</td>
-							<td>&amp;Ntilde;</td>
-							<td>&amp;#xd1;</td>
-							<td>&amp;#xd1;</td>
-							<td>%C3%91</td>
-							<td>%C3%91</td>
-							<td>Ñ</td>
-							<td>\xD1</td>
-						</tr>
-					
-						<tr>
-							<td>210&nbsp;:&nbsp;Ò</td>
-							<td>Ò</td>
-							<td>&amp;Ograve;</td>
-							<td>&amp;Ograve;</td>
-							<td>&amp;#xd2;</td>
-							<td>&amp;#xd2;</td>
-							<td>%C3%92</td>
-							<td>%C3%92</td>
-							<td>Ò</td>
-							<td>\xD2</td>
-						</tr>
-					
-						<tr>
-							<td>211&nbsp;:&nbsp;Ó</td>
-							<td>Ó</td>
-							<td>&amp;Oacute;</td>
-							<td>&amp;Oacute;</td>
-							<td>&amp;#xd3;</td>
-							<td>&amp;#xd3;</td>
-							<td>%C3%93</td>
-							<td>%C3%93</td>
-							<td>Ó</td>
-							<td>\xD3</td>
-						</tr>
-					
-						<tr>
-							<td>212&nbsp;:&nbsp;Ô</td>
-							<td>Ô</td>
-							<td>&amp;Ocirc;</td>
-							<td>&amp;Ocirc;</td>
-							<td>&amp;#xd4;</td>
-							<td>&amp;#xd4;</td>
-							<td>%C3%94</td>
-							<td>%C3%94</td>
-							<td>Ô</td>
-							<td>\xD4</td>
-						</tr>
-					
-						<tr>
-							<td>213&nbsp;:&nbsp;Õ</td>
-							<td>Õ</td>
-							<td>&amp;Otilde;</td>
-							<td>&amp;Otilde;</td>
-							<td>&amp;#xd5;</td>
-							<td>&amp;#xd5;</td>
-							<td>%C3%95</td>
-							<td>%C3%95</td>
-							<td>Õ</td>
-							<td>\xD5</td>
-						</tr>
-					
-						<tr>
-							<td>214&nbsp;:&nbsp;Ö</td>
-							<td>Ö</td>
-							<td>&amp;Ouml;</td>
-							<td>&amp;Ouml;</td>
-							<td>&amp;#xd6;</td>
-							<td>&amp;#xd6;</td>
-							<td>%C3%96</td>
-							<td>%C3%96</td>
-							<td>Ö</td>
-							<td>\xD6</td>
-						</tr>
-					
-						<tr>
-							<td>215&nbsp;:&nbsp;×</td>
-							<td>×</td>
-							<td>&amp;times;</td>
-							<td>&amp;times;</td>
-							<td>&amp;#xd7;</td>
-							<td>&amp;#xd7;</td>
-							<td>%C3%97</td>
-							<td>%C3%97</td>
-							<td>×</td>
-							<td>\xD7</td>
-						</tr>
-					
-						<tr>
-							<td>216&nbsp;:&nbsp;Ø</td>
-							<td>Ø</td>
-							<td>&amp;Oslash;</td>
-							<td>&amp;Oslash;</td>
-							<td>&amp;#xd8;</td>
-							<td>&amp;#xd8;</td>
-							<td>%C3%98</td>
-							<td>%C3%98</td>
-							<td>Ø</td>
-							<td>\xD8</td>
-						</tr>
-					
-						<tr>
-							<td>217&nbsp;:&nbsp;Ù</td>
-							<td>Ù</td>
-							<td>&amp;Ugrave;</td>
-							<td>&amp;Ugrave;</td>
-							<td>&amp;#xd9;</td>
-							<td>&amp;#xd9;</td>
-							<td>%C3%99</td>
-							<td>%C3%99</td>
-							<td>Ù</td>
-							<td>\xD9</td>
-						</tr>
-					
-						<tr>
-							<td>218&nbsp;:&nbsp;Ú</td>
-							<td>Ú</td>
-							<td>&amp;Uacute;</td>
-							<td>&amp;Uacute;</td>
-							<td>&amp;#xda;</td>
-							<td>&amp;#xda;</td>
-							<td>%C3%9A</td>
-							<td>%C3%9A</td>
-							<td>Ú</td>
-							<td>\xDA</td>
-						</tr>
-					
-						<tr>
-							<td>219&nbsp;:&nbsp;Û</td>
-							<td>Û</td>
-							<td>&amp;Ucirc;</td>
-							<td>&amp;Ucirc;</td>
-							<td>&amp;#xdb;</td>
-							<td>&amp;#xdb;</td>
-							<td>%C3%9B</td>
-							<td>%C3%9B</td>
-							<td>Û</td>
-							<td>\xDB</td>
-						</tr>
-					
-						<tr>
-							<td>220&nbsp;:&nbsp;Ü</td>
-							<td>Ü</td>
-							<td>&amp;Uuml;</td>
-							<td>&amp;Uuml;</td>
-							<td>&amp;#xdc;</td>
-							<td>&amp;#xdc;</td>
-							<td>%C3%9C</td>
-							<td>%C3%9C</td>
-							<td>Ü</td>
-							<td>\xDC</td>
-						</tr>
-					
-						<tr>
-							<td>221&nbsp;:&nbsp;Ý</td>
-							<td>Ý</td>
-							<td>&amp;Yacute;</td>
-							<td>&amp;Yacute;</td>
-							<td>&amp;#xdd;</td>
-							<td>&amp;#xdd;</td>
-							<td>%C3%9D</td>
-							<td>%C3%9D</td>
-							<td>Ý</td>
-							<td>\xDD</td>
-						</tr>
-					
-						<tr>
-							<td>222&nbsp;:&nbsp;Þ</td>
-							<td>Þ</td>
-							<td>&amp;THORN;</td>
-							<td>&amp;THORN;</td>
-							<td>&amp;#xde;</td>
-							<td>&amp;#xde;</td>
-							<td>%C3%9E</td>
-							<td>%C3%9E</td>
-							<td>Þ</td>
-							<td>\xDE</td>
-						</tr>
-					
-						<tr>
-							<td>223&nbsp;:&nbsp;ß</td>
-							<td>ß</td>
-							<td>&amp;szlig;</td>
-							<td>&amp;szlig;</td>
-							<td>&amp;#xdf;</td>
-							<td>&amp;#xdf;</td>
-							<td>%C3%9F</td>
-							<td>%C3%9F</td>
-							<td>ß</td>
-							<td>\xDF</td>
-						</tr>
-					
-						<tr>
-							<td>224&nbsp;:&nbsp;à</td>
-							<td>à</td>
-							<td>&amp;agrave;</td>
-							<td>&amp;agrave;</td>
-							<td>&amp;#xe0;</td>
-							<td>&amp;#xe0;</td>
-							<td>%C3%A0</td>
-							<td>%C3%A0</td>
-							<td>à</td>
-							<td>\xE0</td>
-						</tr>
-					
-						<tr>
-							<td>225&nbsp;:&nbsp;á</td>
-							<td>á</td>
-							<td>&amp;aacute;</td>
-							<td>&amp;aacute;</td>
-							<td>&amp;#xe1;</td>
-							<td>&amp;#xe1;</td>
-							<td>%C3%A1</td>
-							<td>%C3%A1</td>
-							<td>á</td>
-							<td>\xE1</td>
-						</tr>
-					
-						<tr>
-							<td>226&nbsp;:&nbsp;â</td>
-							<td>â</td>
-							<td>&amp;acirc;</td>
-							<td>&amp;acirc;</td>
-							<td>&amp;#xe2;</td>
-							<td>&amp;#xe2;</td>
-							<td>%C3%A2</td>
-							<td>%C3%A2</td>
-							<td>â</td>
-							<td>\xE2</td>
-						</tr>
-					
-						<tr>
-							<td>227&nbsp;:&nbsp;ã</td>
-							<td>ã</td>
-							<td>&amp;atilde;</td>
-							<td>&amp;atilde;</td>
-							<td>&amp;#xe3;</td>
-							<td>&amp;#xe3;</td>
-							<td>%C3%A3</td>
-							<td>%C3%A3</td>
-							<td>ã</td>
-							<td>\xE3</td>
-						</tr>
-					
-						<tr>
-							<td>228&nbsp;:&nbsp;ä</td>
-							<td>ä</td>
-							<td>&amp;auml;</td>
-							<td>&amp;auml;</td>
-							<td>&amp;#xe4;</td>
-							<td>&amp;#xe4;</td>
-							<td>%C3%A4</td>
-							<td>%C3%A4</td>
-							<td>ä</td>
-							<td>\xE4</td>
-						</tr>
-					
-						<tr>
-							<td>229&nbsp;:&nbsp;å</td>
-							<td>å</td>
-							<td>&amp;aring;</td>
-							<td>&amp;aring;</td>
-							<td>&amp;#xe5;</td>
-							<td>&amp;#xe5;</td>
-							<td>%C3%A5</td>
-							<td>%C3%A5</td>
-							<td>å</td>
-							<td>\xE5</td>
-						</tr>
-					
-						<tr>
-							<td>230&nbsp;:&nbsp;æ</td>
-							<td>æ</td>
-							<td>&amp;aelig;</td>
-							<td>&amp;aelig;</td>
-							<td>&amp;#xe6;</td>
-							<td>&amp;#xe6;</td>
-							<td>%C3%A6</td>
-							<td>%C3%A6</td>
-							<td>æ</td>
-							<td>\xE6</td>
-						</tr>
-					
-						<tr>
-							<td>231&nbsp;:&nbsp;ç</td>
-							<td>ç</td>
-							<td>&amp;ccedil;</td>
-							<td>&amp;ccedil;</td>
-							<td>&amp;#xe7;</td>
-							<td>&amp;#xe7;</td>
-							<td>%C3%A7</td>
-							<td>%C3%A7</td>
-							<td>ç</td>
-							<td>\xE7</td>
-						</tr>
-					
-						<tr>
-							<td>232&nbsp;:&nbsp;è</td>
-							<td>è</td>
-							<td>&amp;egrave;</td>
-							<td>&amp;egrave;</td>
-							<td>&amp;#xe8;</td>
-							<td>&amp;#xe8;</td>
-							<td>%C3%A8</td>
-							<td>%C3%A8</td>
-							<td>è</td>
-							<td>\xE8</td>
-						</tr>
-					
-						<tr>
-							<td>233&nbsp;:&nbsp;é</td>
-							<td>é</td>
-							<td>&amp;eacute;</td>
-							<td>&amp;eacute;</td>
-							<td>&amp;#xe9;</td>
-							<td>&amp;#xe9;</td>
-							<td>%C3%A9</td>
-							<td>%C3%A9</td>
-							<td>é</td>
-							<td>\xE9</td>
-						</tr>
-					
-						<tr>
-							<td>234&nbsp;:&nbsp;ê</td>
-							<td>ê</td>
-							<td>&amp;ecirc;</td>
-							<td>&amp;ecirc;</td>
-							<td>&amp;#xea;</td>
-							<td>&amp;#xea;</td>
-							<td>%C3%AA</td>
-							<td>%C3%AA</td>
-							<td>ê</td>
-							<td>\xEA</td>
-						</tr>
-					
-						<tr>
-							<td>235&nbsp;:&nbsp;ë</td>
-							<td>ë</td>
-							<td>&amp;euml;</td>
-							<td>&amp;euml;</td>
-							<td>&amp;#xeb;</td>
-							<td>&amp;#xeb;</td>
-							<td>%C3%AB</td>
-							<td>%C3%AB</td>
-							<td>ë</td>
-							<td>\xEB</td>
-						</tr>
-					
-						<tr>
-							<td>236&nbsp;:&nbsp;ì</td>
-							<td>ì</td>
-							<td>&amp;igrave;</td>
-							<td>&amp;igrave;</td>
-							<td>&amp;#xec;</td>
-							<td>&amp;#xec;</td>
-							<td>%C3%AC</td>
-							<td>%C3%AC</td>
-							<td>ì</td>
-							<td>\xEC</td>
-						</tr>
-					
-						<tr>
-							<td>237&nbsp;:&nbsp;í</td>
-							<td>í</td>
-							<td>&amp;iacute;</td>
-							<td>&amp;iacute;</td>
-							<td>&amp;#xed;</td>
-							<td>&amp;#xed;</td>
-							<td>%C3%AD</td>
-							<td>%C3%AD</td>
-							<td>í</td>
-							<td>\xED</td>
-						</tr>
-					
-						<tr>
-							<td>238&nbsp;:&nbsp;î</td>
-							<td>î</td>
-							<td>&amp;icirc;</td>
-							<td>&amp;icirc;</td>
-							<td>&amp;#xee;</td>
-							<td>&amp;#xee;</td>
-							<td>%C3%AE</td>
-							<td>%C3%AE</td>
-							<td>î</td>
-							<td>\xEE</td>
-						</tr>
-					
-						<tr>
-							<td>239&nbsp;:&nbsp;ï</td>
-							<td>ï</td>
-							<td>&amp;iuml;</td>
-							<td>&amp;iuml;</td>
-							<td>&amp;#xef;</td>
-							<td>&amp;#xef;</td>
-							<td>%C3%AF</td>
-							<td>%C3%AF</td>
-							<td>ï</td>
-							<td>\xEF</td>
-						</tr>
-					
-						<tr>
-							<td>240&nbsp;:&nbsp;ð</td>
-							<td>ð</td>
-							<td>&amp;eth;</td>
-							<td>&amp;eth;</td>
-							<td>&amp;#xf0;</td>
-							<td>&amp;#xf0;</td>
-							<td>%C3%B0</td>
-							<td>%C3%B0</td>
-							<td>ð</td>
-							<td>\xF0</td>
-						</tr>
-					
-						<tr>
-							<td>241&nbsp;:&nbsp;ñ</td>
-							<td>ñ</td>
-							<td>&amp;ntilde;</td>
-							<td>&amp;ntilde;</td>
-							<td>&amp;#xf1;</td>
-							<td>&amp;#xf1;</td>
-							<td>%C3%B1</td>
-							<td>%C3%B1</td>
-							<td>ñ</td>
-							<td>\xF1</td>
-						</tr>
-					
-						<tr>
-							<td>242&nbsp;:&nbsp;ò</td>
-							<td>ò</td>
-							<td>&amp;ograve;</td>
-							<td>&amp;ograve;</td>
-							<td>&amp;#xf2;</td>
-							<td>&amp;#xf2;</td>
-							<td>%C3%B2</td>
-							<td>%C3%B2</td>
-							<td>ò</td>
-							<td>\xF2</td>
-						</tr>
-					
-						<tr>
-							<td>243&nbsp;:&nbsp;ó</td>
-							<td>ó</td>
-							<td>&amp;oacute;</td>
-							<td>&amp;oacute;</td>
-							<td>&amp;#xf3;</td>
-							<td>&amp;#xf3;</td>
-							<td>%C3%B3</td>
-							<td>%C3%B3</td>
-							<td>ó</td>
-							<td>\xF3</td>
-						</tr>
-					
-						<tr>
-							<td>244&nbsp;:&nbsp;ô</td>
-							<td>ô</td>
-							<td>&amp;ocirc;</td>
-							<td>&amp;ocirc;</td>
-							<td>&amp;#xf4;</td>
-							<td>&amp;#xf4;</td>
-							<td>%C3%B4</td>
-							<td>%C3%B4</td>
-							<td>ô</td>
-							<td>\xF4</td>
-						</tr>
-					
-						<tr>
-							<td>245&nbsp;:&nbsp;õ</td>
-							<td>õ</td>
-							<td>&amp;otilde;</td>
-							<td>&amp;otilde;</td>
-							<td>&amp;#xf5;</td>
-							<td>&amp;#xf5;</td>
-							<td>%C3%B5</td>
-							<td>%C3%B5</td>
-							<td>õ</td>
-							<td>\xF5</td>
-						</tr>
-					
-						<tr>
-							<td>246&nbsp;:&nbsp;ö</td>
-							<td>ö</td>
-							<td>&amp;ouml;</td>
-							<td>&amp;ouml;</td>
-							<td>&amp;#xf6;</td>
-							<td>&amp;#xf6;</td>
-							<td>%C3%B6</td>
-							<td>%C3%B6</td>
-							<td>ö</td>
-							<td>\xF6</td>
-						</tr>
-					
-						<tr>
-							<td>247&nbsp;:&nbsp;÷</td>
-							<td>÷</td>
-							<td>&amp;divide;</td>
-							<td>&amp;divide;</td>
-							<td>&amp;#xf7;</td>
-							<td>&amp;#xf7;</td>
-							<td>%C3%B7</td>
-							<td>%C3%B7</td>
-							<td>÷</td>
-							<td>\xF7</td>
-						</tr>
-					
-						<tr>
-							<td>248&nbsp;:&nbsp;ø</td>
-							<td>ø</td>
-							<td>&amp;oslash;</td>
-							<td>&amp;oslash;</td>
-							<td>&amp;#xf8;</td>
-							<td>&amp;#xf8;</td>
-							<td>%C3%B8</td>
-							<td>%C3%B8</td>
-							<td>ø</td>
-							<td>\xF8</td>
-						</tr>
-					
-						<tr>
-							<td>249&nbsp;:&nbsp;ù</td>
-							<td>ù</td>
-							<td>&amp;ugrave;</td>
-							<td>&amp;ugrave;</td>
-							<td>&amp;#xf9;</td>
-							<td>&amp;#xf9;</td>
-							<td>%C3%B9</td>
-							<td>%C3%B9</td>
-							<td>ù</td>
-							<td>\xF9</td>
-						</tr>
-					
-						<tr>
-							<td>250&nbsp;:&nbsp;ú</td>
-							<td>ú</td>
-							<td>&amp;uacute;</td>
-							<td>&amp;uacute;</td>
-							<td>&amp;#xfa;</td>
-							<td>&amp;#xfa;</td>
-							<td>%C3%BA</td>
-							<td>%C3%BA</td>
-							<td>ú</td>
-							<td>\xFA</td>
-						</tr>
-					
-						<tr>
-							<td>251&nbsp;:&nbsp;û</td>
-							<td>û</td>
-							<td>&amp;ucirc;</td>
-							<td>&amp;ucirc;</td>
-							<td>&amp;#xfb;</td>
-							<td>&amp;#xfb;</td>
-							<td>%C3%BB</td>
-							<td>%C3%BB</td>
-							<td>û</td>
-							<td>\xFB</td>
-						</tr>
-					
-						<tr>
-							<td>252&nbsp;:&nbsp;ü</td>
-							<td>ü</td>
-							<td>&amp;uuml;</td>
-							<td>&amp;uuml;</td>
-							<td>&amp;#xfc;</td>
-							<td>&amp;#xfc;</td>
-							<td>%C3%BC</td>
-							<td>%C3%BC</td>
-							<td>ü</td>
-							<td>\xFC</td>
-						</tr>
-					
-						<tr>
-							<td>253&nbsp;:&nbsp;ý</td>
-							<td>ý</td>
-							<td>&amp;yacute;</td>
-							<td>&amp;yacute;</td>
-							<td>&amp;#xfd;</td>
-							<td>&amp;#xfd;</td>
-							<td>%C3%BD</td>
-							<td>%C3%BD</td>
-							<td>ý</td>
-							<td>\xFD</td>
-						</tr>
-					
-						<tr>
-							<td>254&nbsp;:&nbsp;þ</td>
-							<td>þ</td>
-							<td>&amp;thorn;</td>
-							<td>&amp;thorn;</td>
-							<td>&amp;#xfe;</td>
-							<td>&amp;#xfe;</td>
-							<td>%C3%BE</td>
-							<td>%C3%BE</td>
-							<td>þ</td>
-							<td>\xFE</td>
-						</tr>
-					
-						<tr>
-							<td>255&nbsp;:&nbsp;ÿ</td>
-							<td>ÿ</td>
-							<td>&amp;yuml;</td>
-							<td>&amp;yuml;</td>
-							<td>&amp;#xff;</td>
-							<td>&amp;#xff;</td>
-							<td>%C3%BF</td>
-							<td>%C3%BF</td>
-							<td>ÿ</td>
-							<td>\xFF</td>
-						</tr>
-					
-				</tbody>
-			</table>
-			
-			
-			<!-- END content --><hr/>
-			<footer>
-				<p>Copyright &#169; 2013 OWASP ESAPI4CF</p>
-			</footer>
-		</div>
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-		<script>
-			window.jQuery || document.write('<script src="../js/vendor/jquery-1.10.1.min.js"><\/script>')
-		</script>
-		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-		<script src="../js/plugins.js"></script>
-		<script src="../js/main.js"></script>
-		<script>
-			var _gaq = [['_setAccount', 'UA-828502-5'], ['_trackPageview']];
-			(function(d, t){
-			    var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
-			    g.src = '//www.google-analytics.com/ga.js';
-			    s.parentNode.insertBefore(g, s)
-			}(document, 'script'));
-		</script>
-	</body>
+						<td class="success"></td>
+						<td class="success">&amp;#xd;</td>
+						<td class="success">&amp;#xd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#xd;</td>
+						<td class="danger">%0D</td>
+						<td class="danger">%0D</td>
+						<td class="info">\r</td>
+						<td class="info">\x0D</td>
+					</tr>
+				
+					<tr>
+						<td>14&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#xe;</td>
+						<td class="danger">%0E</td>
+						<td class="danger">%0E</td>
+						<td class="info"></td>
+						<td class="info">\x0E</td>
+					</tr>
+				
+					<tr>
+						<td>15&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#xf;</td>
+						<td class="danger">%0F</td>
+						<td class="danger">%0F</td>
+						<td class="info"></td>
+						<td class="info">\x0F</td>
+					</tr>
+				
+					<tr>
+						<td>16&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x10;</td>
+						<td class="danger">%10</td>
+						<td class="danger">%10</td>
+						<td class="info"></td>
+						<td class="info">\x10</td>
+					</tr>
+				
+					<tr>
+						<td>17&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x11;</td>
+						<td class="danger">%11</td>
+						<td class="danger">%11</td>
+						<td class="info"></td>
+						<td class="info">\x11</td>
+					</tr>
+				
+					<tr>
+						<td>18&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x12;</td>
+						<td class="danger">%12</td>
+						<td class="danger">%12</td>
+						<td class="info"></td>
+						<td class="info">\x12</td>
+					</tr>
+				
+					<tr>
+						<td>19&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x13;</td>
+						<td class="danger">%13</td>
+						<td class="danger">%13</td>
+						<td class="info"></td>
+						<td class="info">\x13</td>
+					</tr>
+				
+					<tr>
+						<td>20&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x14;</td>
+						<td class="danger">%14</td>
+						<td class="danger">%14</td>
+						<td class="info"></td>
+						<td class="info">\x14</td>
+					</tr>
+				
+					<tr>
+						<td>21&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x15;</td>
+						<td class="danger">%15</td>
+						<td class="danger">%15</td>
+						<td class="info"></td>
+						<td class="info">\x15</td>
+					</tr>
+				
+					<tr>
+						<td>22&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x16;</td>
+						<td class="danger">%16</td>
+						<td class="danger">%16</td>
+						<td class="info"></td>
+						<td class="info">\x16</td>
+					</tr>
+				
+					<tr>
+						<td>23&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x17;</td>
+						<td class="danger">%17</td>
+						<td class="danger">%17</td>
+						<td class="info"></td>
+						<td class="info">\x17</td>
+					</tr>
+				
+					<tr>
+						<td>24&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x18;</td>
+						<td class="danger">%18</td>
+						<td class="danger">%18</td>
+						<td class="info"></td>
+						<td class="info">\x18</td>
+					</tr>
+				
+					<tr>
+						<td>25&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x19;</td>
+						<td class="danger">%19</td>
+						<td class="danger">%19</td>
+						<td class="info"></td>
+						<td class="info">\x19</td>
+					</tr>
+				
+					<tr>
+						<td>26&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x1a;</td>
+						<td class="danger">%1A</td>
+						<td class="danger">%1A</td>
+						<td class="info"></td>
+						<td class="info">\x1A</td>
+					</tr>
+				
+					<tr>
+						<td>27&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x1b;</td>
+						<td class="danger">%1B</td>
+						<td class="danger">%1B</td>
+						<td class="info"></td>
+						<td class="info">\x1B</td>
+					</tr>
+				
+					<tr>
+						<td>28&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x1c;</td>
+						<td class="danger">%1C</td>
+						<td class="danger">%1C</td>
+						<td class="info"></td>
+						<td class="info">\x1C</td>
+					</tr>
+				
+					<tr>
+						<td>29&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x1d;</td>
+						<td class="danger">%1D</td>
+						<td class="danger">%1D</td>
+						<td class="info"></td>
+						<td class="info">\x1D</td>
+					</tr>
+				
+					<tr>
+						<td>30&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x1e;</td>
+						<td class="danger">%1E</td>
+						<td class="danger">%1E</td>
+						<td class="info"></td>
+						<td class="info">\x1E</td>
+					</tr>
+				
+					<tr>
+						<td>31&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x1f;</td>
+						<td class="danger">%1F</td>
+						<td class="danger">%1F</td>
+						<td class="info"></td>
+						<td class="info">\x1F</td>
+					</tr>
+				
+					<tr>
+						<td>32&nbsp;:&nbsp; </td>
+						<td class="success"> </td>
+						<td class="success"> </td>
+						<td class="success">&amp;#x20;</td>
+						<td class="warning"> </td>
+						<td class="warning"> </td>
+						<td class="danger">%20</td>
+						<td class="danger">+</td>
+						<td class="info"> </td>
+						<td class="info">\x20</td>
+					</tr>
+				
+					<tr>
+						<td>33&nbsp;:&nbsp;!</td>
+						<td class="success">!</td>
+						<td class="success">&amp;#x21;</td>
+						<td class="success">&amp;#x21;</td>
+						<td class="warning">!</td>
+						<td class="warning">&amp;#x21;</td>
+						<td class="danger">%21</td>
+						<td class="danger">%21</td>
+						<td class="info">!</td>
+						<td class="info">\x21</td>
+					</tr>
+				
+					<tr>
+						<td>34&nbsp;:&nbsp;"</td>
+						<td class="success">&amp;quot;</td>
+						<td class="success">&amp;quot;</td>
+						<td class="success">&amp;quot;</td>
+						<td class="warning">&amp;quot;</td>
+						<td class="warning">&amp;#x22;</td>
+						<td class="danger">%22</td>
+						<td class="danger">%22</td>
+						<td class="info">\"</td>
+						<td class="info">\x22</td>
+					</tr>
+				
+					<tr>
+						<td>35&nbsp;:&nbsp;#</td>
+						<td class="success">#</td>
+						<td class="success">&amp;#x23;</td>
+						<td class="success">&amp;#x23;</td>
+						<td class="warning">#</td>
+						<td class="warning">&amp;#x23;</td>
+						<td class="danger">%23</td>
+						<td class="danger">%23</td>
+						<td class="info">#</td>
+						<td class="info">\x23</td>
+					</tr>
+				
+					<tr>
+						<td>36&nbsp;:&nbsp;$</td>
+						<td class="success">$</td>
+						<td class="success">&amp;#x24;</td>
+						<td class="success">&amp;#x24;</td>
+						<td class="warning">$</td>
+						<td class="warning">&amp;#x24;</td>
+						<td class="danger">%24</td>
+						<td class="danger">%24</td>
+						<td class="info">$</td>
+						<td class="info">\x24</td>
+					</tr>
+				
+					<tr>
+						<td>37&nbsp;:&nbsp;%</td>
+						<td class="success">%</td>
+						<td class="success">&amp;#x25;</td>
+						<td class="success">&amp;#x25;</td>
+						<td class="warning">%</td>
+						<td class="warning">&amp;#x25;</td>
+						<td class="danger">%25</td>
+						<td class="danger">%25</td>
+						<td class="info">%</td>
+						<td class="info">\x25</td>
+					</tr>
+				
+					<tr>
+						<td>38&nbsp;:&nbsp;&</td>
+						<td class="success">&amp;amp;</td>
+						<td class="success">&amp;amp;</td>
+						<td class="success">&amp;amp;</td>
+						<td class="warning">&amp;amp;</td>
+						<td class="warning">&amp;#x26;</td>
+						<td class="danger">%26</td>
+						<td class="danger">%26</td>
+						<td class="info">&</td>
+						<td class="info">\x26</td>
+					</tr>
+				
+					<tr>
+						<td>39&nbsp;:&nbsp;'</td>
+						<td class="success">'</td>
+						<td class="success">&amp;#x27;</td>
+						<td class="success">&amp;#x27;</td>
+						<td class="warning">&amp;apos;</td>
+						<td class="warning">&amp;#x27;</td>
+						<td class="danger">%27</td>
+						<td class="danger">%27</td>
+						<td class="info">\'</td>
+						<td class="info">\x27</td>
+					</tr>
+				
+					<tr>
+						<td>40&nbsp;:&nbsp;(</td>
+						<td class="success">(</td>
+						<td class="success">&amp;#x28;</td>
+						<td class="success">&amp;#x28;</td>
+						<td class="warning">(</td>
+						<td class="warning">&amp;#x28;</td>
+						<td class="danger">%28</td>
+						<td class="danger">%28</td>
+						<td class="info">(</td>
+						<td class="info">\x28</td>
+					</tr>
+				
+					<tr>
+						<td>41&nbsp;:&nbsp;)</td>
+						<td class="success">)</td>
+						<td class="success">&amp;#x29;</td>
+						<td class="success">&amp;#x29;</td>
+						<td class="warning">)</td>
+						<td class="warning">&amp;#x29;</td>
+						<td class="danger">%29</td>
+						<td class="danger">%29</td>
+						<td class="info">)</td>
+						<td class="info">\x29</td>
+					</tr>
+				
+					<tr>
+						<td>42&nbsp;:&nbsp;*</td>
+						<td class="success">*</td>
+						<td class="success">&amp;#x2a;</td>
+						<td class="success">&amp;#x2a;</td>
+						<td class="warning">*</td>
+						<td class="warning">&amp;#x2a;</td>
+						<td class="danger">%2A</td>
+						<td class="danger">*</td>
+						<td class="info">*</td>
+						<td class="info">\x2A</td>
+					</tr>
+				
+					<tr>
+						<td>43&nbsp;:&nbsp;+</td>
+						<td class="success">+</td>
+						<td class="success">&amp;#x2b;</td>
+						<td class="success">&amp;#x2b;</td>
+						<td class="warning">+</td>
+						<td class="warning">&amp;#x2b;</td>
+						<td class="danger">%2B</td>
+						<td class="danger">%2B</td>
+						<td class="info">+</td>
+						<td class="info">\x2B</td>
+					</tr>
+				
+					<tr>
+						<td>44&nbsp;:&nbsp;,</td>
+						<td class="success">,</td>
+						<td class="success">,</td>
+						<td class="success">,</td>
+						<td class="warning">,</td>
+						<td class="warning">,</td>
+						<td class="danger">%2C</td>
+						<td class="danger">%2C</td>
+						<td class="info">,</td>
+						<td class="info">,</td>
+					</tr>
+				
+					<tr>
+						<td>45&nbsp;:&nbsp;-</td>
+						<td class="success">-</td>
+						<td class="success">-</td>
+						<td class="success">-</td>
+						<td class="warning">-</td>
+						<td class="warning">-</td>
+						<td class="danger">%2D</td>
+						<td class="danger">-</td>
+						<td class="info">-</td>
+						<td class="info">\x2D</td>
+					</tr>
+				
+					<tr>
+						<td>46&nbsp;:&nbsp;.</td>
+						<td class="success">.</td>
+						<td class="success">.</td>
+						<td class="success">.</td>
+						<td class="warning">.</td>
+						<td class="warning">.</td>
+						<td class="danger">%2E</td>
+						<td class="danger">.</td>
+						<td class="info">.</td>
+						<td class="info">.</td>
+					</tr>
+				
+					<tr>
+						<td>47&nbsp;:&nbsp;/</td>
+						<td class="success">/</td>
+						<td class="success">&amp;#x2f;</td>
+						<td class="success">&amp;#x2f;</td>
+						<td class="warning">/</td>
+						<td class="warning">&amp;#x2f;</td>
+						<td class="danger">%2F</td>
+						<td class="danger">%2F</td>
+						<td class="info">/</td>
+						<td class="info">\x2F</td>
+					</tr>
+				
+					<tr>
+						<td>48&nbsp;:&nbsp;0</td>
+						<td class="success">0</td>
+						<td class="success">0</td>
+						<td class="success">0</td>
+						<td class="warning">0</td>
+						<td class="warning">0</td>
+						<td class="danger">0</td>
+						<td class="danger">0</td>
+						<td class="info">0</td>
+						<td class="info">0</td>
+					</tr>
+				
+					<tr>
+						<td>49&nbsp;:&nbsp;1</td>
+						<td class="success">1</td>
+						<td class="success">1</td>
+						<td class="success">1</td>
+						<td class="warning">1</td>
+						<td class="warning">1</td>
+						<td class="danger">1</td>
+						<td class="danger">1</td>
+						<td class="info">1</td>
+						<td class="info">1</td>
+					</tr>
+				
+					<tr>
+						<td>50&nbsp;:&nbsp;2</td>
+						<td class="success">2</td>
+						<td class="success">2</td>
+						<td class="success">2</td>
+						<td class="warning">2</td>
+						<td class="warning">2</td>
+						<td class="danger">2</td>
+						<td class="danger">2</td>
+						<td class="info">2</td>
+						<td class="info">2</td>
+					</tr>
+				
+					<tr>
+						<td>51&nbsp;:&nbsp;3</td>
+						<td class="success">3</td>
+						<td class="success">3</td>
+						<td class="success">3</td>
+						<td class="warning">3</td>
+						<td class="warning">3</td>
+						<td class="danger">3</td>
+						<td class="danger">3</td>
+						<td class="info">3</td>
+						<td class="info">3</td>
+					</tr>
+				
+					<tr>
+						<td>52&nbsp;:&nbsp;4</td>
+						<td class="success">4</td>
+						<td class="success">4</td>
+						<td class="success">4</td>
+						<td class="warning">4</td>
+						<td class="warning">4</td>
+						<td class="danger">4</td>
+						<td class="danger">4</td>
+						<td class="info">4</td>
+						<td class="info">4</td>
+					</tr>
+				
+					<tr>
+						<td>53&nbsp;:&nbsp;5</td>
+						<td class="success">5</td>
+						<td class="success">5</td>
+						<td class="success">5</td>
+						<td class="warning">5</td>
+						<td class="warning">5</td>
+						<td class="danger">5</td>
+						<td class="danger">5</td>
+						<td class="info">5</td>
+						<td class="info">5</td>
+					</tr>
+				
+					<tr>
+						<td>54&nbsp;:&nbsp;6</td>
+						<td class="success">6</td>
+						<td class="success">6</td>
+						<td class="success">6</td>
+						<td class="warning">6</td>
+						<td class="warning">6</td>
+						<td class="danger">6</td>
+						<td class="danger">6</td>
+						<td class="info">6</td>
+						<td class="info">6</td>
+					</tr>
+				
+					<tr>
+						<td>55&nbsp;:&nbsp;7</td>
+						<td class="success">7</td>
+						<td class="success">7</td>
+						<td class="success">7</td>
+						<td class="warning">7</td>
+						<td class="warning">7</td>
+						<td class="danger">7</td>
+						<td class="danger">7</td>
+						<td class="info">7</td>
+						<td class="info">7</td>
+					</tr>
+				
+					<tr>
+						<td>56&nbsp;:&nbsp;8</td>
+						<td class="success">8</td>
+						<td class="success">8</td>
+						<td class="success">8</td>
+						<td class="warning">8</td>
+						<td class="warning">8</td>
+						<td class="danger">8</td>
+						<td class="danger">8</td>
+						<td class="info">8</td>
+						<td class="info">8</td>
+					</tr>
+				
+					<tr>
+						<td>57&nbsp;:&nbsp;9</td>
+						<td class="success">9</td>
+						<td class="success">9</td>
+						<td class="success">9</td>
+						<td class="warning">9</td>
+						<td class="warning">9</td>
+						<td class="danger">9</td>
+						<td class="danger">9</td>
+						<td class="info">9</td>
+						<td class="info">9</td>
+					</tr>
+				
+					<tr>
+						<td>58&nbsp;:&nbsp;:</td>
+						<td class="success">:</td>
+						<td class="success">&amp;#x3a;</td>
+						<td class="success">&amp;#x3a;</td>
+						<td class="warning">:</td>
+						<td class="warning">&amp;#x3a;</td>
+						<td class="danger">%3A</td>
+						<td class="danger">%3A</td>
+						<td class="info">:</td>
+						<td class="info">\x3A</td>
+					</tr>
+				
+					<tr>
+						<td>59&nbsp;:&nbsp;;</td>
+						<td class="success">;</td>
+						<td class="success">&amp;#x3b;</td>
+						<td class="success">&amp;#x3b;</td>
+						<td class="warning">;</td>
+						<td class="warning">&amp;#x3b;</td>
+						<td class="danger">%3B</td>
+						<td class="danger">%3B</td>
+						<td class="info">;</td>
+						<td class="info">\x3B</td>
+					</tr>
+				
+					<tr>
+						<td>60&nbsp;:&nbsp;<</td>
+						<td class="success">&amp;lt;</td>
+						<td class="success">&amp;lt;</td>
+						<td class="success">&amp;lt;</td>
+						<td class="warning">&amp;lt;</td>
+						<td class="warning">&amp;#x3c;</td>
+						<td class="danger">%3C</td>
+						<td class="danger">%3C</td>
+						<td class="info"><</td>
+						<td class="info">\x3C</td>
+					</tr>
+				
+					<tr>
+						<td>61&nbsp;:&nbsp;=</td>
+						<td class="success">=</td>
+						<td class="success">&amp;#x3d;</td>
+						<td class="success">&amp;#x3d;</td>
+						<td class="warning">=</td>
+						<td class="warning">&amp;#x3d;</td>
+						<td class="danger">%3D</td>
+						<td class="danger">%3D</td>
+						<td class="info">=</td>
+						<td class="info">\x3D</td>
+					</tr>
+				
+					<tr>
+						<td>62&nbsp;:&nbsp;></td>
+						<td class="success">&amp;gt;</td>
+						<td class="success">&amp;gt;</td>
+						<td class="success">&amp;gt;</td>
+						<td class="warning">&amp;gt;</td>
+						<td class="warning">&amp;#x3e;</td>
+						<td class="danger">%3E</td>
+						<td class="danger">%3E</td>
+						<td class="info">></td>
+						<td class="info">\x3E</td>
+					</tr>
+				
+					<tr>
+						<td>63&nbsp;:&nbsp;?</td>
+						<td class="success">?</td>
+						<td class="success">&amp;#x3f;</td>
+						<td class="success">&amp;#x3f;</td>
+						<td class="warning">?</td>
+						<td class="warning">&amp;#x3f;</td>
+						<td class="danger">%3F</td>
+						<td class="danger">%3F</td>
+						<td class="info">?</td>
+						<td class="info">\x3F</td>
+					</tr>
+				
+					<tr>
+						<td>64&nbsp;:&nbsp;@</td>
+						<td class="success">@</td>
+						<td class="success">&amp;#x40;</td>
+						<td class="success">&amp;#x40;</td>
+						<td class="warning">@</td>
+						<td class="warning">&amp;#x40;</td>
+						<td class="danger">%40</td>
+						<td class="danger">%40</td>
+						<td class="info">@</td>
+						<td class="info">\x40</td>
+					</tr>
+				
+					<tr>
+						<td>65&nbsp;:&nbsp;A</td>
+						<td class="success">A</td>
+						<td class="success">A</td>
+						<td class="success">A</td>
+						<td class="warning">A</td>
+						<td class="warning">A</td>
+						<td class="danger">A</td>
+						<td class="danger">A</td>
+						<td class="info">A</td>
+						<td class="info">A</td>
+					</tr>
+				
+					<tr>
+						<td>66&nbsp;:&nbsp;B</td>
+						<td class="success">B</td>
+						<td class="success">B</td>
+						<td class="success">B</td>
+						<td class="warning">B</td>
+						<td class="warning">B</td>
+						<td class="danger">B</td>
+						<td class="danger">B</td>
+						<td class="info">B</td>
+						<td class="info">B</td>
+					</tr>
+				
+					<tr>
+						<td>67&nbsp;:&nbsp;C</td>
+						<td class="success">C</td>
+						<td class="success">C</td>
+						<td class="success">C</td>
+						<td class="warning">C</td>
+						<td class="warning">C</td>
+						<td class="danger">C</td>
+						<td class="danger">C</td>
+						<td class="info">C</td>
+						<td class="info">C</td>
+					</tr>
+				
+					<tr>
+						<td>68&nbsp;:&nbsp;D</td>
+						<td class="success">D</td>
+						<td class="success">D</td>
+						<td class="success">D</td>
+						<td class="warning">D</td>
+						<td class="warning">D</td>
+						<td class="danger">D</td>
+						<td class="danger">D</td>
+						<td class="info">D</td>
+						<td class="info">D</td>
+					</tr>
+				
+					<tr>
+						<td>69&nbsp;:&nbsp;E</td>
+						<td class="success">E</td>
+						<td class="success">E</td>
+						<td class="success">E</td>
+						<td class="warning">E</td>
+						<td class="warning">E</td>
+						<td class="danger">E</td>
+						<td class="danger">E</td>
+						<td class="info">E</td>
+						<td class="info">E</td>
+					</tr>
+				
+					<tr>
+						<td>70&nbsp;:&nbsp;F</td>
+						<td class="success">F</td>
+						<td class="success">F</td>
+						<td class="success">F</td>
+						<td class="warning">F</td>
+						<td class="warning">F</td>
+						<td class="danger">F</td>
+						<td class="danger">F</td>
+						<td class="info">F</td>
+						<td class="info">F</td>
+					</tr>
+				
+					<tr>
+						<td>71&nbsp;:&nbsp;G</td>
+						<td class="success">G</td>
+						<td class="success">G</td>
+						<td class="success">G</td>
+						<td class="warning">G</td>
+						<td class="warning">G</td>
+						<td class="danger">G</td>
+						<td class="danger">G</td>
+						<td class="info">G</td>
+						<td class="info">G</td>
+					</tr>
+				
+					<tr>
+						<td>72&nbsp;:&nbsp;H</td>
+						<td class="success">H</td>
+						<td class="success">H</td>
+						<td class="success">H</td>
+						<td class="warning">H</td>
+						<td class="warning">H</td>
+						<td class="danger">H</td>
+						<td class="danger">H</td>
+						<td class="info">H</td>
+						<td class="info">H</td>
+					</tr>
+				
+					<tr>
+						<td>73&nbsp;:&nbsp;I</td>
+						<td class="success">I</td>
+						<td class="success">I</td>
+						<td class="success">I</td>
+						<td class="warning">I</td>
+						<td class="warning">I</td>
+						<td class="danger">I</td>
+						<td class="danger">I</td>
+						<td class="info">I</td>
+						<td class="info">I</td>
+					</tr>
+				
+					<tr>
+						<td>74&nbsp;:&nbsp;J</td>
+						<td class="success">J</td>
+						<td class="success">J</td>
+						<td class="success">J</td>
+						<td class="warning">J</td>
+						<td class="warning">J</td>
+						<td class="danger">J</td>
+						<td class="danger">J</td>
+						<td class="info">J</td>
+						<td class="info">J</td>
+					</tr>
+				
+					<tr>
+						<td>75&nbsp;:&nbsp;K</td>
+						<td class="success">K</td>
+						<td class="success">K</td>
+						<td class="success">K</td>
+						<td class="warning">K</td>
+						<td class="warning">K</td>
+						<td class="danger">K</td>
+						<td class="danger">K</td>
+						<td class="info">K</td>
+						<td class="info">K</td>
+					</tr>
+				
+					<tr>
+						<td>76&nbsp;:&nbsp;L</td>
+						<td class="success">L</td>
+						<td class="success">L</td>
+						<td class="success">L</td>
+						<td class="warning">L</td>
+						<td class="warning">L</td>
+						<td class="danger">L</td>
+						<td class="danger">L</td>
+						<td class="info">L</td>
+						<td class="info">L</td>
+					</tr>
+				
+					<tr>
+						<td>77&nbsp;:&nbsp;M</td>
+						<td class="success">M</td>
+						<td class="success">M</td>
+						<td class="success">M</td>
+						<td class="warning">M</td>
+						<td class="warning">M</td>
+						<td class="danger">M</td>
+						<td class="danger">M</td>
+						<td class="info">M</td>
+						<td class="info">M</td>
+					</tr>
+				
+					<tr>
+						<td>78&nbsp;:&nbsp;N</td>
+						<td class="success">N</td>
+						<td class="success">N</td>
+						<td class="success">N</td>
+						<td class="warning">N</td>
+						<td class="warning">N</td>
+						<td class="danger">N</td>
+						<td class="danger">N</td>
+						<td class="info">N</td>
+						<td class="info">N</td>
+					</tr>
+				
+					<tr>
+						<td>79&nbsp;:&nbsp;O</td>
+						<td class="success">O</td>
+						<td class="success">O</td>
+						<td class="success">O</td>
+						<td class="warning">O</td>
+						<td class="warning">O</td>
+						<td class="danger">O</td>
+						<td class="danger">O</td>
+						<td class="info">O</td>
+						<td class="info">O</td>
+					</tr>
+				
+					<tr>
+						<td>80&nbsp;:&nbsp;P</td>
+						<td class="success">P</td>
+						<td class="success">P</td>
+						<td class="success">P</td>
+						<td class="warning">P</td>
+						<td class="warning">P</td>
+						<td class="danger">P</td>
+						<td class="danger">P</td>
+						<td class="info">P</td>
+						<td class="info">P</td>
+					</tr>
+				
+					<tr>
+						<td>81&nbsp;:&nbsp;Q</td>
+						<td class="success">Q</td>
+						<td class="success">Q</td>
+						<td class="success">Q</td>
+						<td class="warning">Q</td>
+						<td class="warning">Q</td>
+						<td class="danger">Q</td>
+						<td class="danger">Q</td>
+						<td class="info">Q</td>
+						<td class="info">Q</td>
+					</tr>
+				
+					<tr>
+						<td>82&nbsp;:&nbsp;R</td>
+						<td class="success">R</td>
+						<td class="success">R</td>
+						<td class="success">R</td>
+						<td class="warning">R</td>
+						<td class="warning">R</td>
+						<td class="danger">R</td>
+						<td class="danger">R</td>
+						<td class="info">R</td>
+						<td class="info">R</td>
+					</tr>
+				
+					<tr>
+						<td>83&nbsp;:&nbsp;S</td>
+						<td class="success">S</td>
+						<td class="success">S</td>
+						<td class="success">S</td>
+						<td class="warning">S</td>
+						<td class="warning">S</td>
+						<td class="danger">S</td>
+						<td class="danger">S</td>
+						<td class="info">S</td>
+						<td class="info">S</td>
+					</tr>
+				
+					<tr>
+						<td>84&nbsp;:&nbsp;T</td>
+						<td class="success">T</td>
+						<td class="success">T</td>
+						<td class="success">T</td>
+						<td class="warning">T</td>
+						<td class="warning">T</td>
+						<td class="danger">T</td>
+						<td class="danger">T</td>
+						<td class="info">T</td>
+						<td class="info">T</td>
+					</tr>
+				
+					<tr>
+						<td>85&nbsp;:&nbsp;U</td>
+						<td class="success">U</td>
+						<td class="success">U</td>
+						<td class="success">U</td>
+						<td class="warning">U</td>
+						<td class="warning">U</td>
+						<td class="danger">U</td>
+						<td class="danger">U</td>
+						<td class="info">U</td>
+						<td class="info">U</td>
+					</tr>
+				
+					<tr>
+						<td>86&nbsp;:&nbsp;V</td>
+						<td class="success">V</td>
+						<td class="success">V</td>
+						<td class="success">V</td>
+						<td class="warning">V</td>
+						<td class="warning">V</td>
+						<td class="danger">V</td>
+						<td class="danger">V</td>
+						<td class="info">V</td>
+						<td class="info">V</td>
+					</tr>
+				
+					<tr>
+						<td>87&nbsp;:&nbsp;W</td>
+						<td class="success">W</td>
+						<td class="success">W</td>
+						<td class="success">W</td>
+						<td class="warning">W</td>
+						<td class="warning">W</td>
+						<td class="danger">W</td>
+						<td class="danger">W</td>
+						<td class="info">W</td>
+						<td class="info">W</td>
+					</tr>
+				
+					<tr>
+						<td>88&nbsp;:&nbsp;X</td>
+						<td class="success">X</td>
+						<td class="success">X</td>
+						<td class="success">X</td>
+						<td class="warning">X</td>
+						<td class="warning">X</td>
+						<td class="danger">X</td>
+						<td class="danger">X</td>
+						<td class="info">X</td>
+						<td class="info">X</td>
+					</tr>
+				
+					<tr>
+						<td>89&nbsp;:&nbsp;Y</td>
+						<td class="success">Y</td>
+						<td class="success">Y</td>
+						<td class="success">Y</td>
+						<td class="warning">Y</td>
+						<td class="warning">Y</td>
+						<td class="danger">Y</td>
+						<td class="danger">Y</td>
+						<td class="info">Y</td>
+						<td class="info">Y</td>
+					</tr>
+				
+					<tr>
+						<td>90&nbsp;:&nbsp;Z</td>
+						<td class="success">Z</td>
+						<td class="success">Z</td>
+						<td class="success">Z</td>
+						<td class="warning">Z</td>
+						<td class="warning">Z</td>
+						<td class="danger">Z</td>
+						<td class="danger">Z</td>
+						<td class="info">Z</td>
+						<td class="info">Z</td>
+					</tr>
+				
+					<tr>
+						<td>91&nbsp;:&nbsp;[</td>
+						<td class="success">[</td>
+						<td class="success">&amp;#x5b;</td>
+						<td class="success">&amp;#x5b;</td>
+						<td class="warning">[</td>
+						<td class="warning">&amp;#x5b;</td>
+						<td class="danger">%5B</td>
+						<td class="danger">%5B</td>
+						<td class="info">[</td>
+						<td class="info">\x5B</td>
+					</tr>
+				
+					<tr>
+						<td>92&nbsp;:&nbsp;\</td>
+						<td class="success">\</td>
+						<td class="success">&amp;#x5c;</td>
+						<td class="success">&amp;#x5c;</td>
+						<td class="warning">\</td>
+						<td class="warning">&amp;#x5c;</td>
+						<td class="danger">%5C</td>
+						<td class="danger">%5C</td>
+						<td class="info">\\</td>
+						<td class="info">\x5C</td>
+					</tr>
+				
+					<tr>
+						<td>93&nbsp;:&nbsp;]</td>
+						<td class="success">]</td>
+						<td class="success">&amp;#x5d;</td>
+						<td class="success">&amp;#x5d;</td>
+						<td class="warning">]</td>
+						<td class="warning">&amp;#x5d;</td>
+						<td class="danger">%5D</td>
+						<td class="danger">%5D</td>
+						<td class="info">]</td>
+						<td class="info">\x5D</td>
+					</tr>
+				
+					<tr>
+						<td>94&nbsp;:&nbsp;^</td>
+						<td class="success">^</td>
+						<td class="success">&amp;#x5e;</td>
+						<td class="success">&amp;#x5e;</td>
+						<td class="warning">^</td>
+						<td class="warning">&amp;#x5e;</td>
+						<td class="danger">%5E</td>
+						<td class="danger">%5E</td>
+						<td class="info">^</td>
+						<td class="info">\x5E</td>
+					</tr>
+				
+					<tr>
+						<td>95&nbsp;:&nbsp;_</td>
+						<td class="success">_</td>
+						<td class="success">_</td>
+						<td class="success">_</td>
+						<td class="warning">_</td>
+						<td class="warning">_</td>
+						<td class="danger">%5F</td>
+						<td class="danger">_</td>
+						<td class="info">_</td>
+						<td class="info">_</td>
+					</tr>
+				
+					<tr>
+						<td>96&nbsp;:&nbsp;`</td>
+						<td class="success">`</td>
+						<td class="success">&amp;#x60;</td>
+						<td class="success">&amp;#x60;</td>
+						<td class="warning">`</td>
+						<td class="warning">&amp;#x60;</td>
+						<td class="danger">%60</td>
+						<td class="danger">%60</td>
+						<td class="info">`</td>
+						<td class="info">\x60</td>
+					</tr>
+				
+					<tr>
+						<td>97&nbsp;:&nbsp;a</td>
+						<td class="success">a</td>
+						<td class="success">a</td>
+						<td class="success">a</td>
+						<td class="warning">a</td>
+						<td class="warning">a</td>
+						<td class="danger">a</td>
+						<td class="danger">a</td>
+						<td class="info">a</td>
+						<td class="info">a</td>
+					</tr>
+				
+					<tr>
+						<td>98&nbsp;:&nbsp;b</td>
+						<td class="success">b</td>
+						<td class="success">b</td>
+						<td class="success">b</td>
+						<td class="warning">b</td>
+						<td class="warning">b</td>
+						<td class="danger">b</td>
+						<td class="danger">b</td>
+						<td class="info">b</td>
+						<td class="info">b</td>
+					</tr>
+				
+					<tr>
+						<td>99&nbsp;:&nbsp;c</td>
+						<td class="success">c</td>
+						<td class="success">c</td>
+						<td class="success">c</td>
+						<td class="warning">c</td>
+						<td class="warning">c</td>
+						<td class="danger">c</td>
+						<td class="danger">c</td>
+						<td class="info">c</td>
+						<td class="info">c</td>
+					</tr>
+				
+					<tr>
+						<td>100&nbsp;:&nbsp;d</td>
+						<td class="success">d</td>
+						<td class="success">d</td>
+						<td class="success">d</td>
+						<td class="warning">d</td>
+						<td class="warning">d</td>
+						<td class="danger">d</td>
+						<td class="danger">d</td>
+						<td class="info">d</td>
+						<td class="info">d</td>
+					</tr>
+				
+					<tr>
+						<td>101&nbsp;:&nbsp;e</td>
+						<td class="success">e</td>
+						<td class="success">e</td>
+						<td class="success">e</td>
+						<td class="warning">e</td>
+						<td class="warning">e</td>
+						<td class="danger">e</td>
+						<td class="danger">e</td>
+						<td class="info">e</td>
+						<td class="info">e</td>
+					</tr>
+				
+					<tr>
+						<td>102&nbsp;:&nbsp;f</td>
+						<td class="success">f</td>
+						<td class="success">f</td>
+						<td class="success">f</td>
+						<td class="warning">f</td>
+						<td class="warning">f</td>
+						<td class="danger">f</td>
+						<td class="danger">f</td>
+						<td class="info">f</td>
+						<td class="info">f</td>
+					</tr>
+				
+					<tr>
+						<td>103&nbsp;:&nbsp;g</td>
+						<td class="success">g</td>
+						<td class="success">g</td>
+						<td class="success">g</td>
+						<td class="warning">g</td>
+						<td class="warning">g</td>
+						<td class="danger">g</td>
+						<td class="danger">g</td>
+						<td class="info">g</td>
+						<td class="info">g</td>
+					</tr>
+				
+					<tr>
+						<td>104&nbsp;:&nbsp;h</td>
+						<td class="success">h</td>
+						<td class="success">h</td>
+						<td class="success">h</td>
+						<td class="warning">h</td>
+						<td class="warning">h</td>
+						<td class="danger">h</td>
+						<td class="danger">h</td>
+						<td class="info">h</td>
+						<td class="info">h</td>
+					</tr>
+				
+					<tr>
+						<td>105&nbsp;:&nbsp;i</td>
+						<td class="success">i</td>
+						<td class="success">i</td>
+						<td class="success">i</td>
+						<td class="warning">i</td>
+						<td class="warning">i</td>
+						<td class="danger">i</td>
+						<td class="danger">i</td>
+						<td class="info">i</td>
+						<td class="info">i</td>
+					</tr>
+				
+					<tr>
+						<td>106&nbsp;:&nbsp;j</td>
+						<td class="success">j</td>
+						<td class="success">j</td>
+						<td class="success">j</td>
+						<td class="warning">j</td>
+						<td class="warning">j</td>
+						<td class="danger">j</td>
+						<td class="danger">j</td>
+						<td class="info">j</td>
+						<td class="info">j</td>
+					</tr>
+				
+					<tr>
+						<td>107&nbsp;:&nbsp;k</td>
+						<td class="success">k</td>
+						<td class="success">k</td>
+						<td class="success">k</td>
+						<td class="warning">k</td>
+						<td class="warning">k</td>
+						<td class="danger">k</td>
+						<td class="danger">k</td>
+						<td class="info">k</td>
+						<td class="info">k</td>
+					</tr>
+				
+					<tr>
+						<td>108&nbsp;:&nbsp;l</td>
+						<td class="success">l</td>
+						<td class="success">l</td>
+						<td class="success">l</td>
+						<td class="warning">l</td>
+						<td class="warning">l</td>
+						<td class="danger">l</td>
+						<td class="danger">l</td>
+						<td class="info">l</td>
+						<td class="info">l</td>
+					</tr>
+				
+					<tr>
+						<td>109&nbsp;:&nbsp;m</td>
+						<td class="success">m</td>
+						<td class="success">m</td>
+						<td class="success">m</td>
+						<td class="warning">m</td>
+						<td class="warning">m</td>
+						<td class="danger">m</td>
+						<td class="danger">m</td>
+						<td class="info">m</td>
+						<td class="info">m</td>
+					</tr>
+				
+					<tr>
+						<td>110&nbsp;:&nbsp;n</td>
+						<td class="success">n</td>
+						<td class="success">n</td>
+						<td class="success">n</td>
+						<td class="warning">n</td>
+						<td class="warning">n</td>
+						<td class="danger">n</td>
+						<td class="danger">n</td>
+						<td class="info">n</td>
+						<td class="info">n</td>
+					</tr>
+				
+					<tr>
+						<td>111&nbsp;:&nbsp;o</td>
+						<td class="success">o</td>
+						<td class="success">o</td>
+						<td class="success">o</td>
+						<td class="warning">o</td>
+						<td class="warning">o</td>
+						<td class="danger">o</td>
+						<td class="danger">o</td>
+						<td class="info">o</td>
+						<td class="info">o</td>
+					</tr>
+				
+					<tr>
+						<td>112&nbsp;:&nbsp;p</td>
+						<td class="success">p</td>
+						<td class="success">p</td>
+						<td class="success">p</td>
+						<td class="warning">p</td>
+						<td class="warning">p</td>
+						<td class="danger">p</td>
+						<td class="danger">p</td>
+						<td class="info">p</td>
+						<td class="info">p</td>
+					</tr>
+				
+					<tr>
+						<td>113&nbsp;:&nbsp;q</td>
+						<td class="success">q</td>
+						<td class="success">q</td>
+						<td class="success">q</td>
+						<td class="warning">q</td>
+						<td class="warning">q</td>
+						<td class="danger">q</td>
+						<td class="danger">q</td>
+						<td class="info">q</td>
+						<td class="info">q</td>
+					</tr>
+				
+					<tr>
+						<td>114&nbsp;:&nbsp;r</td>
+						<td class="success">r</td>
+						<td class="success">r</td>
+						<td class="success">r</td>
+						<td class="warning">r</td>
+						<td class="warning">r</td>
+						<td class="danger">r</td>
+						<td class="danger">r</td>
+						<td class="info">r</td>
+						<td class="info">r</td>
+					</tr>
+				
+					<tr>
+						<td>115&nbsp;:&nbsp;s</td>
+						<td class="success">s</td>
+						<td class="success">s</td>
+						<td class="success">s</td>
+						<td class="warning">s</td>
+						<td class="warning">s</td>
+						<td class="danger">s</td>
+						<td class="danger">s</td>
+						<td class="info">s</td>
+						<td class="info">s</td>
+					</tr>
+				
+					<tr>
+						<td>116&nbsp;:&nbsp;t</td>
+						<td class="success">t</td>
+						<td class="success">t</td>
+						<td class="success">t</td>
+						<td class="warning">t</td>
+						<td class="warning">t</td>
+						<td class="danger">t</td>
+						<td class="danger">t</td>
+						<td class="info">t</td>
+						<td class="info">t</td>
+					</tr>
+				
+					<tr>
+						<td>117&nbsp;:&nbsp;u</td>
+						<td class="success">u</td>
+						<td class="success">u</td>
+						<td class="success">u</td>
+						<td class="warning">u</td>
+						<td class="warning">u</td>
+						<td class="danger">u</td>
+						<td class="danger">u</td>
+						<td class="info">u</td>
+						<td class="info">u</td>
+					</tr>
+				
+					<tr>
+						<td>118&nbsp;:&nbsp;v</td>
+						<td class="success">v</td>
+						<td class="success">v</td>
+						<td class="success">v</td>
+						<td class="warning">v</td>
+						<td class="warning">v</td>
+						<td class="danger">v</td>
+						<td class="danger">v</td>
+						<td class="info">v</td>
+						<td class="info">v</td>
+					</tr>
+				
+					<tr>
+						<td>119&nbsp;:&nbsp;w</td>
+						<td class="success">w</td>
+						<td class="success">w</td>
+						<td class="success">w</td>
+						<td class="warning">w</td>
+						<td class="warning">w</td>
+						<td class="danger">w</td>
+						<td class="danger">w</td>
+						<td class="info">w</td>
+						<td class="info">w</td>
+					</tr>
+				
+					<tr>
+						<td>120&nbsp;:&nbsp;x</td>
+						<td class="success">x</td>
+						<td class="success">x</td>
+						<td class="success">x</td>
+						<td class="warning">x</td>
+						<td class="warning">x</td>
+						<td class="danger">x</td>
+						<td class="danger">x</td>
+						<td class="info">x</td>
+						<td class="info">x</td>
+					</tr>
+				
+					<tr>
+						<td>121&nbsp;:&nbsp;y</td>
+						<td class="success">y</td>
+						<td class="success">y</td>
+						<td class="success">y</td>
+						<td class="warning">y</td>
+						<td class="warning">y</td>
+						<td class="danger">y</td>
+						<td class="danger">y</td>
+						<td class="info">y</td>
+						<td class="info">y</td>
+					</tr>
+				
+					<tr>
+						<td>122&nbsp;:&nbsp;z</td>
+						<td class="success">z</td>
+						<td class="success">z</td>
+						<td class="success">z</td>
+						<td class="warning">z</td>
+						<td class="warning">z</td>
+						<td class="danger">z</td>
+						<td class="danger">z</td>
+						<td class="info">z</td>
+						<td class="info">z</td>
+					</tr>
+				
+					<tr>
+						<td>123&nbsp;:&nbsp;{</td>
+						<td class="success">{</td>
+						<td class="success">&amp;#x7b;</td>
+						<td class="success">&amp;#x7b;</td>
+						<td class="warning">{</td>
+						<td class="warning">&amp;#x7b;</td>
+						<td class="danger">%7B</td>
+						<td class="danger">%7B</td>
+						<td class="info">{</td>
+						<td class="info">\x7B</td>
+					</tr>
+				
+					<tr>
+						<td>124&nbsp;:&nbsp;|</td>
+						<td class="success">|</td>
+						<td class="success">&amp;#x7c;</td>
+						<td class="success">&amp;#x7c;</td>
+						<td class="warning">|</td>
+						<td class="warning">&amp;#x7c;</td>
+						<td class="danger">%7C</td>
+						<td class="danger">%7C</td>
+						<td class="info">|</td>
+						<td class="info">\x7C</td>
+					</tr>
+				
+					<tr>
+						<td>125&nbsp;:&nbsp;}</td>
+						<td class="success">}</td>
+						<td class="success">&amp;#x7d;</td>
+						<td class="success">&amp;#x7d;</td>
+						<td class="warning">}</td>
+						<td class="warning">&amp;#x7d;</td>
+						<td class="danger">%7D</td>
+						<td class="danger">%7D</td>
+						<td class="info">}</td>
+						<td class="info">\x7D</td>
+					</tr>
+				
+					<tr>
+						<td>126&nbsp;:&nbsp;~</td>
+						<td class="success">~</td>
+						<td class="success">&amp;#x7e;</td>
+						<td class="success">&amp;#x7e;</td>
+						<td class="warning">~</td>
+						<td class="warning">&amp;#x7e;</td>
+						<td class="danger">%7E</td>
+						<td class="danger">%7E</td>
+						<td class="info">~</td>
+						<td class="info">\x7E</td>
+					</tr>
+				
+					<tr>
+						<td>127&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x7f;</td>
+						<td class="danger">%7F</td>
+						<td class="danger">%7F</td>
+						<td class="info"></td>
+						<td class="info">\x7F</td>
+					</tr>
+				
+					<tr>
+						<td>128&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x80;</td>
+						<td class="danger">%C2%80</td>
+						<td class="danger">%C2%80</td>
+						<td class="info"></td>
+						<td class="info">\x80</td>
+					</tr>
+				
+					<tr>
+						<td>129&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x81;</td>
+						<td class="danger">%C2%81</td>
+						<td class="danger">%C2%81</td>
+						<td class="info"></td>
+						<td class="info">\x81</td>
+					</tr>
+				
+					<tr>
+						<td>130&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x82;</td>
+						<td class="danger">%C2%82</td>
+						<td class="danger">%C2%82</td>
+						<td class="info"></td>
+						<td class="info">\x82</td>
+					</tr>
+				
+					<tr>
+						<td>131&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x83;</td>
+						<td class="danger">%C2%83</td>
+						<td class="danger">%C2%83</td>
+						<td class="info"></td>
+						<td class="info">\x83</td>
+					</tr>
+				
+					<tr>
+						<td>132&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x84;</td>
+						<td class="danger">%C2%84</td>
+						<td class="danger">%C2%84</td>
+						<td class="info"></td>
+						<td class="info">\x84</td>
+					</tr>
+				
+					<tr>
+						<td>133&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x85;</td>
+						<td class="danger">%C2%85</td>
+						<td class="danger">%C2%85</td>
+						<td class="info"></td>
+						<td class="info">\x85</td>
+					</tr>
+				
+					<tr>
+						<td>134&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x86;</td>
+						<td class="danger">%C2%86</td>
+						<td class="danger">%C2%86</td>
+						<td class="info"></td>
+						<td class="info">\x86</td>
+					</tr>
+				
+					<tr>
+						<td>135&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x87;</td>
+						<td class="danger">%C2%87</td>
+						<td class="danger">%C2%87</td>
+						<td class="info"></td>
+						<td class="info">\x87</td>
+					</tr>
+				
+					<tr>
+						<td>136&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x88;</td>
+						<td class="danger">%C2%88</td>
+						<td class="danger">%C2%88</td>
+						<td class="info"></td>
+						<td class="info">\x88</td>
+					</tr>
+				
+					<tr>
+						<td>137&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x89;</td>
+						<td class="danger">%C2%89</td>
+						<td class="danger">%C2%89</td>
+						<td class="info"></td>
+						<td class="info">\x89</td>
+					</tr>
+				
+					<tr>
+						<td>138&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x8a;</td>
+						<td class="danger">%C2%8A</td>
+						<td class="danger">%C2%8A</td>
+						<td class="info"></td>
+						<td class="info">\x8A</td>
+					</tr>
+				
+					<tr>
+						<td>139&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x8b;</td>
+						<td class="danger">%C2%8B</td>
+						<td class="danger">%C2%8B</td>
+						<td class="info"></td>
+						<td class="info">\x8B</td>
+					</tr>
+				
+					<tr>
+						<td>140&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x8c;</td>
+						<td class="danger">%C2%8C</td>
+						<td class="danger">%C2%8C</td>
+						<td class="info"></td>
+						<td class="info">\x8C</td>
+					</tr>
+				
+					<tr>
+						<td>141&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x8d;</td>
+						<td class="danger">%C2%8D</td>
+						<td class="danger">%C2%8D</td>
+						<td class="info"></td>
+						<td class="info">\x8D</td>
+					</tr>
+				
+					<tr>
+						<td>142&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x8e;</td>
+						<td class="danger">%C2%8E</td>
+						<td class="danger">%C2%8E</td>
+						<td class="info"></td>
+						<td class="info">\x8E</td>
+					</tr>
+				
+					<tr>
+						<td>143&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x8f;</td>
+						<td class="danger">%C2%8F</td>
+						<td class="danger">%C2%8F</td>
+						<td class="info"></td>
+						<td class="info">\x8F</td>
+					</tr>
+				
+					<tr>
+						<td>144&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x90;</td>
+						<td class="danger">%C2%90</td>
+						<td class="danger">%C2%90</td>
+						<td class="info"></td>
+						<td class="info">\x90</td>
+					</tr>
+				
+					<tr>
+						<td>145&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x91;</td>
+						<td class="danger">%C2%91</td>
+						<td class="danger">%C2%91</td>
+						<td class="info"></td>
+						<td class="info">\x91</td>
+					</tr>
+				
+					<tr>
+						<td>146&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x92;</td>
+						<td class="danger">%C2%92</td>
+						<td class="danger">%C2%92</td>
+						<td class="info"></td>
+						<td class="info">\x92</td>
+					</tr>
+				
+					<tr>
+						<td>147&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x93;</td>
+						<td class="danger">%C2%93</td>
+						<td class="danger">%C2%93</td>
+						<td class="info"></td>
+						<td class="info">\x93</td>
+					</tr>
+				
+					<tr>
+						<td>148&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x94;</td>
+						<td class="danger">%C2%94</td>
+						<td class="danger">%C2%94</td>
+						<td class="info"></td>
+						<td class="info">\x94</td>
+					</tr>
+				
+					<tr>
+						<td>149&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x95;</td>
+						<td class="danger">%C2%95</td>
+						<td class="danger">%C2%95</td>
+						<td class="info"></td>
+						<td class="info">\x95</td>
+					</tr>
+				
+					<tr>
+						<td>150&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x96;</td>
+						<td class="danger">%C2%96</td>
+						<td class="danger">%C2%96</td>
+						<td class="info"></td>
+						<td class="info">\x96</td>
+					</tr>
+				
+					<tr>
+						<td>151&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x97;</td>
+						<td class="danger">%C2%97</td>
+						<td class="danger">%C2%97</td>
+						<td class="info"></td>
+						<td class="info">\x97</td>
+					</tr>
+				
+					<tr>
+						<td>152&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x98;</td>
+						<td class="danger">%C2%98</td>
+						<td class="danger">%C2%98</td>
+						<td class="info"></td>
+						<td class="info">\x98</td>
+					</tr>
+				
+					<tr>
+						<td>153&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x99;</td>
+						<td class="danger">%C2%99</td>
+						<td class="danger">%C2%99</td>
+						<td class="info"></td>
+						<td class="info">\x99</td>
+					</tr>
+				
+					<tr>
+						<td>154&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x9a;</td>
+						<td class="danger">%C2%9A</td>
+						<td class="danger">%C2%9A</td>
+						<td class="info"></td>
+						<td class="info">\x9A</td>
+					</tr>
+				
+					<tr>
+						<td>155&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x9b;</td>
+						<td class="danger">%C2%9B</td>
+						<td class="danger">%C2%9B</td>
+						<td class="info"></td>
+						<td class="info">\x9B</td>
+					</tr>
+				
+					<tr>
+						<td>156&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x9c;</td>
+						<td class="danger">%C2%9C</td>
+						<td class="danger">%C2%9C</td>
+						<td class="info"></td>
+						<td class="info">\x9C</td>
+					</tr>
+				
+					<tr>
+						<td>157&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x9d;</td>
+						<td class="danger">%C2%9D</td>
+						<td class="danger">%C2%9D</td>
+						<td class="info"></td>
+						<td class="info">\x9D</td>
+					</tr>
+				
+					<tr>
+						<td>158&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x9e;</td>
+						<td class="danger">%C2%9E</td>
+						<td class="danger">%C2%9E</td>
+						<td class="info"></td>
+						<td class="info">\x9E</td>
+					</tr>
+				
+					<tr>
+						<td>159&nbsp;:&nbsp;</td>
+						<td class="success"></td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="success">&amp;#xfffd;</td>
+						<td class="warning"></td>
+						<td class="warning">&amp;#x9f;</td>
+						<td class="danger">%C2%9F</td>
+						<td class="danger">%C2%9F</td>
+						<td class="info"></td>
+						<td class="info">\x9F</td>
+					</tr>
+				
+					<tr>
+						<td>160&nbsp;:&nbsp; </td>
+						<td class="success"> </td>
+						<td class="success">&amp;nbsp;</td>
+						<td class="success">&amp;nbsp;</td>
+						<td class="warning">&amp;#xa0;</td>
+						<td class="warning">&amp;#xa0;</td>
+						<td class="danger">%C2%A0</td>
+						<td class="danger">%C2%A0</td>
+						<td class="info"> </td>
+						<td class="info">\xA0</td>
+					</tr>
+				
+					<tr>
+						<td>161&nbsp;:&nbsp;¡</td>
+						<td class="success">¡</td>
+						<td class="success">&amp;iexcl;</td>
+						<td class="success">&amp;iexcl;</td>
+						<td class="warning">&amp;#xa1;</td>
+						<td class="warning">&amp;#xa1;</td>
+						<td class="danger">%C2%A1</td>
+						<td class="danger">%C2%A1</td>
+						<td class="info">¡</td>
+						<td class="info">\xA1</td>
+					</tr>
+				
+					<tr>
+						<td>162&nbsp;:&nbsp;¢</td>
+						<td class="success">¢</td>
+						<td class="success">&amp;cent;</td>
+						<td class="success">&amp;cent;</td>
+						<td class="warning">&amp;#xa2;</td>
+						<td class="warning">&amp;#xa2;</td>
+						<td class="danger">%C2%A2</td>
+						<td class="danger">%C2%A2</td>
+						<td class="info">¢</td>
+						<td class="info">\xA2</td>
+					</tr>
+				
+					<tr>
+						<td>163&nbsp;:&nbsp;£</td>
+						<td class="success">£</td>
+						<td class="success">&amp;pound;</td>
+						<td class="success">&amp;pound;</td>
+						<td class="warning">&amp;#xa3;</td>
+						<td class="warning">&amp;#xa3;</td>
+						<td class="danger">%C2%A3</td>
+						<td class="danger">%C2%A3</td>
+						<td class="info">£</td>
+						<td class="info">\xA3</td>
+					</tr>
+				
+					<tr>
+						<td>164&nbsp;:&nbsp;¤</td>
+						<td class="success">¤</td>
+						<td class="success">&amp;curren;</td>
+						<td class="success">&amp;curren;</td>
+						<td class="warning">&amp;#xa4;</td>
+						<td class="warning">&amp;#xa4;</td>
+						<td class="danger">%C2%A4</td>
+						<td class="danger">%C2%A4</td>
+						<td class="info">¤</td>
+						<td class="info">\xA4</td>
+					</tr>
+				
+					<tr>
+						<td>165&nbsp;:&nbsp;¥</td>
+						<td class="success">¥</td>
+						<td class="success">&amp;yen;</td>
+						<td class="success">&amp;yen;</td>
+						<td class="warning">&amp;#xa5;</td>
+						<td class="warning">&amp;#xa5;</td>
+						<td class="danger">%C2%A5</td>
+						<td class="danger">%C2%A5</td>
+						<td class="info">¥</td>
+						<td class="info">\xA5</td>
+					</tr>
+				
+					<tr>
+						<td>166&nbsp;:&nbsp;¦</td>
+						<td class="success">¦</td>
+						<td class="success">&amp;brvbar;</td>
+						<td class="success">&amp;brvbar;</td>
+						<td class="warning">&amp;#xa6;</td>
+						<td class="warning">&amp;#xa6;</td>
+						<td class="danger">%C2%A6</td>
+						<td class="danger">%C2%A6</td>
+						<td class="info">¦</td>
+						<td class="info">\xA6</td>
+					</tr>
+				
+					<tr>
+						<td>167&nbsp;:&nbsp;§</td>
+						<td class="success">§</td>
+						<td class="success">&amp;sect;</td>
+						<td class="success">&amp;sect;</td>
+						<td class="warning">&amp;#xa7;</td>
+						<td class="warning">&amp;#xa7;</td>
+						<td class="danger">%C2%A7</td>
+						<td class="danger">%C2%A7</td>
+						<td class="info">§</td>
+						<td class="info">\xA7</td>
+					</tr>
+				
+					<tr>
+						<td>168&nbsp;:&nbsp;¨</td>
+						<td class="success">¨</td>
+						<td class="success">&amp;uml;</td>
+						<td class="success">&amp;uml;</td>
+						<td class="warning">&amp;#xa8;</td>
+						<td class="warning">&amp;#xa8;</td>
+						<td class="danger">%C2%A8</td>
+						<td class="danger">%C2%A8</td>
+						<td class="info">¨</td>
+						<td class="info">\xA8</td>
+					</tr>
+				
+					<tr>
+						<td>169&nbsp;:&nbsp;©</td>
+						<td class="success">©</td>
+						<td class="success">&amp;copy;</td>
+						<td class="success">&amp;copy;</td>
+						<td class="warning">&amp;#xa9;</td>
+						<td class="warning">&amp;#xa9;</td>
+						<td class="danger">%C2%A9</td>
+						<td class="danger">%C2%A9</td>
+						<td class="info">©</td>
+						<td class="info">\xA9</td>
+					</tr>
+				
+					<tr>
+						<td>170&nbsp;:&nbsp;ª</td>
+						<td class="success">ª</td>
+						<td class="success">&amp;ordf;</td>
+						<td class="success">&amp;ordf;</td>
+						<td class="warning">&amp;#xaa;</td>
+						<td class="warning">&amp;#xaa;</td>
+						<td class="danger">%C2%AA</td>
+						<td class="danger">%C2%AA</td>
+						<td class="info">ª</td>
+						<td class="info">\xAA</td>
+					</tr>
+				
+					<tr>
+						<td>171&nbsp;:&nbsp;«</td>
+						<td class="success">«</td>
+						<td class="success">&amp;laquo;</td>
+						<td class="success">&amp;laquo;</td>
+						<td class="warning">&amp;#xab;</td>
+						<td class="warning">&amp;#xab;</td>
+						<td class="danger">%C2%AB</td>
+						<td class="danger">%C2%AB</td>
+						<td class="info">«</td>
+						<td class="info">\xAB</td>
+					</tr>
+				
+					<tr>
+						<td>172&nbsp;:&nbsp;¬</td>
+						<td class="success">¬</td>
+						<td class="success">&amp;not;</td>
+						<td class="success">&amp;not;</td>
+						<td class="warning">&amp;#xac;</td>
+						<td class="warning">&amp;#xac;</td>
+						<td class="danger">%C2%AC</td>
+						<td class="danger">%C2%AC</td>
+						<td class="info">¬</td>
+						<td class="info">\xAC</td>
+					</tr>
+				
+					<tr>
+						<td>173&nbsp;:&nbsp;­</td>
+						<td class="success">­</td>
+						<td class="success">&amp;shy;</td>
+						<td class="success">&amp;shy;</td>
+						<td class="warning">&amp;#xad;</td>
+						<td class="warning">&amp;#xad;</td>
+						<td class="danger">%C2%AD</td>
+						<td class="danger">%C2%AD</td>
+						<td class="info">­</td>
+						<td class="info">\xAD</td>
+					</tr>
+				
+					<tr>
+						<td>174&nbsp;:&nbsp;®</td>
+						<td class="success">®</td>
+						<td class="success">&amp;reg;</td>
+						<td class="success">&amp;reg;</td>
+						<td class="warning">&amp;#xae;</td>
+						<td class="warning">&amp;#xae;</td>
+						<td class="danger">%C2%AE</td>
+						<td class="danger">%C2%AE</td>
+						<td class="info">®</td>
+						<td class="info">\xAE</td>
+					</tr>
+				
+					<tr>
+						<td>175&nbsp;:&nbsp;¯</td>
+						<td class="success">¯</td>
+						<td class="success">&amp;macr;</td>
+						<td class="success">&amp;macr;</td>
+						<td class="warning">&amp;#xaf;</td>
+						<td class="warning">&amp;#xaf;</td>
+						<td class="danger">%C2%AF</td>
+						<td class="danger">%C2%AF</td>
+						<td class="info">¯</td>
+						<td class="info">\xAF</td>
+					</tr>
+				
+					<tr>
+						<td>176&nbsp;:&nbsp;°</td>
+						<td class="success">°</td>
+						<td class="success">&amp;deg;</td>
+						<td class="success">&amp;deg;</td>
+						<td class="warning">&amp;#xb0;</td>
+						<td class="warning">&amp;#xb0;</td>
+						<td class="danger">%C2%B0</td>
+						<td class="danger">%C2%B0</td>
+						<td class="info">°</td>
+						<td class="info">\xB0</td>
+					</tr>
+				
+					<tr>
+						<td>177&nbsp;:&nbsp;±</td>
+						<td class="success">±</td>
+						<td class="success">&amp;plusmn;</td>
+						<td class="success">&amp;plusmn;</td>
+						<td class="warning">&amp;#xb1;</td>
+						<td class="warning">&amp;#xb1;</td>
+						<td class="danger">%C2%B1</td>
+						<td class="danger">%C2%B1</td>
+						<td class="info">±</td>
+						<td class="info">\xB1</td>
+					</tr>
+				
+					<tr>
+						<td>178&nbsp;:&nbsp;²</td>
+						<td class="success">²</td>
+						<td class="success">&amp;sup2;</td>
+						<td class="success">&amp;sup2;</td>
+						<td class="warning">&amp;#xb2;</td>
+						<td class="warning">&amp;#xb2;</td>
+						<td class="danger">%C2%B2</td>
+						<td class="danger">%C2%B2</td>
+						<td class="info">²</td>
+						<td class="info">\xB2</td>
+					</tr>
+				
+					<tr>
+						<td>179&nbsp;:&nbsp;³</td>
+						<td class="success">³</td>
+						<td class="success">&amp;sup3;</td>
+						<td class="success">&amp;sup3;</td>
+						<td class="warning">&amp;#xb3;</td>
+						<td class="warning">&amp;#xb3;</td>
+						<td class="danger">%C2%B3</td>
+						<td class="danger">%C2%B3</td>
+						<td class="info">³</td>
+						<td class="info">\xB3</td>
+					</tr>
+				
+					<tr>
+						<td>180&nbsp;:&nbsp;´</td>
+						<td class="success">´</td>
+						<td class="success">&amp;acute;</td>
+						<td class="success">&amp;acute;</td>
+						<td class="warning">&amp;#xb4;</td>
+						<td class="warning">&amp;#xb4;</td>
+						<td class="danger">%C2%B4</td>
+						<td class="danger">%C2%B4</td>
+						<td class="info">´</td>
+						<td class="info">\xB4</td>
+					</tr>
+				
+					<tr>
+						<td>181&nbsp;:&nbsp;µ</td>
+						<td class="success">µ</td>
+						<td class="success">&amp;micro;</td>
+						<td class="success">&amp;micro;</td>
+						<td class="warning">&amp;#xb5;</td>
+						<td class="warning">&amp;#xb5;</td>
+						<td class="danger">%C2%B5</td>
+						<td class="danger">%C2%B5</td>
+						<td class="info">µ</td>
+						<td class="info">\xB5</td>
+					</tr>
+				
+					<tr>
+						<td>182&nbsp;:&nbsp;¶</td>
+						<td class="success">¶</td>
+						<td class="success">&amp;para;</td>
+						<td class="success">&amp;para;</td>
+						<td class="warning">&amp;#xb6;</td>
+						<td class="warning">&amp;#xb6;</td>
+						<td class="danger">%C2%B6</td>
+						<td class="danger">%C2%B6</td>
+						<td class="info">¶</td>
+						<td class="info">\xB6</td>
+					</tr>
+				
+					<tr>
+						<td>183&nbsp;:&nbsp;·</td>
+						<td class="success">·</td>
+						<td class="success">&amp;middot;</td>
+						<td class="success">&amp;middot;</td>
+						<td class="warning">&amp;#xb7;</td>
+						<td class="warning">&amp;#xb7;</td>
+						<td class="danger">%C2%B7</td>
+						<td class="danger">%C2%B7</td>
+						<td class="info">·</td>
+						<td class="info">\xB7</td>
+					</tr>
+				
+					<tr>
+						<td>184&nbsp;:&nbsp;¸</td>
+						<td class="success">¸</td>
+						<td class="success">&amp;cedil;</td>
+						<td class="success">&amp;cedil;</td>
+						<td class="warning">&amp;#xb8;</td>
+						<td class="warning">&amp;#xb8;</td>
+						<td class="danger">%C2%B8</td>
+						<td class="danger">%C2%B8</td>
+						<td class="info">¸</td>
+						<td class="info">\xB8</td>
+					</tr>
+				
+					<tr>
+						<td>185&nbsp;:&nbsp;¹</td>
+						<td class="success">¹</td>
+						<td class="success">&amp;sup1;</td>
+						<td class="success">&amp;sup1;</td>
+						<td class="warning">&amp;#xb9;</td>
+						<td class="warning">&amp;#xb9;</td>
+						<td class="danger">%C2%B9</td>
+						<td class="danger">%C2%B9</td>
+						<td class="info">¹</td>
+						<td class="info">\xB9</td>
+					</tr>
+				
+					<tr>
+						<td>186&nbsp;:&nbsp;º</td>
+						<td class="success">º</td>
+						<td class="success">&amp;ordm;</td>
+						<td class="success">&amp;ordm;</td>
+						<td class="warning">&amp;#xba;</td>
+						<td class="warning">&amp;#xba;</td>
+						<td class="danger">%C2%BA</td>
+						<td class="danger">%C2%BA</td>
+						<td class="info">º</td>
+						<td class="info">\xBA</td>
+					</tr>
+				
+					<tr>
+						<td>187&nbsp;:&nbsp;»</td>
+						<td class="success">»</td>
+						<td class="success">&amp;raquo;</td>
+						<td class="success">&amp;raquo;</td>
+						<td class="warning">&amp;#xbb;</td>
+						<td class="warning">&amp;#xbb;</td>
+						<td class="danger">%C2%BB</td>
+						<td class="danger">%C2%BB</td>
+						<td class="info">»</td>
+						<td class="info">\xBB</td>
+					</tr>
+				
+					<tr>
+						<td>188&nbsp;:&nbsp;¼</td>
+						<td class="success">¼</td>
+						<td class="success">&amp;frac14;</td>
+						<td class="success">&amp;frac14;</td>
+						<td class="warning">&amp;#xbc;</td>
+						<td class="warning">&amp;#xbc;</td>
+						<td class="danger">%C2%BC</td>
+						<td class="danger">%C2%BC</td>
+						<td class="info">¼</td>
+						<td class="info">\xBC</td>
+					</tr>
+				
+					<tr>
+						<td>189&nbsp;:&nbsp;½</td>
+						<td class="success">½</td>
+						<td class="success">&amp;frac12;</td>
+						<td class="success">&amp;frac12;</td>
+						<td class="warning">&amp;#xbd;</td>
+						<td class="warning">&amp;#xbd;</td>
+						<td class="danger">%C2%BD</td>
+						<td class="danger">%C2%BD</td>
+						<td class="info">½</td>
+						<td class="info">\xBD</td>
+					</tr>
+				
+					<tr>
+						<td>190&nbsp;:&nbsp;¾</td>
+						<td class="success">¾</td>
+						<td class="success">&amp;frac34;</td>
+						<td class="success">&amp;frac34;</td>
+						<td class="warning">&amp;#xbe;</td>
+						<td class="warning">&amp;#xbe;</td>
+						<td class="danger">%C2%BE</td>
+						<td class="danger">%C2%BE</td>
+						<td class="info">¾</td>
+						<td class="info">\xBE</td>
+					</tr>
+				
+					<tr>
+						<td>191&nbsp;:&nbsp;¿</td>
+						<td class="success">¿</td>
+						<td class="success">&amp;iquest;</td>
+						<td class="success">&amp;iquest;</td>
+						<td class="warning">&amp;#xbf;</td>
+						<td class="warning">&amp;#xbf;</td>
+						<td class="danger">%C2%BF</td>
+						<td class="danger">%C2%BF</td>
+						<td class="info">¿</td>
+						<td class="info">\xBF</td>
+					</tr>
+				
+					<tr>
+						<td>192&nbsp;:&nbsp;À</td>
+						<td class="success">À</td>
+						<td class="success">&amp;Agrave;</td>
+						<td class="success">&amp;Agrave;</td>
+						<td class="warning">&amp;#xc0;</td>
+						<td class="warning">&amp;#xc0;</td>
+						<td class="danger">%C3%80</td>
+						<td class="danger">%C3%80</td>
+						<td class="info">À</td>
+						<td class="info">\xC0</td>
+					</tr>
+				
+					<tr>
+						<td>193&nbsp;:&nbsp;Á</td>
+						<td class="success">Á</td>
+						<td class="success">&amp;Aacute;</td>
+						<td class="success">&amp;Aacute;</td>
+						<td class="warning">&amp;#xc1;</td>
+						<td class="warning">&amp;#xc1;</td>
+						<td class="danger">%C3%81</td>
+						<td class="danger">%C3%81</td>
+						<td class="info">Á</td>
+						<td class="info">\xC1</td>
+					</tr>
+				
+					<tr>
+						<td>194&nbsp;:&nbsp;Â</td>
+						<td class="success">Â</td>
+						<td class="success">&amp;Acirc;</td>
+						<td class="success">&amp;Acirc;</td>
+						<td class="warning">&amp;#xc2;</td>
+						<td class="warning">&amp;#xc2;</td>
+						<td class="danger">%C3%82</td>
+						<td class="danger">%C3%82</td>
+						<td class="info">Â</td>
+						<td class="info">\xC2</td>
+					</tr>
+				
+					<tr>
+						<td>195&nbsp;:&nbsp;Ã</td>
+						<td class="success">Ã</td>
+						<td class="success">&amp;Atilde;</td>
+						<td class="success">&amp;Atilde;</td>
+						<td class="warning">&amp;#xc3;</td>
+						<td class="warning">&amp;#xc3;</td>
+						<td class="danger">%C3%83</td>
+						<td class="danger">%C3%83</td>
+						<td class="info">Ã</td>
+						<td class="info">\xC3</td>
+					</tr>
+				
+					<tr>
+						<td>196&nbsp;:&nbsp;Ä</td>
+						<td class="success">Ä</td>
+						<td class="success">&amp;Auml;</td>
+						<td class="success">&amp;Auml;</td>
+						<td class="warning">&amp;#xc4;</td>
+						<td class="warning">&amp;#xc4;</td>
+						<td class="danger">%C3%84</td>
+						<td class="danger">%C3%84</td>
+						<td class="info">Ä</td>
+						<td class="info">\xC4</td>
+					</tr>
+				
+					<tr>
+						<td>197&nbsp;:&nbsp;Å</td>
+						<td class="success">Å</td>
+						<td class="success">&amp;Aring;</td>
+						<td class="success">&amp;Aring;</td>
+						<td class="warning">&amp;#xc5;</td>
+						<td class="warning">&amp;#xc5;</td>
+						<td class="danger">%C3%85</td>
+						<td class="danger">%C3%85</td>
+						<td class="info">Å</td>
+						<td class="info">\xC5</td>
+					</tr>
+				
+					<tr>
+						<td>198&nbsp;:&nbsp;Æ</td>
+						<td class="success">Æ</td>
+						<td class="success">&amp;AElig;</td>
+						<td class="success">&amp;AElig;</td>
+						<td class="warning">&amp;#xc6;</td>
+						<td class="warning">&amp;#xc6;</td>
+						<td class="danger">%C3%86</td>
+						<td class="danger">%C3%86</td>
+						<td class="info">Æ</td>
+						<td class="info">\xC6</td>
+					</tr>
+				
+					<tr>
+						<td>199&nbsp;:&nbsp;Ç</td>
+						<td class="success">Ç</td>
+						<td class="success">&amp;Ccedil;</td>
+						<td class="success">&amp;Ccedil;</td>
+						<td class="warning">&amp;#xc7;</td>
+						<td class="warning">&amp;#xc7;</td>
+						<td class="danger">%C3%87</td>
+						<td class="danger">%C3%87</td>
+						<td class="info">Ç</td>
+						<td class="info">\xC7</td>
+					</tr>
+				
+					<tr>
+						<td>200&nbsp;:&nbsp;È</td>
+						<td class="success">È</td>
+						<td class="success">&amp;Egrave;</td>
+						<td class="success">&amp;Egrave;</td>
+						<td class="warning">&amp;#xc8;</td>
+						<td class="warning">&amp;#xc8;</td>
+						<td class="danger">%C3%88</td>
+						<td class="danger">%C3%88</td>
+						<td class="info">È</td>
+						<td class="info">\xC8</td>
+					</tr>
+				
+					<tr>
+						<td>201&nbsp;:&nbsp;É</td>
+						<td class="success">É</td>
+						<td class="success">&amp;Eacute;</td>
+						<td class="success">&amp;Eacute;</td>
+						<td class="warning">&amp;#xc9;</td>
+						<td class="warning">&amp;#xc9;</td>
+						<td class="danger">%C3%89</td>
+						<td class="danger">%C3%89</td>
+						<td class="info">É</td>
+						<td class="info">\xC9</td>
+					</tr>
+				
+					<tr>
+						<td>202&nbsp;:&nbsp;Ê</td>
+						<td class="success">Ê</td>
+						<td class="success">&amp;Ecirc;</td>
+						<td class="success">&amp;Ecirc;</td>
+						<td class="warning">&amp;#xca;</td>
+						<td class="warning">&amp;#xca;</td>
+						<td class="danger">%C3%8A</td>
+						<td class="danger">%C3%8A</td>
+						<td class="info">Ê</td>
+						<td class="info">\xCA</td>
+					</tr>
+				
+					<tr>
+						<td>203&nbsp;:&nbsp;Ë</td>
+						<td class="success">Ë</td>
+						<td class="success">&amp;Euml;</td>
+						<td class="success">&amp;Euml;</td>
+						<td class="warning">&amp;#xcb;</td>
+						<td class="warning">&amp;#xcb;</td>
+						<td class="danger">%C3%8B</td>
+						<td class="danger">%C3%8B</td>
+						<td class="info">Ë</td>
+						<td class="info">\xCB</td>
+					</tr>
+				
+					<tr>
+						<td>204&nbsp;:&nbsp;Ì</td>
+						<td class="success">Ì</td>
+						<td class="success">&amp;Igrave;</td>
+						<td class="success">&amp;Igrave;</td>
+						<td class="warning">&amp;#xcc;</td>
+						<td class="warning">&amp;#xcc;</td>
+						<td class="danger">%C3%8C</td>
+						<td class="danger">%C3%8C</td>
+						<td class="info">Ì</td>
+						<td class="info">\xCC</td>
+					</tr>
+				
+					<tr>
+						<td>205&nbsp;:&nbsp;Í</td>
+						<td class="success">Í</td>
+						<td class="success">&amp;Iacute;</td>
+						<td class="success">&amp;Iacute;</td>
+						<td class="warning">&amp;#xcd;</td>
+						<td class="warning">&amp;#xcd;</td>
+						<td class="danger">%C3%8D</td>
+						<td class="danger">%C3%8D</td>
+						<td class="info">Í</td>
+						<td class="info">\xCD</td>
+					</tr>
+				
+					<tr>
+						<td>206&nbsp;:&nbsp;Î</td>
+						<td class="success">Î</td>
+						<td class="success">&amp;Icirc;</td>
+						<td class="success">&amp;Icirc;</td>
+						<td class="warning">&amp;#xce;</td>
+						<td class="warning">&amp;#xce;</td>
+						<td class="danger">%C3%8E</td>
+						<td class="danger">%C3%8E</td>
+						<td class="info">Î</td>
+						<td class="info">\xCE</td>
+					</tr>
+				
+					<tr>
+						<td>207&nbsp;:&nbsp;Ï</td>
+						<td class="success">Ï</td>
+						<td class="success">&amp;Iuml;</td>
+						<td class="success">&amp;Iuml;</td>
+						<td class="warning">&amp;#xcf;</td>
+						<td class="warning">&amp;#xcf;</td>
+						<td class="danger">%C3%8F</td>
+						<td class="danger">%C3%8F</td>
+						<td class="info">Ï</td>
+						<td class="info">\xCF</td>
+					</tr>
+				
+					<tr>
+						<td>208&nbsp;:&nbsp;Ð</td>
+						<td class="success">Ð</td>
+						<td class="success">&amp;ETH;</td>
+						<td class="success">&amp;ETH;</td>
+						<td class="warning">&amp;#xd0;</td>
+						<td class="warning">&amp;#xd0;</td>
+						<td class="danger">%C3%90</td>
+						<td class="danger">%C3%90</td>
+						<td class="info">Ð</td>
+						<td class="info">\xD0</td>
+					</tr>
+				
+					<tr>
+						<td>209&nbsp;:&nbsp;Ñ</td>
+						<td class="success">Ñ</td>
+						<td class="success">&amp;Ntilde;</td>
+						<td class="success">&amp;Ntilde;</td>
+						<td class="warning">&amp;#xd1;</td>
+						<td class="warning">&amp;#xd1;</td>
+						<td class="danger">%C3%91</td>
+						<td class="danger">%C3%91</td>
+						<td class="info">Ñ</td>
+						<td class="info">\xD1</td>
+					</tr>
+				
+					<tr>
+						<td>210&nbsp;:&nbsp;Ò</td>
+						<td class="success">Ò</td>
+						<td class="success">&amp;Ograve;</td>
+						<td class="success">&amp;Ograve;</td>
+						<td class="warning">&amp;#xd2;</td>
+						<td class="warning">&amp;#xd2;</td>
+						<td class="danger">%C3%92</td>
+						<td class="danger">%C3%92</td>
+						<td class="info">Ò</td>
+						<td class="info">\xD2</td>
+					</tr>
+				
+					<tr>
+						<td>211&nbsp;:&nbsp;Ó</td>
+						<td class="success">Ó</td>
+						<td class="success">&amp;Oacute;</td>
+						<td class="success">&amp;Oacute;</td>
+						<td class="warning">&amp;#xd3;</td>
+						<td class="warning">&amp;#xd3;</td>
+						<td class="danger">%C3%93</td>
+						<td class="danger">%C3%93</td>
+						<td class="info">Ó</td>
+						<td class="info">\xD3</td>
+					</tr>
+				
+					<tr>
+						<td>212&nbsp;:&nbsp;Ô</td>
+						<td class="success">Ô</td>
+						<td class="success">&amp;Ocirc;</td>
+						<td class="success">&amp;Ocirc;</td>
+						<td class="warning">&amp;#xd4;</td>
+						<td class="warning">&amp;#xd4;</td>
+						<td class="danger">%C3%94</td>
+						<td class="danger">%C3%94</td>
+						<td class="info">Ô</td>
+						<td class="info">\xD4</td>
+					</tr>
+				
+					<tr>
+						<td>213&nbsp;:&nbsp;Õ</td>
+						<td class="success">Õ</td>
+						<td class="success">&amp;Otilde;</td>
+						<td class="success">&amp;Otilde;</td>
+						<td class="warning">&amp;#xd5;</td>
+						<td class="warning">&amp;#xd5;</td>
+						<td class="danger">%C3%95</td>
+						<td class="danger">%C3%95</td>
+						<td class="info">Õ</td>
+						<td class="info">\xD5</td>
+					</tr>
+				
+					<tr>
+						<td>214&nbsp;:&nbsp;Ö</td>
+						<td class="success">Ö</td>
+						<td class="success">&amp;Ouml;</td>
+						<td class="success">&amp;Ouml;</td>
+						<td class="warning">&amp;#xd6;</td>
+						<td class="warning">&amp;#xd6;</td>
+						<td class="danger">%C3%96</td>
+						<td class="danger">%C3%96</td>
+						<td class="info">Ö</td>
+						<td class="info">\xD6</td>
+					</tr>
+				
+					<tr>
+						<td>215&nbsp;:&nbsp;×</td>
+						<td class="success">×</td>
+						<td class="success">&amp;times;</td>
+						<td class="success">&amp;times;</td>
+						<td class="warning">&amp;#xd7;</td>
+						<td class="warning">&amp;#xd7;</td>
+						<td class="danger">%C3%97</td>
+						<td class="danger">%C3%97</td>
+						<td class="info">×</td>
+						<td class="info">\xD7</td>
+					</tr>
+				
+					<tr>
+						<td>216&nbsp;:&nbsp;Ø</td>
+						<td class="success">Ø</td>
+						<td class="success">&amp;Oslash;</td>
+						<td class="success">&amp;Oslash;</td>
+						<td class="warning">&amp;#xd8;</td>
+						<td class="warning">&amp;#xd8;</td>
+						<td class="danger">%C3%98</td>
+						<td class="danger">%C3%98</td>
+						<td class="info">Ø</td>
+						<td class="info">\xD8</td>
+					</tr>
+				
+					<tr>
+						<td>217&nbsp;:&nbsp;Ù</td>
+						<td class="success">Ù</td>
+						<td class="success">&amp;Ugrave;</td>
+						<td class="success">&amp;Ugrave;</td>
+						<td class="warning">&amp;#xd9;</td>
+						<td class="warning">&amp;#xd9;</td>
+						<td class="danger">%C3%99</td>
+						<td class="danger">%C3%99</td>
+						<td class="info">Ù</td>
+						<td class="info">\xD9</td>
+					</tr>
+				
+					<tr>
+						<td>218&nbsp;:&nbsp;Ú</td>
+						<td class="success">Ú</td>
+						<td class="success">&amp;Uacute;</td>
+						<td class="success">&amp;Uacute;</td>
+						<td class="warning">&amp;#xda;</td>
+						<td class="warning">&amp;#xda;</td>
+						<td class="danger">%C3%9A</td>
+						<td class="danger">%C3%9A</td>
+						<td class="info">Ú</td>
+						<td class="info">\xDA</td>
+					</tr>
+				
+					<tr>
+						<td>219&nbsp;:&nbsp;Û</td>
+						<td class="success">Û</td>
+						<td class="success">&amp;Ucirc;</td>
+						<td class="success">&amp;Ucirc;</td>
+						<td class="warning">&amp;#xdb;</td>
+						<td class="warning">&amp;#xdb;</td>
+						<td class="danger">%C3%9B</td>
+						<td class="danger">%C3%9B</td>
+						<td class="info">Û</td>
+						<td class="info">\xDB</td>
+					</tr>
+				
+					<tr>
+						<td>220&nbsp;:&nbsp;Ü</td>
+						<td class="success">Ü</td>
+						<td class="success">&amp;Uuml;</td>
+						<td class="success">&amp;Uuml;</td>
+						<td class="warning">&amp;#xdc;</td>
+						<td class="warning">&amp;#xdc;</td>
+						<td class="danger">%C3%9C</td>
+						<td class="danger">%C3%9C</td>
+						<td class="info">Ü</td>
+						<td class="info">\xDC</td>
+					</tr>
+				
+					<tr>
+						<td>221&nbsp;:&nbsp;Ý</td>
+						<td class="success">Ý</td>
+						<td class="success">&amp;Yacute;</td>
+						<td class="success">&amp;Yacute;</td>
+						<td class="warning">&amp;#xdd;</td>
+						<td class="warning">&amp;#xdd;</td>
+						<td class="danger">%C3%9D</td>
+						<td class="danger">%C3%9D</td>
+						<td class="info">Ý</td>
+						<td class="info">\xDD</td>
+					</tr>
+				
+					<tr>
+						<td>222&nbsp;:&nbsp;Þ</td>
+						<td class="success">Þ</td>
+						<td class="success">&amp;THORN;</td>
+						<td class="success">&amp;THORN;</td>
+						<td class="warning">&amp;#xde;</td>
+						<td class="warning">&amp;#xde;</td>
+						<td class="danger">%C3%9E</td>
+						<td class="danger">%C3%9E</td>
+						<td class="info">Þ</td>
+						<td class="info">\xDE</td>
+					</tr>
+				
+					<tr>
+						<td>223&nbsp;:&nbsp;ß</td>
+						<td class="success">ß</td>
+						<td class="success">&amp;szlig;</td>
+						<td class="success">&amp;szlig;</td>
+						<td class="warning">&amp;#xdf;</td>
+						<td class="warning">&amp;#xdf;</td>
+						<td class="danger">%C3%9F</td>
+						<td class="danger">%C3%9F</td>
+						<td class="info">ß</td>
+						<td class="info">\xDF</td>
+					</tr>
+				
+					<tr>
+						<td>224&nbsp;:&nbsp;à</td>
+						<td class="success">à</td>
+						<td class="success">&amp;agrave;</td>
+						<td class="success">&amp;agrave;</td>
+						<td class="warning">&amp;#xe0;</td>
+						<td class="warning">&amp;#xe0;</td>
+						<td class="danger">%C3%A0</td>
+						<td class="danger">%C3%A0</td>
+						<td class="info">à</td>
+						<td class="info">\xE0</td>
+					</tr>
+				
+					<tr>
+						<td>225&nbsp;:&nbsp;á</td>
+						<td class="success">á</td>
+						<td class="success">&amp;aacute;</td>
+						<td class="success">&amp;aacute;</td>
+						<td class="warning">&amp;#xe1;</td>
+						<td class="warning">&amp;#xe1;</td>
+						<td class="danger">%C3%A1</td>
+						<td class="danger">%C3%A1</td>
+						<td class="info">á</td>
+						<td class="info">\xE1</td>
+					</tr>
+				
+					<tr>
+						<td>226&nbsp;:&nbsp;â</td>
+						<td class="success">â</td>
+						<td class="success">&amp;acirc;</td>
+						<td class="success">&amp;acirc;</td>
+						<td class="warning">&amp;#xe2;</td>
+						<td class="warning">&amp;#xe2;</td>
+						<td class="danger">%C3%A2</td>
+						<td class="danger">%C3%A2</td>
+						<td class="info">â</td>
+						<td class="info">\xE2</td>
+					</tr>
+				
+					<tr>
+						<td>227&nbsp;:&nbsp;ã</td>
+						<td class="success">ã</td>
+						<td class="success">&amp;atilde;</td>
+						<td class="success">&amp;atilde;</td>
+						<td class="warning">&amp;#xe3;</td>
+						<td class="warning">&amp;#xe3;</td>
+						<td class="danger">%C3%A3</td>
+						<td class="danger">%C3%A3</td>
+						<td class="info">ã</td>
+						<td class="info">\xE3</td>
+					</tr>
+				
+					<tr>
+						<td>228&nbsp;:&nbsp;ä</td>
+						<td class="success">ä</td>
+						<td class="success">&amp;auml;</td>
+						<td class="success">&amp;auml;</td>
+						<td class="warning">&amp;#xe4;</td>
+						<td class="warning">&amp;#xe4;</td>
+						<td class="danger">%C3%A4</td>
+						<td class="danger">%C3%A4</td>
+						<td class="info">ä</td>
+						<td class="info">\xE4</td>
+					</tr>
+				
+					<tr>
+						<td>229&nbsp;:&nbsp;å</td>
+						<td class="success">å</td>
+						<td class="success">&amp;aring;</td>
+						<td class="success">&amp;aring;</td>
+						<td class="warning">&amp;#xe5;</td>
+						<td class="warning">&amp;#xe5;</td>
+						<td class="danger">%C3%A5</td>
+						<td class="danger">%C3%A5</td>
+						<td class="info">å</td>
+						<td class="info">\xE5</td>
+					</tr>
+				
+					<tr>
+						<td>230&nbsp;:&nbsp;æ</td>
+						<td class="success">æ</td>
+						<td class="success">&amp;aelig;</td>
+						<td class="success">&amp;aelig;</td>
+						<td class="warning">&amp;#xe6;</td>
+						<td class="warning">&amp;#xe6;</td>
+						<td class="danger">%C3%A6</td>
+						<td class="danger">%C3%A6</td>
+						<td class="info">æ</td>
+						<td class="info">\xE6</td>
+					</tr>
+				
+					<tr>
+						<td>231&nbsp;:&nbsp;ç</td>
+						<td class="success">ç</td>
+						<td class="success">&amp;ccedil;</td>
+						<td class="success">&amp;ccedil;</td>
+						<td class="warning">&amp;#xe7;</td>
+						<td class="warning">&amp;#xe7;</td>
+						<td class="danger">%C3%A7</td>
+						<td class="danger">%C3%A7</td>
+						<td class="info">ç</td>
+						<td class="info">\xE7</td>
+					</tr>
+				
+					<tr>
+						<td>232&nbsp;:&nbsp;è</td>
+						<td class="success">è</td>
+						<td class="success">&amp;egrave;</td>
+						<td class="success">&amp;egrave;</td>
+						<td class="warning">&amp;#xe8;</td>
+						<td class="warning">&amp;#xe8;</td>
+						<td class="danger">%C3%A8</td>
+						<td class="danger">%C3%A8</td>
+						<td class="info">è</td>
+						<td class="info">\xE8</td>
+					</tr>
+				
+					<tr>
+						<td>233&nbsp;:&nbsp;é</td>
+						<td class="success">é</td>
+						<td class="success">&amp;eacute;</td>
+						<td class="success">&amp;eacute;</td>
+						<td class="warning">&amp;#xe9;</td>
+						<td class="warning">&amp;#xe9;</td>
+						<td class="danger">%C3%A9</td>
+						<td class="danger">%C3%A9</td>
+						<td class="info">é</td>
+						<td class="info">\xE9</td>
+					</tr>
+				
+					<tr>
+						<td>234&nbsp;:&nbsp;ê</td>
+						<td class="success">ê</td>
+						<td class="success">&amp;ecirc;</td>
+						<td class="success">&amp;ecirc;</td>
+						<td class="warning">&amp;#xea;</td>
+						<td class="warning">&amp;#xea;</td>
+						<td class="danger">%C3%AA</td>
+						<td class="danger">%C3%AA</td>
+						<td class="info">ê</td>
+						<td class="info">\xEA</td>
+					</tr>
+				
+					<tr>
+						<td>235&nbsp;:&nbsp;ë</td>
+						<td class="success">ë</td>
+						<td class="success">&amp;euml;</td>
+						<td class="success">&amp;euml;</td>
+						<td class="warning">&amp;#xeb;</td>
+						<td class="warning">&amp;#xeb;</td>
+						<td class="danger">%C3%AB</td>
+						<td class="danger">%C3%AB</td>
+						<td class="info">ë</td>
+						<td class="info">\xEB</td>
+					</tr>
+				
+					<tr>
+						<td>236&nbsp;:&nbsp;ì</td>
+						<td class="success">ì</td>
+						<td class="success">&amp;igrave;</td>
+						<td class="success">&amp;igrave;</td>
+						<td class="warning">&amp;#xec;</td>
+						<td class="warning">&amp;#xec;</td>
+						<td class="danger">%C3%AC</td>
+						<td class="danger">%C3%AC</td>
+						<td class="info">ì</td>
+						<td class="info">\xEC</td>
+					</tr>
+				
+					<tr>
+						<td>237&nbsp;:&nbsp;í</td>
+						<td class="success">í</td>
+						<td class="success">&amp;iacute;</td>
+						<td class="success">&amp;iacute;</td>
+						<td class="warning">&amp;#xed;</td>
+						<td class="warning">&amp;#xed;</td>
+						<td class="danger">%C3%AD</td>
+						<td class="danger">%C3%AD</td>
+						<td class="info">í</td>
+						<td class="info">\xED</td>
+					</tr>
+				
+					<tr>
+						<td>238&nbsp;:&nbsp;î</td>
+						<td class="success">î</td>
+						<td class="success">&amp;icirc;</td>
+						<td class="success">&amp;icirc;</td>
+						<td class="warning">&amp;#xee;</td>
+						<td class="warning">&amp;#xee;</td>
+						<td class="danger">%C3%AE</td>
+						<td class="danger">%C3%AE</td>
+						<td class="info">î</td>
+						<td class="info">\xEE</td>
+					</tr>
+				
+					<tr>
+						<td>239&nbsp;:&nbsp;ï</td>
+						<td class="success">ï</td>
+						<td class="success">&amp;iuml;</td>
+						<td class="success">&amp;iuml;</td>
+						<td class="warning">&amp;#xef;</td>
+						<td class="warning">&amp;#xef;</td>
+						<td class="danger">%C3%AF</td>
+						<td class="danger">%C3%AF</td>
+						<td class="info">ï</td>
+						<td class="info">\xEF</td>
+					</tr>
+				
+					<tr>
+						<td>240&nbsp;:&nbsp;ð</td>
+						<td class="success">ð</td>
+						<td class="success">&amp;eth;</td>
+						<td class="success">&amp;eth;</td>
+						<td class="warning">&amp;#xf0;</td>
+						<td class="warning">&amp;#xf0;</td>
+						<td class="danger">%C3%B0</td>
+						<td class="danger">%C3%B0</td>
+						<td class="info">ð</td>
+						<td class="info">\xF0</td>
+					</tr>
+				
+					<tr>
+						<td>241&nbsp;:&nbsp;ñ</td>
+						<td class="success">ñ</td>
+						<td class="success">&amp;ntilde;</td>
+						<td class="success">&amp;ntilde;</td>
+						<td class="warning">&amp;#xf1;</td>
+						<td class="warning">&amp;#xf1;</td>
+						<td class="danger">%C3%B1</td>
+						<td class="danger">%C3%B1</td>
+						<td class="info">ñ</td>
+						<td class="info">\xF1</td>
+					</tr>
+				
+					<tr>
+						<td>242&nbsp;:&nbsp;ò</td>
+						<td class="success">ò</td>
+						<td class="success">&amp;ograve;</td>
+						<td class="success">&amp;ograve;</td>
+						<td class="warning">&amp;#xf2;</td>
+						<td class="warning">&amp;#xf2;</td>
+						<td class="danger">%C3%B2</td>
+						<td class="danger">%C3%B2</td>
+						<td class="info">ò</td>
+						<td class="info">\xF2</td>
+					</tr>
+				
+					<tr>
+						<td>243&nbsp;:&nbsp;ó</td>
+						<td class="success">ó</td>
+						<td class="success">&amp;oacute;</td>
+						<td class="success">&amp;oacute;</td>
+						<td class="warning">&amp;#xf3;</td>
+						<td class="warning">&amp;#xf3;</td>
+						<td class="danger">%C3%B3</td>
+						<td class="danger">%C3%B3</td>
+						<td class="info">ó</td>
+						<td class="info">\xF3</td>
+					</tr>
+				
+					<tr>
+						<td>244&nbsp;:&nbsp;ô</td>
+						<td class="success">ô</td>
+						<td class="success">&amp;ocirc;</td>
+						<td class="success">&amp;ocirc;</td>
+						<td class="warning">&amp;#xf4;</td>
+						<td class="warning">&amp;#xf4;</td>
+						<td class="danger">%C3%B4</td>
+						<td class="danger">%C3%B4</td>
+						<td class="info">ô</td>
+						<td class="info">\xF4</td>
+					</tr>
+				
+					<tr>
+						<td>245&nbsp;:&nbsp;õ</td>
+						<td class="success">õ</td>
+						<td class="success">&amp;otilde;</td>
+						<td class="success">&amp;otilde;</td>
+						<td class="warning">&amp;#xf5;</td>
+						<td class="warning">&amp;#xf5;</td>
+						<td class="danger">%C3%B5</td>
+						<td class="danger">%C3%B5</td>
+						<td class="info">õ</td>
+						<td class="info">\xF5</td>
+					</tr>
+				
+					<tr>
+						<td>246&nbsp;:&nbsp;ö</td>
+						<td class="success">ö</td>
+						<td class="success">&amp;ouml;</td>
+						<td class="success">&amp;ouml;</td>
+						<td class="warning">&amp;#xf6;</td>
+						<td class="warning">&amp;#xf6;</td>
+						<td class="danger">%C3%B6</td>
+						<td class="danger">%C3%B6</td>
+						<td class="info">ö</td>
+						<td class="info">\xF6</td>
+					</tr>
+				
+					<tr>
+						<td>247&nbsp;:&nbsp;÷</td>
+						<td class="success">÷</td>
+						<td class="success">&amp;divide;</td>
+						<td class="success">&amp;divide;</td>
+						<td class="warning">&amp;#xf7;</td>
+						<td class="warning">&amp;#xf7;</td>
+						<td class="danger">%C3%B7</td>
+						<td class="danger">%C3%B7</td>
+						<td class="info">÷</td>
+						<td class="info">\xF7</td>
+					</tr>
+				
+					<tr>
+						<td>248&nbsp;:&nbsp;ø</td>
+						<td class="success">ø</td>
+						<td class="success">&amp;oslash;</td>
+						<td class="success">&amp;oslash;</td>
+						<td class="warning">&amp;#xf8;</td>
+						<td class="warning">&amp;#xf8;</td>
+						<td class="danger">%C3%B8</td>
+						<td class="danger">%C3%B8</td>
+						<td class="info">ø</td>
+						<td class="info">\xF8</td>
+					</tr>
+				
+					<tr>
+						<td>249&nbsp;:&nbsp;ù</td>
+						<td class="success">ù</td>
+						<td class="success">&amp;ugrave;</td>
+						<td class="success">&amp;ugrave;</td>
+						<td class="warning">&amp;#xf9;</td>
+						<td class="warning">&amp;#xf9;</td>
+						<td class="danger">%C3%B9</td>
+						<td class="danger">%C3%B9</td>
+						<td class="info">ù</td>
+						<td class="info">\xF9</td>
+					</tr>
+				
+					<tr>
+						<td>250&nbsp;:&nbsp;ú</td>
+						<td class="success">ú</td>
+						<td class="success">&amp;uacute;</td>
+						<td class="success">&amp;uacute;</td>
+						<td class="warning">&amp;#xfa;</td>
+						<td class="warning">&amp;#xfa;</td>
+						<td class="danger">%C3%BA</td>
+						<td class="danger">%C3%BA</td>
+						<td class="info">ú</td>
+						<td class="info">\xFA</td>
+					</tr>
+				
+					<tr>
+						<td>251&nbsp;:&nbsp;û</td>
+						<td class="success">û</td>
+						<td class="success">&amp;ucirc;</td>
+						<td class="success">&amp;ucirc;</td>
+						<td class="warning">&amp;#xfb;</td>
+						<td class="warning">&amp;#xfb;</td>
+						<td class="danger">%C3%BB</td>
+						<td class="danger">%C3%BB</td>
+						<td class="info">û</td>
+						<td class="info">\xFB</td>
+					</tr>
+				
+					<tr>
+						<td>252&nbsp;:&nbsp;ü</td>
+						<td class="success">ü</td>
+						<td class="success">&amp;uuml;</td>
+						<td class="success">&amp;uuml;</td>
+						<td class="warning">&amp;#xfc;</td>
+						<td class="warning">&amp;#xfc;</td>
+						<td class="danger">%C3%BC</td>
+						<td class="danger">%C3%BC</td>
+						<td class="info">ü</td>
+						<td class="info">\xFC</td>
+					</tr>
+				
+					<tr>
+						<td>253&nbsp;:&nbsp;ý</td>
+						<td class="success">ý</td>
+						<td class="success">&amp;yacute;</td>
+						<td class="success">&amp;yacute;</td>
+						<td class="warning">&amp;#xfd;</td>
+						<td class="warning">&amp;#xfd;</td>
+						<td class="danger">%C3%BD</td>
+						<td class="danger">%C3%BD</td>
+						<td class="info">ý</td>
+						<td class="info">\xFD</td>
+					</tr>
+				
+					<tr>
+						<td>254&nbsp;:&nbsp;þ</td>
+						<td class="success">þ</td>
+						<td class="success">&amp;thorn;</td>
+						<td class="success">&amp;thorn;</td>
+						<td class="warning">&amp;#xfe;</td>
+						<td class="warning">&amp;#xfe;</td>
+						<td class="danger">%C3%BE</td>
+						<td class="danger">%C3%BE</td>
+						<td class="info">þ</td>
+						<td class="info">\xFE</td>
+					</tr>
+				
+					<tr>
+						<td>255&nbsp;:&nbsp;ÿ</td>
+						<td class="success">ÿ</td>
+						<td class="success">&amp;yuml;</td>
+						<td class="success">&amp;yuml;</td>
+						<td class="warning">&amp;#xff;</td>
+						<td class="warning">&amp;#xff;</td>
+						<td class="danger">%C3%BF</td>
+						<td class="danger">%C3%BF</td>
+						<td class="info">ÿ</td>
+						<td class="info">\xFF</td>
+					</tr>
+				
+			</tbody>
+		</table>
+	</div>
+
+	<div class="page-header">
+		<h4>Asian Characters</h4>
+	</div>
+
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th rowspan="2"></th>
+					<th colspan="3" class="success">HTML</th>
+					<th colspan="2" class="warning">XML</th>
+					<th colspan="2" class="danger">URL</th>
+					<th colspan="2" class="info">JS</th>
+				</tr>
+				<tr>
+					<th class="success">CF:htmlEditFormat</th>
+					<th class="success">ESAPI:encodeForHTML</th>
+					<th class="success">ESAPI:encodeForHTMLAttribute</th>
+					<th class="warning">CF:xmlFormat</th>
+					<th class="warning">ESAPI:encodeForXML</th>
+					<th class="danger">CF:urlEncodedFormat</th>
+					<th class="danger">ESAPI:encodeForURL</th>
+					<th class="info">CF:jsStringFormat</th>
+					<th class="info">ESAPI:encodeForJavaScript</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+					<tr>
+						<td>20051&nbsp;:&nbsp;乓</td>
+						<td class="success">乓</td>
+						<td class="success">&amp;#x4e53;</td>
+						<td class="success">&amp;#x4e53;</td>
+						<td class="warning">乓</td>
+						<td class="warning">&amp;#x4e53;</td>
+						<td class="danger">%E4%B9%93</td>
+						<td class="danger">%E4%B9%93</td>
+						<td class="info">乓</td>
+						<td class="info">\u4E53</td>
+					</tr>
+				
+					<tr>
+						<td>20052&nbsp;:&nbsp;乔</td>
+						<td class="success">乔</td>
+						<td class="success">&amp;#x4e54;</td>
+						<td class="success">&amp;#x4e54;</td>
+						<td class="warning">乔</td>
+						<td class="warning">&amp;#x4e54;</td>
+						<td class="danger">%E4%B9%94</td>
+						<td class="danger">%E4%B9%94</td>
+						<td class="info">乔</td>
+						<td class="info">\u4E54</td>
+					</tr>
+				
+					<tr>
+						<td>20053&nbsp;:&nbsp;乕</td>
+						<td class="success">乕</td>
+						<td class="success">&amp;#x4e55;</td>
+						<td class="success">&amp;#x4e55;</td>
+						<td class="warning">乕</td>
+						<td class="warning">&amp;#x4e55;</td>
+						<td class="danger">%E4%B9%95</td>
+						<td class="danger">%E4%B9%95</td>
+						<td class="info">乕</td>
+						<td class="info">\u4E55</td>
+					</tr>
+				
+					<tr>
+						<td>20054&nbsp;:&nbsp;乖</td>
+						<td class="success">乖</td>
+						<td class="success">&amp;#x4e56;</td>
+						<td class="success">&amp;#x4e56;</td>
+						<td class="warning">乖</td>
+						<td class="warning">&amp;#x4e56;</td>
+						<td class="danger">%E4%B9%96</td>
+						<td class="danger">%E4%B9%96</td>
+						<td class="info">乖</td>
+						<td class="info">\u4E56</td>
+					</tr>
+				
+					<tr>
+						<td>20055&nbsp;:&nbsp;乗</td>
+						<td class="success">乗</td>
+						<td class="success">&amp;#x4e57;</td>
+						<td class="success">&amp;#x4e57;</td>
+						<td class="warning">乗</td>
+						<td class="warning">&amp;#x4e57;</td>
+						<td class="danger">%E4%B9%97</td>
+						<td class="danger">%E4%B9%97</td>
+						<td class="info">乗</td>
+						<td class="info">\u4E57</td>
+					</tr>
+				
+					<tr>
+						<td>20056&nbsp;:&nbsp;乘</td>
+						<td class="success">乘</td>
+						<td class="success">&amp;#x4e58;</td>
+						<td class="success">&amp;#x4e58;</td>
+						<td class="warning">乘</td>
+						<td class="warning">&amp;#x4e58;</td>
+						<td class="danger">%E4%B9%98</td>
+						<td class="danger">%E4%B9%98</td>
+						<td class="info">乘</td>
+						<td class="info">\u4E58</td>
+					</tr>
+				
+					<tr>
+						<td>20057&nbsp;:&nbsp;乙</td>
+						<td class="success">乙</td>
+						<td class="success">&amp;#x4e59;</td>
+						<td class="success">&amp;#x4e59;</td>
+						<td class="warning">乙</td>
+						<td class="warning">&amp;#x4e59;</td>
+						<td class="danger">%E4%B9%99</td>
+						<td class="danger">%E4%B9%99</td>
+						<td class="info">乙</td>
+						<td class="info">\u4E59</td>
+					</tr>
+				
+					<tr>
+						<td>20058&nbsp;:&nbsp;乚</td>
+						<td class="success">乚</td>
+						<td class="success">&amp;#x4e5a;</td>
+						<td class="success">&amp;#x4e5a;</td>
+						<td class="warning">乚</td>
+						<td class="warning">&amp;#x4e5a;</td>
+						<td class="danger">%E4%B9%9A</td>
+						<td class="danger">%E4%B9%9A</td>
+						<td class="info">乚</td>
+						<td class="info">\u4E5A</td>
+					</tr>
+				
+					<tr>
+						<td>20059&nbsp;:&nbsp;乛</td>
+						<td class="success">乛</td>
+						<td class="success">&amp;#x4e5b;</td>
+						<td class="success">&amp;#x4e5b;</td>
+						<td class="warning">乛</td>
+						<td class="warning">&amp;#x4e5b;</td>
+						<td class="danger">%E4%B9%9B</td>
+						<td class="danger">%E4%B9%9B</td>
+						<td class="info">乛</td>
+						<td class="info">\u4E5B</td>
+					</tr>
+				
+					<tr>
+						<td>20060&nbsp;:&nbsp;乜</td>
+						<td class="success">乜</td>
+						<td class="success">&amp;#x4e5c;</td>
+						<td class="success">&amp;#x4e5c;</td>
+						<td class="warning">乜</td>
+						<td class="warning">&amp;#x4e5c;</td>
+						<td class="danger">%E4%B9%9C</td>
+						<td class="danger">%E4%B9%9C</td>
+						<td class="info">乜</td>
+						<td class="info">\u4E5C</td>
+					</tr>
+				
+			</tbody>
+		</table>
+	</div>
+
+	<div class="page-header">
+		<h4>Arabic Characters</h4>
+	</div>
+
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th rowspan="2"></th>
+					<th colspan="3" class="success">HTML</th>
+					<th colspan="2" class="warning">XML</th>
+					<th colspan="2" class="danger">URL</th>
+					<th colspan="2" class="info">JS</th>
+				</tr>
+				<tr>
+					<th class="success">CF:htmlEditFormat</th>
+					<th class="success">ESAPI:encodeForHTML</th>
+					<th class="success">ESAPI:encodeForHTMLAttribute</th>
+					<th class="warning">CF:xmlFormat</th>
+					<th class="warning">ESAPI:encodeForXML</th>
+					<th class="danger">CF:urlEncodedFormat</th>
+					<th class="danger">ESAPI:encodeForURL</th>
+					<th class="info">CF:jsStringFormat</th>
+					<th class="info">ESAPI:encodeForJavaScript</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+					<tr>
+						<td>1601&nbsp;:&nbsp;ف</td>
+						<td class="success">ف</td>
+						<td class="success">&amp;#x641;</td>
+						<td class="success">&amp;#x641;</td>
+						<td class="warning">ف</td>
+						<td class="warning">&amp;#x641;</td>
+						<td class="danger">%D9%81</td>
+						<td class="danger">%D9%81</td>
+						<td class="info">ف</td>
+						<td class="info">\u0641</td>
+					</tr>
+				
+					<tr>
+						<td>1602&nbsp;:&nbsp;ق</td>
+						<td class="success">ق</td>
+						<td class="success">&amp;#x642;</td>
+						<td class="success">&amp;#x642;</td>
+						<td class="warning">ق</td>
+						<td class="warning">&amp;#x642;</td>
+						<td class="danger">%D9%82</td>
+						<td class="danger">%D9%82</td>
+						<td class="info">ق</td>
+						<td class="info">\u0642</td>
+					</tr>
+				
+					<tr>
+						<td>1603&nbsp;:&nbsp;ك</td>
+						<td class="success">ك</td>
+						<td class="success">&amp;#x643;</td>
+						<td class="success">&amp;#x643;</td>
+						<td class="warning">ك</td>
+						<td class="warning">&amp;#x643;</td>
+						<td class="danger">%D9%83</td>
+						<td class="danger">%D9%83</td>
+						<td class="info">ك</td>
+						<td class="info">\u0643</td>
+					</tr>
+				
+					<tr>
+						<td>1604&nbsp;:&nbsp;ل</td>
+						<td class="success">ل</td>
+						<td class="success">&amp;#x644;</td>
+						<td class="success">&amp;#x644;</td>
+						<td class="warning">ل</td>
+						<td class="warning">&amp;#x644;</td>
+						<td class="danger">%D9%84</td>
+						<td class="danger">%D9%84</td>
+						<td class="info">ل</td>
+						<td class="info">\u0644</td>
+					</tr>
+				
+					<tr>
+						<td>1605&nbsp;:&nbsp;م</td>
+						<td class="success">م</td>
+						<td class="success">&amp;#x645;</td>
+						<td class="success">&amp;#x645;</td>
+						<td class="warning">م</td>
+						<td class="warning">&amp;#x645;</td>
+						<td class="danger">%D9%85</td>
+						<td class="danger">%D9%85</td>
+						<td class="info">م</td>
+						<td class="info">\u0645</td>
+					</tr>
+				
+					<tr>
+						<td>1606&nbsp;:&nbsp;ن</td>
+						<td class="success">ن</td>
+						<td class="success">&amp;#x646;</td>
+						<td class="success">&amp;#x646;</td>
+						<td class="warning">ن</td>
+						<td class="warning">&amp;#x646;</td>
+						<td class="danger">%D9%86</td>
+						<td class="danger">%D9%86</td>
+						<td class="info">ن</td>
+						<td class="info">\u0646</td>
+					</tr>
+				
+					<tr>
+						<td>1607&nbsp;:&nbsp;ه</td>
+						<td class="success">ه</td>
+						<td class="success">&amp;#x647;</td>
+						<td class="success">&amp;#x647;</td>
+						<td class="warning">ه</td>
+						<td class="warning">&amp;#x647;</td>
+						<td class="danger">%D9%87</td>
+						<td class="danger">%D9%87</td>
+						<td class="info">ه</td>
+						<td class="info">\u0647</td>
+					</tr>
+				
+					<tr>
+						<td>1608&nbsp;:&nbsp;و</td>
+						<td class="success">و</td>
+						<td class="success">&amp;#x648;</td>
+						<td class="success">&amp;#x648;</td>
+						<td class="warning">و</td>
+						<td class="warning">&amp;#x648;</td>
+						<td class="danger">%D9%88</td>
+						<td class="danger">%D9%88</td>
+						<td class="info">و</td>
+						<td class="info">\u0648</td>
+					</tr>
+				
+					<tr>
+						<td>1609&nbsp;:&nbsp;ى</td>
+						<td class="success">ى</td>
+						<td class="success">&amp;#x649;</td>
+						<td class="success">&amp;#x649;</td>
+						<td class="warning">ى</td>
+						<td class="warning">&amp;#x649;</td>
+						<td class="danger">%D9%89</td>
+						<td class="danger">%D9%89</td>
+						<td class="info">ى</td>
+						<td class="info">\u0649</td>
+					</tr>
+				
+					<tr>
+						<td>1610&nbsp;:&nbsp;ي</td>
+						<td class="success">ي</td>
+						<td class="success">&amp;#x64a;</td>
+						<td class="success">&amp;#x64a;</td>
+						<td class="warning">ي</td>
+						<td class="warning">&amp;#x64a;</td>
+						<td class="danger">%D9%8A</td>
+						<td class="danger">%D9%8A</td>
+						<td class="info">ي</td>
+						<td class="info">\u064A</td>
+					</tr>
+				
+			</tbody>
+		</table>
+	</div>
+	
+	<!-- END content --><hr/>
+	<footer>
+		<p id="copyright"></p>
+	</footer>
+</div>
+
+<script src="//code.jquery.com/jquery.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="../js/plugins.js"></script>
+<script src="../js/main.js"></script>
+<script>
+var _gaq=[['_setAccount','UA-828502-5'],['_trackPageview']];
+(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+g.src='//www.google-analytics.com/ga.js';
+s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+</body>
 </html>

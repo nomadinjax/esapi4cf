@@ -11,8 +11,8 @@
 		function createTopNav() {
 			var context = getContext("esapi4cf");
 			var navbar = $('<div class="container"/>');
-			var navbarHeader = $('<div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse"><span class="icon-bar"/><span class="icon-bar"/><span class="icon-bar"/></button><a class="navbar-brand" href="#">OWASP ESAPI4CF</a></div>');
-			var navbarCollapse = $('<div class="collapse navbar-collapse navbar-ex1-collapse"/>');
+			var navbarHeader = $('<div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-topmenu"><span class="sr-only">Toggle navigation</span><span class="icon-bar"/><span class="icon-bar"/><span class="icon-bar"/></button><a class="navbar-brand" href="#">OWASP ESAPI4CF</a></div>');
+			var navbarCollapse = $('<div class="collapse navbar-collapse" id="navbar-topmenu"/>');
 			var navbarNavLeft = $(
 				'<ul class="nav navbar-nav">'
 					+ '<li><a href="' + context + '/index.html">Home</a></li>'
@@ -24,7 +24,7 @@
 					+ '<li class="dropdown">'
 						+ '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Tutorials <b class="caret"></b></a>'
 						+ '<ul class="dropdown-menu">'
-							+ '<li><a href="' + context + '/tutorials/Introduction.html">Introduction</a></li>'
+							+ '<li><a href="' + context + '/tutorials/">Introduction</a></li>'
 							+ '<li><a href="' + context + '/tutorials/Setup.html">Setup</a></li>'
 							+ '<li><a href="' + context + '/tutorials/Login.html">Authentication</a></li>'
 							+ '<li><a href="' + context + '/tutorials/SessionManagement.html"><span class="label label-danger">TODO</span> Session Management</a></li>'
@@ -64,6 +64,7 @@
 		}
 		
 		$("#bannerNav").append(createTopNav());
+		$("#copyright").html("Copyright &#169; 2014 OWASP ESAPI4CF");
 		
 	});
 }(window.jQuery);

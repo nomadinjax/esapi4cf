@@ -1,230 +1,231 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
-	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-		<title>Setup Tutorial :: ESAPI4CF</title>
-		<meta name="description" content="" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="../css/main.css" />
-		<script src="../js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-	</head>
-	<body>
-		<!--[if lt IE 9]><p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p><![endif]-->
-		<nav id="bannerNav" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation"></nav>
-		<div class="container">
-			<!-- BEGIN content -->
-			<div class="page-header">
-				<h1 class="text-center">Setup</h1>
-			</div>
-			<p>In this first tutorial we will cover the installation and configuration of ESAPI4CF.  When we are finished you will have the ESAPI4CF core implemented with every request in your CF application. This will provide your CF application with validation against suspicious requests.</p>
-			<p>
-				<span class="label label-warning">CAUTION</span>
-				Be cautious implementing the request validator in existing applications as some of your existing code may trigger a validation exception.  As developers we can create pheonominal applications and sometimes not realize the shortcuts and rules we bend which potentially violate security best practices.  If you choose to implement the request validator in an existing application be sure to thoroughly regression test.
-			</p>
-			<p>So first things first, download it!  Select your desired download format under the Download Latest from the top navigation.</p>
-			<div class="page-header">
-				<h2>JAR dependencies</h2>
-			</div>
-			<p>Although all of the CFML engines now include the esapi.jar, they did not include all of the other JAR dependencies various parts of the ESAPI library require so we must add them to our CF classpath.  In the extracted files, /lib/ there is separate folders per CFML engine so find the appropriate one for you and copy the .jar files into your CF instance's /WEB-INF/lib/ folder.  You will need to restart your CF instance for these to be picked up.</p>
-			<div class="page-header">
-				<h2>Core Files</h2>
-			</div>
-			<p>The only files that you need inside of your webroot are under the /org/ folder.  Copy these to your webroot under /org/.</p>
-			<div class="page-header">
-				<h2>Resource Files</h2>
-			</div>
-			<p>Next, you will want to setup your own configuration settings for your CF application.  In the extracted files, under /test/resources/ you will find a file named ESAPI.properties.  Copy this file to a location that is *not* accessible via the browser, typically somewhere like /WEB-INF/esapi-resources/ folder. If you plan to have multiple CF applications leverage ESAPI4CF then use your CF application name for each resources folder, like /WEB-INF/esapi-[myApplicationName]/ in order to keep the CF application resources separate. This will allow you to setup separate configurations per CF application.</p>
-			<p>
-				There are additional configuration files here named *Rules.txt and we will get to these under the <a href="AccessControl.html">AccessControl Tutorial</a>.  If you have already run the MXUnit tests, you probably also see a users.txt file.  This will be covered under the <a href="Login.html">Authentication Tutorial</a>.
-			</p>
-			<p>Now let's open up your copy of the ESAPI.properties file.  There is lots of good stuff in here that we will go over under its relevant tutorial and you can play with these on your own.  Right now, there are two very important values that we MUST change before we begin using ESAPI4CF - MasterPassword and MasterSalt.  Be aware that MasterSalt must be 8 characters - no more, no less.</p>
-			<p>CHANGE THESE IMMEDIATELY!!!</p>
-			<pre>
+<!--[if lt IE 7]>      <html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<title>Setup Tutorial :: OWASP ESAPI for ColdFusion/CFML Project</title>
+<meta name="description" content="" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../css/main.css" />
+<script src="../js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+</head>
+<body>
+<!--[if lt IE 8]><p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p><![endif]-->
+<nav id="bannerNav" class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation"></nav>
+
+<div class="container"><!-- BEGIN content -->
+
+	<div class="page-header">
+		<h1 class="text-center">Setup</h1>
+	</div>
+	<p>In this first tutorial we will cover the installation and configuration of ESAPI4CF.  When we are finished you will have the ESAPI4CF core implemented with every request in your CF application. This will provide your CF application with validation against suspicious requests.</p>
+	<p>
+		<span class="label label-warning">CAUTION</span>
+		Be cautious implementing the request validator in existing applications as some of your existing code may trigger a validation exception.  As developers we can create pheonominal applications and sometimes not realize the shortcuts and rules we bend which potentially violate security best practices.  If you choose to implement the request validator in an existing application be sure to thoroughly regression test.
+	</p>
+	<p>So first things first, download it!  Select your desired download format under the Download Latest from the top navigation.</p>
+	<div class="page-header">
+		<h2>JAR dependencies</h2>
+	</div>
+	<p>Although all of the CFML engines now include the esapi.jar, they did not include all of the other JAR dependencies various parts of the ESAPI library require so we must add them to our CF classpath.  In the extracted files, /lib/ there is separate folders per CFML engine so find the appropriate one for you and copy the .jar files into your CF instance's /WEB-INF/lib/ folder.  You will need to restart your CF instance for these to be picked up.</p>
+	<div class="page-header">
+		<h2>Core Files</h2>
+	</div>
+	<p>The only files that you need inside of your webroot are under the /org/ folder.  Copy these to your webroot under /org/.</p>
+	<div class="page-header">
+		<h2>Resource Files</h2>
+	</div>
+	<p>Next, you will want to setup your own configuration settings for your CF application.  In the extracted files, under /test/resources/ you will find a file named ESAPI.properties.  Copy this file to a location that is *not* accessible via the browser, typically somewhere like /WEB-INF/esapi-resources/ folder. If you plan to have multiple CF applications leverage ESAPI4CF then use your CF application name for each resources folder, like /WEB-INF/esapi-[myApplicationName]/ in order to keep the CF application resources separate. This will allow you to setup separate configurations per CF application.</p>
+	<p>
+		There are additional configuration files here named *Rules.txt and we will get to these under the <a href="AccessControl.html">AccessControl Tutorial</a>.  If you have already run the MXUnit tests, you probably also see a users.txt file.  This will be covered under the <a href="Login.html">Authentication Tutorial</a>.
+	</p>
+	<p>Now let's open up your copy of the ESAPI.properties file.  There is lots of good stuff in here that we will go over under its relevant tutorial and you can play with these on your own.  Right now, there are two very important values that we MUST change before we begin using ESAPI4CF - MasterPassword and MasterSalt.  Be aware that MasterSalt must be 8 characters - no more, no less.</p>
+	<p>CHANGE THESE IMMEDIATELY!!!</p>
+	<pre>
 # Encryption
 MasterPassword=owasp1
 MasterSalt=testtest
 </pre>
-			<p>The MasterPassword is used for encryption, specifically generating secret keys.  The MasterSalt is also used for the same, plus used as one of the two salts for hashing passwords.</p>
-			<p>So set these two values to something specific to your application, save and let's move on.</p>
-			<div class="page-header">
-				<h2>CFAdmin configuration</h2>
-			</div>
-			<p>If you plan to use ESAPI4CF on a stateful application (persist user's across requests) you will need to enable J2EE sessions in the CFAdmin.  Don't trust CFID/CFTOKEN sessions.  In fact, turn client management off if you can and do not even set the CFID/CFTOKEN cookies if you are able. We only need the JSESSIONID cookie. For those Railo users, ensure Session type is set to "J2EE".</p>
-			<div class="page-header">
-				<h2>Application.cfc</h2>
-			</div>
-			<p>Open up or create your Application.cfc.  At the very beginning, we must define two application settings that ESAPI4CF requires - name for our logging and sessionManagement if you want to persist user across requests.  OWASP recommends session idle timeouts be between 5-20 minutes depending on the sensitivity of the data in your application.  This timeout is configured in the ESAPI.properties file.  It is good practice to also set the sessionTimeout in the CF application so that it does not keep sessions around any longer than ESAPI4CF does.  Assuming the data in our sample application is low-risk, let's make our timeout 20 minutes.</p>
-			<pre>
+	<p>The MasterPassword is used for encryption, specifically generating secret keys.  The MasterSalt is also used for the same, plus used as one of the two salts for hashing passwords.</p>
+	<p>So set these two values to something specific to your application, save and let's move on.</p>
+	<div class="page-header">
+		<h2>CFAdmin configuration</h2>
+	</div>
+	<p>If you plan to use ESAPI4CF on a stateful application (persist user's across requests) you will need to enable J2EE sessions in the CFAdmin.  Don't trust CFID/CFTOKEN sessions.  In fact, turn client management off if you can and do not even set the CFID/CFTOKEN cookies if you are able. We only need the JSESSIONID cookie. For those Railo users, ensure Session type is set to "J2EE".</p>
+	<div class="page-header">
+		<h2>Application.cfc</h2>
+	</div>
+	<p>Open up or create your Application.cfc.  At the very beginning, we must define two application settings that ESAPI4CF requires - name for our logging and sessionManagement if you want to persist user across requests.  OWASP recommends session idle timeouts be between 5-20 minutes depending on the sensitivity of the data in your application.  This timeout is configured in the ESAPI.properties file.  It is good practice to also set the sessionTimeout in the CF application so that it does not keep sessions around any longer than ESAPI4CF does.  Assuming the data in our sample application is low-risk, let's make our timeout 20 minutes.</p>
+	<pre>
 component {
-	// you should always name your application
-	// ESAPI4CF needs a name for logging
-	this.name = "MyESAPITestApp";
-	
-	// required in order to persist a user
-	this.sessionManagement = true;
-	this.sessionTimeout = createTimeSpan(0, 0, 20, 0);
-	
-	... other code ...
+// you should always name your application
+// ESAPI4CF needs a name for logging
+this.name = "MyESAPITestApp";
+
+// required in order to persist a user
+this.sessionManagement = true;
+this.sessionTimeout = createTimeSpan(0, 0, 20, 0);
+
+... other code ...
 }
 </pre>
-			<h3>onApplicationStart</h3>
-			<p>So starting out in onApplicationStart, we first need a reference to the main ESAPI4CF component. All of the ESAPI4CF modules are accessed via this main instance. We initialize this main reference with the path to our resources, right now, specifically just our ESAPI.properties configuration file.</p>
-			<pre>
+	<h3>onApplicationStart</h3>
+	<p>So starting out in onApplicationStart, we first need a reference to the main ESAPI4CF component. All of the ESAPI4CF modules are accessed via this main instance. We initialize this main reference with the path to our resources, right now, specifically just our ESAPI.properties configuration file.</p>
+	<pre>
 application.ESAPI = new org.owasp.esapi.ESAPI("/WEB-INF/esapi-resources/");
 </pre>
-			<p>
-				Now there is lots of logged events built into the various modules but you will want a logging reference for your own application so you can log events against your application.  Logging events in ESAPI4CF automatically contain vital information like the date/time, current user, IP and more.  We will get more into that when we cover the <a href="Logging.html">Logging Tutorial</a>
-				but just know that if you have security logging to do in your application, you want to use the ESAPI4CF Logger to do it.  When we create this logging instance, you want to give it a name specific to your application so let's just use our CF applicationName.
-			</p>
-			<pre>
+	<p>
+		Now there is lots of logged events built into the various modules but you will want a logging reference for your own application so you can log events against your application.  Logging events in ESAPI4CF automatically contain vital information like the date/time, current user, IP and more.  We will get more into that when we cover the <a href="Logging.html">Logging Tutorial</a>
+		but just know that if you have security logging to do in your application, you want to use the ESAPI4CF Logger to do it.  When we create this logging instance, you want to give it a name specific to your application so let's just use our CF applicationName.
+	</p>
+	<pre>
 application.logger = application.ESAPI.getLogger(application.applicationName);
 </pre>
-			<p>The last piece of logging that we want to store in the application scope is a list of input parameters to have the logger obfuscate.  This should be a very short list, particularly passwords must be here.  If you have additional fields containing private information like credit cards numbers, social security numbers, or anything you would encrypt in your database you will also want to include them in this list.</p>
-			<pre>
+	<p>The last piece of logging that we want to store in the application scope is a list of input parameters to have the logger obfuscate.  This should be a very short list, particularly passwords must be here.  If you have additional fields containing private information like credit cards numbers, social security numbers, or anything you would encrypt in your database you will also want to include them in this list.</p>
+	<pre>
 application.ignoredByLogger = ["password"];
 </pre>
-			<p>So now let's put all the onApplicationStart code together...</p>
-			<pre>
+	<p>So now let's put all the onApplicationStart code together...</p>
+	<pre>
 function onApplicationStart() {
-	// this is your main reference point to ESAPI4CF that you will use throughout your application
-	// tell ESAPI4CF where you config files are stored
-	// You want your security config in a place not accessible from your web application like /WEB-INF/esapi-resources/
-	// but for the sake of simplicity in our samples, it is not
-	application.ESAPI = new org.owasp.esapi.ESAPI("/samples/esapi-resources/");
+// this is your main reference point to ESAPI4CF that you will use throughout your application
+// tell ESAPI4CF where you config files are stored
+// You want your security config in a place not accessible from your web application like /WEB-INF/esapi-resources/
+// but for the sake of simplicity in our samples, it is not
+application.ESAPI = new org.owasp.esapi.ESAPI("/samples/esapi-resources/");
 
-	// define an application specific logger instance
-	// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
-	application.logger = application.ESAPI.getLogger(application.applicationName);
+// define an application specific logger instance
+// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
+application.logger = application.ESAPI.getLogger(application.applicationName);
 
-	// define any input parameters that should be ignored by the logger.
-	// we never want a user's password to get logged
-	application.ignoredByLogger = ["password"];
-	
-	... other code ...
+// define any input parameters that should be ignored by the logger.
+// we never want a user's password to get logged
+application.ignoredByLogger = ["password"];
+
+... other code ...
 }
 </pre>
-			<h3>onSessionStart</h3>
-			<p>Next onto onSessionStart....ok, done! Yup, that's right, there is nothing to add to onSessionStart.  You may be in disbelief here but I speak the truth.</p>
-			<p>
-				You may be saying "What about creating the user?  What about authentication?"  Well, authentication will be addresssed in the <a href="Login.html">Authentication Tutorial</a>
-				but I will say that your user should be verified on EVERY REQUEST not just when the session is created.  That may go against everything you have been taught in the past but you will see soon enough why that is.  So since we verify a user on every request, authentication is handled in onRequestStart.
-			</p>
-			<p>Don't believe me?  Well, ESAPI4CF can't help you with your personal trust issues so just move along.</p>
-			<h3>onRequestStart</h3>
-			<p>
-				So in each request we need to register the request and response Java objects with ESAPI4CF.  The reason we do this is ESAPI4CF stores a reference to these instances and provide "safe" wrappers around the data stored within these instances.  This helps to secure our request and response by cleansing the data retrieved from these instances.  The rest of the ESAPI4CF library uses these request and response instances quite extensively and they <strong>only</strong>
-				accept the <em>safe</em>
-				instances registered by ESAPI4CF.
-			</p>
-			<p>While we are on the subject of a "safe" request, let's not forget to mention the magic under the hood here.  By simply registering our request/response, ESAPI4CF ensures that our JSESSIONID cookie is also "safe" by adding the HttpOnly and Secure attributes to the cookie if they are not already there.  For those of you stuck on CF8 (no cookie attribute support) and CF9 (HttpOnly cookie attribute support) that is very good news.</p>
-			<pre>
+	<h3>onSessionStart</h3>
+	<p>Next onto onSessionStart....ok, done! Yup, that's right, there is nothing to add to onSessionStart.  You may be in disbelief here but I speak the truth.</p>
+	<p>
+		You may be saying "What about creating the user?  What about authentication?"  Well, authentication will be addresssed in the <a href="Login.html">Authentication Tutorial</a>
+		but I will say that your user should be verified on EVERY REQUEST not just when the session is created.  That may go against everything you have been taught in the past but you will see soon enough why that is.  So since we verify a user on every request, authentication is handled in onRequestStart.
+	</p>
+	<p>Don't believe me?  Well, ESAPI4CF can't help you with your personal trust issues so just move along.</p>
+	<h3>onRequestStart</h3>
+	<p>
+		So in each request we need to register the request and response Java objects with ESAPI4CF.  The reason we do this is ESAPI4CF stores a reference to these instances and provide "safe" wrappers around the data stored within these instances.  This helps to secure our request and response by cleansing the data retrieved from these instances.  The rest of the ESAPI4CF library uses these request and response instances quite extensively and they <strong>only</strong>
+		accept the <em>safe</em>
+		instances registered by ESAPI4CF.
+	</p>
+	<p>While we are on the subject of a "safe" request, let's not forget to mention the magic under the hood here.  By simply registering our request/response, ESAPI4CF ensures that our JSESSIONID cookie is also "safe" by adding the HttpOnly and Secure attributes to the cookie if they are not already there.  For those of you stuck on CF8 (no cookie attribute support) and CF9 (HttpOnly cookie attribute support) that is very good news.</p>
+	<pre>
 application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
 </pre>
-			<p>Next, we are going to need those safe wrappers we just registered for other onRequestStart logic so retrieve references to the safe instances.</p>
-			<pre>
+	<p>Next, we are going to need those safe wrappers we just registered for other onRequestStart logic so retrieve references to the safe instances.</p>
+	<pre>
 var httpRequest = application.ESAPI.currentRequest();
 var httpResponse = application.ESAPI.currentResponse();
 </pre>
-			<p>Want to know something pretty sweet?  We are only in the setup step of ESAPI4CF and can already make our CF application more secure. Are you ready for this?</p>
-			<p>There is a request validator built into ESAPI4CF will verify that your request is in fact not a security threat by performing the following checks:</p>
-			<ol>
-				<li>Ensures that a request was registered with ESAPI4CF</li>
-				<li>Checks that your HTTP methods are either GET or POST</li>
-				<li>Validates input of all HTTP parameters</li>
-				<li>Validates input of all HTTP cookies</li>
-				<li>Validates input of all HTTP headers</li>
-			</ol>
-			<p>WOW, impressive! So if any of these checks fail an error will be thrown. Don't worry we'll get to handling that later but this is our validation magic for right now.</p>
-			<p>
-				<span class="label label-warning">CAUTION</span>
-				If you are implementing ESAPI4CF in an existing web application you may want to leave the request validator out for right now unless you plan to do some extensive regression testing. Please refer to the CAUTION message at the beginning of this tutorial for an explanation.
-			</p>
-			<pre>
+	<p>Want to know something pretty sweet?  We are only in the setup step of ESAPI4CF and can already make our CF application more secure. Are you ready for this?</p>
+	<p>There is a request validator built into ESAPI4CF will verify that your request is in fact not a security threat by performing the following checks:</p>
+	<ol>
+		<li>Ensures that a request was registered with ESAPI4CF</li>
+		<li>Checks that your HTTP methods are either GET or POST</li>
+		<li>Validates input of all HTTP parameters</li>
+		<li>Validates input of all HTTP cookies</li>
+		<li>Validates input of all HTTP headers</li>
+	</ol>
+	<p>WOW, impressive! So if any of these checks fail an error will be thrown. Don't worry we'll get to handling that later but this is our validation magic for right now.</p>
+	<p>
+		<span class="label label-warning">CAUTION</span>
+		If you are implementing ESAPI4CF in an existing web application you may want to leave the request validator out for right now unless you plan to do some extensive regression testing. Please refer to the CAUTION message at the beginning of this tutorial for an explanation.
+	</p>
+	<pre>
 application.ESAPI.validator().assertIsValidHTTPRequest();
 </pre>
-			<p>Our authentication would be next but we are skipping that for now since this tutorial is just focused on getting ESAPI4CF up and running.</p>
-			<p>The last step would be to log this request with ESAPI4CF.  This is optional but recommended and is dependent on the log level you have set in ESAPI.properties.  This will be an informational event and we will be logging this under our sample application and as a successful security request.  In addition to the standard info the logger takes care of, the HTTP method, URL, any form parameters, and cookies will be logged (excluding JSESSIONID).  This is where we will also pass in the list of parameters to obfuscate so that our user's passwords do not end up somewhere for you sneaky developers to see.</p>
-			<pre>
+	<p>Our authentication would be next but we are skipping that for now since this tutorial is just focused on getting ESAPI4CF up and running.</p>
+	<p>The last step would be to log this request with ESAPI4CF.  This is optional but recommended and is dependent on the log level you have set in ESAPI.properties.  This will be an informational event and we will be logging this under our sample application and as a successful security request.  In addition to the standard info the logger takes care of, the HTTP method, URL, any form parameters, and cookies will be logged (excluding JSESSIONID).  This is where we will also pass in the list of parameters to obfuscate so that our user's passwords do not end up somewhere for you sneaky developers to see.</p>
+	<pre>
 application.ESAPI.httpUtilities().logHTTPRequest(application.ESAPI.currentRequest(), application.logger, application.ignoredByLogger);
 </pre>
-			<p>Did I say last step? Well there is a catch... literally.  All of this logic in onRequestStart should be inside of a try/catch.  If there is any issue at all trying to register and reference our safe request/response or anything suspicious in our request validation, we need to be sure that is logged.  Why? Because its safe!</p>
-			<p>So inside of our catch, we need to once again call our application logger to send it a security failure but this time it will be at the error level.  For our arguments we must pass it a security type, either SUCCESS or FAILURE, a boolean meaning the same, success or failure, and a message.  This error, if it occurs, will not prevent our application from completing the request but will be sure it is logged and that a message is available for you to display to the end user.</p>
-			<pre>
+	<p>Did I say last step? Well there is a catch... literally.  All of this logic in onRequestStart should be inside of a try/catch.  If there is any issue at all trying to register and reference our safe request/response or anything suspicious in our request validation, we need to be sure that is logged.  Why? Because its safe!</p>
+	<p>So inside of our catch, we need to once again call our application logger to send it a security failure but this time it will be at the error level.  For our arguments we must pass it a security type, either SUCCESS or FAILURE, a boolean meaning the same, success or failure, and a message.  This error, if it occurs, will not prevent our application from completing the request but will be sure it is logged and that a message is available for you to display to the end user.</p>
+	<pre>
 catch(Any e) {
-	application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
-	throw(e.message, e.type, e.detail);
+application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+throw(e.message, e.type, e.detail);
 }
 </pre>
-			<p>So now its once again time to put all of this code together for the onRequestStart method.</p>
-			<pre>
+	<p>So now its once again time to put all of this code together for the onRequestStart method.</p>
+	<pre>
 function onRequestStart() {
-	try {
-		// register request and response in ESAPI4CF
-		application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
+try {
+// register request and response in ESAPI4CF
+application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
 
-		// get references to the registered request/response safe wrappers
-		var httpRequest = application.ESAPI.currentRequest();
-		var httpResponse = application.ESAPI.currentResponse();
+// get references to the registered request/response safe wrappers
+var httpRequest = application.ESAPI.currentRequest();
+var httpResponse = application.ESAPI.currentResponse();
 
-		// validate the current request to ensure nothing is suspicious
-		application.ESAPI.validator().assertIsValidHTTPRequest();
+// validate the current request to ensure nothing is suspicious
+application.ESAPI.validator().assertIsValidHTTPRequest();
 
-		... authentication will go here later ...
+... authentication will go here later ...
 
-		// log this request, obfuscating any parameter named password
-		application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
-	}
-	catch(Any e) {
-		application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
-		// let's rethrow this error so your global error handler catches it if you have one
-		throw(e.message, e.type, e.detail);
-	}
-	
-	... other code ...
+// log this request, obfuscating any parameter named password
+application.ESAPI.httpUtilities().logHTTPRequest(httpRequest, application.logger, application.ignoredByLogger);
+}
+catch(Any e) {
+application.logger.error(application.logger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+// let's rethrow this error so your global error handler catches it if you have one
+throw(e.message, e.type, e.detail);
+}
+
+... other code ...
 }
 
 </pre>
-			<h3>onRequestEnd</h3>
-			<p>Almost done.  One last thing and its again in the name of being safe.  During our request cycle we registered the request/response instances with ESAPI4CF which were stored in the request scope for easy access by ESAPI4CF.  If there were any references to the current user (which the logging does) then ESAPI4CF is holding onto a reference to the current user in the request scope as well even though we are not yet authenticating.  An unauthenticated user is called an anonymous user but again we'll get to that later.  Yes, CF will automatically release anything in the request scope once the request completes but that means putting your faith in CF performing cleanup.  Let's eliminate any doubt and do this ourselves.</p>
-			<p>
-				In the <a href="../apiref/v1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
-				there is a clearCurrent() method which will destroy the request scope variables which held onto the current user.  Don't worry, we are only talking about the request scope.  The session scope is still used to persist an authenticated user between requests.
-			</p>
-			<p>
-				And in the <a href="../apiref/v1/org/owasp/esapi/HTTPUtilities.html">HTTPUtilities module</a>
-				we can just call the same setCurrentHTTP() method we did to register the request/response instances but this time set them to empty in order to destroy the request scope references.
-			</p>
-			<pre>
+	<h3>onRequestEnd</h3>
+	<p>Almost done.  One last thing and its again in the name of being safe.  During our request cycle we registered the request/response instances with ESAPI4CF which were stored in the request scope for easy access by ESAPI4CF.  If there were any references to the current user (which the logging does) then ESAPI4CF is holding onto a reference to the current user in the request scope as well even though we are not yet authenticating.  An unauthenticated user is called an anonymous user but again we'll get to that later.  Yes, CF will automatically release anything in the request scope once the request completes but that means putting your faith in CF performing cleanup.  Let's eliminate any doubt and do this ourselves.</p>
+	<p>
+		In the <a href="../apiref/v1/org/owasp/esapi/Authenticator.html">Authenticator Module</a>
+		there is a clearCurrent() method which will destroy the request scope variables which held onto the current user.  Don't worry, we are only talking about the request scope.  The session scope is still used to persist an authenticated user between requests.
+	</p>
+	<p>
+		And in the <a href="../apiref/v1/org/owasp/esapi/HTTPUtilities.html">HTTPUtilities module</a>
+		we can just call the same setCurrentHTTP() method we did to register the request/response instances but this time set them to empty in order to destroy the request scope references.
+	</p>
+	<pre>
 function onRequestEnd() {
-	...other code...
-	
-	// clear thread references to user and request/response data
-	application.ESAPI.authenticator().clearCurrent();
-	application.ESAPI.httpUtilities().setCurrentHTTP("", "");
+...other code...
+
+// clear thread references to user and request/response data
+application.ESAPI.authenticator().clearCurrent();
+application.ESAPI.httpUtilities().setCurrentHTTP("", "");
 }
 </pre>
-			<p>That's it we're done.  You have successfully got ESAPI4CF up and running.  With just this bit of setup ESAPI4CF is already validating your request instance for potential threats. Pretty sweet, huh?</p>
-			<!-- END content --><hr/>
-			<footer>
-				<p>Copyright &#169; 2013 OWASP ESAPI4CF</p>
-			</footer>
-		</div>
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-		<script>
-			window.jQuery || document.write('<script src="../js/vendor/jquery-1.10.1.min.js"><\/script>')
-		</script>
-		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-		<script src="../js/plugins.js"></script>
-		<script src="../js/main.js"></script>
-		<script>
-			var _gaq = [['_setAccount', 'UA-828502-5'], ['_trackPageview']];
-			(function(d, t){
-			    var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
-			    g.src = '//www.google-analytics.com/ga.js';
-			    s.parentNode.insertBefore(g, s)
-			}(document, 'script'));
-		</script>
-	</body>
+	<p>That's it we're done.  You have successfully got ESAPI4CF up and running.  With just this bit of setup ESAPI4CF is already validating your request instance for potential threats. Pretty sweet, huh?</p>
+
+	<!-- END content --><hr/>
+	<footer>
+		<p id="copyright"></p>
+	</footer>
+</div>
+
+<script src="//code.jquery.com/jquery.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="../js/plugins.js"></script>
+<script src="../js/main.js"></script>
+<script>
+var _gaq=[['_setAccount','UA-828502-5'],['_trackPageview']];
+(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+g.src='//www.google-analytics.com/ga.js';
+s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+</body>
 </html>
