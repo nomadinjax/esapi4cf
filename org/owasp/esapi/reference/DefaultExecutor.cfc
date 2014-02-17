@@ -47,6 +47,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
+			var msgParams = [];
 			var i = "";
 			var param = "";
 			var command = "";
@@ -55,15 +56,18 @@
 			var errors = "";
 
 			try {
-				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "Initiating executable: " & arguments.executable & " " & arrayToList(arguments.params, " ") & " in " & arguments.workdir);
+				msgParams = [arguments.executable, arrayToList(arguments.params, " "), arguments.workdir];
+				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_initiating_message", msgParams));
 
 				// command must exactly match the canonical path and must actually exist on the file system
 				// using equalsIgnoreCase for Windows, although this isn't quite as strong as it should be
 				if(!arguments.executable.getCanonicalPath().equalsIgnoreCase(arguments.executable.getPath())) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, "Execution failure", "Invalid path to executable file: " & arguments.executable));
+					msgParams = [arguments.executable];
+					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidPath_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidPath_logMessage", msgParams)));
 				}
 				if(!arguments.executable.exists()) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, "Execution failure", "No such executable: " & arguments.executable));
+					msgParams = [arguments.executable];
+					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidInput_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidInput_logMessage", msgParams)));
 				}
 
 				// escape any special characters in the parameters
@@ -74,7 +78,8 @@
 
 				// working directory must exist
 				if(!arguments.workdir.exists()) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath()));
+					msgParams = [arguments.workdir.getPath()];
+					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_directoryDoesNotExist_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_directoryDoesNotExist_logMessage", msgParams)));
 				}
 
 				arrayPrepend(arguments.params, arguments.executable.getCanonicalPath());
@@ -91,13 +96,16 @@
 				output = readStream(process.getInputStream());
 				errors = readStream(process.getErrorStream());
 				if(errors != "" && errors.length() > 0) {
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Error during system command: " & errors);
+					msgParams = [errors];
+					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_error_message", msgParams));
 				}
-				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "System command complete: " & arrayToList(arguments.params, " "));
+				msgParams = [arrayToList(arguments.params, " ")];
+				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_complete_message", msgParams));
 				return output;
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e));
+				msgParams = [e.getMessage()];
+				throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
