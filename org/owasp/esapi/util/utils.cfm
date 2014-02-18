@@ -90,6 +90,7 @@
 --->
 <cfset variables.cfmlData = getCFMLMetaData() />
 <cfif variables.cfmlData["engine"] EQ "ColdFusion">
+	<cfinclude template="utils_railo.cfm" />
 	<cfif listFirst(variables.cfmlData["version"]) LT 9>
 		<cfinclude template="utils_cf9.cfm" />
 	</cfif>
