@@ -16,7 +16,7 @@
 </cffunction>
 
 <cffunction access="private" returntype="String" name="getBoolean" output="false"
-	hint="Provides a consistent true/false return for a boolean value regardless of whether true/false, yes/no, 1/0, or on/off were provided.">
+	hint="Provides a consistent true/false return for a boolean value regardless of whether true/false, yes/no, or 1/0 were provided.">
 	<cfargument required="true" type="String" name="bool">
 
 	<cfscript>
@@ -24,7 +24,8 @@
 			return "";
 		}
 
-		if (listFindNoCase("false,no,0,off", arguments.bool)) {
+		// NOTE: do not include on/off - they are NOT valid booleans
+		if (listFindNoCase("false,no,0", arguments.bool)) {
 			return false;
 		}
 		return true;
