@@ -26,7 +26,7 @@
 		/** constants */
 		variables.MAX_CREDIT_CARD_LENGTH = 19;
 		this.MAX_PARAMETER_NAME_LENGTH = 100;
-		this.MAX_PARAMETER_VALUE_LENGTH = 65535;
+		this.MAX_PARAMETER_VALUE_LENGTH = 65536;
 		this.MAX_HTTPHEADER_NAME_LENGTH = 150;
 		this.MAX_HTTPHEADER_VALUE_LENGTH = 1024;
 	</cfscript>
@@ -74,9 +74,7 @@
 			// CF8 requires 'var' at the top
 			var canonical = "";
 			var p = "";
-			var params = [];
-			var userParams = [];
-			var logParams = [];
+			var msgParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
@@ -93,8 +91,8 @@
 					canonical = variables.ESAPI.encoder().canonicalize(arguments.input);
 
 					if(arguments.type == "" || arguments.type.length() == 0) {
-						params = [arguments.context, arguments.input, arguments.type];
-						throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator_getValidInput_typeMismatch_message", params)));
+						msgParams = [arguments.context, arguments.input, arguments.type];
+						throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator_getValidInput_typeMismatch_message", msgParams)));
 					}
 
 					if(isEmptyInput(canonical)) {
@@ -115,8 +113,8 @@
 							p = createObject("java", "java.util.regex.Pattern").compile(arguments.type);
 						}
 						catch(java.util.regex.PatternSyntaxException e) {
-							params = [arguments.context, arguments.input, arguments.type];
-							throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator_getValidInput_patternMismatch_message", params)));
+							msgParams = [arguments.context, arguments.input, arguments.type];
+							throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Validator_getValidInput_patternMismatch_message", msgParams)));
 						}
 					}
 
@@ -170,8 +168,7 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var date = "";
-			var userParams = [];
-			var logParams = [];
+			var msgParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
@@ -216,7 +213,8 @@
 					return date;
 				}
 
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid date", "Unable to result in valid date object: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
+				msgParams = [arguments.context, arguments.input];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator_getValidDate_badInput_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Validator_getValidDate_badInput_logMessage", msgParams), arguments.context));
 			}
 		</cfscript>
 
@@ -266,8 +264,7 @@
 			var as = "";
 			var test = "";
 			var errors = "";
-			var userParams = [];
-			var logParams = [];
+			var msgParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 				try {
@@ -356,8 +353,7 @@
 			var addend = "";
 			var timesTwo = "";
 			var modulus = "";
-			var userParams = [];
-			var logParams = [];
+			var msgParams = [];
 
 			if(structKeyExists(arguments, "errorList")) {
 
@@ -670,7 +666,8 @@
 					return getValidDouble(arguments.context, number, minDoubleValue.doubleValue(), maxDoubleValue.doubleValue(), arguments.allowNull);
 				}
 
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, arguments.context & ": Invalid number", "Unable to result in valid number object: context=" & arguments.context & ", input=" & arguments.input, arguments.context));
+				msgParams = [arguments.context, arguments.input];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Validator_getValidNumber_badInput_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Validator_getValidNumber_badInput_logMessage", msgParams), arguments.context));
 			}
 		</cfscript>
 
@@ -745,11 +742,7 @@
 						msgParams = [arguments.context, arguments.input];
 						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator_getValidDouble_isNaN_userMessage", msgParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator_getValidDouble_isNaN_logMessage", msgParams), context=arguments.context));
 					}
-					if(d.doubleValue() < arguments.minValue) {
-						msgParams = [arguments.context, arguments.input, arguments.minValue, arguments.maxValue];
-						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator_getValidDouble_rangeUnderflowOverflow_userMessage", msgParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator_getValidDouble_rangeUnderflowOverflow_logMessage", msgParams), context=arguments.context));
-					}
-					if(d.doubleValue() > arguments.maxValue) {
+					if(d.doubleValue() < arguments.minValue || d.doubleValue() > arguments.maxValue) {
 						msgParams = [arguments.context, arguments.input, arguments.minValue, arguments.maxValue];
 						throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(ESAPI=variables.ESAPI, userMessage=variables.ESAPI.resourceBundle().messageFormat("Validator_getValidDouble_rangeUnderflowOverflow_userMessage", msgParams), logMessage=variables.ESAPI.resourceBundle().messageFormat("Validator_getValidDouble_rangeUnderflowOverflow_logMessage", msgParams), context=arguments.context));
 					}
@@ -1321,27 +1314,6 @@
 
 	</cffunction>
 
-	<cffunction access="private" returntype="boolean" name="isEmptyInput" output="false"
-	            hint="Helper function to check if a value is empty">
-		<cfargument required="true" name="input" hint="input value"/>
-
-		<cfscript>
-			if (isNull(arguments.input)) {
-				return true;
-			}
-			if(isSimpleValue(arguments.input)) {
-				return (len(trim(arguments.input)) == 0);
-			}
-			else if(isBinary(arguments.input)) {
-				return (arrayLen(arguments.input) == 0);
-			}
-			else if(isArray(arguments.input)) {
-				return (arrayLen(arguments.input) == 0);
-			}
-		</cfscript>
-
-	</cffunction>
-
 	<cffunction access="public" returntype="boolean" name="isValidBoolean" output="false"
 				hint="Returns true if input is a valid boolean.">
 		<cfargument required="true" type="String" name="context">
@@ -1393,6 +1365,28 @@
 				return getBoolean(arguments.input);
 			}
 		</cfscript>
+	</cffunction>
+
+
+	<cffunction access="private" returntype="boolean" name="isEmptyInput" output="false"
+	            hint="Helper function to check if a value is empty">
+		<cfargument required="true" name="input" hint="input value"/>
+
+		<cfscript>
+			if (isNull(arguments.input)) {
+				return true;
+			}
+			if(isSimpleValue(arguments.input)) {
+				return (len(trim(arguments.input)) == 0);
+			}
+			else if(isBinary(arguments.input)) {
+				return (arrayLen(arguments.input) == 0);
+			}
+			else if(isArray(arguments.input)) {
+				return (arrayLen(arguments.input) == 0);
+			}
+		</cfscript>
+
 	</cffunction>
 
 </cfcomponent>
