@@ -1,0 +1,1 @@
+﻿<!--- only include functions defined in Railo but not in ANY ColdFusion version --->

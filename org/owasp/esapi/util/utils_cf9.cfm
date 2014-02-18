@@ -1,4 +1,6 @@
-﻿<cffunction access="private" returntype="numeric" name="arrayFind" output="false" hint="CF9 Backport">
+﻿<!--- only include functions added to ColdFusion 9 --->
+
+<cffunction access="private" returntype="numeric" name="arrayFind" output="false" hint="CF9 Backport">
 	<cfargument required="true" type="Array" name="array" hint="Name of an array"/>
 	<cfargument required="true" name="object" hint="Object to search"/>
 
