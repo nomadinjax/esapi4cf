@@ -606,8 +606,10 @@
 
 		<cfscript>
 			var httpRequest = variables.currentRequest.getRequest();
-			if(!isObject(httpRequest))
-				throw(object=createObject("java", "java.lang.NullPointerException").init(variables.ESAPI.resourceBundle().getString("HTTPUtilities_getCurrentRequest_requestNotSet_message")));
+			if(!isObject(httpRequest)) {
+				// NOTE: do not RB this message - will cause StackOverflow
+				throw(object=createObject("java", "java.lang.NullPointerException").init("Cannot use current request until it is set with HTTPUtilities.setCurrentHTTP()"));
+			}
 			return httpRequest;
 		</cfscript>
 
@@ -617,8 +619,10 @@
 
 		<cfscript>
 			var httpResponse = variables.currentResponse.getResponse();
-			if(!isObject(httpResponse))
-				throw(object=createObject("java", "java.lang.NullPointerException").init(variables.ESAPI.resourceBundle().getString("HTTPUtilities_getCurrentResponse_responseNotSet_message")));
+			if(!isObject(httpResponse)) {
+				// NOTE: do not RB this message - will cause StackOverflow
+				throw(object=createObject("java", "java.lang.NullPointerException").init("Cannot use current response until it is set with HTTPUtilities.setCurrentHTTP()"));
+			}
 			return httpResponse;
 		</cfscript>
 
