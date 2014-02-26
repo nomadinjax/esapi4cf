@@ -48,6 +48,7 @@
 			var i = "";
 			var action = "";
 			var message = "";
+			var msgParams = [];
 
 			if(variables.ESAPI.securityConfiguration().getDisableIntrusionDetection())
 				return;
@@ -75,7 +76,8 @@
 				quota = variables.ESAPI.securityConfiguration().getQuota(eventName);
 				for(i = 1; i <= arrayLen(quota.actions); i++) {
 					action = quota.actions[i];
-					message = "User exceeded quota of " & quota.count & " per " & quota.interval & " seconds for event " & eventName & ". Taking actions " & arrayToList(quota.actions);
+					msgParams = [quota.count, quota.interval, eventName, arrayToList(quota.actions)];
+					message = variables.ESAPI.resourceBundle().messageFormat("IntrusionDetector_addException_quotaExceeded_message", msgParams);
 					variables.takeSecurityAction(action, message);
 				}
 			}
@@ -94,11 +96,13 @@
 			var i = 0;
 			var action = "";
 			var message = "";
+			var msgParams = [];
 
 			if(variables.ESAPI.securityConfiguration().getDisableIntrusionDetection())
 				return;
 
-			variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Security event " & arguments.eventName & " received : " & arguments.logMessage);
+			msgParams = [arguments.eventName, arguments.logMessage];
+			variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionDetector_addEvent_securityEvent_message", msgParams));
 
 			// add the event to the current user, which may trigger a detector
 			user = variables.ESAPI.authenticator().getCurrentUser();
@@ -109,7 +113,8 @@
 				quota = variables.ESAPI.securityConfiguration().getQuota("event." & arguments.eventName);
 				for(i = 1; i <= arrayLen(quota.actions); i++) {
 					action = quota.actions[i];
-					message = "User exceeded quota of " & quota.count & " per " & quota.interval & " seconds for event " & arguments.eventName & ". Taking actions " & arrayToList(quota.actions);
+					msgParams = [quota.count, quota.interval, arguments.eventName, arrayToList(quota.actions)];
+					message = variables.ESAPI.resourceBundle().messageFormat("IntrusionDetector_addEvent_quotaExceeded_message", msgParams);
 					variables.takeSecurityAction(action, message);
 				}
 			}
@@ -125,12 +130,14 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = "";
+			var msgParams = [];
 
 			if(variables.ESAPI.securityConfiguration().getDisableIntrusionDetection())
 				return;
 
 			if(arguments.action.equals("log")) {
-				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.message);
+				msgParams = [arguments.message];
+				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionDetector_takeSecurityAction_intrusion_message", msgParams));
 			}
 			user = variables.ESAPI.authenticator().getCurrentUser();
 			if(isInstanceOf(user, "org.owasp.esapi.reference.AnonymousUser"))
