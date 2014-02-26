@@ -48,6 +48,7 @@
 			var past = "";
 			var plong = "";
 			var nlong = "";
+			var msgParams = [];
 
 			if(variables.ESAPI.securityConfiguration().getDisableIntrusionDetection())
 				return;
@@ -62,7 +63,8 @@
 				plong = past.getTime();
 				nlong = timestamp.getTime();
 				if(nlong - plong < arguments.interval * 1000) {
-					throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, "Threshold exceeded", "Exceeded threshold for " & this.key));
+					msgParams = [this.key];
+					throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("IntrusionDetectorEvent_increment_thresholdExceeded_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("IntrusionDetectorEvent_increment_thresholdExceeded_logMessage", msgParams)));
 				}
 			}
 		</cfscript>
