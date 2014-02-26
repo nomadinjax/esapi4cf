@@ -662,7 +662,7 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="void" name="logHTTPRequest" output="false"
+	<cffunction access="public" returntype="String" name="logHTTPRequest" output="false"
 	            hint="Formats an HTTP request into a log suitable string. This implementation logs the remote host IP address (or hostname if available), the request method (GET/POST), the URL, and all the querystring and form parameters. All the parameters are presented as though they were in the URL even if they were in a form. Any parameters that match items in the parameterNamesToObfuscate are shown as eight asterisks.">
 		<cfargument required="true" name="httpRequest"/>
 		<cfargument required="true" type="org.owasp.esapi.Logger" name="logger"/>
@@ -700,15 +700,14 @@
 					params.append("&");
 			}
 			cookies = arguments.httpRequest.getCookies();
-			if(isObject(cookies)) {
-				for(c = 1; c <= arrayLen(cookies); c++) {
-					if(!cookies[c].getName() == "JSESSIONID") {
-						params.append("+" & cookies[c].getName() & "=" & cookies[c].getValue());
-					}
+			for(c = 1; c <= arrayLen(cookies); c++) {
+				if(!listFindNoCase("JSESSIONID,CFID,CFTOKEN", cookies[c].getName())) {
+					params.append("+" & cookies[c].getName() & "=" & cookies[c].getValue());
 				}
 			}
 			msg = arguments.httpRequest.getMethod() & " " & arguments.httpRequest.getRequestURL() & iif(len(params.toString()) > 0, de("?" & params), de(""));
 			arguments.logger.info(getSecurityType("SECURITY_SUCCESS"), true, msg);
+			return msg;
 		</cfscript>
 
 	</cffunction>

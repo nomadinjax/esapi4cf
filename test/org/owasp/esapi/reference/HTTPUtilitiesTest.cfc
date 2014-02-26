@@ -445,4 +445,53 @@
 
 	</cffunction>
 
+	<cffunction access="public" returntype="void" name="testLogHTTPRequest" output="false">
+
+		<cfscript>
+			// CF8 requires 'var' at the top
+			var httpRequest = "";
+			var httpResponse = "";
+			var logger = "";
+			var parameterNamesToObfuscate = ["password"];
+			var msg = "";
+
+			System.out.println("testLogHTTPRequest");
+
+			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpRequest.addParameter("p1", "v1");
+			httpRequest.addParameter("p2", "v2");
+			httpRequest.addParameter("password", "mypasswordforalltosee");
+			httpRequest.addParameter("p3", "v3");
+			httpRequest.addHeader("h1", "v1");
+			httpRequest.addHeader("h2", "v1");
+			httpRequest.addHeader("h3", "v1");
+
+			// test parameter obfuscation
+			logger = request.ESAPI.getLogger("testLogHTTPRequest");
+			msg = request.ESAPI.httpUtilities().logHTTPRequest(httpRequest, logger, parameterNamesToObfuscate);
+			assertTrue(findNoCase("p1=v1", msg));
+			assertTrue(findNoCase("p2=v2", msg));
+			assertTrue(findNoCase("p3=v3", msg));
+			assertTrue(findNoCase("password=********", msg));
+			assertFalse(findNoCase("h1=v1", msg));
+			assertFalse(findNoCase("h2=v1", msg));
+			assertFalse(findNoCase("h3=v1", msg));
+
+			// test built-in session cookie ignorance
+			httpRequest.setCookie("cookie1", "c1");
+			httpRequest.setCookie("JSESSIONID", "c2");
+			httpRequest.setCookie("cookie2", "c3");
+			httpRequest.setCookie("CFID", "c4");
+			httpRequest.setCookie("cookie3", "c5");
+			httpRequest.setCookie("CFTOKEN", "c6");
+			httpRequest.setCookie("cookie4", "c7");
+
+			msg = request.ESAPI.httpUtilities().logHTTPRequest(httpRequest, logger, parameterNamesToObfuscate);
+			assertFalse(findNoCase("JSESSION", msg));
+			assertFalse(findNoCase("CFID", msg));
+			assertFalse(findNoCase("CFTOKEN", msg));
+		</cfscript>
+
+	</cffunction>
+
 </cfcomponent>

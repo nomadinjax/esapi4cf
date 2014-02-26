@@ -157,7 +157,7 @@
 	            hint="Retrieves the current HttpServletResponse">
 	</cffunction>
 
-	<cffunction access="public" returntype="void" name="logHTTPRequest" output="false"
+	<cffunction access="public" returntype="String" name="logHTTPRequest" output="false"
 	            hint="Format the Source IP address, URL, URL parameters, and all form parameters into a string suitable for the log file. The list of parameters to obfuscate should be specified in order to prevent sensitive information from being logged. If a null list is provided, then all parameters will be logged. If HTTP request logging is done in a central place, the parameterNamesToObfuscate could be made a configuration parameter. We include it here in case different parts of the application need to obfuscate different parameters. This method uses {@link HTTPUtilities##getCurrentResponse()} to obtain the {@link HttpServletResponse} object">
 		<cfargument required="true" name="httpRequest"/>
 		<cfargument required="true" type="org.owasp.esapi.Logger" name="logger" hint="the logger to write the request to"/>
