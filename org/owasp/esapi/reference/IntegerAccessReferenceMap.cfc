@@ -29,7 +29,7 @@
 		variables.count = 1;
 	</cfscript>
 
-	<cffunction access="public" returntype="IntegerAccessReferenceMap" name="init" output="false"
+	<cffunction access="public" returntype="org.owasp.esapi.AccessReferenceMap" name="init" output="false"
 	            hint="This AccessReferenceMap implementation uses integers to create a layer of indirection.">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument type="Array" name="directReferences" hint="Instantiates a new access reference map with a set of direct references."/>

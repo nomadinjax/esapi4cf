@@ -24,7 +24,7 @@
 		variables.locale = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="AnonymousUser" name="init" output="false">
+	<cffunction access="public" returntype="org.owasp.esapi.User" name="init" output="false">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>

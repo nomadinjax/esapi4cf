@@ -27,7 +27,7 @@
 		variables.logger = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="DefaultEncryptedProperties" name="init" output="false"
+	<cffunction access="public" returntype="org.owasp.esapi.EncryptedProperties" name="init" output="false"
 	            hint="Instantiates a new encrypted properties.">
 		<cfargument required="true" returntype="org.owasp.esapi.ESAPI" name="ESAPI"/>
 

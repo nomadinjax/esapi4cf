@@ -30,7 +30,7 @@
 		variables.random = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="RandomAccessReferenceMap" name="init" output="false"
+	<cffunction access="public" returntype="org.owasp.esapi.AccessReferenceMap" name="init" output="false"
 	            hint="This AccessReferenceMap implementation uses short random strings to create a layer of indirection. Other possible implementations would use simple integers as indirect references.">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument type="Array" name="directReferences" hint="Instantiates a new access reference map with a set of direct references."/>
