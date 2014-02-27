@@ -31,7 +31,7 @@
 			variables.ESAPI = arguments.ESAPI;
 			variables.logger = variables.ESAPI.getLogger("ResourceBundle");
 
-			variables.resourceBundle = createObject("java", "java.util.ResourceBundle").getBundle("RB-ESAPI", arguments.locale);
+			variables.resourceBundle = createObject("java", "java.util.ResourceBundle").getBundle("ESAPI-RB", arguments.locale);
 			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "ResourceBundle for [" & arguments.locale.toString() & "] locale loaded.");
 
 			return this;
