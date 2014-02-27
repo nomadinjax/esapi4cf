@@ -39,7 +39,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -48,7 +48,7 @@
 		<cfargument required="true" type="Array" name="newRoles"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -59,7 +59,7 @@
 		<cfargument required="true" type="String" name="newPassword2"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -67,7 +67,7 @@
 	<cffunction access="public" returntype="void" name="disable" output="false">
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -75,7 +75,7 @@
 	<cffunction access="public" returntype="void" name="enable" output="false">
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -204,7 +204,7 @@
 	<cffunction access="public" returntype="void" name="incrementFailedLoginCount" output="false">
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -279,7 +279,7 @@
 	<cffunction access="public" returntype="void" name="lock" output="false">
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -290,7 +290,7 @@
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -300,7 +300,7 @@
 		<cfargument name="httpResponse" hint="The HTTP response being prepared"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -309,7 +309,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -327,7 +327,7 @@
 		<cfargument required="true" type="String" name="accountName"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -336,7 +336,7 @@
 		<cfargument required="true" type="Date" name="expirationTime"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -345,7 +345,7 @@
 		<cfargument required="true" type="Array" name="roles"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -354,7 +354,7 @@
 		<cfargument required="true" type="String" name="screenName"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -362,7 +362,7 @@
 	<cffunction access="public" returntype="void" name="unlock" output="false">
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -371,7 +371,7 @@
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -380,7 +380,7 @@
 		<cfargument required="true" type="Date" name="lastFailedLoginTime"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -389,7 +389,7 @@
 		<cfargument required="true" type="Date" name="lastLoginTime"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -398,7 +398,7 @@
 		<cfargument required="true" type="String" name="remoteHost"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
@@ -407,7 +407,7 @@
 		<cfargument required="true" type="Date" name="lastPasswordChangeTime"/>
 
 		<cfscript>
-			throw(object=createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().getString("User_Anonymous_failure_message")));
 		</cfscript>
 
 	</cffunction>
