@@ -42,7 +42,7 @@
 		variables.logger = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="FileBasedAccessController" name="init" output="false">
+	<cffunction access="public" returntype="org.owasp.esapi.AccessController" name="init" output="false">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
 
 		<cfscript>
@@ -134,11 +134,13 @@
 		<cfargument required="true" type="String" name="url"/>
 
 		<cfscript>
+			var msgParams = [arguments.url];
+
 			if(isNull(variables.urlMap) || variables.urlMap.isEmpty()) {
 				variables.urlMap = loadRules("URLAccessRules.txt");
 			}
 			if(!matchRuleByPath(variables.urlMap, arguments.url)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for URL", "Not authorized for URL: " & arguments.url));
+				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForURL_unauthorized_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForURL_unauthorized_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -148,11 +150,13 @@
 		<cfargument required="true" type="String" name="functionName"/>
 
 		<cfscript>
+			var msgParams = [arguments.functionName];
+
 			if(isNull(variables.functionMap) || variables.functionMap.isEmpty()) {
 				variables.functionMap = loadRules("FunctionAccessRules.txt");
 			}
 			if(!matchRuleByPath(variables.functionMap, arguments.functionName)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for function", "Not authorized for function: " & arguments.functionName));
+				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForFunction_unauthorized_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForFunction_unauthorized_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -163,17 +167,21 @@
 		<cfargument name="data"/>
 
 		<cfscript>
+			var msgParams = [];
+
 			if(isNull(variables.dataMap) || variables.dataMap.isEmpty()) {
 				variables.dataMap = loadDataRules("DataAccessRules.txt");
 			}
 
 			if(structKeyExists(arguments, "data")) {
 				if(!matchRuleByAction(variables.dataMap, arguments.data, arguments.action)) {
-					throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for data", "Not authorized for data: " & arguments.data.getClass().getName()));
+					msgParams = [arguments.action, arguments.data.getClass().getName()];
+					throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForData_unauthorizedData_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForData_unauthorizedData_logMessage", msgParams)));
 				}
 			}
 			else if(!matchRuleByPath(variables.dataMap, arguments.action)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for function", "Not authorized for data: " & arguments.action));
+				msgParams = [arguments.action];
+				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForData_unauthorizedAction_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForData_unauthorizedAction_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -183,11 +191,13 @@
 		<cfargument required="true" type="String" name="filepath"/>
 
 		<cfscript>
+			var msgParams = [arguments.filepath];
+
 			if(isNull(variables.fileMap) || variables.fileMap.isEmpty()) {
 				variables.fileMap = loadRules("FileAccessRules.txt");
 			}
 			if(!matchRuleByPath(variables.fileMap, arguments.filepath.replaceAll("\\", "/"))) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for file", "Not authorized for file: " & arguments.filepath));
+				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForFile_unauthorized_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForFile_unauthorized_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -197,11 +207,13 @@
 		<cfargument required="true" type="String" name="serviceName"/>
 
 		<cfscript>
+			var msgParams = [arguments.serviceName];
+
 			if(isNull(variables.serviceMap) || variables.serviceMap.isEmpty()) {
 				variables.serviceMap = loadRules("ServiceAccessRules.txt");
 			}
 			if(!matchRuleByPath(variables.serviceMap, arguments.serviceName)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Not authorized for service", "Not authorized for service: " & arguments.serviceName));
+				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForService_unauthorized_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessController_assertAuthorizedForService_unauthorized_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -253,13 +265,14 @@
 			var extIndex = "";
 			var rule = "";
 			var slash = "";
+			var msgParams = [arguments.path];
 
 			var canonical = "";
 			try {
 				canonical = variables.ESAPI.encoder().canonicalize(arguments.path);
 			}
 			catch(org.owasp.esapi.errors.EncodingException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failed to canonicalize input: " & arguments.path);
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_searchForRuleByPath_canonicalizeFailure_message", msgParams));
 			}
 
 			part = canonical;
@@ -272,7 +285,7 @@
 			}
 
 			if(part.indexOf("..") != -1) {
-				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init("Attempt to manipulate access control path", "Attempt to manipulate access control path: " & arguments.path));
+				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI.resourceBundle().messageFormat("AccessController_searchForRuleByPath_intrusionException_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessController_searchForRuleByPath_intrusionException_logMessage", msgParams)));
 			}
 
 			// extract extension if any
@@ -393,18 +406,20 @@
 			var ret = "";
 			var x = "";
 			var canonical = "";
+			var msgParams = [];
 
 			ret = [];
 			for(x = 1; x <= arrayLen(arguments.roles); x++) {
 				canonical = "";
+				msgParams = [trim(arguments.roles[x])];
 				try {
 					canonical = variables.ESAPI.encoder().canonicalize(trim(arguments.roles[x]));
 				}
 				catch(org.owasp.esapi.errors.EncodingException e) {
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failed to canonicalize role " & trim(arguments.roles[x]), e);
+					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_validateRoles_canonicalizeFailure_message", msgParams), e);
 				}
 				if(!variables.ESAPI.validator().isValidInput("Validating user roles in FileBasedAccessController", canonical, "^[a-zA-Z0-9_]{0,10}$", 200, false))
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Role: " & trim(arguments.roles[x]) & " is invalid, so was not added to the list of roles for this Rule.");
+					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_validateRoles_invalid_message", msgParams));
 				else
 					ret.add(canonical.trim());
 			}
@@ -428,6 +443,8 @@
 
 			var map = {};
 			var ins = "";
+			var msgParams = [];
+
 			try {
 				ins = createObject("java", "java.io.FileInputStream").init(createObject("java", "java.io.File").init(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory()), arguments.ruleset));
 				line = variables.ESAPI.validator().safeReadLine(ins, 500);
@@ -446,7 +463,8 @@
 						action = parts[3].trim();
 						rule.allow = action.equalsIgnoreCase("allow");
 						if(map.containsKey(rule.path)) {
-							variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Problem in access control file. Duplicate rule ignored: " & rule);
+							msgParams = [rule];
+							variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_loadRules_duplicate_message", msgParams));
 						}
 						else {
 							map.put(rule.path, rule);
@@ -456,7 +474,8 @@
 				}
 			}
 			catch(java.lang.Exception e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Problem in access control file : " & arguments.ruleset, e);
+				msgParams = [arguments.ruleset];
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_loadRules_failure_message", msgParams), e);
 			}
 			try {
 				if(isObject(ins)) {
@@ -464,7 +483,8 @@
 				}
 			}
 			catch(java.io.IOException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failure closing access control file : " & arguments.ruleset, e);
+				msgParams = [arguments.ruleset];
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_loadRules_closeFailure_message", msgParams), e);
 			}
 
 			return map;
@@ -487,6 +507,7 @@
 
 			var map = {};
 			var ins = "";
+			var msgParams = [];
 
 			try {
 				ins = createObject("java", "java.io.FileInputStream").init(createObject("java", "java.io.File").init(expandPath(variables.ESAPI.securityConfiguration().getResourceDirectory()), arguments.ruleset));
@@ -507,7 +528,8 @@
 							rule.actions.add(trim(action[x]));
 
 						if(map.containsKey(rule.path)) {
-							variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Problem in access control file. Duplicate rule ignored: " & rule.toStringData());
+							msgParams = [rule.toStringData()];
+							variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_loadDataRules_duplicate_message", msgParams));
 						}
 						else {
 							map.put(rule.clazz, rule);
@@ -517,7 +539,8 @@
 				}
 			}
 			catch(java.lang.Exception e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Problem in access control file : " & arguments.ruleset, e);
+				msgParams = [arguments.ruleset];
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_loadDataRules_failure_message", msgParams), e);
 			}
 
 			try {
@@ -526,7 +549,8 @@
 				}
 			}
 			catch(java.io.IOException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failure closing access control file : " & arguments.ruleset, e);
+				msgParams = [arguments.ruleset];
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("AccessController_loadDataRules_closeFailure_message", msgParams), e);
 			}
 
 			return map;
