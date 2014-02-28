@@ -63,11 +63,14 @@
 
 		<cfscript>
 			var hashes = getAllHashedPasswords(arguments.user, true);
+			var msgParams = [];
+
 			arrayPrepend(hashes, arguments.hash);
 			if(hashes.size() > variables.ESAPI.securityConfiguration().getMaxOldPasswordHashes())
 				hashes.remove(hashes.size() - 1);
 			variables.passwordMap.put(arguments.user.getAccountId(), hashes);
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "New hashed password stored for " & arguments.user.getAccountName());
+			msgParams = [arguments.user.getAccountName()];
+			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_setHashedPassword_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -110,6 +113,8 @@
 
 		<cfscript>
 			var hashes = variables.passwordMap.get(arguments.user.getAccountId());
+			var msgParams = [];
+
 			if(isDefined("hashes") && !isNull(hashes))
 				return hashes;
 			if(arguments.create) {
@@ -117,7 +122,8 @@
 				variables.passwordMap.put(arguments.user.getAccountId(), hashes);
 				return hashes;
 			}
-			throw(object=createObject("java", "java.lang.RuntimeException").init("No hashes found for " & arguments.user.getAccountName() & ". Is User.hashcode() and equals() implemented correctly?"));
+			msgParams = [arguments.user.getAccountName()];
+			throw(object=createObject("java", "java.lang.RuntimeException").init(variables.ESAPI.resourceBundle().messageFormat("Authenticator_getAllHashedPasswords_notFound_message", msgParams)));
 		</cfscript>
 
 	</cffunction>
@@ -183,19 +189,20 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = "";
+			var msgParams = [arguments.accountName];
 
 			loadUsersIfNecessary();
 			if(isNull(arguments.accountName)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, "Account creation failed", "Attempt to create user with null accountName"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_accountNameValueMissing_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_accountNameValueMissing_logMessage", msgParams)));
 			}
 			if(isObject(getUserByAccountName(arguments.accountName))) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_accountNameDuplicate_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_accountNameDuplicate_logMessage", msgParams)));
 			}
 
 			verifyAccountNameStrength(arguments.accountName);
 
 			if(isNull(arguments.password1)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_passwordValueMissing_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_passwordValueMissing_logMessage", msgParams)));
 			}
 
 			user = getDefaultUserInstance(arguments.accountName);
@@ -203,16 +210,16 @@
 			verifyPasswordStrength(newPassword=arguments.password1, user=user);
 
 			if(!arguments.password1.equals(arguments.password2))
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_passwordMismatch_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_passwordMismatch_logMessage", msgParams)));
 
 			try {
 				setHashedPassword(user, hashPassword(arguments.password1, arguments.accountName));
 			}
 			catch(org.owasp.esapi.errors.EncryptionException ee) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_passwordHashFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_passwordHashFailure_logMessage", msgParams), ee));
 			}
 			this.userMap.put(user.getAccountId(), user);
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "New user created: " & arguments.accountName);
+			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_createUser_success_message", msgParams));
 			saveUsers();
 			return user;
 		</cfscript>
@@ -257,28 +264,29 @@
 			var currentHash = "";
 			var verifyHash = "";
 			var newHash = "";
-
 			var accountName = arguments.user.getAccountName();
+			var msgParams = [accountName];
+
 			try {
 				currentHash = getHashedPassword(arguments.user);
 				verifyHash = hashPassword(arguments.currentPassword, accountName);
 				if(!currentHash.equals(verifyHash)) {
-					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Authentication failed for password change on user: " & accountName));
+					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_authenticationFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_authenticationFailure_logMessage", msgParams)));
 				}
 				if(isNull(arguments.newPassword) || isNull(arguments.newPassword2) || !arguments.newPassword.equals(arguments.newPassword2)) {
-					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & accountName));
+					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_passwordMismatch_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_passwordMismatch_logMessage", msgParams)));
 				}
 				verifyPasswordStrength(arguments.currentPassword, arguments.newPassword, arguments.user);
 				newHash = hashPassword(arguments.newPassword, accountName);
 				if(arrayFind(getOldPasswordHashes(arguments.user), newHash)) {
-					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Password change failed", "Password change matches a recent password for user: " & accountName));
+					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_passwordHistoryFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_passwordHistoryFailure_logMessage", msgParams)));
 				}
 				setHashedPassword(arguments.user, newHash);
 				arguments.user.setLastPasswordChangeTime(now());
-				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Password changed for user: " & accountName);
+				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_success_message", msgParams));
 			}
 			catch(org.owasp.esapi.errors.EncryptionException ee) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, "Password change failed", "Encryption exception changing password for " & accountName, ee));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_encyptionFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_changePassword_encyptionFailure_logMessage", msgParams), ee));
 			}
 		</cfscript>
 
@@ -292,22 +300,23 @@
 			// CF8 requires 'var' at the top
 			var attemptedHash = "";
 			var currentHash = "";
-
 			var accountName = arguments.user.getAccountName();
+			var msgParams = [accountName];
+
 			try {
 				attemptedHash = hashPassword(arguments.password, accountName);
 				currentHash = getHashedPassword(arguments.user);
 				if(attemptedHash.equals(currentHash)) {
 					arguments.user.setLastLoginTime(now());
 					arguments.user.setFailedLoginCount(0);
-					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Password verified for " & accountName);
+					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_verifyPassword_success_message", msgParams));
 					return true;
 				}
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Encryption error verifying password for " & accountName);
+				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Authenticator_verifyPassword_encyptionFailure_message", msgParams));
 			}
-			variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Password verification failed for " & accountName);
+			variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Authenticator_verifyPassword_failue_message", msgParams));
 			return false;
 		</cfscript>
 
@@ -320,11 +329,12 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var newPassword = "";
+			var msgParams = [];
 
 			if(structKeyExists(arguments, "user") && structKeyExists(arguments, "oldPassword")) {
 				newPassword = _generateStrongPassword(arguments.oldPassword);
 				if(isDefined("newPassword") && !isNull(newPassword))
-					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Generated strong password for " & arguments.user.getAccountName());
+					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_generateStrongPassword_success_message", msgParams));
 				return newPassword;
 			}
 			else {
@@ -404,6 +414,7 @@
 			var username = "";
 			var password = "";
 			var user = "";
+			var msgParams = [];
 
 			var token = variables.ESAPI.httpUtilities().getCookie(arguments.httpRequest, variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 			if(!isObject(token)) {
@@ -415,7 +426,7 @@
 				data = variables.ESAPI.encryptor().unseal(token.getValue()).split(":");
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Found corrupt or expired remember token");
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("Authenticator_getUserFromRememberToken_failure_message"));
 				variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 				return "";
 			}
@@ -428,16 +439,19 @@
 			password = data[3];
 			user = getUserByAccountName(username);
 			if(!isObject(user)) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Found valid remember token but no user matching " & username);
+				msgParams = [username];
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Authenticator_getUserFromRememberToken_userInvalid_message", msgParams));
 				return "";
 			}
 
-			variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "Logging in user with remember token: " & user.getAccountName());
+			msgParams = [user.getAccountName()];
+			variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_getUserFromRememberToken_success_message", msgParams));
 			try {
 				user.loginWithPassword(arguments.httpRequest, arguments.httpResponse, password);
 			}
 			catch(org.owasp.esapi.errors.AuthenticationException ae) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Login via remember me cookie failed for user " & username, ae);
+				msgParams = [username];
+				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Authenticator_getUserFromRememberToken_loginFailure_message", msgParams), ae);
 				variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, HTTPUtilities.REMEMBER_TOKEN_COOKIE_NAME);
 				return "";
 			}
@@ -509,8 +523,9 @@
 			var map = "";
 			var line = "";
 			var user = "";
+			var msgParams = [variables.userDB.getAbsolutePath()];
 
-			variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "Loading users from " & variables.userDB.getAbsolutePath());
+			variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_loadUsersImmediately_loading_message", msgParams));
 
 			reader = "";
 			try {
@@ -521,7 +536,8 @@
 					if(line.length() > 0 && line.charAt(0) != chr(35)) {
 						user = _createUser(line);
 						if(map.containsKey(javaCast("long", user.getAccountId()))) {
-							variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Problem in user file. Skipping duplicate user: " & user);
+							msgParams = [user];
+							variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Authenticator_loadUsersImmediately_duplicateUser_message", msgParams));
 						}
 						map.put(user.getAccountId(), user);
 					}
@@ -529,10 +545,12 @@
 				}
 				this.userMap = map;
 				variables.lastModified = System.currentTimeMillis();
-				variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "User file reloaded: " & map.size());
+				msgParams = [map.size()];
+				variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_loadUsersImmediately_reloaded_message", msgParams));
 			}
 			catch(java.lang.Exception e) {
-				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Failure loading user file: " & variables.userDB.getAbsolutePath(), e);
+				msgParams = [variables.userDB.getAbsolutePath()];
+				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Authenticator_loadUsersImmediately_loadingFailure_message", msgParams), e);
 			}
 			try {
 				if(isObject(reader)) {
@@ -540,7 +558,8 @@
 				}
 			}
 			catch(java.io.IOException e) {
-				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Failure closing user file: " & variables.userDB.getAbsolutePath(), e);
+				msgParams = [variables.userDB.getAbsolutePath()];
+				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Authenticator_loadUsersImmediately_closingFailure_message", msgParams), e);
 			}
 		</cfscript>
 
@@ -607,11 +626,12 @@
 		<cfscript>
 			var username = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getUsernameParameterName());
 			var password = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getPasswordParameterName());
+			var msgParams = [];
 
 			// if a logged-in user is requesting to login, log them out first
 			var user = getCurrentUser();
 			if(isObject(user) && !user.isAnonymous()) {
-				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "User requested relogin. Performing logout then authentication");
+				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().getString("Authenticator_loginWithUsernameAndPassword_relogin_message"));
 				user.logout(arguments.httpRequest, arguments.httpResponse);
 			}
 
@@ -620,11 +640,13 @@
 				if(isNull(username)) {
 					username = "unspecified user";
 				}
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Authentication failed", "Authentication failed for " & username & " because of null username or password"));
+				msgParams = [username];
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_loginWithUsernameAndPassword_failure_message"), variables.ESAPI.resourceBundle().messageFormat("Authenticator_loginWithUsernameAndPassword_userPassValueMissing_logMessage", msgParams)));
 			}
 			user = getUserByAccountName(username);
 			if(!isObject(user)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Authentication failed", "Authentication failed because user " & username & " doesn't exist"));
+				msgParams = [username];
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_loginWithUsernameAndPassword_failure_message"), variables.ESAPI.resourceBundle().messageFormat("Authenticator_loginWithUsernameAndPassword_userInvalid_logMessage", msgParams)));
 			}
 			user.loginWithPassword(arguments.httpRequest, arguments.httpResponse, password);
 
@@ -640,14 +662,15 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var user = "";
+			var msgParams = [arguments.accountName];
 
 			loadUsersIfNecessary();
 			user = getUserByAccountName(arguments.accountName);
 			if(!isObject(user)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, "Remove user failed", "Can't remove invalid accountName " & arguments.accountName));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_removeUser_userInvalid_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_removeUser_userInvalid_logMessage", msgParams)));
 			}
-			this.userMap.remove(createObject("java", "java.lang.Long").init(user.getAccountId()));
-			System.out.println("Removing user " & user.getAccountName());
+			this.userMap.remove(user.getAccountId());
+			//System.out.println("Removing user " & user.getAccountName());
 			variables.passwordMap.remove(user.getAccountId());
 			saveUsers();
 		</cfscript>
@@ -656,7 +679,7 @@
 
 	<cffunction access="public" returntype="void" name="saveUsers" output="false"
 	            hint="Save users.">
-		<cfargument required="false" name="writer" hint="the print writer to use for saving"/>
+		<cfargument name="writer" hint="the print writer to use for saving"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -664,6 +687,7 @@
 			var accountName = "";
 			var u = "";
 			var printWriter = "";
+			var msgParams = [];
 
 			if(structKeyExists(arguments, "writer")) {
 				i = getUserNames().iterator();
@@ -674,7 +698,8 @@
 						arguments.writer.println(save(u));
 					}
 					else {
-						createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Problem saving user", "Skipping save of user " & accountName);
+						msgParams = [accountName];
+						createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_saveUsers_skippingUser_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_saveUsers_skippingUser_logMessage", msgParams));
 					}
 				}
 			}
@@ -687,11 +712,12 @@
 					printWriter.println();
 					saveUsers(printWriter);
 					printWriter.flush();
-					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "User file written to disk");
+					variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Authenticator_saveUsers_success_message", msgParams));
 				}
 				catch(java.io.IOException e) {
-					variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Problem saving user file " & variables.userDB.getAbsolutePath(), e);
-					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, "Internal Error", "Problem saving user file " & variables.userDB.getAbsolutePath(), e));
+					msgParams = [variables.userDB.getAbsolutePath()];
+					variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Authenticator_saveUsers_failure_message", msgParams), e);
+					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_saveUsers_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_saveUsers_failure_logMessage", msgParams), e));
 				}
 				if(isObject(printWriter)) {
 					printWriter.close();
@@ -748,9 +774,10 @@
 			var user = "";
 			var httpSession = "";
 			var remoteHost = "";
+			var msgParams = [];
 
 			if(!isObject(arguments.httpRequest) || !isObject(arguments.httpResponse)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid request", "Request or response objects were null"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_requestResponseValueMissing_userMessage"), variables.ESAPI.resourceBundle().getString("Authenticator_login_requestResponseValueMissing_logMessage")));
 			}
 
 			// if there's a user in the session then use that
@@ -770,7 +797,7 @@
 					variables.ESAPI.httpUtilities().assertSecureRequest(arguments.httpRequest);
 				}
 				catch(org.owasp.esapi.errors.AccessControlException e) {
-					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, "Attempt to login with an insecure request", e.detail, e));
+					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_insecureLogin_userMessage"), e.detail, e));
 				}
 			}
 
@@ -779,7 +806,7 @@
 
 				// warn if this authentication request was non-SSL connection, exposing session id
 				if (!variables.ESAPI.httpUtilities().isSecureChannel(arguments.httpRequest)) {
-					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, "Attempt to access secure content with an insecure request", "Received non-SSL request"));
+					throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_insecureRequest_userMessage"), variables.ESAPI.resourceBundle().getString("Authenticator_login_insecureRequest_logMessage")));
 				}
 			}
 
@@ -788,10 +815,12 @@
 			if (isNull(remoteHost)) remoteHost = "";
 			user.setLastHostAddress(remoteHost);
 
+			msgParams = [user.getAccountName()];
+
 			// don't let anonymous user log in
 			if(user.isAnonymous()) {
 				user.logout();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Anonymous user cannot be set to current user. User: " & user.getAccountName()));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_loginFailed_message"), variables.ESAPI.resourceBundle().messageFormat("Authenticator_login_anonymousUserAttempt_logMessage", msgParams)));
 			}
 
 			// don't let disabled users log in
@@ -799,7 +828,7 @@
 				user.logout(arguments.httpRequest, arguments.httpResponse);
 				user.incrementFailedLoginCount();
 				user.setLastFailedLoginTime(now());
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & user.getAccountName()));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_loginFailed_message"), variables.ESAPI.resourceBundle().messageFormat("Authenticator_login_disabledUserAttempt_logMessage", msgParams)));
 			}
 
 			// don't let locked users log in
@@ -807,7 +836,7 @@
 				user.logout();
 				user.incrementFailedLoginCount();
 				user.setLastFailedLoginTime(now());
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & user.getAccountName()));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_loginFailed_message"), variables.ESAPI.resourceBundle().messageFormat("Authenticator_login_lockedUserAttempt_logMessage", msgParams)));
 			}
 
 			// don't let expired users log in
@@ -815,7 +844,7 @@
 				user.logout();
 				user.incrementFailedLoginCount();
 				user.setLastFailedLoginTime(now());
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Expired user cannot be set to current user. User: " & user.getAccountName()));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_loginFailed_message"), variables.ESAPI.resourceBundle().messageFormat("Authenticator_login_expiredUserAttempt_logMessage", msgParams)));
 			}
 
 			// check session inactivity timeout
@@ -823,7 +852,7 @@
 				user.logout();
 				user.incrementFailedLoginCount();
 				user.setLastFailedLoginTime(now());
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Session inactivity timeout: " & user.getAccountName()));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_loginFailed_message"), variables.ESAPI.resourceBundle().messageFormat("Authenticator_login_idleTimeout_logMessage", msgParams)));
 			}
 
 			// check session absolute timeout
@@ -831,7 +860,7 @@
 				user.logout();
 				user.incrementFailedLoginCount();
 				user.setLastFailedLoginTime(now());
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Session absolute timeout: " & user.getAccountName()));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_login_loginFailed_message"), variables.ESAPI.resourceBundle().messageFormat("Authenticator_login_absoluteTimeout_logMessage", msgParams)));
 			}
 
 			// create new session for this User
@@ -871,11 +900,13 @@
 		<cfargument required="true" type="String" name="accountName"/>
 
 		<cfscript>
+			var msgParams = [arguments.accountName];
+
 			if(isNull(arguments.accountName)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "Attempt to create account with a null account name"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_verifyAccountNameStrength_accountNameValueMissing_userMessage"), variables.ESAPI.resourceBundle().getString("Authenticator_verifyAccountNameStrength_accountNameValueMissing_logMessage")));
 			}
 			if(!variables.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.accountName, "AccountName", variables.MAX_ACCOUNT_NAME_LENGTH, false)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Authenticator_verifyAccountNameStrength_accountNameInvalid_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Authenticator_verifyAccountNameStrength_accountNameInvalid_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -895,9 +926,10 @@
 			var charsets = "";
 			var strength = "";
 			var accountName = "";
+			var msgParams = [];
 
 			if(isNull(arguments.newPassword))
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password cannot be null"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_verifyPasswordStrength_passwordInvalid_message"), variables.ESAPI.resourceBundle().getString("Authenticator_verifyPasswordStrength_passwordValudMissing_logMessage")));
 
 			// can't change to a password that contains any 3 character substring of old password
 			if(structKeyExists(arguments, "oldPassword") && !isNull(arguments.oldPassword)) {
@@ -905,7 +937,7 @@
 				for(i = 0; i < length - 2; i++) {
 					sub = arguments.oldPassword.substring(i, i + 3);
 					if(arguments.newPassword.indexOf(sub) > -1) {
-						throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password cannot contain pieces of old password"));
+						throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_verifyPasswordStrength_passwordInvalid_message"), variables.ESAPI.resourceBundle().getString("Authenticator_verifyPasswordStrength_passwordSubstringFailure_logMessage")));
 					}
 				}
 			}
@@ -945,7 +977,7 @@
 			// calculate and verify password strength
 			strength = arguments.newPassword.length() * charsets;
 			if(strength < 16) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "New password is not long and complex enough"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_verifyPasswordStrength_passwordInvalid_message"), variables.ESAPI.resourceBundle().getString("Authenticator_verifyPasswordStrength_passwordComplexityFailure_logMessage")));
 			}
 
 			accountName = arguments.user.getAccountName();
@@ -953,7 +985,7 @@
 			//jtm - 11/3/2010 - fix for bug http://code.google.com/p/owasp-esapi-java/issues/detail?id=108
 			if (accountName.equalsIgnoreCase(arguments.newPassword)) {
 				//password can't be account name
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, "Invalid password", "Password matches account name, irrespective of case"));
+				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationCredentialsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Authenticator_verifyPasswordStrength_passwordInvalid_message"), variables.ESAPI.resourceBundle().getString("Authenticator_verifyPasswordStrength_passwordMatchesAccountName_logMessage")));
 			}
 		</cfscript>
 

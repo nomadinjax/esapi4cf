@@ -225,14 +225,14 @@
 
 			System.out.println("getUserFromRememberToken");
 			instance = request.ESAPI.authenticator();
+			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
+			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
+			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 			instance.logout();// in case anyone is logged in
 			password = instance.generateStrongPassword();
 			accountName = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			user = instance.createUser(accountName, password, password);
 			user.enable();
-			httpRequest = createObject("java", "org.owasp.esapi.http.TestHttpServletRequest").init();
-			httpResponse = createObject("java", "org.owasp.esapi.http.TestHttpServletResponse").init();
-			request.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
 
 			httpRequest.setCookie(request.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME, "ridiculous");
 			try {
