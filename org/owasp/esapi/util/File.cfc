@@ -327,14 +327,13 @@
 
 	</cffunction>
 
-	<!--- FIXME: CF8 conflict
-	<cffunction access="public" returntype="String" name="toString" output="false">
+	<cffunction access="public" returntype="String" name="toStringData" output="false">
 
 		<cfscript>
 			return variables.File.toString();
 		</cfscript>
 
-	</cffunction> --->
+	</cffunction>
 
 	<cffunction access="public" name="toURI" output="false">
 
