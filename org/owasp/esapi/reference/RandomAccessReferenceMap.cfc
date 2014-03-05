@@ -158,10 +158,12 @@
 		<cfargument required="true" type="String" name="indirectReference"/>
 
 		<cfscript>
+			var msgParams = [arguments.indirectReference];
+
 			if(variables.itod.containsKey(arguments.indirectReference)) {
 				return variables.itod.get(arguments.indirectReference);
 			}
-			throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Access denied", "Request for invalid indirect reference: " & arguments.indirectReference));
+			throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessReferenceMap_getDirectReference_invalid_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessReferenceMap_getDirectReference_invalid_logMessage", msgParams)));
 		</cfscript>
 
 	</cffunction>
