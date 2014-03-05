@@ -137,7 +137,7 @@
 
 			if(arguments.action.equals("log")) {
 				msgParams = [arguments.message];
-				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionDetector_takeSecurityAction_intrusion_message", msgParams));
+				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams));
 			}
 			user = variables.ESAPI.authenticator().getCurrentUser();
 			if(isInstanceOf(user, "org.owasp.esapi.reference.AnonymousUser"))

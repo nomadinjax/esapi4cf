@@ -33,18 +33,20 @@
 		<cfargument name="cause" hint="the cause"/>
 
 		<cfscript>
+			var msgParams = [arguments.logMessage];
+
 			variables.ESAPI = arguments.ESAPI;
 			variables.logger = variables.ESAPI.getLogger("IntrusionException");
 
 			if(structKeyExists(arguments, "cause")) {
 				super.init(arguments.userMessage, arguments.cause);
 				variables.logMessage = arguments.logMessage;
-				variables.logger.error(getSecurityType("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.logMessage, arguments.cause);
+				variables.logger.error(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams), arguments.cause);
 			}
 			else {
 				super.init(arguments.userMessage);
 				variables.logMessage = arguments.logMessage;
-				variables.logger.error(getSecurityType("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.logMessage);
+				variables.logger.error(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams));
 			}
 
 			return this;
