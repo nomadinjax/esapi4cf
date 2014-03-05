@@ -52,20 +52,24 @@
 			var m1 = "";
 			var m2 = "";
 			var ch = "";
+			var msgParams = [];
 
 			m1 = variables.DIR_BLACKLIST_PAT.matcher(arguments.path);
 			if(m1.find()) {
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & m1.group()));
+				msgParams = [arguments.path, m1.group()];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_illegalChar_userMessage", msgParams)));
 			}
 
 			m2 = variables.PERCENTS_PAT.matcher(arguments.path);
 			if(m2.find()) {
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains encoded characters: " & m2.group()));
+				msgParams = [arguments.path, m2.group()];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_encodedChar_userMessage", msgParams)));
 			}
 
 			ch = containsUnprintableCharacters(arguments.path);
 			if(ch != -1) {
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains unprintable character: " & ch));
+				msgParams = [arguments.path, ch];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_unprintableChar_userMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -79,20 +83,24 @@
 			var m1 = "";
 			var m2 = "";
 			var ch = "";
+			var msgParams = [];
 
 			m1 = variables.FILE_BLACKLIST_PAT.matcher(arguments.path);
 			if(m1.find()) {
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & m1.group()));
+				msgParams = [arguments.path, m1.group()];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_illegalChar_userMessage", msgParams)));
 			}
 
 			m2 = variables.PERCENTS_PAT.matcher(arguments.path);
 			if(m2.find()) {
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains encoded characters: " & m2.group()));
+				msgParams = [arguments.path, m2.group()];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_encodedChar_userMessage", msgParams)));
 			}
 
 			ch = containsUnprintableCharacters(arguments.path);
 			if(ch != -1) {
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains unprintable character: " & ch));
+				msgParams = [arguments.path, ch];
+				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_unprintableChar_userMessage", msgParams)));
 			}
 		</cfscript>
 
