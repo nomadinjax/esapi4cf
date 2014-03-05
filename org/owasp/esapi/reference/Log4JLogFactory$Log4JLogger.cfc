@@ -18,6 +18,11 @@
 <cfcomponent implements="org.owasp.esapi.Logger" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Logger interface. It implements most of the recommendations defined in the Logger interface description. It does not filter out any sensitive data specific to the current application or organization, such as credit cards, social security numbers, etc.">
 
 	<cfscript>
+		/* **************************************************
+			NOTE: Do not RB any text in this CFC.
+			This CFC handles logging which includes RB errors
+		   ************************************************** */
+
 		variables.ESAPI = "";
 
     	/** The jlogger object used by this class to log everything. */
