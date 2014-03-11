@@ -1,20 +1,17 @@
 <!---
-    /**
-    * OWASP Enterprise Security API (ESAPI)
-    *
-    * This file is part of the Open Web Application Security Project (OWASP)
-    * Enterprise Security API (ESAPI) project. For details, please see
-    * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
-    *
-    * Copyright (c) 2011 - The OWASP Foundation
-    *
-    * The ESAPI is published by OWASP under the BSD license. You should read and accept the
-    * LICENSE before you use, modify, and/or redistribute this software.
-    *
-    * @author Damon Miller
-    * @created 2011
-    */
-    --->
+/**
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
+ *
+ * This file is part of the Open Web Application Security Project (OWASP)
+ * Enterprise Security API (ESAPI) project. For details, please see
+ * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
+ *
+ * Copyright (c) 2011-2014, The OWASP Foundation
+ *
+ * The ESAPI is published by OWASP under the BSD license. You should read and accept the
+ * LICENSE before you use, modify, and/or redistribute this software.
+ */
+--->
 <cfcomponent implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Authenticator interface. This reference implementation is backed by a simple text file that contains serialized information about users. Many organizations will want to create their own implementation of the methods provided in the Authenticator interface backed by their own user repository. This reference implementation captures information about users in a simple text file format that contains user information separated by the pipe '|' character.">
 
 	<cfscript>

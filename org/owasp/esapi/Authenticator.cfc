@@ -1,18 +1,15 @@
 ﻿<!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfinterface hint="The Authenticator interface defines a set of methods for generating and handling account credentials and session identifiers. The goal of this interface is to encourage developers to protect credentials from disclosure to the maximum extent possible. One possible implementation relies on the use of a thread local variable to store the current user's identity. The application is responsible for calling setCurrentUser() as soon as possible after each HTTP request is received. The value of getCurrentUser() is used in several other places in this API. This eliminates the need to pass a user object to methods throughout the library. For example, all of the logging, access control, and exception calls need access to the currently logged in user. The goal is to minimize the responsibility of the developer for authentication. In this example, the user simply calls authenticate with the current request and the name of the parameters containing the username and password. The implementation should verify the password if necessary, create a session if necessary, and set the user as the current user.">

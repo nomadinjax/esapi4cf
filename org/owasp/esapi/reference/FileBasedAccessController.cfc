@@ -1,18 +1,15 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.AccessController" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the AccessController interface. This reference implementation uses a simple model for specifying a set of access control rules. Many organizations will want to create their own implementation of the methods provided in the AccessController interface. This reference implementation uses a simple scheme for specifying the rules. The first step is to create a namespace for the resources being accessed. For files and URL's, this is easy as they already have a namespace. Be extremely careful about canonicalizing when relying on information from the user in an access control decision. For functions, data, and services, you will have to come up with your own namespace for the resources being accessed. You might simply define a flat namespace with a list of category names. For example, you might specify 'FunctionA', 'FunctionB', and 'FunctionC'. Once you've defined your namespace, you have to work out the rules that govern access to the different parts of the namespace. This implementation allows you to attach a simple access control list (ACL) to any part of the namespace tree. The ACL lists a set of roles that are either allowed or denied access to a part of the tree. You specify these rules in a textfile with a simple format. There is a single configuration file supporting each of the five methods in the AccessController interface. These files are located in the ESAPI resources directory as specified when the JVM was started. The use of a default deny rule is STRONGLY recommended.">
