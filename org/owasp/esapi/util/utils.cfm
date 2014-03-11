@@ -52,7 +52,7 @@
 
 	<cfscript>
 		var logger = createObject("java", "org.owasp.esapi.Logger");
-		if(this.ESAPI4JVERSION == 2) {
+		if(createObject("component", "org.owasp.esapi.util.Version").getESAPI4JVersion() == 2) {
 			return logger[arguments.type];
 		}
 		else {

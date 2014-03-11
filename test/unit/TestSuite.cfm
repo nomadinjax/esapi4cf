@@ -18,7 +18,7 @@
 	if(structKeyExists(server, "railo")) {
 		serverVersion = "Railo " & server.railo.version;
 	}
-	ESAPI = createObject("component", "org.owasp.esapi.ESAPI");
+	Version = createObject("component", "org.owasp.esapi.util.Version");
 
 	results = createObject("component", "mxunit.runner.DirectoryTestSuite").run(directory=expandPath("."), componentPath="esapi4cf.test.unit", recurse=true);
 </cfscript>
@@ -26,10 +26,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Unit | #ESAPI.ESAPINAME# #ESAPI.VERSION# [#serverVersion#]</title>
+<title>Unit | #Version.getESAPI4CFName()# #Version.getESAPI4CFVersion()# [#serverVersion#]</title>
 </head>
 <body>
-<h1>Unit | #ESAPI.ESAPINAME# #ESAPI.VERSION# [#serverVersion#]</h1>
+<h1>Unit | #Version.getESAPI4CFName()# #Version.getESAPI4CFVersion()# [#serverVersion#]</h1>
 #results.getResultsOutput("html")#
 </body>
 </html>

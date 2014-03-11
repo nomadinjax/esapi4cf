@@ -26,7 +26,7 @@
 			System.out.println("canonicalize");
 
 			list = createObject("java", "java.util.ArrayList").init();
-			if (this.ESAPI4JVERSION == 2) {
+			if (createObject("component", "org.owasp.esapi.util.Version").getESAPI4JVersion() == 2) {
 				list.add("org.owasp.esapi.codecs.HTMLEntityCodec");
 				list.add("org.owasp.esapi.codecs.PercentCodec");
 			}
@@ -152,7 +152,7 @@
 
 			// javascript escape syntax
 			js = createObject("java", "java.util.ArrayList").init();
-			if (this.ESAPI4JVERSION == 2) {
+			if (createObject("component", "org.owasp.esapi.util.Version").getESAPI4JVersion() == 2) {
 				js.add("org.owasp.esapi.codecs.JavaScriptCodec");
 			}
 			else {
@@ -185,7 +185,7 @@
 			// css escape syntax
 			// be careful because some codecs see \0 as null byte
 			css = createObject("java", "java.util.ArrayList").init();
-			if (this.ESAPI4JVERSION == 2) {
+			if (createObject("component", "org.owasp.esapi.util.Version").getESAPI4JVersion() == 2) {
 				css.add("org.owasp.esapi.codecs.CSSCodec");
 			}
 			else {
@@ -296,7 +296,7 @@
 			var instance = request.ESAPI.encoder();
 			assertEquals("&lt;script&gt;", instance.encodeForHTMLAttribute("<script>"));
 			assertEquals(",.-_", instance.encodeForHTMLAttribute(",.-_"));
-			if (this.ESAPI4JVERSION == 2) {
+			if (createObject("component", "org.owasp.esapi.util.Version").getESAPI4JVersion() == 2) {
 				assertEquals("&##x20;&##x21;&##x40;&##x24;&##x25;&##x28;&##x29;&##x3d;&##x2b;&##x7b;&##x7d;&##x5b;&##x5d;", instance.encodeForHTMLAttribute(" !@$%()=+{}[]"));
 			}
 			else {
@@ -322,7 +322,7 @@
 		<cfscript>
 			var instance = request.ESAPI.encoder();
 			assertEquals("\x3Cscript\x3E", instance.encodeForJavaScript("<script>"));
-			if (this.ESAPI4JVERSION == 2) {
+			if (createObject("component", "org.owasp.esapi.util.Version").getESAPI4JVersion() == 2) {
 				assertEquals(",.\x2D_\x20", instance.encodeForJavaScript(",.-_ "));
 			}
 			else {
@@ -347,7 +347,7 @@
 
 		<cfscript>
 			var instance = request.ESAPI.encoder();
-			if (this.ESAPI4JVERSION == 2) {
+			if (createObject("component", "org.owasp.esapi.util.Version").getESAPI4JVersion() == 2) {
 				assertEquals('chrw(60)&"script"&chrw(62)', instance.encodeForVBScript("<script>"));
 				assertEquals('x"&chrw(32)&chrw(33)&chrw(64)&chrw(36)&chrw(37)&chrw(40)&chrw(41)&chrw(61)&chrw(43)&chrw(123)&chrw(125)&chrw(91)&chrw(93)', instance.encodeForVBScript('x !@$%()=+{}[]'));
 			}

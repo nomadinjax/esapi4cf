@@ -15,11 +15,6 @@
 <cfcomponent extends="mxunit.framework.TestCase" output="false">
 
 	<cfscript>
-		this.ESAPI4JVERSION = 1;					// ESAPI4J version
-		if (structKeyExists(createObject("java", "org.owasp.esapi.ESAPI").securityConfiguration(), "APPLICATION_NAME")) {
-			this.ESAPI4JVERSION = 2;
-		}
-
 		// only initialize once
 		if (!structKeyExists(request, "ESAPI")) {
 			request.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init();

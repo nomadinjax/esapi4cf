@@ -261,7 +261,7 @@
 	        }
 
 	        //variables.jlogger.log(arguments.level, msg, arguments.throwable);
-	        variables.jlogger.log(arguments.level, "[" & this.ESAPINAME & "] " & msg);
+	        variables.jlogger.log(arguments.level, "[" & createObject("component", "org.owasp.esapi.util.Version").getESAPI4CFName() & "] " & msg);
     	</cfscript>
 
 	</cffunction>

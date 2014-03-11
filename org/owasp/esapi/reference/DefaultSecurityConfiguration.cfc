@@ -255,7 +255,7 @@
 			}
 
 			if(!isObject(result)) {
-				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("[" & this.ESAPINAME & "] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
+				throw(object=createObject("java", "java.lang.IllegalArgumentException").init("[" & createObject("component", "org.owasp.esapi.util.Version").getESAPI4CFName() & "] Failed to load " & this.RESOURCE_FILE & " as a classloader resource."));
 			}
 
 			return result;
@@ -269,7 +269,7 @@
 		<cfargument required="false" name="e" hint="The error that occured (this value is currently ignored)."/>
 
 		<cfscript>
-			System.out.println("[" & this.ESAPINAME & "] " & arguments.message);
+			System.out.println("[" & createObject("component", "org.owasp.esapi.util.Version").getESAPI4CFName() & "] " & arguments.message);
 		</cfscript>
 
 	</cffunction>

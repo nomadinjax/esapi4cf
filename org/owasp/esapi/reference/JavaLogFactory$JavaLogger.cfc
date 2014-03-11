@@ -270,7 +270,7 @@
 				msg = arguments.type & "-" & iif(arguments.success, de("SUCCESS"), de("FAILURE")) & " " & user.getAccountName() & "@" & user.getLastHostAddress() & ":" & userSessionIDforLogging & " -- " & clean;
 			}
 
-			variables.jlogger.logp(arguments.level, variables.applicationName, variables.moduleName, "[" & this.ESAPINAME & "] " & msg);
+			variables.jlogger.logp(arguments.level, variables.applicationName, variables.moduleName, "[" & createObject("component", "org.owasp.esapi.util.Version").getESAPI4CFName() & "] " & msg);
 		</cfscript>
 
 	</cffunction>
