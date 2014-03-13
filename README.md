@@ -17,11 +17,58 @@ This project source code is licensed under the BSD license, which is very permis
 
 GETTING STARTED
 -
-Adding ESAPI4CF to your CF application can be as simple as just one line of code...
+Adding ESAPI4CF to your CF application is very simple and can be accomplished with just a few lines of code.<br>
+
+Let's start with adding one line to your onApplicationStart() method...
 ```
 application.ESAPI = new org.owasp.esapi.ESAPI("/WEB-INF/esapi-resources/");
 ```
-...or choose to implement your own components based on the provided interfaces.
+Some features of ESAPI require access to the HTTP request and HTTP response, so register them with ESAPI in your onRequestStart() method...
+```
+application.ESAPI.httpUtilities().setCurrentHTTP(getPageContext().getRequest(), getPageContext().getResponse());
+```
+Now your set! You will now have access to ESAPI and all of its modules.<br>
+
+**Some examples:**<br>
+
+Want to validate the HTTP request to check for possible intrusions:
+```
+application.ESAPI.validator().assertIsValidHTTPRequest();
+```
+Want to authenticate and persist a users across requests:
+```
+application.ESAPI.authenticator().login(httpRequest=request, httpResponse=response);
+```
+
+Want to see if a user is logged in:
+```
+application.ESAPI.authenticator().getCurrentUser().isLoggedIn();
+```
+
+Want to check a user permission:
+```
+application.ESAPI.accessController().isAuthorizedForData(action="edit", data=yourData);
+```
+
+Want to encode output to prevent cross-site scripting (XSS):
+```
+application.ESAPI.encoder().encodeForHTML(input);
+```
+
+Want to use Anti-Samy to cleanse rich text input so malicious markup does not get into your application:
+```
+application.ESAPI.validator().getValidSafeHTML(context="myContext", input=myRichTextValue, maxLength=65536, allowNull=true);
+```
+
+EXTENSIBILITY
+-
+All ESAPI4CF modules can be extended so you can add your own features or override the default implementations.  If, for example, you find that you want implement your own password complexity rules, you can extend the Authenticator implementation and override the **verifyPasswordStrength** method with your own.  Then you simply need to tell ESAPI to use your Authenticator implementation instead of the default.  You do this in your onApplicationStart right after the ESAPI initialization.
+```
+application.ESAPI = new org.owasp.esapi.ESAPI("/WEB-INF/esapi-resources/");
+application.ESAPI.setAuthenticator(myAuthenticatorInstance);
+```
+
+Or use the provided ESAPI interfaces to create your own implementation entirely.  The choice is yours!
 
 DOCUMENTATION
 -
