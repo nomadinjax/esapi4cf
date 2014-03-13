@@ -4,6 +4,8 @@ This file is part of the Open Web Application Security Project (OWASP) Enterpris
 Copyright (c) 2011-2014, The OWASP Foundation<br>
 The ESAPI is published by OWASP under the BSD license. You should read and accept the LICENSE before you use, modify, and/or redistribute this software.<br>
 
+ABOUT
+-
 ESAPI (The OWASP Enterprise Security API) is a free, open source, web application security control library that makes it easier for programmers to write lower-risk applications. The ESAPI libraries are designed to make it easier for programmers to retrofit security into existing applications. The ESAPI libraries also serve as a solid foundation for new development. Allowing for language-specific differences, all OWASP ESAPI versions have the same basic design:
 - **There is a set of security control interfaces.** They define for example types of parameters that are passed to types of security controls.
 - **There is a reference implementation for each security control.** The logic is not organization‐specific and the logic is not application‐specific. An example: string‐based input validation.
