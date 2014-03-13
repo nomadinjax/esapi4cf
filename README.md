@@ -1,6 +1,6 @@
 OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
 =
-This file is part of the Open Web Application Security Project (OWASP) Enterprise Security API (ESAPI) project. For details, please see http://www.owasp.org/index.php/ESAPI.<br>
+This project is part of the Open Web Application Security Project (OWASP) Enterprise Security API (ESAPI) project. For details, please see http://www.owasp.org/index.php/ESAPI.<br>
 
 Copyright (c) 2011-2014, The OWASP Foundation<br>
 
