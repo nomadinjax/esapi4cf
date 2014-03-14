@@ -12,12 +12,12 @@
  * LICENSE before you use, modify, and/or redistribute this software.
  */
 --->
-<cfcomponent extends="esapi4cf.demo.org.corfield.framework" output="false">
+<cfcomponent extends="esapi4cf.demo.basic.org.corfield.framework" output="false">
 
 	<cfscript>
 		// you should always name your application
 		// ESAPI4CF needs a name for logging
-		this.name = "ESAPI-DemoApp";
+		this.name = "ESAPI-Demo-KitchenSink";
 		this.clientManagement = false;
 		this.setClientCookies = false;
 
@@ -33,7 +33,7 @@
 			// tell ESAPI4CF where you config files are stored
 			// You want your security config in a place not accessible from your web application like /WEB-INF/esapi-resources/
 			// so you would have to move this to the appropriate location
-			application.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("/esapi4cf/demo/WEB-INF/esapi-resources/");
+			application.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("/esapi4cf/demo/basic/WEB-INF/esapi-resources/");
 
 			// define an application specific logger instance
 			// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
@@ -132,11 +132,11 @@
 				application.ESAPI.httpUtilities().setNoCacheHeaders(httpResponse);
 			}
 			catch(Any e) {
-				application.ESAPILogger.error(application.ESAPILogger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF onRequestStart: " & e.message, e);
+				application.ESAPILogger.error(application.ESAPILogger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF setupRequest: " & e.message, e);
 				// let's rethrow this error so your global error handler catches it if you have one
 				// not sure why throw chokes on 'Expression'
 				if (e.type == "Expression") {
-					throw(e.message, e.type & "!", e.detail);
+					throw(e.message, "Xpression", e.detail);
 				}
 				else {
 					throw(e.message, e.type, e.detail);

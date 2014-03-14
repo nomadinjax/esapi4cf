@@ -39,12 +39,16 @@
 
 	<div class="row">
 		<div class="col-md-8">
+
 			<h2>Documentation</h2>
-			<p>Please refer to the <a href="http://damonmiller.github.io/esapi4cf/">#Version.getESAPI4CFName()# GitHub.io pages</a> for more information.</p>
-			<h2>API References</h2>
-			<p>Please refer to the <a href="http://damonmiller.github.io/esapi4cf/">#Version.getESAPI4CFName()# GitHub.io pages</a> for more information.</p>
+			<p>Compatibility information, setup, tutorials, API reference, and links to latest download are available here: <a href="http://damonmiller.github.io/esapi4cf/">http://damonmiller.github.io/esapi4cf/</a></p>
+
+			<h2>Release Notes</h2>
+			<p>Information on bug fixes and improvements for each release are available here: <a href="https://github.com/damonmiller/esapi4cf/releases">https://github.com/damonmiller/esapi4cf/releases</a></p>
+
 		</div>
 		<div class="col-md-4">
+
 			<div class="panel panel-success">
 				<div class="panel-heading"><h4>Under The Hood...</h4></div>
 				<div class="panel-body">
@@ -55,26 +59,28 @@
 					</ul>
 				</div>
 			</div>
+
 		</div>
 	</div>
 
-	<h2>Tutorials</h2>
-	<p>Please refer to the <a href="http://damonmiller.github.io/esapi4cf/">#Version.getESAPI4CFName()# GitHub.io pages</a> for more information.</p>
+	<h2>Issues</h2>
+	<p>You can find known issues or report new issues here: <a href="https://github.com/damonmiller/esapi4cf/issues">https://github.com/damonmiller/esapi4cf/issues</a></p>
 
-	<h2>Demo</h2>
+	<h2>Demos</h2>
 	<dl>
-		<dt><a href="demo/">Demo Application</a></dt>
-		<dd>This app contains the sample code referenced by the <a href="http://damonmiller.github.io/esapi4cf/tutorials/Introduction.html">#Version.getESAPI4CFName()# tutorials</a>.</dd>
+		<dt><a href="demo/basic/">Basic Application</a> <span class="label label-info">CF8+</span></dt>
+		<dd>This demo application covers usage and testing of the entire ESAPI4CF library.</dd>
 	</dl>
 
 	<h2>Tests</h2>
 	<dl>
-		<dt><a href="test/unit/TestSuite.cfm">Unit Tests</a></dt>
-		<dd>The #Version.getESAPI4CFName()# Unit Tests ported into ColdFusion/CFML using MXUnit (not included).</dd>
+		<dt><a href="test/unit/TestSuite.cfm">Unit Tests</a> <span class="label label-info">CF8+</span></dt>
+		<dd>The #Version.getESAPI4CFName()# Unit TestSuite using <a href="http://mxunit.org/">MXUnit</a> (not included).</dd>
 	</dl>
-	<!---<form class="form-inline" role="form" method="get" action="test/automation/TestSuite.cfm">
+	<form class="form-inline" role="form" method="get" action="test/automation/TestSuite.cfm">
 		<fieldset>
 			<legend>Automation Tests</legend>
+			<p>Automated testing against the #Version.getESAPI4CFName()# demo app courtesy of <a href="https://github.com/bobsilverberg/CFSelenium">CFSelenium</a> (not included) and <a href="http://mxunit.org/">MXUnit</a> (not included).</p>
 			<div class="form-group">
 				<label class="control-label" for="engine">CFML Engine</label>
 				<select class="form-control" id="engine" name="engine">
@@ -89,13 +95,13 @@
 			</div>
 			<button type="submit" class="btn btn-primary">Run Test</button>
 		</fieldset>
-	</form>--->
+	</form>
 
 	<h2>Utilities</h2>
 	<dl>
-		<dt><a href="utilities/DefaultEncryptedProperties.cfm">Encrypted Properties files</a></dt>
+		<dt><a href="utilities/DefaultEncryptedProperties.cfm">Encrypted Properties files</a> <span class="label label-info">CF8+</span></dt>
 		<dd>Loads encrypted properties file based on the location passed in args then prompts the user to input key-value pairs.</dd>
-		<dt><a href="utilities/FileBasedAuthenticator.cfm">Fail safe main program to add or update an account in an emergency</a></dt>
+		<dt><a href="utilities/FileBasedAuthenticator.cfm">Fail safe main program to add or update an account in an emergency</a> <span class="label label-info">CF8+</span></dt>
 		<dd>WARNING: this method does not perform the level of validation and checks generally required in #Version.getESAPI4CFName()#, and can therefore be used to create a username and password that do not comply with the username and password strength requirements.</dd>
 	</dl>
 

@@ -23,7 +23,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-<title>Demo App :: ESAPI4CF</title>
+<title>Basic App :: ESAPI4CF</title>
 <meta name="description" content=""/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -40,12 +40,44 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="index.cfm">ESAPI4CF Demo App</a>
+			<a class="navbar-brand" href="#buildURL('')#">ESAPI4CF Basic App</a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="navbar-topmenu">
 			<ul class="nav navbar-nav">
-				<li><a href="#buildURL('encoder')#">Encoder</a></li>
+				<li><a href="##">ESAPI</a></li>
+				<li class="dropdown">
+					<a href="##" class="dropdown-toggle" data-toggle="dropdown">Modules <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="##">AccessController</a></li>
+						<li><a href="##">Authenticator / User</a></li>
+						<li><a href="#buildURL('encoder')#">Encoder</a></li>
+						<li><a href="##">Encryptor</a></li>
+						<li><a href="##">Executor</a></li>
+						<li><a href="##">HTTPUtilities</a></li>
+						<li><a href="##">IntrusionDetector</a></li>
+						<li><a href="##">Logger</a></li>
+						<li><a href="##">Randomizer</a></li>
+						<li><a href="##">SecurityConfiguration</a></li>
+						<li><a href="##">Validator / ValidationErrorList</a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="##" class="dropdown-toggle" id="modules" data-toggle="dropdown">Filters <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="##">SafeRequest</a></li>
+						<li><a href="##">SafeResponse</a></li>
+						<li><a href="##">SafeSession</a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a href="##" class="dropdown-toggle" data-toggle="dropdown">Extras <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="##">AccessReferenceMap</a></li>
+						<li><a href="##">EncryptedProperties</a></li>
+						<li><a href="##">SafeFile</a></li>
+					</ul>
+				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<cfif currentUser.isLoggedIn()>
@@ -73,7 +105,7 @@
 	<footer>
 		<hr />
 		<p><a href="https://github.com/damonmiller/esapi4cf">OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)</a></p>
-		<p>This file is part of the Open Web Application Security Project (OWASP) Enterprise Security API (ESAPI) project. For details, please see <a href="https://owasp.org/index.php/ESAPI">https://owasp.org/index.php/ESAPI</a>.</p>
+		<p>This application is part of the Open Web Application Security Project (OWASP) Enterprise Security API (ESAPI) project. For details, please see <a href="https://owasp.org/index.php/ESAPI">https://owasp.org/index.php/ESAPI</a>.</p>
 		<p><copy>Copyright &copy; 2011-2014, The OWASP Foundation</copy></p>
 		<p>The ESAPI is published by OWASP under the <a href="http://en.wikipedia.org/wiki/BSD_license">BSD license</a>. You should read and accept the LICENSE before you use, modify, and/or redistribute this software.</p>
 	</footer>
