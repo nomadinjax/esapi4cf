@@ -45,47 +45,47 @@
 
 		<div class="collapse navbar-collapse" id="navbar-topmenu">
 			<ul class="nav navbar-nav">
-				<li><a href="##">ESAPI</a></li>
 				<li class="dropdown">
 					<a href="##" class="dropdown-toggle" data-toggle="dropdown">Modules <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="##">AccessController</a></li>
-						<li><a href="##">Authenticator / User</a></li>
+						<li><a href="#buildURL('accessController')#">AccessController</a></li>
+						<li><a href="#buildURL('authenticator')#">Authenticator / User</a></li>
 						<li><a href="#buildURL('encoder')#">Encoder</a></li>
-						<li><a href="##">Encryptor</a></li>
-						<li><a href="##">Executor</a></li>
-						<li><a href="##">HTTPUtilities</a></li>
-						<li><a href="##">IntrusionDetector</a></li>
-						<li><a href="##">Logger</a></li>
-						<li><a href="##">Randomizer</a></li>
-						<li><a href="##">SecurityConfiguration</a></li>
-						<li><a href="##">Validator / ValidationErrorList</a></li>
+						<li><a href="#buildURL('encryptor')#">Encryptor</a></li>
+						<li><a href="#buildURL('executor')#">Executor</a></li>
+						<li><a href="#buildURL('httpUtilities')#">HTTPUtilities</a></li>
+						<li><a href="#buildURL('intrusionDetector')#">IntrusionDetector</a></li>
+						<li><a href="#buildURL('logger')#">Logger</a></li>
+						<li><a href="#buildURL('randomizer')#">Randomizer</a></li>
+						<li><a href="#buildURL('securityConfiguration')#">SecurityConfiguration</a></li>
+						<li><a href="#buildURL('validator')#">Validator / ValidationErrorList</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
 					<a href="##" class="dropdown-toggle" id="modules" data-toggle="dropdown">Filters <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="##">SafeRequest</a></li>
-						<li><a href="##">SafeResponse</a></li>
-						<li><a href="##">SafeSession</a></li>
+						<li><a href="#buildURL('safeRequest')#">SafeRequest</a></li>
+						<li><a href="#buildURL('safeResponse')#">SafeResponse</a></li>
+						<li><a href="#buildURL('safeSession')#">SafeSession</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
 					<a href="##" class="dropdown-toggle" data-toggle="dropdown">Extras <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="##">AccessReferenceMap</a></li>
-						<li><a href="##">EncryptedProperties</a></li>
-						<li><a href="##">SafeFile</a></li>
+						<li><a href="#buildURL('accessReferenceMap')#">AccessReferenceMap</a></li>
+						<li><a href="#buildURL('encryptedProperties')#">EncryptedProperties</a></li>
+						<li><a href="#buildURL('safeFile')#">SafeFile</a></li>
 					</ul>
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<cfif currentUser.isLoggedIn()>
 					<li class="dropdown">
-						<a href="##" class="dropdown-toggle" id="loggedInAs" data-toggle="dropdown">#encoder.encodeForHTML(currentUser.getAccountName())# (#encoder.encodeForHTML(arrayToList(currentUser.getRoles(), "/"))#) <b class="caret"></b></a>
+						<a href="##" class="dropdown-toggle" id="loggedInAs" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> #encoder.encodeForHTML(currentUser.getAccountName())# <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="#buildURL('account.profile')#">My Profile</a></li>
 							<li><a href="#buildURL('account.changePassword')#" data-toggle="modal" data-target="##changePasswordModal">Change Password</a></li>
+							<li><a href="#buildURL('account.settings')#">Settings</a></li>
 							<li class="divider"></li>
 							<li><a href="#buildURL(action=rc.action, queryString='logout=1')#">Logout</a></li>
 						</ul>

@@ -28,6 +28,11 @@
 		// ESAPI4CF is under a sub-folder due to the structure of the project - add a mapping to find esapi4cf
 		this.mappings["/org"] = expandPath("/esapi4cf/org");
 
+		// FW/1 settings
+		variables.framework = {
+			reloadApplicationOnEveryRequest = true
+		};
+
 		function setupApplication() {
 			// this is your main reference point to ESAPI4CF that you will use throughout your application
 			// tell ESAPI4CF where you config files are stored
@@ -168,25 +173,26 @@
 
 	<!--- functions are outside of cfscript due to CF8 compatibility --->
 
-	<cffunction name="isSecurePage">
+	<cffunction returntype="boolean" name="isSecurePage" output="false">
 		<cfargument required="true" name="action">
 		<cfscript>
-			// basic example - do this better!
-			if (listFindNoCase("main.default,main.login,encoder.default", arguments.action)) {
+			var controller = listFirst(arguments.action, ".");
+
+			if (listFindNoCase("main,esapi,encoder", controller)) {
 				return false;
 			}
 			return true;
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="encryptQueryString">
+	<cffunction returntype="string" name="encryptQueryString" output="false">
 		<cfargument required="true" type="String" name="params">
 		<cfscript>
 			return application.ESAPI.encoder().encodeForURL(application.ESAPI.httpUtilities().encryptQueryString(arguments.params));
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="decryptQueryString">
+	<cffunction returntype="void" name="decryptQueryString" output="false">
 		<cfscript>
 			var urlX = {};
 			var key = "";
@@ -205,7 +211,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="redirectToLogin">
+	<cffunction returntype="void" name="redirectToLogin" output="false">
 		<cfargument required="true" name="ex">
 		<cfargument name="statusCode" default="401">
 		<cfscript>
