@@ -12,7 +12,7 @@
  * LICENSE before you use, modify, and/or redistribute this software.
  */
 --->
-<cfcomponent hint="ESAPI Automation Tests">
+<cfcomponent output="false" hint="ESAPI Automation Tests">
 
 	<!---
 		These automation tests are still very young so please excuse the mess!

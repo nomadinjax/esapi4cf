@@ -20,7 +20,7 @@
 	}
 	Version = createObject("component", "org.owasp.esapi.util.Version");
 
-	results = createObject("component", "mxunit.runner.DirectoryTestSuite").run(directory=expandPath("."), componentPath="esapi4cf.test.unit", recurse=true);
+	results = createObject("component", "mxunit.runner.DirectoryTestSuite").run(directory=expandPath("."), componentPath="esapi4cf.test.unit", recurse=true, excludes="esapi4cf.test.unit.org.owasp.esapi.util.TestCase");
 </cfscript>
 <cfoutput><!DOCTYPE html>
 <html lang="en">

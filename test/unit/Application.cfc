@@ -12,7 +12,7 @@
  * LICENSE before you use, modify, and/or redistribute this software.
  */
 --->
-<cfcomponent hint="ESAPI Unit Tests">
+<cfcomponent output="false" hint="ESAPI Unit Tests">
 
 	<cfscript>
 		this.name = "ESAPI-UnitTests";

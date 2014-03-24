@@ -184,6 +184,18 @@
 			return true;
 		</cfscript>
 	</cffunction>
+	
+	<cffunction returntype="boolean" name="isLoginAttempt" output="false">
+		<cfscript>
+			var httpRequest = application.ESAPI.currentRequest();
+			var params = httpRequest.getParameterNames();
+			if (httpRequest.getMethod() == "POST" && arrayFind(params, application.ESAPI.securityConfiguration().getUsernameParameterName()) && arrayFind(params, application.ESAPI.securityConfiguration().getPasswordParameterName())) {
+				return true;
+			}
+			
+			return false;
+		</cfscript>
+	</cffunction>
 
 	<cffunction returntype="string" name="encryptQueryString" output="false">
 		<cfargument required="true" type="String" name="params">
@@ -220,7 +232,7 @@
 			// the ESAPI4CF login exception was already logged so we do not have to do anything with the message/detail
 			// unless you have specific business requirements to do so.
 
-			if (!isSecurePage(request.action)) {
+			if (!isSecurePage(request.action) && !isLoginAttempt()) {
 				return;
 			}
 

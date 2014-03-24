@@ -81,17 +81,17 @@
 			<ul class="nav navbar-nav navbar-right">
 				<cfif currentUser.isLoggedIn()>
 					<li class="dropdown">
-						<a href="##" class="dropdown-toggle" id="loggedInAs" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> #encoder.encodeForHTML(currentUser.getAccountName())# <b class="caret"></b></a>
+						<a id="loggedInAs" href="##" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> #encoder.encodeForHTML(currentUser.getAccountName())# <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#buildURL('account.profile')#">My Profile</a></li>
-							<li><a href="#buildURL('account.changePassword')#" data-toggle="modal" data-target="##changePasswordModal">Change Password</a></li>
-							<li><a href="#buildURL('account.settings')#">Settings</a></li>
+							<li><a id="myProfileLink" href="#buildURL('account.profile')#">My Profile</a></li>
+							<li><a id="changePasswordLink" href="#buildURL('account.changePassword')#">Change Password</a></li>
+							<li><a id="settingsLink" href="#buildURL('account.settings')#">Settings</a></li>
 							<li class="divider"></li>
-							<li><a href="#buildURL(action=rc.action, queryString='logout=1')#">Logout</a></li>
+							<li><a id="logoutLink" href="#buildURL(action=rc.action, queryString='logout=1')#">Logout</a></li>
 						</ul>
 					</li>
 				<cfelse>
-					<li><a href="#buildURL(action='main.login', queryString='x=' & encryptQueryString('redirect=' & encoder.encodeForURL(request.action)))#">Login</a></li>
+					<li><a id="loginLink" href="#buildURL(action='main.login', queryString='x=' & encryptQueryString('redirect=' & encoder.encodeForURL(request.action)))#">Login</a></li>
 				</cfif>
 			</ul>
 		</div>
