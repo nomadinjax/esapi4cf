@@ -633,7 +633,7 @@
 			// CF8 requires 'var' at the top
 			var i = 0;
 			var j = 0;
-			var threadName = hash(getBaseTemplatePath()) & "_";
+			var threadName = getMetaData().name & "_";
 			
 			System.out.println("Encoder Concurrency");
 			for (i = 0; i < 10; i++) {
