@@ -62,6 +62,20 @@
 
 </cffunction>
 
+<cffunction access="private" returntype="boolean" name="isObjectEquals" output="false">
+	<cfargument required="true" name="obj1"/>
+	<cfargument required="true" name="obj2"/>
+    <cfscript>
+		var System = createObject("java", "java.lang.System");
+		var objHash1 = System.identityHashCode(arguments.obj1);
+		var objHash2 = System.identityHashCode(arguments.obj2);
+		if (objHash1 == objHash2) {
+			return true;
+		}
+		return false;
+    </cfscript>
+</cffunction>
+
 <cffunction access="private" returntype="void" name="throwException" output="false">
 	<cfargument required="true" type="org.owasp.esapi.util.Exception" name="exception"/>
 

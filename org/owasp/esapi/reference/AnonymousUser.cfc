@@ -409,6 +409,13 @@
 
 	</cffunction>
 
+	<cffunction access="public" returntype="boolean" name="equals" output="false">
+	    <cfargument required="true" name="another"/>
+	    <cfscript>
+	    	return isObjectEquals(this, arguments.another);
+	    </cfscript>
+	</cffunction>
+	
 	<cffunction access="public" name="getLocaleData" output="false"
 		hint="the locale">
 
