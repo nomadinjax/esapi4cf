@@ -632,46 +632,49 @@
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var i = 0;
-			var j = 0;
-			var threadName = getMetaData().name & "_";
+			var threadName = getMetaData().name & "-testConcurrency";
+			var nonce = "";
+			var result = "";
+			var key = "";
 			
 			System.out.println("Encoder Concurrency");
-			for (i = 0; i < 10; i++) {
-				thread action="run" name="#threadName##i#" {
-					thread.returnValue = true;
-					// EncoderConcurrencyMock
+		</cfscript>
+		<cfloop index="i" from="0" to="9">
+			<cfthread action="run" name="#threadName#_#i#">
+				<!--- EncoderConcurrencyMock --->
+				<cfscript>
+					thread.returnValue = false;
 					// run each thread for no more than 10s
 					while (thread.elapsedTime < 10000) {
-						var nonce = request.ESAPI.randomizer().getRandomString(20, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS);
-						var result = javaScriptEncode(nonce);
+						nonce = request.ESAPI.randomizer().getRandomString(20, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS);
+						result = request.ESAPI.encoder().encodeForJavaScript(nonce);
 						// randomize the threads
-						thread action="sleep" duration=request.ESAPI.randomizer().getRandomInteger(100, 500);
+						sleep(request.ESAPI.randomizer().getRandomInteger(100, 500));
 						
-						if (!result.equals(javaScriptEncode(nonce))) {
-							thread.returnValue = false;
+						if (!result.equals(request.ESAPI.encoder().encodeForJavaScript(nonce))) {
 							break;
 						}
 					}
-				};
-			}
-			
-			// join threads and loop results for any failures
-			threadJoin(structKeyList(cfthread));
-			for (var key in cfthread) {
-				assertTrue(cfthread[key].returnValue);
+					thread.returnValue = true;
+				</cfscript>
+			</cfthread>
+		</cfloop>
+
+		<!--- join threads and loop results for any failures --->
+		<cfthread action="join" name="#structKeyList(cfthread)#" />;
+		<cfscript>
+			for (key in cfthread) {
+				if (structKeyExists(cfthread[key], "error")) {
+					assertTrue(cfthread[key].returnValue, cfthread[key].error.message);
+				}
+				else {
+					assertTrue(cfthread[key].returnValue);
+				}
 			}
 		</cfscript>
 		
 	</cffunction>
 	
-	<cffunction access="private" returntype="String" name="javaScriptEncode" output="false">
-    	<cfargument requied="true" type="String" name="str">
-    	<cfscript>
-			var encoder = request.ESAPI.encoder();
-			return encoder.encodeForJavaScript(arguments.str);
-    	</cfscript>
-    </cffunction>
-
 	<!--- issues --->
 
 	<cffunction access="public" returntype="void" name="testIssue12" output="false" hint="https://github.com/damonmiller/esapi4cf/issues/12">
