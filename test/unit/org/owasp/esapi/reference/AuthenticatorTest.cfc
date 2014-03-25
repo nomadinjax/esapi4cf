@@ -135,6 +135,7 @@
 			var httpRequest = "";
 			var httpResponse = "";
 			var currentUser = "";
+			var threadName = getMetaData().name & "_";
 
 			System.out.println("getCurrentUser");
 			instance = request.ESAPI.authenticator();
@@ -152,36 +153,41 @@
 			instance.setCurrentUser(user2);
 			assertFalse(currentUser.getAccountName() == user2.getAccountName());
 
-			/* TODO: make runnable
-			Runnable echo = new Runnable() {
-			    private int count = 1;
-			    private boolean result = false;
-			    public void run() {
-			        Authenticator instance = request.ESAPI.authenticator();
-			        User a = null;
+			System.out.println("Authenticator GetCurrentUser Concurrency");
+			for ( var i = 0; i<10; i++ ) {
+				thread action="run" name="#threadName##i#" {
+				    thread.returnValue = false;
+			        var instance = request.ESAPI.authenticator();
+			        var a = "";
 			        try {
-			            String password = instance.generateStrongPassword();
-			            String accountName = "TestAccount" + count++;
-			            a = instance.getUser(accountName);
-			            if ( a != null ) {
+			            var password = instance.generateStrongPassword();
+			            var accountName = "TestAccount" & listLast(thread.name, "_");
+			            a = instance.getUserByAccountName(accountName);
+			            if (!isNull(a) && isObject(a)) {
 			                instance.removeUser(accountName);
 			            }
-			            a = instance.createUser(accountName, password, password);
+	            		a = instance.createUser(accountName, password, password);
 			            instance.setCurrentUser(a);
-			        } catch (org.owasp.esapi.errors.AuthenticationException e) {
+			        }
+			        catch (org.owasp.esapi.errors.AuthenticationException e) {
 			            e.printStackTrace();
 			        }
-			        User b = instance.getCurrentUser();
-			        result &= a.equals(b);
-			    }
-			};
-			ThreadGroup tg = new ThreadGroup("test");
-			for ( int i = 0; i<10; i++ ) {
-			    new Thread( tg, echo ).start();
+			        catch (org.owasp.esapi.errors.AuthenticationAccountsException e) {
+			            e.printStackTrace();
+			        }
+			        catch (org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+			            e.printStackTrace();
+			        }
+			        var b = instance.getCurrentUser();
+			        thread.returnValue = a.equals(b);
+				};
 			}
-			while (tg.activeCount() > 0 ) {
-			    Thread.sleep(100);
-			} */
+			
+			// join threads and loop results for any failures
+			threadJoin(structKeyList(cfthread));
+			for (var key in cfthread) {
+				assertTrue(cfthread[key].returnValue);
+			}
 		</cfscript>
 
 	</cffunction>

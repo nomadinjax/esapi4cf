@@ -921,6 +921,8 @@
 			var i = "";
 			var sub = "";
 			var charsets = "";
+			var jArrays = "";
+			var jEncoder = "";
 			var strength = "";
 			var accountName = "";
 			var msgParams = [];
@@ -967,9 +969,6 @@
 					break;
 				}
 			}
-
-			// [serialization] release reference
-			jEncoder = "";
 
 			// calculate and verify password strength
 			strength = arguments.newPassword.length() * charsets;
