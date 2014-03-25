@@ -626,6 +626,54 @@
 		</cfscript>
 
 	</cffunction>
+	
+	<cffunction access="public" returntype="void" name="testConcurrency" output="false">
+		
+		<cfscript>
+			// CF8 requires 'var' at the top
+			var i = 0;
+			var j = 0;
+			var threadName = hash(getBaseTemplatePath()) & "_";
+			
+			System.out.println("Encoder Concurrency");
+			for (i = 0; i < 10; i++) {
+				thread action="run" name="#threadName##i#" {
+					thread.returnValue = true;
+					// EncoderConcurrencyMock
+					// run each thread for no more than 10s
+					while (thread.elapsedTime < 10000) {
+						var nonce = request.ESAPI.randomizer().getRandomString(20, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_SPECIALS);
+						var result = javaScriptEncode(nonce);
+						// randomize the threads
+						thread action="sleep" duration=request.ESAPI.randomizer().getRandomInteger(100, 500);
+						
+						var assertion = result.equals(javaScriptEncode(nonce));
+						assertTrue(assertion);
+						if (!assertion) {
+							thread.returnValue = false;
+							break;
+						}
+					}
+				};
+			}
+			
+			// join threads and loop results for any failures
+			threadJoin(structKeyList(cfthread));
+			
+			for (var key in cfthread) {
+				assertTrue(cfthread[key].returnValue);
+			}
+		</cfscript>
+		
+	</cffunction>
+	
+	<cffunction access="private" returntype="String" name="javaScriptEncode" output="false">
+    	<cfargument requied="true" type="String" name="str">
+    	<cfscript>
+			var encoder = request.ESAPI.encoder();
+			return encoder.encodeForJavaScript(arguments.str);
+    	</cfscript>
+    </cffunction>
 
 	<!--- issues --->
 
