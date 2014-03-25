@@ -647,9 +647,7 @@
 						// randomize the threads
 						thread action="sleep" duration=request.ESAPI.randomizer().getRandomInteger(100, 500);
 						
-						var assertion = result.equals(javaScriptEncode(nonce));
-						assertTrue(assertion);
-						if (!assertion) {
+						if (!result.equals(javaScriptEncode(nonce))) {
 							thread.returnValue = false;
 							break;
 						}
@@ -659,7 +657,6 @@
 			
 			// join threads and loop results for any failures
 			threadJoin(structKeyList(cfthread));
-			
 			for (var key in cfthread) {
 				assertTrue(cfthread[key].returnValue);
 			}
