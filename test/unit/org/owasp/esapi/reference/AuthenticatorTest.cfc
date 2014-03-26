@@ -135,7 +135,8 @@
 			var httpRequest = "";
 			var httpResponse = "";
 			var currentUser = "";
-			var threadName = getMetaData().name & "_";
+			var threadName = getMetaData().name & "-testGetCurrentUser";
+			var key = "";
 
 			System.out.println("getCurrentUser");
 			instance = request.ESAPI.authenticator();
@@ -154,39 +155,48 @@
 			assertFalse(currentUser.getAccountName() == user2.getAccountName());
 
 			System.out.println("Authenticator GetCurrentUser Concurrency");
-			for ( var i = 0; i<10; i++ ) {
-				thread action="run" name="#threadName##i#" {
-				    thread.returnValue = false;
-			        var instance = request.ESAPI.authenticator();
-			        var a = "";
-			        try {
-			            var password = instance.generateStrongPassword();
-			            var accountName = "TestAccount" & listLast(thread.name, "_");
-			            a = instance.getUserByAccountName(accountName);
-			            if (!isNull(a) && isObject(a)) {
-			                instance.removeUser(accountName);
-			            }
-	            		a = instance.createUser(accountName, password, password);
-			            instance.setCurrentUser(a);
-			        }
-			        catch (org.owasp.esapi.errors.AuthenticationException e) {
-			            e.printStackTrace();
-			        }
-			        catch (org.owasp.esapi.errors.AuthenticationAccountsException e) {
-			            e.printStackTrace();
-			        }
-			        catch (org.owasp.esapi.errors.AuthenticationCredentialsException e) {
-			            e.printStackTrace();
-			        }
-			        var b = instance.getCurrentUser();
-			        thread.returnValue = a.equals(b);
-				};
-			}
-			
-			// join threads and loop results for any failures
-			threadJoin(structKeyList(cfthread));
-			for (var key in cfthread) {
-				assertTrue(cfthread[key].returnValue);
+		</cfscript>
+		<cfloop index="i" from="0" to="9">
+        	<cfthread action="run" name="#threadName#_#i#">
+        		<cfscript>
+        			thread.returnValue = false;
+        			var instance = request.ESAPI.authenticator();
+        			var a = "";
+        			try {
+        				var password = instance.generateStrongPassword();
+        				var accountName = "TestAccount" & listLast(thread.name, "_");
+        				a = instance.getUserByAccountName(accountName);
+        				if(!isNull(a) && isObject(a)) {
+        					instance.removeUser(accountName);
+        				}
+        				a = instance.createUser(accountName, password, password);
+        				instance.setCurrentUser(a);
+        			}
+        			catch(org.owasp.esapi.errors.AuthenticationException e) {
+        				e.printStackTrace();
+        			}
+        			catch(org.owasp.esapi.errors.AuthenticationAccountsException e) {
+        				e.printStackTrace();
+        			}
+        			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+        				e.printStackTrace();
+        			}
+        			var b = instance.getCurrentUser();
+        			thread.returnValue = a.equals(b);
+        		</cfscript>
+        	</cfthread>
+		</cfloop>
+		
+		<!--- join threads and loop results for any failures --->
+		<cfthread action="join" name="#structKeyList(cfthread)#" />
+		<cfscript>
+			for (key in cfthread) {
+				if (structKeyExists(cfthread[key], "error")) {
+					assertTrue(cfthread[key].returnValue, cfthread[key].error.message);
+				}
+				else {
+					assertTrue(cfthread[key].returnValue);
+				}
 			}
 		</cfscript>
 
@@ -427,6 +437,7 @@
 			var httpResponse = "";
 			var currentUser = "";
 			var userTwo = "";
+			var threadName = getMetaData().name & "-testSetCurrentUser";
 
 			System.out.println("setCurrentUser");
 			instance = request.ESAPI.authenticator();
@@ -443,26 +454,47 @@
 			userTwo = instance.createUser(user2, "getCurrentUser", "getCurrentUser");
 			instance.setCurrentUser(userTwo);
 			assertFalse(currentUser.getAccountName() == userTwo.getAccountName());
-
-			/* TODO make this work
-			Runnable echo = new Runnable() {
-			    private int count = 1;
-			    public void run() {
-			        User u=null;
+			
+			System.out.println("Authenticator GetCurrentUser Concurrency");
+		</cfscript>
+		<cfloop index="i" from="0" to="9">
+        	<cfthread action="run" name="#threadName#_#i#">
+        		<cfscript>
+        			thread.returnValue = false;
+        			var u = "";
+        			var instance = request.ESAPI.authenticator();
 			        try {
-			            String password = ESAPI.randomizer().getRandomString(8, DefaultEncoder.CHAR_ALPHANUMERICS);
-			            u = instance.createUser("test" + count++, password, password);
+			            var password = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+			            u = instance.createUser("test" & listLast(thread.name, "_"), password, password);
 			            instance.setCurrentUser(u);
-			            ESAPI.getLogger("test").info( Logger.SECURITY, true, "Got current user" );
-			            // ESAPI.authenticator().removeUser( u.getAccountName() );
-			        } catch (org.owasp.esapi.errors.AuthenticationException e) {
-			            e.printStackTrace();
-			        }
-			    }
-			};
-			for ( int i = 0; i<10; i++ ) {
-			    new Thread( echo ).start();
-			} */
+			            request.ESAPI.getLogger("test").info(getSecurityType("SECURITY_SUCCESS"), true, "Got current user");
+			            // request.ESAPI.authenticator().removeUser( u.getAccountName() );
+        			}
+        			catch(org.owasp.esapi.errors.AuthenticationException e) {
+        				e.printStackTrace();
+        			}
+        			catch(org.owasp.esapi.errors.AuthenticationAccountsException e) {
+        				e.printStackTrace();
+        			}
+        			catch(org.owasp.esapi.errors.AuthenticationCredentialsException e) {
+        				e.printStackTrace();
+        			}
+        			thread.returnValue = true;
+        		</cfscript>
+        	</cfthread>
+		</cfloop>
+		
+		<!--- join threads and loop results for any failures --->
+		<cfthread action="join" name="#structKeyList(cfthread)#" />
+		<cfscript>
+			for (key in cfthread) {
+				if (structKeyExists(cfthread[key], "error")) {
+					assertTrue(cfthread[key].returnValue, cfthread[key].error.message);
+				}
+				else {
+					assertTrue(cfthread[key].returnValue);
+				}
+			}
 		</cfscript>
 
 	</cffunction>
