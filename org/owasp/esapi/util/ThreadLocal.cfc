@@ -37,46 +37,28 @@
 	<cffunction access="public" returntype="void" name="set" output="false">
 		<cfargument required="true" name="value"/>
 
-		<cfscript>
-			var threadId = getThreadId();
-			request[threadId] = arguments.value;
-		</cfscript>
+		<cflock scope="request" type="exclusive" timeout="5">
+			<cfscript>
+				request[getThreadId()] = arguments.value;
+			</cfscript>
+		</cflock>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="remove" output="false">
 
-		<cfscript>
-			var threadId = getThreadId();
-			structDelete(request, threadId);
-
-			// reset the Thread ID so we never use this request variable again
-			resetThreadId();
-		</cfscript>
+		<cflock scope="request" type="exclusive" timeout="5">
+			<cfset structDelete(request, getThreadId())>
+		</cflock>
 
 	</cffunction>
 
 	<!--- PRIVATE METHODS --->
 
-	<cfscript>
-		variables.threadId = "";
-	</cfscript>
-
-	<cffunction access="private" returntype="String" name="getThreadId" output="false">
+	<cffunction access="public" returntype="String" name="getThreadId" output="false">
 
 		<cfscript>
-			if(variables.threadId == "") {
-				resetThreadId();
-			}
-			return variables.threadId;
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="private" returntype="void" name="resetThreadId" output="false">
-
-		<cfscript>
-			variables.threadId = "ThreadLocal_" & getMetaData(this).name;
+			return createObject("java","java.lang.Thread").currentThread().getName() & "_" & getMetaData(this).name;
 		</cfscript>
 
 	</cffunction>
@@ -86,7 +68,11 @@
 		<cfscript>
 			var threadId = getThreadId();
 			var value = initialValue();
-			request[threadId] = value;
+		</cfscript>
+		<cflock scope="request" type="exclusive" timeout="5">
+			<cfset request[threadId] = value>
+		</cflock>
+		<cfscript>
 			return value;
 		</cfscript>
 
