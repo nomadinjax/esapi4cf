@@ -15,6 +15,9 @@
 <cfcomponent extends="Object" output="false">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.File = "";
 	</cfscript>
 
@@ -35,7 +38,7 @@
 				variables.File = createObject("java", "java.io.File").init(arguments.uri);
 			}
 			else {
-				throwException(createObject("java", "IOException").init("Invalid File Instantiation.", "You must provide either a path, a parent and child, or a uri."));
+				Utils.throwException(createObject("java", "IOException").init("Invalid File Instantiation.", "You must provide either a path, a parent and child, or a uri."));
 			}
 
 			return this;

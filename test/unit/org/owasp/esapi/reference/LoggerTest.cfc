@@ -15,6 +15,9 @@
 <cfcomponent extends="esapi4cf.test.unit.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.testLogger = request.ESAPI.getLogger("test");
 	</cfscript>
 
@@ -157,10 +160,10 @@
 
 		<cfscript>
 			System.out.println("info");
-			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
-			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "%3escript%3f test message", javaCast("null", ""));
-			variables.testLogger.info(getSecurityType("SECURITY_SUCCESS"), true, "<script> test message", javaCast("null", ""));
+			variables.testLogger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message");
+			variables.testLogger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
+			variables.testLogger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, "%3escript%3f test message", javaCast("null", ""));
+			variables.testLogger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, "<script> test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -170,8 +173,8 @@
 
 		<cfscript>
 			System.out.println("trace");
-			variables.testLogger.trace(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.trace(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
+			variables.testLogger.trace(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message");
+			variables.testLogger.trace(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -181,8 +184,8 @@
 
 		<cfscript>
 			System.out.println("debug");
-			variables.testLogger.debug(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.debug(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
+			variables.testLogger.debug(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message");
+			variables.testLogger.debug(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -192,8 +195,8 @@
 
 		<cfscript>
 			System.out.println("error");
-			variables.testLogger.error(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.error(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
+			variables.testLogger.error(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message");
+			variables.testLogger.error(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -203,8 +206,8 @@
 
 		<cfscript>
 			System.out.println("warning");
-			variables.testLogger.warning(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.warning(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
+			variables.testLogger.warning(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message");
+			variables.testLogger.warning(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>
@@ -214,8 +217,8 @@
 
 		<cfscript>
 			System.out.println("fatal");
-			variables.testLogger.fatal(getSecurityType("SECURITY_SUCCESS"), true, "test message");
-			variables.testLogger.fatal(getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
+			variables.testLogger.fatal(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message");
+			variables.testLogger.fatal(Utils.getSecurityType("SECURITY_SUCCESS"), true, "test message", javaCast("null", ""));
 		</cfscript>
 
 	</cffunction>

@@ -15,7 +15,10 @@
 <cfcomponent extends="esapi4cf.test.unit.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		clearUserFile();
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
+		Utils.clearUserFile();
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testAddException" output="false"

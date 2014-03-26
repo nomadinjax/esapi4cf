@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.Encoder" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Encoder interface. This implementation takes a whitelist approach to encoding, meaning that everything not specifically identified in a list of 'immune' characters is encoded. Several methods follow the approach in the Microsoft AntiXSS Library. The Encoder performs two key functions The canonicalization algorithm is complex, as it has to be able to recognize encoded characters that might affect downstream interpreters without being told what encodings are possible. The stream is read one character at a time. If an encoded character is encountered, it is canonicalized and pushed back onto the stream. If the next character is encoded, then a intrusion exception is thrown for the double-encoding which is assumed to be an attack. The encoding methods also attempt to prevent double encoding, by canonicalizing strings that are passed to them for encoding. Currently the implementation supports: HTML Entity Encoding (including non-terminated), Percent Encoding, Backslash Encoding">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		variables.encoder = "";
 	</cfscript>
@@ -50,7 +53,7 @@
 			}
 			catch (org.owasp.esapi.errors.IntrusionException e) {
 				// TODO: this does not seem flexible to handle various errors returned from Java
-				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_canonicalize_badInput_userMessage"), e.getLogMessage()));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_canonicalize_badInput_userMessage"), e.getLogMessage()));
 			}
 		</cfscript>
 
@@ -187,10 +190,10 @@
 				return createObject("java", "java.net.URLEncoder").encode(javaCast("string", arguments.input), variables.ESAPI.securityConfiguration().getCharacterEncoding());
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_typeMismatch_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_typeMismatch_logMessage"), ex));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_typeMismatch_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_typeMismatch_logMessage"), ex));
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_badInput_logMessage"), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_encodeForURL_badInput_logMessage"), e));
 			}
 		</cfscript>
 
@@ -208,10 +211,10 @@
 				return createObject("java", "java.net.URLDecoder").decode(canonical, variables.ESAPI.securityConfiguration().getCharacterEncoding());
 			}
 			catch(java.io.UnsupportedEncodingException ex) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_typeMismatch_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_typeMismatch_logMessage"), ex));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_typeMismatch_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_typeMismatch_logMessage"), ex));
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_badInput_logMessage"), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncodingException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("Encoder_decodeFromURL_badInput_logMessage"), e));
 			}
 		</cfscript>
 

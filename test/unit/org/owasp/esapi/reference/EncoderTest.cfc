@@ -14,6 +14,11 @@
 --->
 <cfcomponent extends="esapi4cf.test.unit.org.owasp.esapi.util.TestCase" output="false">
 
+	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+	</cfscript>
+	
 	<cffunction access="public" returntype="void" name="testCanonicalize" output="false">
 
 		<cfscript>
@@ -399,7 +404,7 @@
 		<cfscript>
 			var instance = request.ESAPI.encoder();
 			assertEquals("Hi This is a test ##��", instance.encodeForLDAP("Hi This is a test ##��"), "No special characters to escape");
-			assertEquals( "Hi ", instance.encodeForLDAP( "Hi " & toUnicode("\u0000") ), "Zeros" );
+			assertEquals( "Hi ", instance.encodeForLDAP( "Hi " & Utils.toUnicode("\u0000") ), "Zeros" );
 			assertEquals("Hi \28This\29 = is \2a a \5c test ## � � �", instance.encodeForLDAP("Hi (This) = is * a \ test ## � � �"), "LDAP Christams Tree");
 		</cfscript>
 
@@ -474,7 +479,7 @@
 
 		<cfscript>
 			var instance = request.ESAPI.encoder();
-			assertEquals("&##xa3;", instance.encodeForXML(toUnicode("\u00A3")));
+			assertEquals("&##xa3;", instance.encodeForXML(Utils.toUnicode("\u00A3")));
 		</cfscript>
 
 	</cffunction>
@@ -532,7 +537,7 @@
 
 		<cfscript>
 			var instance = request.ESAPI.encoder();
-			assertEquals("&##xa3;", instance.encodeForXMLAttribute(toUnicode("\u00A3")));
+			assertEquals("&##xa3;", instance.encodeForXMLAttribute(Utils.toUnicode("\u00A3")));
 		</cfscript>
 
 	</cffunction>

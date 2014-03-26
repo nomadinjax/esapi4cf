@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.util.HttpServletRequest" extends="org.owasp.esapi.util.Object" output="false" hint="This request wrapper simply overrides unsafe methods in the HttpServletRequest API with safe versions that return canonicalized data where possible. The wrapper returns a safe value when a validation error is detected, including stripped or empty strings.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		variables.httpRequest = "";
 		variables.logger = "";
@@ -159,7 +162,7 @@
 						newCookies.add(n);
 					}
 					catch(org.owasp.esapi.errors.ValidationException e) {
-						variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Skipping bad cookie: " & c.getName() & "=" & c.getValue(), e);
+						variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Skipping bad cookie: " & c.getName() & "=" & c.getValue(), e);
 					}
 				}
 			}
@@ -352,7 +355,7 @@
 				params = variables.httpRequest.getParameterMap();
 				if (structKeyExists(params, arguments.name)) {
 					orig = params[arguments.name][1];
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Server incorrectly implements RequestContext. getParameterMap() fallback used - see Issue 39.");
+					variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Server incorrectly implements RequestContext. getParameterMap() fallback used - see Issue 39.");
 				}
 			}
 
@@ -360,7 +363,7 @@
 			if (isNull(orig)) {
 				if (structKeyExists(form, arguments.name)) {
 					orig = form[arguments.name];
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Server incorrectly implements RequestContext. FORM scope fallback used - see Issue 39.");
+					variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Server incorrectly implements RequestContext. FORM scope fallback used - see Issue 39.");
 				}
 			}
 
@@ -473,7 +476,7 @@
 						newValues.add(cleanValue);
 					}
 					catch(org.owasp.esapi.errors.ValidationException e) {
-						variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Skipping bad parameter");
+						variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Skipping bad parameter");
 					}
 				}
 			}
@@ -705,7 +708,7 @@
 		<cfscript>
 			var port = variables.httpRequest.getServerPort();
 			if(port < 0 || port > inputBaseN("FFFF", 16)) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "HTTP server port out of range: " & port);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "HTTP server port out of range: " & port);
 				port = 0;
 			}
 			return port;

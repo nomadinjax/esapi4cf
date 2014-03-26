@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.util.HttpServletResponse" extends="org.owasp.esapi.util.Object" output="false" hint="This response wrapper simply overrides unsafe methods in the HttpServletResponse API with safe versions.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		variables.httpResponse = "";
 		variables.logger = "";
@@ -92,7 +95,7 @@
 				variables.httpResponse.addHeader("Set-Cookie", header);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addSafeCookie_failure_message"), e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addSafeCookie_failure_message"), e);
 			}
 		</cfscript>
 
@@ -112,7 +115,7 @@
 				variables.httpResponse.addDateHeader(safeName, arguments.date);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addDateHeader_failure_message"), e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addDateHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -139,7 +142,7 @@
 				variables.httpResponse.setHeader(safeName, safeValue);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addHeader_failure_message"), e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -159,7 +162,7 @@
 				variables.httpResponse.addIntHeader(safeName, arguments.value);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addIntHeader_failure_message"), e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addIntHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -306,7 +309,7 @@
 			var msgParams = [arguments.location];
 
 			if(!variables.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
-				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("HttpServletResponse_sendRedirect_failure_message", msgParams));
+				variables.logger.fatal(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("HttpServletResponse_sendRedirect_failure_message", msgParams));
 				throw(object=createObject("java", "java.io.IOException").init(variables.ESAPI.resourceBundle().getString("HttpServletResponse_sendRedirect_failure_userMessage")));
 			}
 			variables.httpResponse.sendRedirect(arguments.location);
@@ -369,7 +372,7 @@
 				variables.httpResponse.setDateHeader(safeName, arguments.date);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setDateHeader_failure_message"), e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setDateHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -395,7 +398,7 @@
 				variables.httpResponse.setHeader(safeName, safeValue);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setHeader_failure_message"), e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -415,7 +418,7 @@
 				variables.httpResponse.setIntHeader(safeName, arguments.value);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setIntHeader_failure_message"), e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setIntHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -444,7 +447,7 @@
 					sendError(variables.httpResponse.SC_OK, arguments.sm);
 				}
 				catch(java.io.IOException e) {
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setStatus_failure_message"), e);
+					variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setStatus_failure_message"), e);
 				}
 			}
 			else {

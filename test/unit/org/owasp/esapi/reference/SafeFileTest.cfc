@@ -15,12 +15,15 @@
 <cfcomponent extends="esapi4cf.test.unit.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
     	variables.CLASS = getMetaData(this);
     	variables.CLASS_NAME = listLast(variables.CLASS.name, ".");
     	/** Name of the file in the temporary directory */
     	variables.TEST_FILE_NAME = "test.file";
 		variables.GOOD_FILE_CHARS = createObject("java", "org.owasp.esapi.util.CollectionsUtil").strToUnmodifiableSet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-" /* + "." */);
-		variables.BAD_FILE_CHARS = createObject("java", "org.owasp.esapi.util.CollectionsUtil").strToUnmodifiableSet(toUnicode("\u0000") & /*(File.separatorChar == '/' ? '\\' : '/') +*/ "*|<>?:" /*+ "~!@#$%^&(){}[],`;"*/);
+		variables.BAD_FILE_CHARS = createObject("java", "org.owasp.esapi.util.CollectionsUtil").strToUnmodifiableSet(Utils.toUnicode("\u0000") & /*(File.separatorChar == '/' ? '\\' : '/') +*/ "*|<>?:" /*+ "~!@#$%^&(){}[],`;"*/);
 
 		variables.testDir = "";
 		variables.testFile = "";

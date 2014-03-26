@@ -15,7 +15,10 @@
 <cfcomponent extends="esapi4cf.test.unit.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		clearUserFile();
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
+		Utils.clearUserFile();
 	</cfscript>
 
 	<cffunction access="public" returntype="void" name="testCreateUser" output="false"
@@ -467,7 +470,7 @@
 			            var password = request.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 			            u = instance.createUser("test" & listLast(thread.name, "_"), password, password);
 			            instance.setCurrentUser(u);
-			            request.ESAPI.getLogger("test").info(getSecurityType("SECURITY_SUCCESS"), true, "Got current user");
+			            request.ESAPI.getLogger("test").info(Utils.getSecurityType("SECURITY_SUCCESS"), true, "Got current user");
 			            // request.ESAPI.authenticator().removeUser( u.getAccountName() );
         			}
         			catch(org.owasp.esapi.errors.AuthenticationException e) {

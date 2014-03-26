@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.RBFactory" extends="org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		variables.logger = "";
 		variables.localeCodesMap = {};
@@ -42,7 +45,7 @@
 			if (isNull(arguments.locale) || !isObject(arguments.locale)) {
 				// fallback on server default
 				arguments.locale = createObject("java", "java.util.Locale").getDefault();
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Failed to determine locale. Using default locale [" & arguments.locale.toString() & "].");
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Failed to determine locale. Using default locale [" & arguments.locale.toString() & "].");
 				variables.ESAPI.authenticator().getCurrentUser().setLocaleData(arguments.locale);
 			}
 

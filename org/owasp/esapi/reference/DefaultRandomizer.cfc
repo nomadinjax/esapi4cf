@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.Randomizer" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Randomizer interface. This implementation builds on the JCE provider to provide a cryptographically strong source of entropy. The specific algorithm used is configurable in ESAPI.properties.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The sr. */
@@ -43,7 +46,7 @@
 				// Can't throw an exception from the constructor, but this will get
 				// it logged and tracked
 				msgParams = [algorithm];
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Randomizer_init_invalidalgorithm_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Randomizer_init_invalidalgorithm_logMessage", msgParams), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Randomizer_init_invalidalgorithm_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Randomizer_init_invalidalgorithm_logMessage", msgParams), e));
 			}
 
 			return this;

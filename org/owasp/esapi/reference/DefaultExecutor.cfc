@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.Executor" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Executor interface. This implementation is very restrictive. Commands must exactly equal the canonical path to an executable on the system. Valid characters for parameters are codec dependent, but will usually only include alphanumeric, forward-slash, and dash.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The logger. */
@@ -54,17 +57,17 @@
 
 			try {
 				msgParams = [arguments.executable, arrayToList(arguments.params, " "), arguments.workdir];
-				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_initiating_message", msgParams));
+				variables.logger.warning(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_initiating_message", msgParams));
 
 				// command must exactly match the canonical path and must actually exist on the file system
 				// using equalsIgnoreCase for Windows, although this isn't quite as strong as it should be
 				if(!arguments.executable.getCanonicalPath().equalsIgnoreCase(arguments.executable.getPath())) {
 					msgParams = [arguments.executable];
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidPath_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidPath_logMessage", msgParams)));
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidPath_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidPath_logMessage", msgParams)));
 				}
 				if(!arguments.executable.exists()) {
 					msgParams = [arguments.executable];
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidInput_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidInput_logMessage", msgParams)));
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidInput_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidInput_logMessage", msgParams)));
 				}
 
 				// escape any special characters in the parameters
@@ -76,7 +79,7 @@
 				// working directory must exist
 				if(!arguments.workdir.exists()) {
 					msgParams = [arguments.workdir.getPath()];
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_directoryDoesNotExist_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_directoryDoesNotExist_logMessage", msgParams)));
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_directoryDoesNotExist_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_directoryDoesNotExist_logMessage", msgParams)));
 				}
 
 				arrayPrepend(arguments.params, arguments.executable.getCanonicalPath());
@@ -94,15 +97,15 @@
 				errors = readStream(process.getErrorStream());
 				if(errors != "" && errors.length() > 0) {
 					msgParams = [errors];
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_error_message", msgParams));
+					variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_error_message", msgParams));
 				}
 				msgParams = [arrayToList(arguments.params, " ")];
-				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_complete_message", msgParams));
+				variables.logger.warning(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_complete_message", msgParams));
 				return output;
 			}
 			catch(java.lang.Exception e) {
 				msgParams = [e.getMessage()];
-				throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_failure_logMessage", msgParams), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 

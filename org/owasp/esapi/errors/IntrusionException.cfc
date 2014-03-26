@@ -15,6 +15,9 @@
 <cfcomponent extends="org.owasp.esapi.util.RuntimeException" output="false" hint="An IntrusionException should be thrown anytime an error condition arises that is likely to be the result of an attack in progress. IntrusionExceptions are handled specially by the IntrusionDetector, which is equipped to respond by either specially logging the event, logging out the current user, or invalidating the current user's account. Unlike other exceptions in the ESAPI, the IntrusionException is a RuntimeException so that it can be thrown from anywhere and will not require a lot of special exception handling.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		/** The logger. */
 		variables.logger = "";
@@ -38,12 +41,12 @@
 			if(structKeyExists(arguments, "cause")) {
 				super.init(arguments.userMessage, arguments.cause);
 				variables.logMessage = arguments.logMessage;
-				variables.logger.error(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams), arguments.cause);
+				variables.logger.error(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams), arguments.cause);
 			}
 			else {
 				super.init(arguments.userMessage);
 				variables.logMessage = arguments.logMessage;
-				variables.logger.error(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams));
+				variables.logger.error(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams));
 			}
 
 			return this;

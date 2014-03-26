@@ -48,35 +48,14 @@
 		</form>
 		<cfif cgi.request_method EQ "post" AND structKeyExists(form, "file")>
 
-			<cffunction name="throwException">
-				<cfargument required="true" name="exception"/>
-
-				<cfif isInstanceOf(arguments.exception, "java.lang.Throwable")>
-					<cfthrow object="#arguments.exception#"/>
-				</cfif>
-			</cffunction>
-
 			<cfscript>
-
-				function getSecurity(type) {
-					var logger = createObject("java", "org.owasp.esapi.Logger");
-					// ESAPI 1.4.4
-					if(structKeyExists(logger, "SECURITY")) {
-						return logger.SECURITY;
-					}
-					// ESAPI 2.0+
-					else {
-						return logger[arguments.type];
-					}
-				}
-
 				ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("/test/resources/");
 
 				f = createObject("java", "java.io.File").init(form.file);
-				ESAPI.getLogger("EncryptedProperties.main").debug(getSecurityType("SECURITY_SUCCESS"), true, "Loading encrypted properties from " & f.getAbsolutePath());
+				ESAPI.getLogger("EncryptedProperties.main").debug(Utils.getSecurityType("SECURITY_SUCCESS"), true, "Loading encrypted properties from " & f.getAbsolutePath());
 				if(!f.exists())
-					throwException(createObject("java", "java.io.IOException").init("Properties file not found: " & f.getAbsolutePath()));
-				ESAPI.getLogger("EncryptedProperties.main").debug(getSecurityType("SECURITY_SUCCESS"), true, "Encrypted properties found in " & f.getAbsolutePath());
+					Utils.throwException(createObject("java", "java.io.IOException").init("Properties file not found: " & f.getAbsolutePath()));
+				ESAPI.getLogger("EncryptedProperties.main").debug(Utils.getSecurityType("SECURITY_SUCCESS"), true, "Encrypted properties found in " & f.getAbsolutePath());
 				ep = createObject("component", "DefaultEncryptedProperties").init(ESAPI);
 
 				fis = "";

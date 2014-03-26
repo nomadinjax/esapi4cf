@@ -15,6 +15,9 @@
 <cfcomponent extends="org.owasp.esapi.util.File" hint="Extension to java.io.File to prevent against null byte injections and other unforeseen problems resulting from unprintable characters causing problems in path lookups. This does _not_ prevent against directory traversal attacks.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		variables.PERCENTS_PAT = createObject("java", "java.util.regex.Pattern").compile("(%)([0-9a-fA-F])([0-9a-fA-F])");
@@ -54,19 +57,19 @@
 			m1 = variables.DIR_BLACKLIST_PAT.matcher(arguments.path);
 			if(m1.find()) {
 				msgParams = [arguments.path, m1.group()];
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_illegalChar_userMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_illegalChar_userMessage", msgParams)));
 			}
 
 			m2 = variables.PERCENTS_PAT.matcher(arguments.path);
 			if(m2.find()) {
 				msgParams = [arguments.path, m2.group()];
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_encodedChar_userMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_encodedChar_userMessage", msgParams)));
 			}
 
 			ch = containsUnprintableCharacters(arguments.path);
 			if(ch != -1) {
 				msgParams = [arguments.path, ch];
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_unprintableChar_userMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doDirCheck_unprintableChar_userMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -85,19 +88,19 @@
 			m1 = variables.FILE_BLACKLIST_PAT.matcher(arguments.path);
 			if(m1.find()) {
 				msgParams = [arguments.path, m1.group()];
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_illegalChar_userMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_illegalChar_userMessage", msgParams)));
 			}
 
 			m2 = variables.PERCENTS_PAT.matcher(arguments.path);
 			if(m2.find()) {
 				msgParams = [arguments.path, m2.group()];
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_encodedChar_userMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_encodedChar_userMessage", msgParams)));
 			}
 
 			ch = containsUnprintableCharacters(arguments.path);
 			if(ch != -1) {
 				msgParams = [arguments.path, ch];
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_unprintableChar_userMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("SafeFile_doFileCheck_unprintableChar_userMessage", msgParams)));
 			}
 		</cfscript>
 

@@ -15,7 +15,10 @@
 <cfcomponent extends="esapi4cf.test.unit.org.owasp.esapi.util.TestCase" output="false">
 
 	<cfscript>
-		clearUserFile();
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
+		Utils.clearUserFile();
 
 		variables.CLASS = getMetaData(this);
 		variables.CLASS_NAME = listLast(variables.CLASS.name, ".");

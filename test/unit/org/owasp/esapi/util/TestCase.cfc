@@ -24,20 +24,6 @@
 		System = createObject("java", "java.lang.System");
 	</cfscript>
 
-	<cffunction access="private" returntype="void" name="clearUserFile" output="false">
-		<!--- clear the User file to prep for tests --->
-
-		<cfscript>
-			var filePath = request.ESAPI.securityConfiguration().getResourceDirectory() & "users.txt";
-			var writer = "";
-			writer &= "## This is the user file associated with the ESAPI library from http://www.owasp.org" & chr(13) & chr(10);
-			writer &= "## accountName | hashedPassword | roles | locked | enabled | rememberToken | csrfToken | oldPasswordHashes | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount" & chr(13) & chr(10);
-			writer &= chr(13) & chr(10);
-		</cfscript>
-
-		<cffile action="write" file="#expandPath(filePath)#" output="#writer#"/>
-	</cffunction>
-
-	<cfinclude template="/org/owasp/esapi/util/utils.cfm"/>
+	<!---<cfinclude template="../backport/backport.cfm">--->
 
 </cfcomponent>

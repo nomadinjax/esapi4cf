@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.IntrusionDetector" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the IntrusionDetector interface. This implementation monitors EnterpriseSecurityExceptions to see if any user exceeds a configurable threshold in a configurable time period. For example, it can monitor to see if a user exceeds 10 input validation issues in a 1 minute period. Or if there are more than 3 authentication problems in a 10 second period. More complex implementations are certainly possible, such as one that establishes a baseline of expected behavior, and then detects deviations from that baseline.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		/** The logger. */
 		variables.logger = "";
@@ -51,10 +54,10 @@
 				return;
 
 			if(isInstanceOf(arguments.exception, "org.owasp.esapi.errors.EnterpriseSecurityException")) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, arguments.exception.getLogMessage(), arguments.exception);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, arguments.exception.getLogMessage(), arguments.exception);
 			}
 			else {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, arguments.exception.getMessage(), arguments.exception);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, arguments.exception.getMessage(), arguments.exception);
 			}
 
 			// add the exception to the current user, which may trigger a detector
@@ -99,7 +102,7 @@
 				return;
 
 			msgParams = [arguments.eventName, arguments.logMessage];
-			variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionDetector_addEvent_securityEvent_message", msgParams));
+			variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionDetector_addEvent_securityEvent_message", msgParams));
 
 			// add the event to the current user, which may trigger a detector
 			user = variables.ESAPI.authenticator().getCurrentUser();
@@ -134,7 +137,7 @@
 
 			if(arguments.action.equals("log")) {
 				msgParams = [arguments.message];
-				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams));
+				variables.logger.fatal(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams));
 			}
 			user = variables.ESAPI.authenticator().getCurrentUser();
 			if(isInstanceOf(user, "org.owasp.esapi.reference.AnonymousUser"))

@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.AccessReferenceMap" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the AccessReferenceMap interface. This implementation generates integers for indirect references.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The itod (indirect to direct) */
@@ -154,7 +157,7 @@
 			if(variables.itod.containsKey(arguments.indirectReference)) {
 				return variables.itod.get(arguments.indirectReference);
 			}
-			throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessReferenceMap_getDirectReference_invalid_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessReferenceMap_getDirectReference_invalid_logMessage", msgParams)));
+			Utils.throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessReferenceMap_getDirectReference_invalid_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessReferenceMap_getDirectReference_invalid_logMessage", msgParams)));
 		</cfscript>
 
 	</cffunction>

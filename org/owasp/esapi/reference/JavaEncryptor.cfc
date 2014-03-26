@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Encryptor interface. This implementation layers on the JCE provided cryptographic package. Algorithms used are configurable in the ESAPI.properties file.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The private key. */
@@ -113,7 +116,7 @@
 				return encoded;
 			}
 			catch(java.security.NoSuchAlgorithmException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_hashString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_hashString_failure_logMessage", msgParams), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_hashString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_hashString_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -139,7 +142,7 @@
 			}
 			catch(any e) {
 				msgParams = [e.getMessage()];
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_encryptString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_encryptString_failure_logMessage", msgParams), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_encryptString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_encryptString_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -165,7 +168,7 @@
 			}
 			catch(java.lang.Exception e) {
 				msgParams = [e.getMessage()];
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_decryptString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_decryptString_failure_logMessage", msgParams), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_decryptString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_decryptString_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -188,7 +191,7 @@
 				return variables.ESAPI.encoder().encodeForBase64(bytes, true);
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_sign_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_sign_failure_logMessage", msgParams), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_sign_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_sign_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -234,7 +237,7 @@
 				return this.encryptString(arguments.timestamp & ":" & random & ":" & arguments.data);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.IntegrityException").init(variables.ESAPI, e.message, e.detail, e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.IntegrityException").init(variables.ESAPI, e.message, e.detail, e));
 			}
 		</cfscript>
 
@@ -256,19 +259,19 @@
 				plaintext = decryptString(arguments.seal);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_decryption_logMessage"), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_decryption_logMessage"), e));
 			}
 
 			index = plaintext.indexOf(":");
 			if(index == -1) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_invalid_logMessage")));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_invalid_logMessage")));
 			}
 
 			timestring = plaintext.substring(0, index);
 			timestamp = now().getTime();
 			expiration = createObject("java", "java.lang.Long").init(timestring);
 			if(timestamp > expiration) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_expired_logMessage")));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_expired_logMessage")));
 			}
 
 			index = plaintext.indexOf(":", index + 1);

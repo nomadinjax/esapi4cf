@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object" output="false" hint="The ANONYMOUS user is used to represent an unidentified user. Since there is always a real user, the ANONYMOUS user is better than using null to represent this.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		variables.csrfToken = "";
 		variables.sessions = {};
@@ -412,7 +415,7 @@
 	<cffunction access="public" returntype="boolean" name="equals" output="false">
 	    <cfargument required="true" name="another"/>
 	    <cfscript>
-	    	return isObjectEquals(this, arguments.another);
+	    	return Utils.isObjectEquals(this, arguments.another);
 	    </cfscript>
 	</cffunction>
 	

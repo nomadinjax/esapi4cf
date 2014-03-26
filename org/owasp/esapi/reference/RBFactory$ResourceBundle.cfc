@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.ResourceBundle" extends="org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		variables.logger = "";
 		variables.resourceBundle = "";
@@ -29,7 +32,7 @@
 			variables.logger = variables.ESAPI.getLogger("ResourceBundle");
 
 			variables.resourceBundle = createObject("java", "java.util.ResourceBundle").getBundle("ESAPI-RB", arguments.locale);
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "ResourceBundle for [" & arguments.locale.toString() & "] locale loaded.");
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, "ResourceBundle for [" & arguments.locale.toString() & "] locale loaded.");
 
 			return this;
 		</cfscript>
@@ -52,7 +55,7 @@
 				return variables.resourceBundle.getString(arguments.key);
 			}
 			catch (java.util.MissingResourceException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Missing resource bundle for key: [" & arguments.key & "].");
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Missing resource bundle for key: [" & arguments.key & "].");
 				return "**" & arguments.key & "**";
 			}
 		</cfscript>

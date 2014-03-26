@@ -15,6 +15,9 @@
 <cfcomponent extends="org.owasp.esapi.util.Object" output="false">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		this.key = "";
@@ -61,7 +64,7 @@
 				nlong = timestamp.getTime();
 				if(nlong - plong < arguments.interval * 1000) {
 					msgParams = [this.key];
-					throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("IntrusionDetectorEvent_increment_thresholdExceeded_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("IntrusionDetectorEvent_increment_thresholdExceeded_logMessage", msgParams)));
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("IntrusionDetectorEvent_increment_thresholdExceeded_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("IntrusionDetectorEvent_increment_thresholdExceeded_logMessage", msgParams)));
 				}
 			}
 		</cfscript>

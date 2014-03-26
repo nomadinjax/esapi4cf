@@ -12,16 +12,17 @@
  * LICENSE before you use, modify, and/or redistribute this software.
  */
 --->
-<cfcomponent output="false">
 
-	<cffunction access="public" name="init" output="false" hint="Default constructor">
-
-		<cfscript>
-			return this;
-		</cfscript>
-
-	</cffunction>
-	
-	<!---<cfinclude template="../backport/backport.cfm">--->
-
-</cfcomponent>
+<!---
+	Method backport for older CFML versions.
+	Based upon technique from https://github.com/misterdai/cfbackport
+--->
+<cfif listFirst(server.ColdFusion.ProductName, " ") EQ "ColdFusion">
+	<cfinclude template="backport_railo.cfm" />
+	<cfif listFirst(server.ColdFusion.ProductVersion) LT 9>
+		<cfinclude template="backport_cf9.cfm" />
+	</cfif>
+	<cfif listFirst(server.ColdFusion.ProductVersion) LT 10>
+		<cfinclude template="backport_cf10.cfm" />
+	</cfif>
+</cfif>

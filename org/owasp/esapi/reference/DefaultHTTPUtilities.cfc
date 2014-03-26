@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the HTTPUtilities interface. This implementation uses the Apache Commons FileUploader library, which in turn uses the Apache Commons IO library. To simplify the interface, this class uses the current request and response that are tracked by ThreadLocal variables in the Authenticator. This means that you must have called ESAPI.authenticator().setCurrentHTTP(request, response) before calling these methods. Typically, this is done by calling the Authenticator.login() method, which calls setCurrentHTTP() automatically. However if you want to use these methods in another application, you should explicitly call setCurrentHTTP() in your own code.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		/** Key for remember token cookie */
 		this.REMEMBER_TOKEN_COOKIE_NAME = "ESAPIRememberToken";
 
@@ -144,12 +147,12 @@
 				httpCookie.setPath(arguments.path);
 				arguments.httpResponse.addCookie(httpCookie);
 				msgParams = [user.getAccountName()];
-				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_setRememberToken_enabled_message", msgParams));
+				variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_setRememberToken_enabled_message", msgParams));
 				return cryptToken;
 			}
 			catch(org.owasp.esapi.errors.IntegrityException e) {
 				msgParams = [user.getAccountName()];
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_setRememberToken_failure_message", msgParams), e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_setRememberToken_failure_message", msgParams), e);
 				return "";
 			}
 		</cfscript>
@@ -167,13 +170,13 @@
 			var msgParams = [];
 
 			if(!isSecureChannel(arguments.httpRequest)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_assertSecureRequest_invalidSSLRequest_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_assertSecureRequest_invalidSSLRequest_logMessage")));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_assertSecureRequest_invalidSSLRequest_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_assertSecureRequest_invalidSSLRequest_logMessage")));
 			}
 			receivedMethod = arguments.httpRequest.getMethod();
 			requiredMethod = "POST";
 			if(!receivedMethod.equals(requiredMethod)) {
 				msgParams = [receivedMethod, requiredMethod];
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_assertSecureRequest_invalidSSLRequest_userMessage"), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_assertSecureRequest_invalidHTTPRequest_logMessage")));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_assertSecureRequest_invalidSSLRequest_userMessage"), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_assertSecureRequest_invalidHTTPRequest_logMessage")));
 			}
 		</cfscript>
 
@@ -233,7 +236,7 @@
 				return;
 			}
 			if(arguments.httpRequest.getParameter(user.getCSRFToken()) == "") {
-				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_verifyCSRFToken_invalid_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_verifyCSRFToken_invalid_logMessage")));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_verifyCSRFToken_invalid_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_verifyCSRFToken_invalid_logMessage")));
 			}
 		</cfscript>
 
@@ -247,7 +250,7 @@
 				return variables.ESAPI.encryptor().decryptString(arguments.encrypted);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_decryptHiddenField_invalid_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_decryptHiddenField_invalid_logMessage"), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_decryptHiddenField_invalid_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_decryptHiddenField_invalid_logMessage"), e));
 			}
 		</cfscript>
 
@@ -369,20 +372,20 @@
 			if(!arguments.tempDir.exists()) {
 				if(!arguments.tempDir.mkdirs()) {
 					msgParams = [arguments.tempDir.getAbsolutePath()];
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_tempDirFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_tempDirFailure_logMessage", msgParams)));
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_tempDirFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_tempDirFailure_logMessage", msgParams)));
 				}
 			}
 			if(!arguments.finalDir.exists()) {
 				if(!arguments.finalDir.mkdirs()) {
 					msgParams = [arguments.finalDir.getAbsolutePath()];
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_finalDirFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_finalDirFailure_logMessage", msgParams)));
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_finalDirFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_finalDirFailure_logMessage", msgParams)));
 				}
 			}
 			newFiles = [];
 			try {
 				httpSession = arguments.httpRequest.getSession(false);
 				if(!createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload").isMultipartContent(arguments.httpRequest)) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_getSafeFileUploads_invalidMultipartContent_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_getSafeFileUploads_invalidMultipartContent_logMessage")));
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_getSafeFileUploads_invalidMultipartContent_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_getSafeFileUploads_invalidMultipartContent_logMessage")));
 				}
 
 				// this factory will store ALL files in the temp directory, regardless of size
@@ -422,7 +425,7 @@
 
 						if(!variables.ESAPI.validator().isValidFileName("upload", filename, false)) {
 							msgParams = [variables.ESAPI.securityConfiguration().getAllowedFileExtensions()];
-							throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_invalidFileName_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_invalidFileName_logMessage", msgParams)));
+							Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_invalidFileName_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_invalidFileName_logMessage", msgParams)));
 						}
 
 						msgParams = [filename];
@@ -451,10 +454,10 @@
 			}
 			catch(java.lang.Exception e) {
 				if(isInstanceOf(e, "org.owasp.esapi.errors.ValidationUploadException")) {
-					throwException(e);
+					Utils.throwException(e);
 				}
 				msgParams = [e.getMessage()];
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_failure_logMessage", msgParams), e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_failure_logMessage", msgParams), e));
 			}
 			return newFiles;
 		</cfscript>
@@ -568,7 +571,7 @@
 
 			if(!arguments.location.startsWith("WEB-INF")) {
 				msgParams = [arguments.location];
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_safeSendForward_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_safeSendForward_failure_logMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_safeSendForward_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_safeSendForward_failure_logMessage", msgParams)));
 			}
 			dispatcher = arguments.httpRequest.getRequestDispatcher(arguments.location);
 			dispatcher.forward(arguments.httpRequest, arguments.httpResponse);
@@ -703,7 +706,7 @@
 				}
 			}
 			msg = arguments.httpRequest.getMethod() & " " & arguments.httpRequest.getRequestURL() & iif(len(params.toString()) > 0, de("?" & params), de(""));
-			arguments.logger.info(getSecurityType("SECURITY_SUCCESS"), true, msg);
+			arguments.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, msg);
 			return msg;
 		</cfscript>
 

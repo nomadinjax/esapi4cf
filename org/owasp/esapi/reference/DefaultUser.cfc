@@ -15,6 +15,9 @@
 <cfcomponent implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the User interface. This implementation is serialized into a flat file in a simple format.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The idle timeout length specified in the ESAPI config file. */
@@ -115,10 +118,10 @@
 			var msgParams = [roleName, getAccountName()];
 			if(variables.ESAPI.validator().isValidInput("addRole", roleName, "RoleName", variables.MAX_ROLE_LENGTH, false)) {
 				variables.roles.add(roleName);
-				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_addRole_success_message", msgParams));
+				variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_addRole_success_message", msgParams));
 			}
 			else {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("User_addRole_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("User_addRole_failure_logMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("User_addRole_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("User_addRole_failure_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -155,7 +158,7 @@
 			var msgParams = [getAccountName()];
 
 			variables.enabled = false;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_disable_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_disable_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -166,7 +169,7 @@
 			var msgParams = [getAccountName()];
 
 			variables.enabled = true;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_enable_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_enable_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -330,7 +333,7 @@
 	<cffunction access="public" returntype="boolean" name="isEnabled" output="false">
 
 		<cfscript>
-			return getBoolean(variables.enabled);
+			return Utils.getBoolean(variables.enabled);
 		</cfscript>
 
 	</cffunction>
@@ -338,7 +341,7 @@
 	<cffunction access="public" returntype="boolean" name="isExpired" output="false">
 
 		<cfscript>
-			return getBoolean(getExpirationTime().before(now()));
+			return Utils.getBoolean(getExpirationTime().before(now()));
 
 			// If expiration should happen automatically or based on lastPasswordChangeTime?
 			//long from = lastPasswordChangeTime.getTime();
@@ -354,7 +357,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			return getBoolean(variables.roles.contains(arguments.role.toLowerCase()));
+			return Utils.getBoolean(variables.roles.contains(arguments.role.toLowerCase()));
 		</cfscript>
 
 	</cffunction>
@@ -362,7 +365,7 @@
 	<cffunction access="public" returntype="boolean" name="isLocked" output="false">
 
 		<cfscript>
-			return getBoolean(variables.locked);
+			return Utils.getBoolean(variables.locked);
 		</cfscript>
 
 	</cffunction>
@@ -370,7 +373,7 @@
 	<cffunction access="public" returntype="boolean" name="isLoggedIn" output="false">
 
 		<cfscript>
-			return getBoolean(variables.loggedIn);
+			return Utils.getBoolean(variables.loggedIn);
 		</cfscript>
 
 	</cffunction>
@@ -389,7 +392,7 @@
 				return true;
 			deadline = createObject("java", "java.util.Date").init(javaCast("long", httpSession.getCreationTime() + variables.ABSOLUTE_TIMEOUT_LENGTH));
 			timestamp = now();
-			return getBoolean(timestamp.after(deadline));
+			return Utils.getBoolean(timestamp.after(deadline));
 		</cfscript>
 
 	</cffunction>
@@ -408,7 +411,7 @@
 				return true;
 			deadline = createObject("java", "java.util.Date").init(javaCast("long", httpSession.getLastAccessedTime() + variables.IDLE_TIMEOUT_LENGTH));
 			timestamp = now();
-			return getBoolean(timestamp.after(deadline));
+			return Utils.getBoolean(timestamp.after(deadline));
 		</cfscript>
 
 	</cffunction>
@@ -419,7 +422,7 @@
 			var msgParams = [getAccountName()];
 
 			variables.locked = true;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_lock_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_lock_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -437,28 +440,28 @@
 			if(arguments.password == "" || arguments.password.equals("")) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_passwordValueMissing_logMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_passwordValueMissing_logMessage", msgParams)));
 			}
 
 			// don't let disabled users log in
 			if(!isEnabled()) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_disabledUserAttempt_logMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_disabledUserAttempt_logMessage", msgParams)));
 			}
 
 			// don't let locked users log in
 			if(isLocked()) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_lockedUserAttempt_logMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_lockedUserAttempt_logMessage", msgParams)));
 			}
 
 			// don't let expired users log in
 			if(isExpired()) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_expiredUserAttempt_logMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_expiredUserAttempt_logMessage", msgParams)));
 			}
 
 			logout(arguments.httpRequest, arguments.httpResponse);
@@ -471,7 +474,7 @@
 				remoteHost = arguments.httpRequest.getRemoteHost();
 				if (isNull(remoteHost)) remoteHost = "";
 				setLastHostAddress(remoteHost);
-				variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_success_message", msgParams));
+				variables.logger.trace(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_success_message", msgParams));
 			}
 			else {
 				variables.loggedIn = false;
@@ -480,7 +483,7 @@
 				if(getFailedLoginCount() >= variables.ESAPI.securityConfiguration().getAllowedLoginAttempts()) {
 					this.lock();
 				}
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_passwordInvalid_logMessage", msgParams)));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_passwordInvalid_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -503,7 +506,7 @@
 			}
 			variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, "JSESSIONID");
 			variables.loggedIn = false;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().getString("User_logout_success_message"));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().getString("User_logout_success_message"));
 			variables.ESAPI.authenticator().setCurrentUser(variables.ESAPI.authenticator().getAnonymousUserInstance());
 		</cfscript>
 
@@ -516,7 +519,7 @@
 			var msgParams = [arguments.role, getAccountName()];
 
 			variables.roles.remove(arguments.role.toLowerCase());
-			variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_removeRole_success_message", msgParams));
+			variables.logger.trace(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_removeRole_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -552,7 +555,7 @@
 			variables.accountName = arguments.accountName.toLowerCase();
 			if(old != "") {
 				msgParams = [old, getAccountName()];
-				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setAccountName_success_message", msgParams));
+				variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setAccountName_success_message", msgParams));
 			}
 		</cfscript>
 
@@ -565,7 +568,7 @@
 			var msgParams = [arguments.expirationTime, getAccountName()];
 
 			variables.expirationTime = createObject("java", "java.util.Date").init(javaCast("long", arguments.expirationTime.getTime()));
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setExpirationTime_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setExpirationTime_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -577,7 +580,7 @@
 			var msgParams = [arguments.lastFailedLoginTime, getAccountName()];
 
 			variables.lastFailedLoginTime = arguments.lastFailedLoginTime;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastFailedLoginTime_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastFailedLoginTime_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -605,7 +608,7 @@
 			var msgParams = [arguments.lastLoginTime, getAccountName()];
 
 			variables.lastLoginTime = arguments.lastLoginTime;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastLoginTime_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastLoginTime_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -617,7 +620,7 @@
 			var msgParams = [arguments.lastPasswordChangeTime, getAccountName()];
 
 			variables.lastPasswordChangeTime = arguments.lastPasswordChangeTime;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastPasswordChangeTime_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastPasswordChangeTime_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -630,7 +633,7 @@
 
 			variables.roles = [];
 			addRoles(arguments.roles);
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setRoles_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setRoles_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -642,7 +645,7 @@
 			var msgParams = [arguments.screenName, getAccountName()];
 
 			variables.screenName = arguments.screenName;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setScreenName_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setScreenName_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -662,7 +665,7 @@
 
 			variables.locked = false;
 			variables.failedLoginCount = 0;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_unlock_success_message", msgParams));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_unlock_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -671,7 +674,7 @@
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			return getBoolean(variables.ESAPI.authenticator().verifyPassword(this, arguments.password));
+			return Utils.getBoolean(variables.ESAPI.authenticator().verifyPassword(this, arguments.password));
 		</cfscript>
 
 	</cffunction>
@@ -687,7 +690,7 @@
 	<cffunction access="public" returntype="boolean" name="equals" output="false">
 	    <cfargument required="true" name="another"/>
 	    <cfscript>
-	    	return isObjectEquals(this, arguments.another);
+	    	return Utils.isObjectEquals(this, arguments.another);
 	    </cfscript>
 	</cffunction>
 
