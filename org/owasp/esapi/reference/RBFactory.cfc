@@ -45,7 +45,7 @@
 			if (isNull(arguments.locale) || !isObject(arguments.locale)) {
 				// fallback on server default
 				arguments.locale = createObject("java", "java.util.Locale").getDefault();
-				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Failed to determine locale. Using default locale [" & arguments.locale.toString() & "].");
+				variables.logger.info(Utils.getSecurityType("SECURITY_FAILURE"), false, "Failed to determine locale. Using default locale [" & arguments.locale.toString() & "].");
 				variables.ESAPI.authenticator().getCurrentUser().setLocaleData(arguments.locale);
 			}
 
