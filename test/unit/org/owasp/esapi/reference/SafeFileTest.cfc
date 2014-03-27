@@ -98,9 +98,9 @@
 
 			for(i = variables.GOOD_FILE_CHARS.iterator();i.hasNext();) {
 				ch = i.next().toString();	// avoids generic issues in 1.4&1.5
-				sf = createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch);
+				sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testDir, child=variables.TEST_FILE_NAME & ch);
 				assertTrue(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should exist (ch=' & ch.charAt(0) & ').');
-				sf = createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch & "test");
+				sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testDir, child=variables.TEST_FILE_NAME & ch & "test");
 				assertTrue(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should exist (ch=' & ch.charAt(0) & ').');
 			}
 		</cfscript>
@@ -179,7 +179,7 @@
 			var sf = "";
 
 			try {
-				sf = createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ":secret.txt");
+				sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testDir, child=variables.TEST_FILE_NAME & ":secret.txt");
 				fail("Able to construct SafeFile for alternate data stream: " & sf.getPath());
 			}
 			catch(org.owasp.esapi.errors.ValidationException expected) { }
@@ -199,7 +199,7 @@
 
 	<cffunction access="public" returntype="void" name="testCreatePath" output="false">
 		<cfscript>
-			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testFile.getPath());
+			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, path=variables.testFile.getPath());
 			assertTrue(sf.exists());
 		</cfscript>
 	</cffunction>
@@ -207,7 +207,7 @@
 
 	<cffunction access="public" returntype="void" name="testCreateParentPathName" output="false">
 		<cfscript>
-			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir, variables.testFile.getName());
+			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testDir, child=variables.testFile.getName());
 			assertTrue(sf.exists());
 		</cfscript>
 	</cffunction>
@@ -215,7 +215,7 @@
 
 	<cffunction access="public" returntype="void" name="testCreateParentFileName" output="false">
 		<cfscript>
-			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testFile.getParentFile(), variables.testFile.getName());
+			var sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testFile.getParentFile(), child=variables.testFile.getName());
 			assertTrue(sf.exists());
 		</cfscript>
 	</cffunction>
@@ -232,7 +232,7 @@
 	<cffunction access="public" returntype="void" name="testCreateFileNamePercentNull" output="false">
 		<cfscript>
 			try {
-				createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir & createObject("java", "java.io.File").separator & "file%00.txt");
+				createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, path=variables.testDir & createObject("java", "java.io.File").separator & "file%00.txt");
 				fail("no exception thrown for file name with percent encoded null");
 			}
 			catch(org.owasp.esapi.errors.ValidationException expected) {
@@ -244,7 +244,7 @@
 	<cffunction access="public" returntype="void" name="testCreateFileNameQuestion" output="false">
 		<cfscript>
 			try {
-				createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testFile.getParent() & createObject("java", "java.io.File").separator & "file?.txt");
+				createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, path=variables.testFile.getParent() & createObject("java", "java.io.File").separator & "file?.txt");
 				fail("no exception thrown for file name with question mark in it");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
@@ -258,8 +258,8 @@
 			var path = variables.testFile.getParent() & createObject("java", "java.io.File").separator;
 			try {
 				// CF seems to ignore the 'null' in strings so let's test to ensure this is always the case moving forward
-				assertEquals(path & "file.txt", createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, path & "file" & chr(0) & ".txt").getPath());
-				assertEquals(path & "file.txt", createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, path & "file" & javaCast("null", "") & ".txt").getPath());
+				assertEquals(path & "file.txt", createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, path=path & "file" & chr(0) & ".txt").getPath());
+				assertEquals(path & "file.txt", createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, path=path & "file" & javaCast("null", "") & ".txt").getPath());
 				//fail("no exception thrown for file name with null in it");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
@@ -272,7 +272,7 @@
 		<cfscript>
 			try
 			{
-				createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testFile.getParent() & createObject("java", "java.io.File").separator & "file" & chr(160) & ".txt");
+				createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, path=variables.testFile.getParent() & createObject("java", "java.io.File").separator & "file" & chr(160) & ".txt");
 				fail("no exception thrown for file name with high byte in it");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e)
@@ -287,7 +287,7 @@
 		<cfscript>
 			try
 			{
-				createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testFile.getParent() & createObject("java", "java.io.File").separator & "file%00.txt");
+				createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, path=variables.testFile.getParent() & createObject("java", "java.io.File").separator & "file%00.txt");
 				fail("no exception thrown for file name with percent encoded null");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e)
