@@ -116,12 +116,12 @@
 			for(i = variables.BAD_FILE_CHARS.iterator();i.hasNext();) {
 				ch = i.next().toString();	// avoids generic issues in 1.4&1.5
 				try {
-					createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch);
+					createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testDir, child=variables.TEST_FILE_NAME & ch);
 					fail('Able to create SafeFile "' & variables.TEST_FILE_NAME & ch & '" (ch=' & ch.charAt(0) & ').');
 				}
 				catch(org.owasp.esapi.errors.ValidationException expected) { }
 				try {
-					createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch  & "test");
+					createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testDir, child=variables.TEST_FILE_NAME & ch  & "test");
 					fail('Able to create SafeFile "' & variables.TEST_FILE_NAME & ch & '" (ch=' & ch.charAt(0) & ').');
 				}
 				catch(org.owasp.esapi.errors.ValidationException expected) { }
