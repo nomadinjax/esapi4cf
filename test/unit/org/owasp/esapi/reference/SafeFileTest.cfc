@@ -140,9 +140,9 @@
 			for(i=variables.GOOD_FILE_CHARS.iterator();i.hasNext();) {
 				ch = i.next().toString();	// avoids generic issues in 1.4&1.5
 				ch = ch & ch & ch;
-				sf = createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch);
+				sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testDir, child=variables.TEST_FILE_NAME & ch);
 				assertFalse(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should not exist (ch=' & ch.charAt(0) & ').');
-				sf = createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testDir, variables.TEST_FILE_NAME & ch & "test");
+				sf = createObject("component", "org.owasp.esapi.SafeFile").init(ESAPI=request.ESAPI, parent=variables.testDir, child=variables.TEST_FILE_NAME & ch & "test");
 				assertFalse(sf.exists(), 'File "' & variables.TEST_FILE_NAME & ch & '" should not exist (ch=' & ch.charAt(0) & ').');
 			}
 		</cfscript>
