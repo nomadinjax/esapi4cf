@@ -21,7 +21,7 @@
 		variables.ESAPI = "";
 
 		variables.PERCENTS_PAT = createObject("java", "java.util.regex.Pattern").compile("(%)([0-9a-fA-F])([0-9a-fA-F])");
-		variables.FILE_BLACKLIST_PAT = createObject("java", "java.util.regex.Pattern").compile("([\\\\/:*?<>|])");
+		variables.FILE_BLACKLIST_PAT = createObject("java", "java.util.regex.Pattern").compile("([\\\\/:*?<>|])");	// Windows blacklist: \ / : * ? " < > |
 		variables.DIR_BLACKLIST_PAT = createObject("java", "java.util.regex.Pattern").compile("([*?<>|])");
 	</cfscript>
 
