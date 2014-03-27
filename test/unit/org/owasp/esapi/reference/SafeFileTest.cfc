@@ -256,12 +256,15 @@
 
 	<cffunction access="public" returntype="void" name="testCreateFileNameNull" output="false">
 		<cfscript>
+			var path = variables.testFile.getParent() & createObject("java", "java.io.File").separator;
 			try {
-				createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, variables.testFile.getParent() & createObject("java", "java.io.File").separator & "file" & chr(0) & ".txt");
-				fail("no exception thrown for file name with null in it");
+				// CF seems to ignore the 'null' in strings so let's test to ensure this is always the case moving forward
+				assertEquals(path & "file.txt", createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, path & "file" & chr(0) & ".txt").getPath());
+				assertEquals(path & "file.txt", createObject("component", "org.owasp.esapi.SafeFile").init(request.ESAPI, path & "file" & javaCast("null", "") & ".txt").getPath());
+				//fail("no exception thrown for file name with null in it");
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				// expected
+				fail("file name has null in it");
 			}
 		</cfscript>
 	</cffunction>
