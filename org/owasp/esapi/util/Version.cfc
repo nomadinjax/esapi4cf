@@ -14,6 +14,27 @@
 --->
 <cfcomponent extends="Object" output="false" hint="Contains version information about the library.">
 
+	<cffunction access="public" returntype="String" name="getCFMLEngine" output="false">
+		<cfscript>
+			return listFirst(server.ColdFusion.ProductName, " ");
+		</cfscript>
+	</cffunction>
+
+	<cffunction access="public" returntype="String" name="getCFMLVersion" output="false">
+		<cfscript>
+			if (structKeyExists(server, "railo")) {
+				return server.railo.version;
+			}
+			return server.ColdFusion.ProductVersion;
+		</cfscript>
+	</cffunction>
+
+	<cffunction access="public" returntype="String" name="getJVMVersion" output="false">
+		<cfscript>
+			return createObject("java", "java.lang.System").getProperty("java.version");
+		</cfscript>
+	</cffunction>
+
 	<cffunction access="public" returntype="String" name="getESAPI4CFName" output="false">
 		<cfscript>
 			return "ESAPI4CF";

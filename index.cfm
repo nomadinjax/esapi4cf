@@ -15,10 +15,26 @@
 <cfscript>
 	Version = createObject("component", "org.owasp.esapi.util.Version");
 
-	serverVersion = "CF " & server.coldfusion.ProductVersion;
-	if(structKeyExists(server, "railo")) {
-		serverVersion = "Railo " & server.railo.version;
-	}
+	// NOTE: maintain this list with each release
+	versionData = {};
+	versionData["railo4"] = {
+		jvm = "1.7.0_51",
+		engine = "4.1.2.005"
+	};
+	versionData["coldfusion10"] = {
+		jvm = "1.7.0_51",
+		engine = "10,0,13,287689"
+	};
+	versionData["coldfusion9"] = {
+		jvm = "1.7.0_51",
+		engine = "9,0,2,282541"
+	};
+	versionData["coldfusion8"] = {
+		jvm = "1.6.0_45",
+		engine = "8,0,1,????"
+	};
+
+	thisVersion = Version.getCFMLEngine() & listFirst(Version.getCFMLVersion(), ",.");
 </cfscript>
 
 <cfoutput>
@@ -26,7 +42,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>#Version.getESAPI4CFName()# #Version.getESAPI4CFVersion()# [#serverVersion#]</title>
+<title>#Version.getESAPI4CFName()# #Version.getESAPI4CFVersion()# [#Version.getCFMLEngine()# #Version.getCFMLVersion()#]</title>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 </head>
 <body>
@@ -46,25 +62,34 @@
 			<h2>Release Notes</h2>
 			<p>Information on bug fixes and improvements for each release are available here: <a href="https://github.com/damonmiller/esapi4cf/releases">https://github.com/damonmiller/esapi4cf/releases</a></p>
 
+			<h2>Issues</h2>
+			<p>You can find known issues or report new issues here: <a href="https://github.com/damonmiller/esapi4cf/issues">https://github.com/damonmiller/esapi4cf/issues</a></p>
+
 		</div>
 		<div class="col-md-4">
 
 			<div class="panel panel-success">
 				<div class="panel-heading"><h4>Under The Hood...</h4></div>
 				<div class="panel-body">
-					<ul class="list-unstyled">
-						<li><strong>CFML Server:</strong> #serverVersion#</li>
-						<li><strong>#Version.getESAPI4CFName()# Version:</strong> #Version.getESAPI4CFVersion()#</li>
-						<li><strong>ESAPI4J Version:</strong> #Version.getESAPI4JVersion()#</li>
+					<ul class="list-group">
+						<li class="list-group-item"><strong>#Version.getESAPI4CFName()# Version:</strong> #Version.getESAPI4CFVersion()#</li>
+						<li class="list-group-item"><strong>ESAPI4J Version:</strong> #Version.getESAPI4JVersion()#</li>
+						<cfif versionData[thisVersion].engine NEQ Version.getCFMLVersion()>
+							<li class="list-group-item list-group-item-danger"><strong>CFML Server:</strong> #Version.getCFMLEngine()# #Version.getCFMLVersion()# <span class="glyphicon glyphicon-exclamation-sign" title="Recommend updating server to #versionData[thisVersion].engine#"></span></li>
+						<cfelse>
+							<li class="list-group-item"><strong>CFML Server:</strong> #Version.getCFMLEngine()# #Version.getCFMLVersion()#</li>
+						</cfif>
+						<cfif versionData[thisVersion].jvm NEQ Version.getJVMVersion()>
+							<li class="list-group-item list-group-item-danger"><strong>JVM Version:</strong> #Version.getJVMVersion()# <span class="glyphicon glyphicon-exclamation-sign" title="Recommend updating JVM to #versionData[thisVersion].jvm#"></span></li>
+						<cfelse>
+							<li class="list-group-item"><strong>JVM Version:</strong> #Version.getJVMVersion()#</li>
+						</cfif>
 					</ul>
 				</div>
 			</div>
 
 		</div>
 	</div>
-
-	<h2>Issues</h2>
-	<p>You can find known issues or report new issues here: <a href="https://github.com/damonmiller/esapi4cf/issues">https://github.com/damonmiller/esapi4cf/issues</a></p>
 
 	<h2>Demos</h2>
 	<dl>
@@ -84,13 +109,17 @@
 			<div class="form-group">
 				<label class="control-label" for="engine">CFML Engine</label>
 				<select class="form-control" id="engine" name="engine">
-					<option value="railo">Railo</option>
+					<option value="railo"<cfif Version.getCFMLEngine() EQ "railo"> selected="selected"</cfif>>Railo</option>
+					<option value="cf10"<cfif Version.getCFMLEngine() EQ "coldfusion" AND listFirst(Version.getCFMLVersion()) EQ 10> selected="selected"</cfif>>ColdFusion 10</option>
+					<option value="cf9"<cfif Version.getCFMLEngine() EQ "coldfusion" AND listFirst(Version.getCFMLVersion()) EQ 9> selected="selected"</cfif>>ColdFusion 9</option>
+					<option value="cf8"<cfif Version.getCFMLEngine() EQ "coldfusion" AND listFirst(Version.getCFMLVersion()) EQ 8> selected="selected"</cfif>>ColdFusion 8</option>
 				</select>
 			</div>
 			<div class="form-group">
 				<label class="control-label" for="browser">Browser</label>
 				<select class="form-control" id="browser" name="browser">
 					<option value="chrome">Chrome</option>
+					<option value="firefox">Firefox</option>
 				</select>
 			</div>
 			<button type="submit" class="btn btn-primary">Run Test</button>

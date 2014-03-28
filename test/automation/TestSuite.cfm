@@ -14,10 +14,6 @@
 --->
 <cfsetting requesttimeout="120">
 <cfscript>
-	serverVersion = "CF " & server.coldfusion.ProductVersion;
-	if(structKeyExists(server, "railo")) {
-		serverVersion = "Railo " & server.railo.version;
-	}
 	Version = createObject("component", "org.owasp.esapi.util.Version");
 
 	results = createObject("component", "mxunit.runner.DirectoryTestSuite").run(directory=expandPath("."), componentPath="esapi4cf.test.automation", recurse=true, excludes="esapi4cf.test.automation.org.owasp.esapi.util.TestCase");
@@ -26,10 +22,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Automation | #Version.getESAPI4CFName()# #Version.getESAPI4CFVersion()# [#serverVersion#]</title>
+<title>Automation | #Version.getESAPI4CFName()# #Version.getESAPI4CFVersion()# [#Version.getCFMLEngine()# #Version.getCFMLVersion()#]</title>
 </head>
 <body>
-<h1>Automation | #Version.getESAPI4CFName()# #Version.getESAPI4CFVersion()# [#serverVersion#]</h1>
+<h1>Automation | #Version.getESAPI4CFName()# #Version.getESAPI4CFVersion()# [#Version.getCFMLEngine()# #Version.getCFMLVersion()#]</h1>
 #results.getResultsOutput("html")#
 </body>
 </html>
