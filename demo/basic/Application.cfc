@@ -17,7 +17,7 @@
 	<cfscript>
 		// you should always name your application
 		// ESAPI4CF needs a name for logging
-		this.name = "ESAPI-Demo-KitchenSink";
+		this.name = "ESAPI-Demo-Basic";
 		this.clientManagement = false;
 		this.setClientCookies = false;
 
