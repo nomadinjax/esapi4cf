@@ -40,6 +40,9 @@
 			// so you would have to move this to the appropriate location
 			application.ESAPI = createObject("component", "org.owasp.esapi.ESAPI").init("/esapi4cf/demo/basic/WEB-INF/esapi-resources/");
 
+			// utility function for ESAPI
+			application.ESAPIUtils = createObject("component", "org.owasp.esapi.util.Utils");
+
 			// define an application specific logger instance
 			// you can use this to log custom errors to the ESAPI4CF Logger at any place throughout your application
 			application.ESAPILogger = application.ESAPI.getLogger(application.applicationName & "-Logger");
@@ -137,7 +140,7 @@
 				application.ESAPI.httpUtilities().setNoCacheHeaders(httpResponse);
 			}
 			catch(Any e) {
-				application.ESAPILogger.error(application.ESAPILogger.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF setupRequest: " & e.message, e);
+				application.ESAPILogger.error(application.ESAPIUtils.getSecurityType("SECURITY_FAILURE"), false, "Error in ESAPI4CF setupRequest: " & e.message, e);
 				// let's rethrow this error so your global error handler catches it if you have one
 				// not sure why throw chokes on 'Expression'
 				if (e.type == "Expression") {
@@ -184,7 +187,7 @@
 			return true;
 		</cfscript>
 	</cffunction>
-	
+
 	<cffunction returntype="boolean" name="isLoginAttempt" output="false">
 		<cfscript>
 			var httpRequest = application.ESAPI.currentRequest();
@@ -192,7 +195,7 @@
 			if (httpRequest.getMethod() == "POST" && arrayFind(params, application.ESAPI.securityConfiguration().getUsernameParameterName()) && arrayFind(params, application.ESAPI.securityConfiguration().getPasswordParameterName())) {
 				return true;
 			}
-			
+
 			return false;
 		</cfscript>
 	</cffunction>
