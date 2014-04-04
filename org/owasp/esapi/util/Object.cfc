@@ -21,7 +21,7 @@
 		</cfscript>
 
 	</cffunction>
-	
-	<!---<cfinclude template="../backport/backport.cfm">--->
+
+	<cfinclude template="../backport/backport.cfm">
 
 </cfcomponent>
