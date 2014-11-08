@@ -1,23 +1,23 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.AccessReferenceMap" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the AccessReferenceMap interface. This implementation generates integers for indirect references.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The itod (indirect to direct) */
@@ -29,7 +29,7 @@
 		variables.count = 1;
 	</cfscript>
 
-	<cffunction access="public" returntype="IntegerAccessReferenceMap" name="init" output="false"
+	<cffunction access="public" returntype="org.owasp.esapi.AccessReferenceMap" name="init" output="false"
 	            hint="This AccessReferenceMap implementation uses integers to create a layer of indirection.">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument type="Array" name="directReferences" hint="Instantiates a new access reference map with a set of direct references."/>
@@ -50,7 +50,7 @@
 	<cffunction access="public" name="iterator" output="false">
 
 		<cfscript>
-			var sorted = newJava("java.util.TreeSet").init(variables.dtoi.keySet());
+			var sorted = createObject("java", "java.util.TreeSet").init(variables.dtoi.keySet());
 			return sorted.iterator();
 		</cfscript>
 
@@ -152,10 +152,12 @@
 		<cfargument required="true" type="String" name="indirectReference"/>
 
 		<cfscript>
+			var msgParams = [arguments.indirectReference];
+
 			if(variables.itod.containsKey(arguments.indirectReference)) {
 				return variables.itod.get(arguments.indirectReference);
 			}
-			throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Access denied", "Request for invalid indirect reference: " & arguments.indirectReference));
+			Utils.throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("AccessReferenceMap_getDirectReference_invalid_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("AccessReferenceMap_getDirectReference_invalid_logMessage", msgParams)));
 		</cfscript>
 
 	</cffunction>

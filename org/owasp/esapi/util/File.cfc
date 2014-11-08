@@ -1,23 +1,23 @@
 ﻿<!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent extends="Object" output="false">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.File = "";
 	</cfscript>
 
@@ -29,16 +29,16 @@
 
 		<cfscript>
 			if(structKeyExists(arguments, "path") && !isNull(arguments.path)) {
-				variables.File = newJava("java.io.File").init(javaCast("string", arguments.path));
+				variables.File = createObject("java", "java.io.File").init(javaCast("string", arguments.path));
 			}
 			else if(structKeyExists(arguments, "parent") && !isNull(arguments.parent) && structKeyExists(arguments, "child") && !isNull(arguments.child)) {
-				variables.File = newJava("java.io.File").init(arguments.parent, javaCast("string", arguments.child));
+				variables.File = createObject("java", "java.io.File").init(arguments.parent, javaCast("string", arguments.child));
 			}
 			else if(structKeyExists(arguments, "uri") && !isNull(arguments.uri)) {
-				variables.File = newJava("java.io.File").init(arguments.uri);
+				variables.File = createObject("java", "java.io.File").init(arguments.uri);
 			}
 			else {
-				throwException(newJava("IOException").init("Invalid File Instantiation.", "You must provide either a path, a parent and child, or a uri."));
+				Utils.throwException(createObject("java", "IOException").init("Invalid File Instantiation.", "You must provide either a path, a parent and child, or a uri."));
 			}
 
 			return this;
@@ -327,14 +327,13 @@
 
 	</cffunction>
 
-	<!--- FIXME: CF8 conflict
-	<cffunction access="public" returntype="String" name="toString" output="false">
+	<cffunction access="public" returntype="String" name="toStringData" output="false">
 
 		<cfscript>
 			return variables.File.toString();
 		</cfscript>
 
-	</cffunction> --->
+	</cffunction>
 
 	<cffunction access="public" name="toURI" output="false">
 

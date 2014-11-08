@@ -1,18 +1,15 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.util.HttpSession" extends="org.owasp.esapi.util.Object" output="false">
@@ -40,36 +37,27 @@
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
-			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
-			var cfSession = "";
-			if(applicationName != "") {
-				cfSession = variables.httpSession.getAttribute(applicationName);
-				if(isDefined("cfSession") && !isNull(cfSession) && isStruct(cfSession) && structKeyExists(cfSession, lCase(arguments.name))) {
-					return cfSession[lCase(arguments.name)];
+			var cfSession = getCFSession();
+			if(!isNull(cfSession)) {
+				if(isDefined("cfSession") && !isNull(cfSession) && isStruct(cfSession) && structKeyExists(cfSession, arguments.name)) {
+					return cfSession[arguments.name];
 				}
 			}
-			else {
-				return variables.httpSession.getAttribute(javaCast("string", arguments.name));
-			}
-			return "";
+			return variables.httpSession.getAttribute(javaCast("string", arguments.name));
 		</cfscript>
 
 	</cffunction>
 
-	<cffunction access="public" returntype="Array" name="getAttributeNames" output="false">
+	<cffunction access="public" name="getAttributeNames" output="false">
 
 		<cfscript>
-			var ret = [];
-			var atts = variables.httpSession.getAttributeNames();
-			if(isArray(atts)) {
-				ret = atts;
-			}
-			else if(isDefined("atts") && !isNull(atts)) {
-				while(atts.hasMoreElements()) {
-					arrayAppend(ret, atts.nextElement());
+			var cfSession = getCFSession();
+			if(!isNull(cfSession)) {
+				if(isDefined("cfSession") && !isNull(cfSession) && isStruct(cfSession)) {
+					return createObject("java", "java.util.Collections").enumeration(createObject("java", "java.util.ArrayList").init(listToArray(structKeyList(cfSession))));
 				}
 			}
-			return ret;
+			return variables.httpSession.getAttributeNames();
 		</cfscript>
 
 	</cffunction>
@@ -126,7 +114,7 @@
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
-			return variables.httpSession.getValue(javaCast("string", arguments.name));
+			return this.getAttribute(arguments.name);
 		</cfscript>
 
 	</cffunction>
@@ -135,7 +123,7 @@
 	            hint="Deprecated in favor of getAttributeNames().">
 
 		<cfscript>
-			return variables.httpSession.getValueNames();
+			return this.getAttributeNames();
 		</cfscript>
 
 	</cffunction>
@@ -162,6 +150,7 @@
 			*     http://stackoverflow.com/questions/3686116/invalidate-session-how-to-use-correctly
 			*     http://www.bennadel.com/blog/1847-Explicitly-Ending-A-ColdFusion-Session.htm
 			*     https://github.com/misterdai/cfbackport/blob/master/cf10.cfm#SessionInvalidate
+			*     http://www.petefreitag.com/item/829.cfm
 			*
 			* Possibilities?
 			*     structClear(varivariables.httpSessionlicationName]);
@@ -171,16 +160,11 @@
 			*
 			* CF10 has a sessionInvalidate() method.  Will this work and can we mimic this in CF8/9?
 			*/
-			//sessionInvalidate();
-			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
-			var cfSession = "";
+
 			// this technique will not harm session state for other CF applications
-			if(applicationName != "") {
-				cfSession = variables.httpSession.getAttribute(applicationName);
-				// Railo sessions are empty unless you have explicitly set session vars so check for it first
-				if(isDefined("cfSession") && !isNull(cfSession)) {
-					structClear(cfSession);
-				}
+			var cfSession = getCFSession();
+			if(isDefined("cfSession") && !isNull(cfSession) && isStruct(cfSession)) {
+				structClear(cfSession);
 			}
 			else {
 				structClear(variables.httpSession);
@@ -203,7 +187,7 @@
 		<cfargument required="true" name="value"/>
 
 		<cfscript>
-			return variables.httpSession.putValue(javaCast("string", arguments.name), arguments.value);
+			this.setAttribute(arguments.name, arguments.value);
 		</cfscript>
 
 	</cffunction>
@@ -212,7 +196,13 @@
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
-			return variables.httpSession.removeAttribute(javaCast("string", arguments.name));
+			var cfSession = getCFSession();
+			if(isDefined("cfSession") && !isNull(cfSession) && isStruct(cfSession)) {
+				structDelete(cfSession, lCase(arguments.name));
+			}
+			else {
+				variables.httpSession.removeAttribute(javaCast("string", arguments.name));
+			}
 		</cfscript>
 
 	</cffunction>
@@ -222,7 +212,7 @@
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
-			return variables.httpSession.removeValue(javaCast("string", arguments.name));
+			this.removeAttribute(arguments.name);
 		</cfscript>
 
 	</cffunction>
@@ -234,13 +224,13 @@
 		<cfscript>
 			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
 			var cfSession = "";
-			if(applicationName != "") {
-				cfSession = variables.httpSession.getAttribute(applicationName);
+			if (applicationName != "") {
+				cfSession = getCFSession();
 				if(!(isDefined("cfSession") && !isNull(cfSession) && isStruct(cfSession))) {
 					variables.httpSession.setAttribute(applicationName, structNew());
 					cfSession = variables.httpSession.getAttribute(applicationName);
 				}
-				cfSession[lCase(arguments.name)] = arguments.value;
+				cfSession[arguments.name] = arguments.value;
 			}
 			else {
 				variables.httpSession.setAttribute(javaCast("string", arguments.name), arguments.value);
@@ -253,9 +243,18 @@
 		<cfargument required="true" type="numeric" name="interval"/>
 
 		<cfscript>
-			return variables.httpSession.setMaxInactiveInterval(javaCast("int", arguments.interval));
+			variables.httpSession.setMaxInactiveInterval(javaCast("int", arguments.interval));
 		</cfscript>
 
+	</cffunction>
+
+	<cffunction access="private" name="getCFSession" output="false">
+		<cfscript>
+			var applicationName = variables.ESAPI.httpUtilities().getApplicationName();
+			if (applicationName != "") {
+				return variables.httpSession.getAttribute(applicationName);
+			}
+		</cfscript>
 	</cffunction>
 
 </cfcomponent>

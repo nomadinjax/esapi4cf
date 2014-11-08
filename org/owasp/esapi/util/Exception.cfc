@@ -1,18 +1,15 @@
 ﻿<!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent extends="Object" output="false">
@@ -32,23 +29,23 @@
 				if(structKeyExists(arguments, "cause") && !isNull(arguments.cause) && isObject(arguments.cause)) {
 					// CF exceptions extend java.lang.Exception
 					if(isInstanceOf(arguments.cause, "java.lang.Throwable")) {
-						variables.exception = newJava("java.lang.Exception").init(arguments.message, arguments.cause);
+						variables.exception = createObject("java", "java.lang.Exception").init(arguments.message, arguments.cause);
 					}
 					// RAILO exceptions do not extend java.lang.Exception
 					// ? is there a better way ? I hope so...
 					else if(isStruct(arguments.cause)) {
-						variables.exception = newJava("java.lang.Exception").init(arguments.message, newJava("java.lang.Exception").init(arguments.cause.message));
+						variables.exception = createObject("java", "java.lang.Exception").init(arguments.message, createObject("java", "java.lang.Exception").init(arguments.cause.message));
 					}
 					else {
-						variables.exception = newJava("java.lang.Exception").init(arguments.message);
+						variables.exception = createObject("java", "java.lang.Exception").init(arguments.message);
 					}
 				}
 				else {
-					variables.exception = newJava("java.lang.Exception").init(arguments.message);
+					variables.exception = createObject("java", "java.lang.Exception").init(arguments.message);
 				}
 			}
 			else {
-				variables.exception = newJava("java.lang.Exception").init();
+				variables.exception = createObject("java", "java.lang.Exception").init();
 			}
 
 			setType();

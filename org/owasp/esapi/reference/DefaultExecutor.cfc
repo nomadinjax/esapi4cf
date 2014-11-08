@@ -1,23 +1,23 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.Executor" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Executor interface. This implementation is very restrictive. Commands must exactly equal the canonical path to an executable on the system. Valid characters for parameters are codec dependent, but will usually only include alphanumeric, forward-slash, and dash.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The logger. */
@@ -47,6 +47,7 @@
 
 		<cfscript>
 			// CF8 requires 'var' at the top
+			var msgParams = [];
 			var i = "";
 			var param = "";
 			var command = "";
@@ -55,15 +56,18 @@
 			var errors = "";
 
 			try {
-				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "Initiating executable: " & arguments.executable & " " & arrayToList(arguments.params, " ") & " in " & arguments.workdir);
+				msgParams = [arguments.executable, arrayToList(arguments.params, " "), arguments.workdir];
+				variables.logger.warning(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_initiating_message", msgParams));
 
 				// command must exactly match the canonical path and must actually exist on the file system
 				// using equalsIgnoreCase for Windows, although this isn't quite as strong as it should be
 				if(!arguments.executable.getCanonicalPath().equalsIgnoreCase(arguments.executable.getPath())) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, "Execution failure", "Invalid path to executable file: " & arguments.executable));
+					msgParams = [arguments.executable];
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidPath_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidPath_logMessage", msgParams)));
 				}
 				if(!arguments.executable.exists()) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, "Execution failure", "No such executable: " & arguments.executable));
+					msgParams = [arguments.executable];
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidInput_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_invalidInput_logMessage", msgParams)));
 				}
 
 				// escape any special characters in the parameters
@@ -74,12 +78,13 @@
 
 				// working directory must exist
 				if(!arguments.workdir.exists()) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, "Execution failure", "No such working directory for running executable: " & arguments.workdir.getPath()));
+					msgParams = [arguments.workdir.getPath()];
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_directoryDoesNotExist_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_directoryDoesNotExist_logMessage", msgParams)));
 				}
 
 				arrayPrepend(arguments.params, arguments.executable.getCanonicalPath());
 				command = arguments.params;
-				process = newJava("java.lang.Runtime").getRuntime().exec(javaCast("string[]", command), javaCast("string[]", arrayNew(1)), arguments.workdir);
+				process = createObject("java", "java.lang.Runtime").getRuntime().exec(javaCast("string[]", command), javaCast("string[]", arrayNew(1)), arguments.workdir);
 				// Future - this is how to implement this in Java 1.5+
 				// ProcessBuilder pb = new ProcessBuilder(arguments.params);
 				// Map env = pb.environment();
@@ -91,13 +96,16 @@
 				output = readStream(process.getInputStream());
 				errors = readStream(process.getErrorStream());
 				if(errors != "" && errors.length() > 0) {
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Error during system command: " & errors);
+					msgParams = [errors];
+					variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_error_message", msgParams));
 				}
-				variables.logger.warning(getSecurityType("SECURITY_SUCCESS"), true, "System command complete: " & arrayToList(arguments.params, " "));
+				msgParams = [arrayToList(arguments.params, " ")];
+				variables.logger.warning(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_complete_message", msgParams));
 				return output;
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, "Execution failure", "Exception thrown during execution of system command: " & e.getMessage(), e));
+				msgParams = [e.getMessage()];
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ExecutorException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Executor_executeSystemCommand_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -108,13 +116,13 @@
 		<cfargument required="true" name="is" hint="input stream to read from"/>
 
 		<cfscript>
-			var isr = newJava("java.io.InputStreamReader").init(arguments.is);
-			var br = newJava("java.io.BufferedReader").init(isr);
-			var sb = newJava("java.lang.StringBuffer").init();
+			var isr = createObject("java", "java.io.InputStreamReader").init(arguments.is);
+			var br = createObject("java", "java.io.BufferedReader").init(isr);
+			var sb = createObject("java", "java.lang.StringBuffer").init();
 			var line = "";
 			// prevent lockups by checking ready state
 			if (!br.ready()) {
-				throw(object=newJava("java.lang.RuntimeException").init("BufferedReader not ready to be read."));
+				throw(object=createObject("java", "java.lang.RuntimeException").init("BufferedReader not ready to be read."));
 			}
 			line = br.readLine();
 			while(isDefined("line") && !isNull(line)) {

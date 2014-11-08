@@ -1,23 +1,23 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the User interface. This implementation is serialized into a flat file in a simple format.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The idle timeout length specified in the ESAPI config file. */
@@ -76,10 +76,13 @@
 		/** The failed login count for this user's account. */
 		variables.failedLoginCount = 0;
 
+		/** This user's Locale. */
+		variables.locale = "";
+
 		variables.MAX_ROLE_LENGTH = 250;
 	</cfscript>
 
-	<cffunction access="public" returntype="DefaultUser" name="init" output="false"
+	<cffunction access="public" returntype="org.owasp.esapi.User" name="init" output="false"
 	            hint="Instantiates a new user.">
 		<cfargument required="true" type="org.owasp.esapi.ESAPI" name="ESAPI"/>
 		<cfargument required="true" type="String" name="accountName" hint="The name of this user's account."/>
@@ -112,12 +115,13 @@
 
 		<cfscript>
 			var roleName = arguments.role.toLowerCase();
+			var msgParams = [roleName, getAccountName()];
 			if(variables.ESAPI.validator().isValidInput("addRole", roleName, "RoleName", variables.MAX_ROLE_LENGTH, false)) {
 				variables.roles.add(roleName);
-				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Role " & roleName & " added to " & getAccountName());
+				variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_addRole_success_message", msgParams));
 			}
 			else {
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, "Add role failed", "Attempt to add invalid role " & roleName & " to " & getAccountName()));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationAccountsException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("User_addRole_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("User_addRole_failure_logMessage", msgParams)));
 			}
 		</cfscript>
 
@@ -151,8 +155,10 @@
 	<cffunction access="public" returntype="void" name="disable" output="false">
 
 		<cfscript>
+			var msgParams = [getAccountName()];
+
 			variables.enabled = false;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Account disabled: " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_disable_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -160,8 +166,10 @@
 	<cffunction access="public" returntype="void" name="enable" output="false">
 
 		<cfscript>
+			var msgParams = [getAccountName()];
+
 			variables.enabled = true;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Account enabled: " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_enable_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -169,7 +177,7 @@
 	<cffunction access="public" returntype="numeric" name="getAccountId" output="false">
 
 		<cfscript>
-			return duplicate(this.accountId);
+			return this.accountId;
 		</cfscript>
 
 	</cffunction>
@@ -177,7 +185,7 @@
 	<cffunction access="public" returntype="String" name="getAccountName" output="false">
 
 		<cfscript>
-			return duplicate(variables.accountName);
+			return variables.accountName;
 		</cfscript>
 
 	</cffunction>
@@ -185,7 +193,7 @@
 	<cffunction access="public" returntype="String" name="getCSRFToken" output="false">
 
 		<cfscript>
-			return duplicate(variables.csrfToken);
+			return variables.csrfToken;
 		</cfscript>
 
 	</cffunction>
@@ -193,7 +201,7 @@
 	<cffunction access="public" name="getExpirationTime" output="false">
 
 		<cfscript>
-			return duplicate(variables.expirationTime);
+			return variables.expirationTime;
 		</cfscript>
 
 	</cffunction>
@@ -201,7 +209,7 @@
 	<cffunction access="public" returntype="numeric" name="getFailedLoginCount" output="false">
 
 		<cfscript>
-			return duplicate(variables.failedLoginCount);
+			return variables.failedLoginCount;
 		</cfscript>
 
 	</cffunction>
@@ -219,7 +227,7 @@
 	<cffunction access="public" name="getLastFailedLoginTime" output="false">
 
 		<cfscript>
-			return duplicate(variables.lastFailedLoginTime);
+			return variables.lastFailedLoginTime;
 		</cfscript>
 
 	</cffunction>
@@ -230,7 +238,7 @@
 			if(variables.lastHostAddress == "") {
 				return "local";
 			}
-			return duplicate(variables.lastHostAddress);
+			return variables.lastHostAddress;
 		</cfscript>
 
 	</cffunction>
@@ -238,7 +246,7 @@
 	<cffunction access="public" name="getLastLoginTime" output="false">
 
 		<cfscript>
-			return duplicate(variables.lastLoginTime);
+			return variables.lastLoginTime;
 		</cfscript>
 
 	</cffunction>
@@ -246,7 +254,7 @@
 	<cffunction access="public" name="getLastPasswordChangeTime" output="false">
 
 		<cfscript>
-			return duplicate(variables.lastPasswordChangeTime);
+			return variables.lastPasswordChangeTime;
 		</cfscript>
 
 	</cffunction>
@@ -262,7 +270,7 @@
 	<cffunction access="public" returntype="Array" name="getRoles" output="false">
 
 		<cfscript>
-			return duplicate(variables.roles);
+			return variables.roles;
 		</cfscript>
 
 	</cffunction>
@@ -270,7 +278,7 @@
 	<cffunction access="public" returntype="String" name="getScreenName" output="false">
 
 		<cfscript>
-			return duplicate(variables.screenName);
+			return variables.screenName;
 		</cfscript>
 
 	</cffunction>
@@ -300,7 +308,7 @@
 	<cffunction access="public" returntype="Array" name="getSessions" output="false">
 
 		<cfscript>
-			return duplicate(variables.sessions);
+			return variables.sessions;
 		</cfscript>
 
 	</cffunction>
@@ -325,7 +333,7 @@
 	<cffunction access="public" returntype="boolean" name="isEnabled" output="false">
 
 		<cfscript>
-			return getBoolean(variables.enabled);
+			return Utils.getBoolean(variables.enabled);
 		</cfscript>
 
 	</cffunction>
@@ -333,7 +341,7 @@
 	<cffunction access="public" returntype="boolean" name="isExpired" output="false">
 
 		<cfscript>
-			return getBoolean(getExpirationTime().before(now()));
+			return Utils.getBoolean(getExpirationTime().before(now()));
 
 			// If expiration should happen automatically or based on lastPasswordChangeTime?
 			//long from = lastPasswordChangeTime.getTime();
@@ -349,7 +357,7 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
-			return getBoolean(variables.roles.contains(arguments.role.toLowerCase()));
+			return Utils.getBoolean(variables.roles.contains(arguments.role.toLowerCase()));
 		</cfscript>
 
 	</cffunction>
@@ -357,7 +365,7 @@
 	<cffunction access="public" returntype="boolean" name="isLocked" output="false">
 
 		<cfscript>
-			return getBoolean(variables.locked);
+			return Utils.getBoolean(variables.locked);
 		</cfscript>
 
 	</cffunction>
@@ -365,12 +373,13 @@
 	<cffunction access="public" returntype="boolean" name="isLoggedIn" output="false">
 
 		<cfscript>
-			return getBoolean(variables.loggedIn);
+			return Utils.getBoolean(variables.loggedIn);
 		</cfscript>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionAbsoluteTimeout" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -378,17 +387,18 @@
 			var deadline = "";
 			var timestamp = "";
 
-			httpSession = variables.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
+			httpSession = arguments.httpRequest.getSession(false);
 			if(!isObject(httpSession))
 				return true;
 			deadline = createObject("java", "java.util.Date").init(javaCast("long", httpSession.getCreationTime() + variables.ABSOLUTE_TIMEOUT_LENGTH));
 			timestamp = now();
-			return getBoolean(timestamp.after(deadline));
+			return Utils.getBoolean(timestamp.after(deadline));
 		</cfscript>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="boolean" name="isSessionTimeout" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -396,12 +406,12 @@
 			var deadline = "";
 			var timestamp = "";
 
-			httpSession = variables.ESAPI.httpUtilities().getCurrentRequest().getSession(false);
+			httpSession = arguments.httpRequest.getSession(false);
 			if(!isObject(httpSession))
 				return true;
 			deadline = createObject("java", "java.util.Date").init(javaCast("long", httpSession.getLastAccessedTime() + variables.IDLE_TIMEOUT_LENGTH));
 			timestamp = now();
-			return getBoolean(timestamp.after(deadline));
+			return Utils.getBoolean(timestamp.after(deadline));
 		</cfscript>
 
 	</cffunction>
@@ -409,52 +419,62 @@
 	<cffunction access="public" returntype="void" name="lock" output="false">
 
 		<cfscript>
+			var msgParams = [getAccountName()];
+
 			variables.locked = true;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Account locked: " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_lock_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="loginWithPassword" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" default="#variables.ESAPI.currentResponse()#" hint="The HTTP response being prepared"/>
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
+			// CF8 requires 'var' at the top
+			var remoteHost = "";
+			var msgParams = [variables.accountName];
+
 			if(arguments.password == "" || arguments.password.equals("")) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Missing password: " & variables.accountName));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_passwordValueMissing_logMessage", msgParams)));
 			}
 
 			// don't let disabled users log in
 			if(!isEnabled()) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Disabled user attempt to login: " & variables.accountName));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_disabledUserAttempt_logMessage", msgParams)));
 			}
 
 			// don't let locked users log in
 			if(isLocked()) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Locked user attempt to login: " & variables.accountName));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_lockedUserAttempt_logMessage", msgParams)));
 			}
 
 			// don't let expired users log in
 			if(isExpired()) {
 				setLastFailedLoginTime(now());
 				incrementFailedLoginCount();
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Expired user attempt to login: " & variables.accountName));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_expiredUserAttempt_logMessage", msgParams)));
 			}
 
-			logout();
+			logout(arguments.httpRequest, arguments.httpResponse);
 
 			if(verifyPassword(arguments.password)) {
 				variables.loggedIn = true;
-				variables.ESAPI.httpUtilities().changeSessionIdentifier(variables.ESAPI.currentRequest());
+				variables.ESAPI.httpUtilities().changeSessionIdentifier(arguments.httpRequest);
 				variables.ESAPI.authenticator().setCurrentUser(this);
 				setLastLoginTime(now());
-				setLastHostAddress(variables.ESAPI.httpUtilities().getCurrentRequest().getRemoteHost());
-				variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "User logged in: " & variables.accountName);
+				remoteHost = arguments.httpRequest.getRemoteHost();
+				if (isNull(remoteHost)) remoteHost = "";
+				setLastHostAddress(remoteHost);
+				variables.logger.trace(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_success_message", msgParams));
 			}
 			else {
 				variables.loggedIn = false;
@@ -463,29 +483,31 @@
 				if(getFailedLoginCount() >= variables.ESAPI.securityConfiguration().getAllowedLoginAttempts()) {
 					this.lock();
 				}
-				throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, "Login failed", "Incorrect password provided for " & getAccountName()));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AuthenticationLoginException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("User_loginWithPassword_failure_userMessage"), variables.ESAPI.resourceBundle().messageFormat("User_loginWithPassword_passwordInvalid_logMessage", msgParams)));
 			}
 		</cfscript>
 
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="logout" output="false">
+		<cfargument name="httpRequest" default="#variables.ESAPI.currentRequest()#" hint="The current HTTP request"/>
+		<cfargument name="httpResponse" default="#variables.ESAPI.currentResponse()#" hint="The HTTP response being prepared"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var httpSession = "";
 
-			variables.ESAPI.httpUtilities().killCookie(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse(), variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
+			variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, variables.ESAPI.httpUtilities().REMEMBER_TOKEN_COOKIE_NAME);
 
-			httpSession = variables.ESAPI.currentRequest().getSession(false);
-			if(isObject(httpSession)) {
+			httpSession = arguments.httpRequest.getSession(false);
+			if(!isNull(httpSession) && isObject(httpSession)) {
 				removeSession(httpSession);
 				httpSession.invalidate();
 			}
-			variables.ESAPI.httpUtilities().killCookie(variables.ESAPI.currentRequest(), variables.ESAPI.currentResponse(), "JSESSIONID");
+			variables.ESAPI.httpUtilities().killCookie(arguments.httpRequest, arguments.httpResponse, "JSESSIONID");
 			variables.loggedIn = false;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Logout successful");
-			variables.ESAPI.authenticator().setCurrentUser(createObject("component", "org.owasp.esapi.User$ANONYMOUS").init(variables.ESAPI));
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().getString("User_logout_success_message"));
+			variables.ESAPI.authenticator().setCurrentUser(variables.ESAPI.authenticator().getAnonymousUserInstance());
 		</cfscript>
 
 	</cffunction>
@@ -494,8 +516,10 @@
 		<cfargument required="true" type="String" name="role"/>
 
 		<cfscript>
+			var msgParams = [arguments.role, getAccountName()];
+
 			variables.roles.remove(arguments.role.toLowerCase());
-			variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "Role " & arguments.role & " removed from " & getAccountName());
+			variables.logger.trace(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_removeRole_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -525,10 +549,13 @@
 		<cfargument required="true" type="String" name="accountName"/>
 
 		<cfscript>
+			var msgParams = [];
 			var old = getAccountName();
+
 			variables.accountName = arguments.accountName.toLowerCase();
 			if(old != "") {
-				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Account name changed from " & old & " to " & getAccountName());
+				msgParams = [old, getAccountName()];
+				variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setAccountName_success_message", msgParams));
 			}
 		</cfscript>
 
@@ -538,8 +565,10 @@
 		<cfargument required="true" type="Date" name="expirationTime"/>
 
 		<cfscript>
+			var msgParams = [arguments.expirationTime, getAccountName()];
+
 			variables.expirationTime = createObject("java", "java.util.Date").init(javaCast("long", arguments.expirationTime.getTime()));
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Account expiration time set to " & arguments.expirationTime & " for " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setExpirationTime_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -548,8 +577,10 @@
 		<cfargument required="true" type="Date" name="lastFailedLoginTime"/>
 
 		<cfscript>
+			var msgParams = [arguments.lastFailedLoginTime, getAccountName()];
+
 			variables.lastFailedLoginTime = arguments.lastFailedLoginTime;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Set last failed login time to " & arguments.lastFailedLoginTime & " for " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastFailedLoginTime_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -558,9 +589,12 @@
 		<cfargument required="true" type="String" name="remoteHost"/>
 
 		<cfscript>
+			var msgParams = [];
+
 			if(variables.lastHostAddress != "" && !variables.lastHostAddress.equals(arguments.remoteHost)) {
 				// returning remote address not remote hostname to prevent DNS lookup
-				createObject("component", "org.owasp.esapi.errors.AuthenticationHostException").init(variables.ESAPI, "Host change", "User session just jumped from " & variables.lastHostAddress & " to " & arguments.remoteHost);
+				msgParams = [variables.lastHostAddress, arguments.remoteHost];
+				createObject("component", "org.owasp.esapi.errors.AuthenticationHostException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("User_setLastHostAddress_mismatch_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("User_setLastHostAddress_mismatch_logMessage", msgParams));
 			}
 			variables.lastHostAddress = arguments.remoteHost;
 		</cfscript>
@@ -571,8 +605,10 @@
 		<cfargument required="true" type="Date" name="lastLoginTime"/>
 
 		<cfscript>
+			var msgParams = [arguments.lastLoginTime, getAccountName()];
+
 			variables.lastLoginTime = arguments.lastLoginTime;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Set last successful login time to " & arguments.lastLoginTime & " for " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastLoginTime_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -581,8 +617,10 @@
 		<cfargument required="true" type="Date" name="lastPasswordChangeTime"/>
 
 		<cfscript>
+			var msgParams = [arguments.lastPasswordChangeTime, getAccountName()];
+
 			variables.lastPasswordChangeTime = arguments.lastPasswordChangeTime;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Set last password change time to " & arguments.lastPasswordChangeTime & " for " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setLastPasswordChangeTime_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -591,9 +629,11 @@
 		<cfargument required="true" type="Array" name="roles"/>
 
 		<cfscript>
+			var msgParams = [arrayToList(arguments.roles), getAccountName()];
+
 			variables.roles = [];
 			addRoles(arguments.roles);
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Adding roles " & arrayToList(arguments.roles) & " to " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setRoles_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -602,8 +642,10 @@
 		<cfargument required="true" type="String" name="screenName"/>
 
 		<cfscript>
+			var msgParams = [arguments.screenName, getAccountName()];
+
 			variables.screenName = arguments.screenName;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "ScreenName changed to " & arguments.screenName & " for " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_setScreenName_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -611,7 +653,7 @@
 	<cffunction access="public" returntype="String" name="toStringData" output="false">
 
 		<cfscript>
-			return "USER:" & variables.accountName;
+			return "USER: " & variables.accountName;
 		</cfscript>
 
 	</cffunction>
@@ -619,9 +661,11 @@
 	<cffunction access="public" returntype="void" name="unlock" output="false">
 
 		<cfscript>
+			var msgParams = [getAccountName()];
+
 			variables.locked = false;
 			variables.failedLoginCount = 0;
-			variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Account unlocked: " & getAccountName());
+			variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("User_unlock_success_message", msgParams));
 		</cfscript>
 
 	</cffunction>
@@ -630,7 +674,7 @@
 		<cfargument required="true" type="String" name="password"/>
 
 		<cfscript>
-			return getBoolean(variables.ESAPI.authenticator().verifyPassword(this, arguments.password));
+			return Utils.getBoolean(variables.ESAPI.authenticator().verifyPassword(this, arguments.password));
 		</cfscript>
 
 	</cffunction>
@@ -641,6 +685,30 @@
 			throw(object=createObject("java", "java.lang.CloneNotSupportedException").init());
 		</cfscript>
 
+	</cffunction>
+	
+	<cffunction access="public" returntype="boolean" name="equals" output="false">
+	    <cfargument required="true" name="another"/>
+	    <cfscript>
+	    	return Utils.isObjectEquals(this, arguments.another);
+	    </cfscript>
+	</cffunction>
+
+	<cffunction access="public" name="getLocaleData" output="false"
+		hint="the locale">
+
+		<cfscript>
+			return variables.locale;
+		</cfscript>
+
+	</cffunction>
+
+	<cffunction access="public" returntype="void" name="setLocaleData" output="false">
+		<cfargument required="true" name="locale" hint="the locale to set">
+
+		<cfscript>
+			variables.locale = arguments.locale;
+		</cfscript>
 	</cffunction>
 
 </cfcomponent>

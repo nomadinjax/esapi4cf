@@ -1,23 +1,23 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.util.HttpServletResponse" extends="org.owasp.esapi.util.Object" output="false" hint="This response wrapper simply overrides unsafe methods in the HttpServletResponse API with safe versions.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		variables.httpResponse = "";
 		variables.logger = "";
@@ -95,7 +95,7 @@
 				variables.httpResponse.addHeader("Set-Cookie", header);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set invalid cookie denied", e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addSafeCookie_failure_message"), e);
 			}
 		</cfscript>
 
@@ -115,7 +115,7 @@
 				variables.httpResponse.addDateHeader(safeName, arguments.date);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set invalid date header name denied", e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addDateHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -135,14 +135,14 @@
 
 			try {
 				// TODO: make stripping a global config
-				strippedName = newJava("org.owasp.esapi.StringUtilities").stripControls(arguments.name);
-				strippedValue = newJava("org.owasp.esapi.StringUtilities").stripControls(arguments.value);
+				strippedName = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.name);
+				strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.value);
 				safeName = variables.ESAPI.validator().getValidInput("addHeader", strippedName, "HTTPHeaderName", 20, false);
 				safeValue = variables.ESAPI.validator().getValidInput("addHeader", strippedValue, "HTTPHeaderValue", 500, false);
 				variables.httpResponse.setHeader(safeName, safeValue);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to add invalid header denied", e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -162,7 +162,7 @@
 				variables.httpResponse.addIntHeader(safeName, arguments.value);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set invalid int header name denied", e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_addIntHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -306,9 +306,11 @@
 		<cfargument required="true" type="String" name="location"/>
 
 		<cfscript>
+			var msgParams = [arguments.location];
+
 			if(!variables.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
-				variables.logger.fatal(getSecurityType("SECURITY_FAILURE"), false, "Bad redirect location: " & arguments.location);
-				throw(object=newJava("java.io.IOException").init("Redirect failed"));
+				variables.logger.fatal(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("HttpServletResponse_sendRedirect_failure_message", msgParams));
+				throw(object=createObject("java", "java.io.IOException").init(variables.ESAPI.resourceBundle().getString("HttpServletResponse_sendRedirect_failure_userMessage")));
 			}
 			variables.httpResponse.sendRedirect(arguments.location);
 		</cfscript>
@@ -370,7 +372,7 @@
 				variables.httpResponse.setDateHeader(safeName, arguments.date);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set invalid date header name denied", e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setDateHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -389,14 +391,14 @@
 			var safeValue = "";
 
 			try {
-				strippedName = newJava("org.owasp.esapi.StringUtilities").stripControls(arguments.name);
-				strippedValue = newJava("org.owasp.esapi.StringUtilities").stripControls(arguments.value);
+				strippedName = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.name);
+				strippedValue = createObject("java", "org.owasp.esapi.StringUtilities").stripControls(arguments.value);
 				safeName = variables.ESAPI.validator().getValidInput("setHeader", strippedName, "HTTPHeaderName", 20, false);
 				safeValue = variables.ESAPI.validator().getValidInput("setHeader", strippedValue, "HTTPHeaderValue", 500, false);
 				variables.httpResponse.setHeader(safeName, safeValue);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set invalid header denied", e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -416,7 +418,7 @@
 				variables.httpResponse.setIntHeader(safeName, arguments.value);
 			}
 			catch(org.owasp.esapi.errors.ValidationException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set invalid int header name denied", e);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setIntHeader_failure_message"), e);
 			}
 		</cfscript>
 
@@ -445,7 +447,7 @@
 					sendError(variables.httpResponse.SC_OK, arguments.sm);
 				}
 				catch(java.io.IOException e) {
-					variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set response status failed", e);
+					variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().getString("HttpServletResponse_setStatus_failure_message"), e);
 				}
 			}
 			else {
@@ -460,7 +462,8 @@
 		<cfargument required="true" type="numeric" name="sc"/>
 
 		<cfscript>
-			return "HTTP error code: " & arguments.sc;
+			var msgParams = [arguments.sc];
+			return variables.ESAPI.resourceBundle().messageFormat("HttpServletResponse_getHTTPMessage_failure_message", msgParams);
 		</cfscript>
 
 	</cffunction>

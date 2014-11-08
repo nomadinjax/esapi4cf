@@ -1,23 +1,23 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent extends="org.owasp.esapi.util.RuntimeException" output="false" hint="An IntrusionException should be thrown anytime an error condition arises that is likely to be the result of an attack in progress. IntrusionExceptions are handled specially by the IntrusionDetector, which is equipped to respond by either specially logging the event, logging out the current user, or invalidating the current user's account. Unlike other exceptions in the ESAPI, the IntrusionException is a RuntimeException so that it can be thrown from anywhere and will not require a lot of special exception handling.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		/** The logger. */
 		variables.logger = "";
@@ -33,18 +33,20 @@
 		<cfargument name="cause" hint="the cause"/>
 
 		<cfscript>
+			var msgParams = [arguments.logMessage];
+
 			variables.ESAPI = arguments.ESAPI;
 			variables.logger = variables.ESAPI.getLogger("IntrusionException");
 
 			if(structKeyExists(arguments, "cause")) {
 				super.init(arguments.userMessage, arguments.cause);
 				variables.logMessage = arguments.logMessage;
-				variables.logger.error(getSecurityType("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.logMessage, arguments.cause);
+				variables.logger.error(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams), arguments.cause);
 			}
 			else {
 				super.init(arguments.userMessage);
 				variables.logMessage = arguments.logMessage;
-				variables.logger.error(getSecurityType("SECURITY_FAILURE"), false, "INTRUSION - " & arguments.logMessage);
+				variables.logger.error(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("IntrusionException_intrusion_message", msgParams));
 			}
 
 			return this;

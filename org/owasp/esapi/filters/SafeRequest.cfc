@@ -1,23 +1,23 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.util.HttpServletRequest" extends="org.owasp.esapi.util.Object" output="false" hint="This request wrapper simply overrides unsafe methods in the HttpServletRequest API with safe versions that return canonicalized data where possible. The wrapper returns a safe value when a validation error is detected, including stripped or empty strings.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 		variables.httpRequest = "";
 		variables.logger = "";
@@ -107,6 +107,7 @@
 		<cfscript>
 			var path = variables.httpRequest.getContextPath();
 			var clean = "";
+			if (isNull(path)) path = "";
 			try {
 				clean = variables.ESAPI.validator().getValidInput("HTTP context path: " & path, path, "HTTPContextPath", 150, false);
 			}
@@ -149,7 +150,7 @@
 						domain = c.getDomain();
 						path = c.getPath();
 
-						n = newJava("javax.servlet.http.Cookie").init(name, value);
+						n = createObject("java", "javax.servlet.http.Cookie").init(name, value);
 						n.setMaxAge(maxAge);
 
 						if(isDefined("domain") && !isNull(domain)) {
@@ -161,7 +162,7 @@
 						newCookies.add(n);
 					}
 					catch(org.owasp.esapi.errors.ValidationException e) {
-						variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Skipping bad cookie: " & c.getName() & "=" & c.getValue(), e);
+						variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Skipping bad cookie: " & c.getName() & "=" & c.getValue(), e);
 					}
 				}
 			}
@@ -336,16 +337,37 @@
 			var orig = "";
 			var clean = "";
 
-			// https://github.com/damonmiller/esapi4cf/issues/39
-			// Railo workaround for getParameter always returning null
-			//orig = variables.httpRequest.getParameter(arguments.name);
-			params = variables.httpRequest.getParameterMap();
-			if (structKeyExists(params, arguments.name)) {
-				orig = params[arguments.name];
-				// CF8 cannot handle a method call and array index reference on same line
-				orig = orig[1];
+			/* *** begin workarounds ***
+				Reference: https://github.com/damonmiller/esapi4cf/issues/39
+
+				We do not want to punish all servers so the ones that can do it right, let's do it right!
+					1- CF8/9 prefer getParamter as-is
+					2- Railo workaround - if value is null, fallback on getParameterMap()
+					3- CF10 workaround  - if value is null, fallback on form scope <----- worst hack in ESAPI4CF by far!!!
+						referencing the form scope violates encapsulation but unit tests will never hit this condition thankfully
+
+			 */
+			// preferred - CF8/9
+			orig = variables.httpRequest.getParameter(arguments.name);
+
+			// fallback on getParameterMap() - Railo
+			if (isNull(orig)) {
+				params = variables.httpRequest.getParameterMap();
+				if (structKeyExists(params, arguments.name)) {
+					orig = params[arguments.name][1];
+					variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Server incorrectly implements RequestContext. getParameterMap() fallback used - see Issue 39.");
+				}
 			}
-			// end workaround
+
+			// fallback on form scope - CF10
+			if (isNull(orig)) {
+				if (structKeyExists(form, arguments.name)) {
+					orig = form[arguments.name];
+					variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Server incorrectly implements RequestContext. FORM scope fallback used - see Issue 39.");
+				}
+			}
+
+			// *** end workarounds ***
 
 			if(!(isDefined("orig") && !isNull(orig))) {
 				orig = "";
@@ -454,7 +476,7 @@
 						newValues.add(cleanValue);
 					}
 					catch(org.owasp.esapi.errors.ValidationException e) {
-						variables.logger.warning(Logger.SECURITY, false, "Skipping bad parameter");
+						variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "Skipping bad parameter");
 					}
 				}
 			}
@@ -641,7 +663,7 @@
 			catch(org.owasp.esapi.errors.ValidationException e) {
 				// already logged
 			}
-			return newJava("java.lang.StringBuffer").init(clean);
+			return createObject("java", "java.lang.StringBuffer").init(clean);
 		</cfscript>
 
 	</cffunction>
@@ -686,7 +708,7 @@
 		<cfscript>
 			var port = variables.httpRequest.getServerPort();
 			if(port < 0 || port > inputBaseN("FFFF", 16)) {
-				variables.logger.warning(Logger.SECURITY, false, "HTTP server port out of range: " & port);
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, "HTTP server port out of range: " & port);
 				port = 0;
 			}
 			return port;
@@ -740,7 +762,7 @@
 			// NOTE: DO NOT attempt an httpUtilities.getCookie() at this point - can cause a stack overflow exception
 			if(safeSession.getAttribute("HTTP_ONLY") == "") {
 				safeSession.setAttribute("HTTP_ONLY", "set");
-				httpCookie = newJava("javax.servlet.http.Cookie").init("JSESSIONID", safeSession.getId());
+				httpCookie = createObject("java", "javax.servlet.http.Cookie").init("JSESSIONID", safeSession.getId());
 				httpCookie.setMaxAge(-1);// session cookie
 				httpCookie.setPath(getContextPath() & "/");
 				httpResponse = variables.ESAPI.currentResponse();

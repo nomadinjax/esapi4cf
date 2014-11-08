@@ -1,33 +1,33 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.EncryptedProperties" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the EncryptedProperties interface. This implementation wraps a normal properties file, and creates surrogates for the getProperty and setProperty methods that perform encryption and decryption based on the Encryptor. A very simple main program is provided that can be used to create an encrypted properties file. A better approach would be to allow unencrypted properties in the file and to encrypt them the first time the file is accessed.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The properties. */
-		variables.properties = newJava("java.util.Properties").init();
+		variables.properties = createObject("java", "java.util.Properties").init();
 
 		/** The logger. */
 		variables.logger = "";
 	</cfscript>
 
-	<cffunction access="public" returntype="DefaultEncryptedProperties" name="init" output="false"
+	<cffunction access="public" returntype="org.owasp.esapi.EncryptedProperties" name="init" output="false"
 	            hint="Instantiates a new encrypted properties.">
 		<cfargument required="true" returntype="org.owasp.esapi.ESAPI" name="ESAPI"/>
 
@@ -54,8 +54,8 @@
 					return "";
 				return variables.ESAPI.encryptor().decryptString(encryptedValue);
 			}
-			catch(Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Property retrieval failure", "Couldn't decrypt property", e));
+			catch(java.lang.Exception e) {
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("EncryptedProperties_getProperty_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("EncryptedProperties_getProperty_badInput_logMessage"), e));
 			}
 		</cfscript>
 
@@ -70,7 +70,7 @@
 				return variables.properties.setProperty(arguments.key, variables.ESAPI.encryptor().encryptString(arguments.value));
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Property setting failure", "Couldn't encrypt property", e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("EncryptedProperties_setProperty_badInput_userMessage"), variables.ESAPI.resourceBundle().getString("EncryptedProperties_setProperty_badInput_logMessage"), e));
 			}
 		</cfscript>
 
@@ -89,7 +89,7 @@
 
 		<cfscript>
 			variables.properties.load(arguments.in);
-			variables.logger.trace(getSecurityType("SECURITY_SUCCESS"), true, "Encrypted properties loaded successfully");
+			variables.logger.trace(Utils.getSecurityType("SECURITY_SUCCESS"), true, "Encrypted properties loaded successfully");
 		</cfscript>
 
 	</cffunction>

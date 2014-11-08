@@ -1,23 +1,23 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the HTTPUtilities interface. This implementation uses the Apache Commons FileUploader library, which in turn uses the Apache Commons IO library. To simplify the interface, this class uses the current request and response that are tracked by ThreadLocal variables in the Authenticator. This means that you must have called ESAPI.authenticator().setCurrentHTTP(request, response) before calling these methods. Typically, this is done by calling the Authenticator.login() method, which calls setCurrentHTTP() automatically. However if you want to use these methods in another application, you should explicitly call setCurrentHTTP() in your own code.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		/** Key for remember token cookie */
 		this.REMEMBER_TOKEN_COOKIE_NAME = "ESAPIRememberToken";
 
@@ -80,7 +80,7 @@
 	</cffunction>
 
 	<cffunction access="public" name="getCookie" output="false" hint="Returns the first cookie matching the provided name.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
@@ -117,8 +117,8 @@
 
 	<cffunction access="public" returntype="String" name="setRememberToken" output="false"
 	            hint="Save the user's remember me data in an encrypted cookie and send it to the user. Any old remember me cookie is destroyed first. Setting this cookie will keep the user logged in until the maxAge passes, the password is changed, or the cookie is deleted. If the cookie exists for the current user, it will automatically be used by ESAPI to log the user in, if the data is valid and not expired.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 		<cfargument required="true" type="String" name="password"/>
 		<cfargument required="true" type="numeric" name="maxAge"/>
 		<cfargument required="true" type="String" name="domain"/>
@@ -132,24 +132,27 @@
 			var expiry = "";
 			var cryptToken = "";
 			var httpCookie = "";
+			var msgParams = [];
 
 			user = variables.ESAPI.authenticator().getCurrentUser();
 			try {
 				killCookie(arguments.httpRequest, arguments.httpResponse, this.REMEMBER_TOKEN_COOKIE_NAME);
-				random = variables.ESAPI.randomizer().getRandomString(8, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+				random = variables.ESAPI.randomizer().getRandomString(8, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 				clearToken = random & ":" & user.getAccountName() & ":" & arguments.password;
 				expiry = variables.ESAPI.encryptor().getRelativeTimeStamp(arguments.maxAge * 1000);
 				cryptToken = variables.ESAPI.encryptor().seal(clearToken, expiry);
-				httpCookie = newJava("javax.servlet.http.Cookie").init(this.REMEMBER_TOKEN_COOKIE_NAME, cryptToken);
+				httpCookie = createObject("java", "javax.servlet.http.Cookie").init(this.REMEMBER_TOKEN_COOKIE_NAME, cryptToken);
 				httpCookie.setMaxAge(arguments.maxAge);
 				httpCookie.setDomain(arguments.domain);
 				httpCookie.setPath(arguments.path);
 				arguments.httpResponse.addCookie(httpCookie);
-				variables.logger.info(getSecurityType("SECURITY_SUCCESS"), true, "Enabled remember me token for " & user.getAccountName());
+				msgParams = [user.getAccountName()];
+				variables.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_setRememberToken_enabled_message", msgParams));
 				return cryptToken;
 			}
 			catch(org.owasp.esapi.errors.IntegrityException e) {
-				variables.logger.warning(getSecurityType("SECURITY_FAILURE"), false, "Attempt to set remember me token failed for " & user.getAccountName(), e);
+				msgParams = [user.getAccountName()];
+				variables.logger.warning(Utils.getSecurityType("SECURITY_FAILURE"), false, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_setRememberToken_failure_message", msgParams), e);
 				return "";
 			}
 		</cfscript>
@@ -158,27 +161,29 @@
 
 	<cffunction access="public" returntype="void" name="assertSecureRequest" output="false"
 	            hint="Verifies that the request is 'secure' by checking that the method is a POST and that SSL has been used.  The POST ensures that the data does not end up in bookmarks, web logs, referer headers, and other exposed sources.  The SSL ensures that data has not been exposed in transit.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
 			var receivedMethod = "";
 			var requiredMethod = "";
+			var msgParams = [];
 
 			if(!isSecureChannel(arguments.httpRequest)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Insecure request received", "Received non-SSL request"));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_assertSecureRequest_invalidSSLRequest_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_assertSecureRequest_invalidSSLRequest_logMessage")));
 			}
 			receivedMethod = arguments.httpRequest.getMethod();
 			requiredMethod = "POST";
 			if(!receivedMethod.equals(requiredMethod)) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Insecure request received", "Received request using " & receivedMethod & " when only " & requiredMethod & " is allowed"));
+				msgParams = [receivedMethod, requiredMethod];
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_assertSecureRequest_invalidSSLRequest_userMessage"), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_assertSecureRequest_invalidHTTPRequest_logMessage")));
 			}
 		</cfscript>
 
 	</cffunction>
 
 	<cffunction access="public" name="changeSessionIdentifier" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -197,8 +202,8 @@
 			// make a copy of the session content
 			temp = {};
 			attrs = oldSession.getAttributeNames();
-			for(i = 1; i <= arrayLen(attrs); i++) {
-				name = attrs[i];
+			while (!isNull(attrs) && attrs.hasMoreElements()) {
+				name = attrs.nextElement();
 				value = oldSession.getAttribute(name);
 				temp.put(name, value);
 			}
@@ -221,7 +226,7 @@
 
 	<cffunction access="public" returntype="void" name="verifyCSRFToken" output="false"
 	            hint="This implementation uses the parameter name to store the token. This makes the CSRF token a bit harder to search for in an XSS attack.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			var user = variables.ESAPI.authenticator().getCurrentUser();
@@ -231,7 +236,7 @@
 				return;
 			}
 			if(arguments.httpRequest.getParameter(user.getCSRFToken()) == "") {
-				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, "Authentication failed", "Possibly forged HTTP request without proper CSRF token detected"));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_verifyCSRFToken_invalid_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_verifyCSRFToken_invalid_logMessage")));
 			}
 		</cfscript>
 
@@ -245,7 +250,7 @@
 				return variables.ESAPI.encryptor().decryptString(arguments.encrypted);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, "Invalid request", "Tampering detected. Hidden field data did not decrypt properly.", e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.IntrusionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_decryptHiddenField_invalid_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_decryptHiddenField_invalid_logMessage"), e));
 			}
 		</cfscript>
 
@@ -262,7 +267,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="Struct" name="decryptStateFromCookie" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -306,7 +311,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="encryptStateInCookie" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpResponse"/>
 		<cfargument required="true" type="Struct" name="cleartext"/>
 
 		<cfscript>
@@ -319,7 +324,7 @@
 			var encrypted = "";
 			var httpCookie = "";
 
-			sb = newJava("java.lang.StringBuffer").init();
+			sb = createObject("java", "java.lang.StringBuffer").init();
 			i = arguments.cleartext.entrySet().iterator();
 			while(i.hasNext()) {
 				try {
@@ -331,11 +336,11 @@
 						sb.append("&");
 				}
 				catch(org.owasp.esapi.errors.EncodingException e) {
-					variables.logger.error(Logger.SECURITY, false, "Problem encrypting state in cookie - skipping entry", e);
+					variables.logger.error(Logger.SECURITY, false, variables.ESAPI.resourceBundle().getString("HTTPUtilities_encryptStateInCookie_invalid_message"), e);
 				}
 			}
 			encrypted = variables.ESAPI.encryptor().encryptString(sb.toString());
-			httpCookie = newJava("javax.servlet.http.Cookie").init("state", encrypted);
+			httpCookie = createObject("java", "javax.servlet.http.Cookie").init("state", encrypted);
 			arguments.httpResponse.addCookie(httpCookie);
 		</cfscript>
 
@@ -343,7 +348,7 @@
 
 	<cffunction access="public" returntype="Array" name="getSafeFileUploads" output="false"
 	            hint="Uses the Apache Commons FileUploader to parse the multipart HTTP request and extract any files therein. Note that the progress of any uploads is put into a session attribute, where it can be retrieved with a simple JSP.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 		<cfargument required="true" name="tempDir"/>
 		<cfargument required="true" name="finalDir"/>
 
@@ -362,28 +367,33 @@
 			var parts = "";
 			var extension = "";
 			var filenm = "";
+			var msgParams = [];
 
 			if(!arguments.tempDir.exists()) {
-				if(!arguments.tempDir.mkdirs())
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, "Upload failed", "Could not create temp directory: " & arguments.tempDir.getAbsolutePath()));
+				if(!arguments.tempDir.mkdirs()) {
+					msgParams = [arguments.tempDir.getAbsolutePath()];
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_tempDirFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_tempDirFailure_logMessage", msgParams)));
+				}
 			}
 			if(!arguments.finalDir.exists()) {
-				if(!arguments.finalDir.mkdirs())
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, "Upload failed", "Could not create final upload directory: " & arguments.finalDir.getAbsolutePath()));
+				if(!arguments.finalDir.mkdirs()) {
+					msgParams = [arguments.finalDir.getAbsolutePath()];
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_finalDirFailure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_finalDirFailure_logMessage", msgParams)));
+				}
 			}
 			newFiles = [];
 			try {
 				httpSession = arguments.httpRequest.getSession(false);
-				if(!newJava("org.apache.commons.fileupload.servlet.ServletFileUpload").isMultipartContent(arguments.httpRequest.getHttpServletRequest())) {
-					throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, "Upload failed", "Not a multipart request"));
+				if(!createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload").isMultipartContent(arguments.httpRequest)) {
+					Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("HTTPUtilities_getSafeFileUploads_invalidMultipartContent_userMessage"), variables.ESAPI.resourceBundle().getString("HTTPUtilities_getSafeFileUploads_invalidMultipartContent_logMessage")));
 				}
 
 				// this factory will store ALL files in the temp directory, regardless of size
-				factory = newJava("org.apache.commons.fileupload.disk.DiskFileItemFactory").init(0, arguments.tempDir);
-				upload = newJava("org.apache.commons.fileupload.servlet.ServletFileUpload").init(factory);
+				factory = createObject("java", "org.apache.commons.fileupload.disk.DiskFileItemFactory").init(0, arguments.tempDir);
+				upload = createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload").init(factory);
 				upload.setSizeMax(variables.maxBytes);
 
-				/* TODO
+				/* TODO: no idea how to make this work in CF
 				// Create a progress listener
 				ProgressListener progressListener = new ProgressListener() {
 				    private long megaBytes = -1;
@@ -397,13 +407,13 @@
 				            return;
 				        megaBytes = mBytes;
 				        progress = (long) (((double) pBytesRead / (double) pContentLength) * 100);
-				        if ( httpSession != "" ) {
+				        if ( httpSession != null ) {
 				            httpSession.setAttribute("progress", Long.toString(progress));
 				        }
 				        // logger.logSuccess(Logger.SECURITY, "   Item " & pItems & " (" & progress & "% of " & pContentLength & " bytes]");
 				    }
-				}; */
-				upload.setProgressListener(progressListener);
+				};
+				upload.setProgressListener(progressListener); */
 
 				items = upload.parseRequest(arguments.httpRequest);
 				i = items.iterator();
@@ -414,11 +424,13 @@
 						filename = fparts[fparts.length - 1];
 
 						if(!variables.ESAPI.validator().isValidFileName("upload", filename, false)) {
-							throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, "Upload only simple filenames with the following extensions " & variables.ESAPI.securityConfiguration().getAllowedFileExtensions(), "Upload failed isValidFileName check"));
+							msgParams = [variables.ESAPI.securityConfiguration().getAllowedFileExtensions()];
+							Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_invalidFileName_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_invalidFileName_logMessage", msgParams)));
 						}
 
-						variables.logger.info(Logger.SECURITY, true, "File upload requested: " & filename);
-						f = newJava("java.io.File").init(arguments.finalDir, filename);
+						msgParams = [filename];
+						variables.logger.info(Logger.SECURITY, true, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_uploadRequested_message", msgParams));
+						f = createObject("java", "java.io.File").init(arguments.finalDir, filename);
 						if(f.exists()) {
 							parts = filename.split("\\/.");
 							extension = "";
@@ -426,13 +438,14 @@
 								extension = parts[parts.length - 1];
 							}
 							filenm = filename.substring(0, filename.length() - extension.length());
-							f = newJava("java.io.File").createTempFile(filenm, "." & extension, arguments.finalDir);
+							f = createObject("java", "java.io.File").createTempFile(filenm, "." & extension, arguments.finalDir);
 						}
 						item.write(f);
 						newFiles.add(f);
 						// delete temporary file
 						item.delete();
-						variables.logger.fatal(Logger.SECURITY, true, "File successfully uploaded: " & f);
+						msgParams = [f];
+						variables.logger.fatal(Logger.SECURITY, true, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_success_message", msgParams));
 						if(httpSession != "") {
 							session.setAttribute("progress", Long.toString(0));
 						}
@@ -441,9 +454,10 @@
 			}
 			catch(java.lang.Exception e) {
 				if(isInstanceOf(e, "org.owasp.esapi.errors.ValidationUploadException")) {
-					throwException(e);
+					Utils.throwException(e);
 				}
-				throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, "Upload failure", "Problem during upload:" & e.getMessage(), e));
+				msgParams = [e.getMessage()];
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.ValidationUploadException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_getSafeFileUploads_failure_logMessage", msgParams), e));
 			}
 			return newFiles;
 		</cfscript>
@@ -452,7 +466,7 @@
 
 	<cffunction access="public" returntype="boolean" name="isSecureChannel" output="false"
 	            hint="Returns true if the request was transmitted over an SSL enabled connection. This implementation ignores the built-in isSecure() method and uses the URL to determine if the request was transmitted over SSL.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 
 		<cfscript>
 			if(!isObject(arguments.httpRequest.getRequestURL()) || arguments.httpRequest.getRequestURL().toString().length() == 0)
@@ -463,8 +477,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="killAllCookies" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
@@ -484,8 +498,8 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="killCookie" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 		<cfargument required="true" type="String" name="name"/>
 
 		<cfscript>
@@ -502,7 +516,7 @@
 				path = httpCookie.getPath();
 				domain = httpCookie.getDomain();
 			}
-			deleter = newJava("javax.servlet.http.Cookie").init(arguments.name, "deleted");
+			deleter = createObject("java", "javax.servlet.http.Cookie").init(arguments.name, "deleted");
 			deleter.setMaxAge(0);
 			if(isDefined("domain") && !isNull(domain))
 				deleter.setDomain(domain);
@@ -545,17 +559,19 @@
 
 	<cffunction access="public" returntype="void" name="safeSendForward" output="false"
 	            hint="This implementation simply checks to make sure that the forward location starts with 'WEB-INF' and is intended for use in frameworks that forward to JSP files inside the WEB-INF folder.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpRequest"/>
+		<cfargument required="true" name="httpResponse"/>
 		<cfargument required="true" type="String" name="context"/>
 		<cfargument required="true" type="String" name="location"/>
 
 		<cfscript>
 			// CF8 requires 'var' at the top
-			var dispatched = "";
+			var dispatcher = "";
+			var msgParams = [];
 
 			if(!arguments.location.startsWith("WEB-INF")) {
-				throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, "Forward failed", "Bad forward location: " & arguments.location));
+				msgParams = [arguments.location];
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.AccessControlException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_safeSendForward_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("HTTPUtilities_safeSendForward_failure_logMessage", msgParams)));
 			}
 			dispatcher = arguments.httpRequest.getRequestDispatcher(arguments.location);
 			dispatcher.forward(arguments.httpRequest, arguments.httpResponse);
@@ -564,7 +580,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setSafeContentType" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpResponse"/>
 
 		<cfscript>
 			arguments.httpResponse.setContentType(variables.ESAPI.securityConfiguration().getResponseContentType());
@@ -573,7 +589,7 @@
 	</cffunction>
 
 	<cffunction access="public" returntype="void" name="setNoCacheHeaders" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletResponse" name="httpResponse"/>
+		<cfargument required="true" name="httpResponse"/>
 
 		<cfscript>
 			// HTTP 1.1
@@ -590,8 +606,10 @@
 
 		<cfscript>
 			var httpRequest = variables.currentRequest.getRequest();
-			if(!isObject(httpRequest))
-				throw(object=newJava("java.lang.NullPointerException").init("Cannot use current request until it is set with HTTPUtilities.setCurrentHTTP()"));
+			if(!isObject(httpRequest)) {
+				// NOTE: do not RB this message - will cause StackOverflow
+				throw(object=createObject("java", "java.lang.NullPointerException").init("Cannot use current request until it is set with HTTPUtilities.setCurrentHTTP()"));
+			}
 			return httpRequest;
 		</cfscript>
 
@@ -601,8 +619,10 @@
 
 		<cfscript>
 			var httpResponse = variables.currentResponse.getResponse();
-			if(!isObject(httpResponse))
-				throw(object=newJava("java.lang.NullPointerException").init("Cannot use current response until it is set with HTTPUtilities.setCurrentHTTP()"));
+			if(!isObject(httpResponse)) {
+				// NOTE: do not RB this message - will cause StackOverflow
+				throw(object=createObject("java", "java.lang.NullPointerException").init("Cannot use current response until it is set with HTTPUtilities.setCurrentHTTP()"));
+			}
 			return httpResponse;
 		</cfscript>
 
@@ -642,9 +662,9 @@
 
 	</cffunction>
 
-	<cffunction access="public" returntype="void" name="logHTTPRequest" output="false"
+	<cffunction access="public" returntype="String" name="logHTTPRequest" output="false"
 	            hint="Formats an HTTP request into a log suitable string. This implementation logs the remote host IP address (or hostname if available), the request method (GET/POST), the URL, and all the querystring and form parameters. All the parameters are presented as though they were in the URL even if they were in a form. Any parameters that match items in the parameterNamesToObfuscate are shown as eight asterisks.">
-		<cfargument required="true" type="org.owasp.esapi.util.HttpServletRequest" name="httpRequest"/>
+		<cfargument required="true" name="httpRequest"/>
 		<cfargument required="true" type="org.owasp.esapi.Logger" name="logger"/>
 		<cfargument required="false" type="Array" name="parameterNamesToObfuscate"/>
 
@@ -659,7 +679,7 @@
 			var c = "";
 			var msg = "";
 
-			params = newJava("java.lang.StringBuffer").init();
+			params = createObject("java", "java.lang.StringBuffer").init();
 			i = arguments.httpRequest.getParameterMap().keySet().iterator();
 			while(i.hasNext()) {
 				key = i.next();
@@ -680,15 +700,14 @@
 					params.append("&");
 			}
 			cookies = arguments.httpRequest.getCookies();
-			if(isObject(cookies)) {
-				for(c = 1; c <= arrayLen(cookies); c++) {
-					if(!cookies[c].getName() == "JSESSIONID") {
-						params.append("+" & cookies[c].getName() & "=" & cookies[c].getValue());
-					}
+			for(c = 1; c <= arrayLen(cookies); c++) {
+				if(!listFindNoCase("JSESSIONID,CFID,CFTOKEN", cookies[c].getName())) {
+					params.append("+" & cookies[c].getName() & "=" & cookies[c].getValue());
 				}
 			}
 			msg = arguments.httpRequest.getMethod() & " " & arguments.httpRequest.getRequestURL() & iif(len(params.toString()) > 0, de("?" & params), de(""));
-			arguments.logger.info(getSecurityType("SECURITY_SUCCESS"), true, msg);
+			arguments.logger.info(Utils.getSecurityType("SECURITY_SUCCESS"), true, msg);
+			return msg;
 		</cfscript>
 
 	</cffunction>

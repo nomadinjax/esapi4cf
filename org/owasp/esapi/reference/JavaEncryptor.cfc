@@ -1,23 +1,23 @@
 <!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfcomponent implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.Object" output="false" hint="Reference implementation of the Encryptor interface. This implementation layers on the JCE provided cryptographic package. Algorithms used are configurable in the ESAPI.properties file.">
 
 	<cfscript>
+		// imports
+		Utils = createObject("component", "org.owasp.esapi.util.Utils");
+
 		variables.ESAPI = "";
 
 		/** The private key. */
@@ -61,14 +61,14 @@
 
 			try {
 				// Set up encryption and decryption
-				variables.parameterSpec = newJava("javax.crypto.spec.PBEParameterSpec").init(salt, 20);
-				kf = newJava("javax.crypto.SecretKeyFactory").getInstance(variables.encryptAlgorithm);
-				variables.secretKey = kf.generateSecret(newJava("javax.crypto.spec.PBEKeySpec").init(pass));
+				variables.parameterSpec = createObject("java", "javax.crypto.spec.PBEParameterSpec").init(salt, 20);
+				kf = createObject("java", "javax.crypto.SecretKeyFactory").getInstance(variables.encryptAlgorithm);
+				variables.secretKey = kf.generateSecret(createObject("java", "javax.crypto.spec.PBEKeySpec").init(pass));
 				variables.encoding = variables.ESAPI.securityConfiguration().getCharacterEncoding();
 
 				// Set up signing keypair using the master password and salt
-				keyGen = newJava("java.security.KeyPairGenerator").getInstance("DSA");
-				random = newJava("java.security.SecureRandom").getInstance(variables.randomAlgorithm);
+				keyGen = createObject("java", "java.security.KeyPairGenerator").getInstance("DSA");
+				random = createObject("java", "java.security.SecureRandom").getInstance(variables.randomAlgorithm);
 				seed = hashString(toString(pass), toString(salt)).getBytes();
 				random.setSeed(seed);
 				keyGen.initialize(1024, random);
@@ -78,7 +78,7 @@
 			}
 			catch(java.lang.Exception e) {
 				// can't throw this exception in initializer, but this will log it
-				createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Encryption failure", "Error creating Encryptor", e);
+				createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_init_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_init_failure_logMessage"), e);
 			}
 
 			return this;
@@ -96,14 +96,15 @@
 			var digest = "";
 			var i = "";
 			var encoded = "";
-
 			var bytes = "";
+			var msgParams = [variables.hashAlgorithm];
+
 			try {
-				digest = newJava("java.security.MessageDigest").getInstance(variables.hashAlgorithm);
+				digest = createObject("java", "java.security.MessageDigest").getInstance(variables.hashAlgorithm);
 				digest.reset();
 				digest.update(variables.ESAPI.securityConfiguration().getMasterSalt());
-				digest.update(newJava("java.lang.String").init(arguments.salt).getBytes());
-				digest.update(newJava("java.lang.String").init(arguments.plaintext).getBytes());
+				digest.update(createObject("java", "java.lang.String").init(arguments.salt).getBytes());
+				digest.update(createObject("java", "java.lang.String").init(arguments.plaintext).getBytes());
 
 				// rehash a number of times to help strengthen weak passwords
 				bytes = digest.digest();
@@ -115,7 +116,7 @@
 				return encoded;
 			}
 			catch(java.security.NoSuchAlgorithmException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Internal error", "Can't find hash algorithm " & variables.hashAlgorithm, e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_hashString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_hashString_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -129,17 +130,19 @@
 			var encrypter = "";
 			var output = "";
 			var enc = "";
+			var msgParams = [];
 
 			// Note - Cipher is not threadsafe so we create one locally
 			try {
-				encrypter = newJava("javax.crypto.Cipher").getInstance(variables.encryptAlgorithm);
-				encrypter.init(newJava("javax.crypto.Cipher").ENCRYPT_MODE, variables.secretKey, variables.parameterSpec);
+				encrypter = createObject("java", "javax.crypto.Cipher").getInstance(variables.encryptAlgorithm);
+				encrypter.init(createObject("java", "javax.crypto.Cipher").ENCRYPT_MODE, variables.secretKey, variables.parameterSpec);
 				output = arguments.plaintext.getBytes(variables.encoding);
 				enc = encrypter.doFinal(output);
 				return variables.ESAPI.encoder().encodeForBase64(enc, false);
 			}
 			catch(any e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Encryption failure", "Encryption problem: " & e.getMessage(), e));
+				msgParams = [e.getMessage()];
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_encryptString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_encryptString_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -153,17 +156,19 @@
 			var decrypter = "";
 			var dec = "";
 			var output = "";
+			var msgParams = [];
 
 			// Note - Cipher is not threadsafe so we create one locally
 			try {
-				decrypter = newJava("javax.crypto.Cipher").getInstance(variables.encryptAlgorithm);
-				decrypter.init(newJava("javax.crypto.Cipher").DECRYPT_MODE, variables.secretKey, variables.parameterSpec);
+				decrypter = createObject("java", "javax.crypto.Cipher").getInstance(variables.encryptAlgorithm);
+				decrypter.init(createObject("java", "javax.crypto.Cipher").DECRYPT_MODE, variables.secretKey, variables.parameterSpec);
 				dec = variables.ESAPI.encoder().decodeFromBase64(arguments.ciphertext);
 				output = decrypter.doFinal(dec);
-				return newJava("java.lang.String").init(output, variables.encoding);
+				return createObject("java", "java.lang.String").init(output, variables.encoding);
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Decryption failed", "Decryption problem: " & e.getMessage(), e));
+				msgParams = [e.getMessage()];
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_decryptString_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_decryptString_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -176,16 +181,17 @@
 			// CF8 requires 'var' at the top
 			var signer = "";
 			var bytes = "";
+			var msgParams = [variables.signatureAlgorithm];
 
 			try {
-				signer = newJava("java.security.Signature").getInstance(variables.signatureAlgorithm);
+				signer = createObject("java", "java.security.Signature").getInstance(variables.signatureAlgorithm);
 				signer.initSign(variables.privateKey);
-				signer.update(newJava("java.lang.String").init(arguments.data).getBytes());
+				signer.update(createObject("java", "java.lang.String").init(arguments.data).getBytes());
 				bytes = signer.sign();
 				return variables.ESAPI.encoder().encodeForBase64(bytes, true);
 			}
 			catch(java.lang.Exception e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Signature failure", "Can't find signature algorithm " & variables.signatureAlgorithm, e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_sign_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_sign_failure_logMessage", msgParams), e));
 			}
 		</cfscript>
 
@@ -199,16 +205,18 @@
 			// CF8 requires 'var' at the top
 			var bytes = "";
 			var signer = "";
+			var msgParams = [];
 
 			try {
 				bytes = variables.ESAPI.encoder().decodeFromBase64(arguments.signature);
-				signer = newJava("java.security.Signature").getInstance(variables.signatureAlgorithm);
+				signer = createObject("java", "java.security.Signature").getInstance(variables.signatureAlgorithm);
 				signer.initVerify(variables.publicKey);
-				signer.update(newJava("java.lang.String").init(arguments.data).getBytes());
+				signer.update(createObject("java", "java.lang.String").init(arguments.data).getBytes());
 				return signer.verify(bytes);
 			}
 			catch(java.lang.Exception e) {
-				createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Invalid signature", "Problem verifying signature: " & e.getMessage(), e);
+				msgParams = [e.getMessage()];
+				createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().messageFormat("Encryptor_verifySignature_failure_userMessage", msgParams), variables.ESAPI.resourceBundle().messageFormat("Encryptor_verifySignature_failure_logMessage", msgParams), e);
 				return false;
 			}
 		</cfscript>
@@ -225,11 +233,11 @@
 
 			try {
 				// mix in some random data so even identical data and timestamp produces different seals
-				random = variables.ESAPI.randomizer().getRandomString(10, newJava("org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
+				random = variables.ESAPI.randomizer().getRandomString(10, createObject("java", "org.owasp.esapi.reference.DefaultEncoder").CHAR_ALPHANUMERICS);
 				return this.encryptString(arguments.timestamp & ":" & random & ":" & arguments.data);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.IntegrityException").init(variables.ESAPI, e.message, e.detail, e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.IntegrityException").init(variables.ESAPI, e.message, e.detail, e));
 			}
 		</cfscript>
 
@@ -251,19 +259,19 @@
 				plaintext = decryptString(arguments.seal);
 			}
 			catch(org.owasp.esapi.errors.EncryptionException e) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Invalid seal", "Seal did not decrypt properly", e));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_decryption_logMessage"), e));
 			}
 
 			index = plaintext.indexOf(":");
 			if(index == -1) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Invalid seal", "Seal did not contain properly formatted separator"));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_invalid_logMessage")));
 			}
 
 			timestring = plaintext.substring(0, index);
-			timestamp = newJava("java.util.Date").init().getTime();
-			expiration = newJava("java.lang.Long").init(timestring);
+			timestamp = now().getTime();
+			expiration = createObject("java", "java.lang.Long").init(timestring);
 			if(timestamp > expiration) {
-				throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, "Invalid seal", "Seal expiration date has expired"));
+				Utils.throwException(createObject("component", "org.owasp.esapi.errors.EncryptionException").init(variables.ESAPI, variables.ESAPI.resourceBundle().getString("Encryptor_unseal_failure_userMessage"), variables.ESAPI.resourceBundle().getString("Encryptor_unseal_expired_logMessage")));
 			}
 
 			index = plaintext.indexOf(":", index + 1);
@@ -291,7 +299,7 @@
 	<cffunction access="public" returntype="numeric" name="getTimeStamp" output="false">
 
 		<cfscript>
-			return javaCast("long", newJava("java.util.Date").init().getTime());
+			return javaCast("long", now().getTime());
 		</cfscript>
 
 	</cffunction>
@@ -300,7 +308,7 @@
 		<cfargument required="true" type="numeric" name="offset"/>
 
 		<cfscript>
-			return javaCast("long", newJava("java.util.Date").init().getTime() + arguments.offset);
+			return javaCast("long", now().getTime() + arguments.offset);
 		</cfscript>
 
 	</cffunction>

@@ -1,18 +1,15 @@
 ﻿<!---
 /**
- * OWASP Enterprise Security API (ESAPI)
+ * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011 - The OWASP Foundation
+ * Copyright (c) 2011-2014, The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
- *
- * @author Damon Miller
- * @created 2011
  */
 --->
 <cfinterface hint="The Validator interface defines a set of methods for canonicalizing and validating untrusted input. Implementors should feel free to extend this interface to accommodate their own data formats. Rather than throw exceptions, this interface returns boolean results because not all validation problems are security issues. Boolean returns allow developers to handle both valid and invalid results more cleanly than exceptions. Implementations must adopt a 'whitelist' approach to validation where a specific pattern or character set is matched. 'Blacklist' approaches that attempt to identify the invalid or disallowed characters are much more likely to allow a bypass with encoding or other tricks.">
@@ -43,6 +40,8 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" name="format" hint="Required formatting of date inputted."/>
+		<cfargument required="true" name="minValue" hint="Lowest legal value for input."/>
+		<cfargument required="true" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
 
 	</cffunction>
@@ -52,6 +51,8 @@
 		<cfargument required="true" type="String" name="context" hint="A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in."/>
 		<cfargument required="true" type="String" name="input" hint="The actual user input data to validate."/>
 		<cfargument required="true" name="format" hint="Required formatting of date inputted."/>
+		<cfargument required="true" name="minValue" hint="Lowest legal value for input."/>
+		<cfargument required="true" name="maxValue" hint="Highest legal value for input."/>
 		<cfargument required="true" type="boolean" name="allowNull" hint="If allowNull is true then an input that is NULL or an empty string will be legal. If allowNull is false then NULL or an empty String will throw a ValidationException."/>
 		<cfargument type="org.owasp.esapi.ValidationErrorList" name="errorList" hint="If validation is in error, resulting error will be stored in the errorList by context"/>
 
