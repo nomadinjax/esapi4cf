@@ -1,129 +1,88 @@
-﻿<!---
-/**
+/*
  * OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
  *
  * This file is part of the Open Web Application Security Project (OWASP)
  * Enterprise Security API (ESAPI) project. For details, please see
  * <a href="http://www.owasp.org/index.php/ESAPI">http://www.owasp.org/index.php/ESAPI</a>.
  *
- * Copyright (c) 2011-2014, The OWASP Foundation
+ * Copyright (c) 2011 - The OWASP Foundation
  *
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  */
---->
-<cfcomponent extends="Object" output="false">
+component {
 
-	<cffunction access="public" returntype="void" name="clearUserFile" output="false">
+	public boolean function isEquals(required object, required another) {
+		var System = createObject("java", "java.lang.System");
+		var objHash1 = System.identityHashCode(arguments.object);
+		var objHash2 = System.identityHashCode(arguments.another);
+		if (objHash1 == objHash2) return true;
+		return false;
+	}
 
-		<cfscript>
-			var filePath = request.ESAPI.securityConfiguration().getResourceDirectory() & "users.txt";
-			var writer = "";
-			writer &= "## This is the user file associated with the ESAPI library from http://www.owasp.org" & chr(13) & chr(10);
-			writer &= "## accountName | hashedPassword | roles | locked | enabled | rememberToken | csrfToken | oldPasswordHashes | lastPasswordChangeTime | lastLoginTime | lastFailedLoginTime | expirationTime | failedLoginCount" & chr(13) & chr(10);
-			writer &= chr(13) & chr(10);
-		</cfscript>
-
-		<cffile action="write" file="#expandPath(filePath)#" output="#writer#"/>
-	</cffunction>
-
-	<cffunction access="public" returntype="String" name="getBoolean" output="false"
-		hint="Provides a consistent true/false return for a boolean value regardless of whether true/false, yes/no, or 1/0 were provided.">
-		<cfargument required="true" type="String" name="bool">
-
-		<cfscript>
-			if (!len(trim(arguments.bool)) || !isBoolean(arguments.bool)) {
-				return "";
-			}
-
-			// NOTE: do not include on/off - they are NOT valid booleans
-			if (listFindNoCase("false,no,0", arguments.bool)) {
-				return false;
-			}
-			return true;
-		</cfscript>
-
-	</cffunction>
-
-	<cffunction access="public" name="getSecurityType" output="false">
-		<cfargument required="true" type="String" name="type"/>
-
-		<cfscript>
-			var logger = createObject("java", "org.owasp.esapi.Logger");
-			if(createObject("component", "org.owasp.esapi.util.Version").getESAPI4JVersion() == 2) {
-				return logger[arguments.type];
+	public string function toUnicode(required string input) {
+		var sb = createObject("java", "java.lang.StringBuffer").init();
+		var l = len(arguments.input);
+		for(var i=1; i<=l; i++) {
+			var thisChr = mid(arguments.input, i, 6);
+			if(left(thisChr, 2) == "\u") {
+				sb.append(chr(inputBaseN(right(thisChr, 4), 16)));
+				i = i + 5;
 			}
 			else {
-				return logger.SECURITY;
+				sb.append(left(thisChr, 1));
 			}
-		</cfscript>
+		}
+		return sb.toString();
+	}
 
-	</cffunction>
+	/**
+	 * Return an empty byte array with specified length
+	 */
+	public binary function newByte(required numeric len) {
+		var sb = createObject("java", "java.lang.StringBuilder").init();
+		sb.setLength(arguments.len);
+		return sb.toString().getBytes();
+	}
 
-	<cffunction access="public" returntype="boolean" name="isObjectEquals" output="false">
-		<cfargument required="true" name="obj1"/>
-		<cfargument required="true" name="obj2"/>
-	    <cfscript>
-			var System = createObject("java", "java.lang.System");
-			var objHash1 = System.identityHashCode(arguments.obj1);
-			var objHash2 = System.identityHashCode(arguments.obj2);
-			if (objHash1 == objHash2) {
-				return true;
-			}
-			return false;
-	    </cfscript>
-	</cffunction>
+	/**
+	 * Creates a MessageFormat with the given pattern and uses it to format the given arguments.
+	 */
+	public string function messageFormat(required string pattern, required array args) {
+		return createObject("java", "java.text.MessageFormat").format(javaCast("string", arguments.pattern), arguments.args);
+	}
 
-	<cffunction access="public" returntype="void" name="throwException" output="false">
-		<cfargument required="true" type="org.owasp.esapi.util.Exception" name="exception"/>
+	public array function parseStackTrace(required stackTrace=createObject("java", "java.lang.Throwable").getStackTrace()) {
+		var result = [];
 
-		<cfif isInstanceOf(arguments.exception, "org.owasp.esapi.util.RuntimeException")>
-			<!--- ESAPI RuntimeExceptions --->
-			<cfthrow type="#arguments.exception.getType()#" message="#arguments.exception.getMessage()#" extendedinfo="#arguments.exception.getCause()#"/>
-		<cfelseif isInstanceOf(arguments.exception, "org.owasp.esapi.util.Exception")>
-			<!--- ESAPI Exceptions --->
-			<cfthrow type="#arguments.exception.getType()#" message="#arguments.exception.getUserMessage()#" detail="#arguments.exception.getLogMessage()#" extendedinfo="#arguments.exception.getCause()#"/>
-		</cfif>
-	</cffunction>
-
-	<cffunction access="public" returntype="String" name="toUnicode" output="false">
-		<cfargument required="true" type="String" name="string"/>
-
-		<cfscript>
-			// CF8 requires 'var' at the top
-			var i = "";
-			var thisChr = "";
-
-			var sb = createObject("java", "java.lang.StringBuffer").init();
-			for(i = 1; i <= len(arguments.string); i++) {
-				thisChr = mid(arguments.string, i, 6);
-				if(left(thisChr, 2) == "\u") {
-					sb.append(chr(inputBaseN(right(thisChr, 4), 16)));
-					i = i + 5;
+		for (var thisStack in arguments.stackTrace) {
+			if (listFindNoCase("runPage,runFunction", propertyValue(thisStack, "MethodName"))) {
+				var data = {};
+				data["Template"] = propertyValue(thisStack, "FileName");
+				if (propertyValue(thisStack, "MethodName") == "runFunction") {
+					data["Function"] = reReplace(propertyValue(thisStack, "ClassName"), "^.+\$func", "");
 				}
 				else {
-					sb.append(left(thisChr, 1));
+					data["Function"] = "";
 				}
+				data["LineNumber"] = propertyValue(thisStack, "LineNumber");
+				arrayAppend(result, duplicate(data));
 			}
-			return sb.toString();
-		</cfscript>
+		}
+		return result;
+	}
 
-	</cffunction>
-
-	<cffunction name="writeSessionDump" output="true" hint="Helper function to quickly dump all of key/values in the specified HTTP session.">
-		<cfargument required="true" name="httpSession">
-		<cfargument type="boolean" name="abort" default="false">
-		<cfscript>
-			var result = {};
-			var names = arguments.httpSession.getAttributeNames();
-			var key = "";
-
-			while (names.hasMoreElements()) {
-				key = names.nextElement().toString();
-				result[key] = arguments.httpSession.getAttribute(key);
+	private function propertyValue(required properties, required string propertyName) {
+		if (isStruct(arguments.properties)) {
+			if (structKeyExists(arguments.properties, "get" & arguments.propertName)) {
+				var fn = arguments.properties["get" & arguments.propertName];
+				return fn();
 			}
-			writedump(var=result, abort=arguments.abort);
-		</cfscript>
-	</cffunction>
+			else if (structKeyExists(arguments.properties, arguments.propertName)) {
+				return arguments.properties[arguments.propertName];
+			}
+		}
+		return "";
+	}
 
-</cfcomponent>
+}
