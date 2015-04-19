@@ -16,18 +16,18 @@
 	// NOTE: maintain this list with each release
 	versionData = {};
 	versionData["lucee4"] = {
-		jvm: "1.8.0_25",
+		jvm: "1.8.0_45",
 		engine: "4.5.1.000",
 		display: "Lucee 4.5.x"
 	};
 	versionData["railo4"] = {
-		jvm: "1.8.0_25",
+		jvm: "1.8.0_45",
 		engine: "4.2.1.008",
 		display: "Railo 4.2.x"
 	};
 	versionData["coldfusion11"] = {
-		jvm: "1.8.0_25",
-		engine: "11,0,04,293328",
+		jvm: "1.8.0_45",
+		engine: "11,0,05,293506",
 		display: "ColdFusion 11.x"
 	};
 	/*versionData["coldfusion10"] = {
