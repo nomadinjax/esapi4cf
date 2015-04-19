@@ -2,7 +2,7 @@ OWASP Enterprise Security API for ColdFusion/CFML (ESAPI4CF)
 =
 This project is part of the Open Web Application Security Project (OWASP) Enterprise Security API (ESAPI) project. For details, please see http://www.owasp.org/index.php/ESAPI.<br>
 
-Copyright (c) 2011-2014, The OWASP Foundation<br>
+Copyright (c) 2011 - The OWASP Foundation<br>
 
 The ESAPI is published by OWASP under the BSD license. You should read and accept the LICENSE before you use, modify, and/or redistribute this software.<br>
 
@@ -17,11 +17,18 @@ This project source code is licensed under the BSD license, which is very permis
 
 GETTING STARTED
 -
-Adding ESAPI4CF to your CF application is very simple and can be accomplished with just a few lines of code.<br>
+Adding ESAPI4CF to your CF application is very simple and even more so now in v2 and can be accomplished with just a few lines of code.<br>
 
-Let's start with adding one line to your onApplicationStart() method...
+To get started, generate a new random master key and master salt using <localhost>/esapi4cf/utilities/secretKeyGenerator.cfm.
+
+Now we will initialize ESAPI inside your onApplicationStart() method...
 ```
-application.ESAPI = new org.owasp.esapi.ESAPI("/WEB-INF/esapi-resources/");
+application.ESAPI = new org.owasp.esapi.ESAPI({
+	"Encryptor": {
+		"MasterKey": "my generated master key",
+		"MasterSalt": "my generated master salt"
+	}
+});
 ```
 Some features of ESAPI require access to the HTTP request and HTTP response, so register them with ESAPI in your onRequestStart() method...
 ```
@@ -31,13 +38,14 @@ Now your set! You will now have access to ESAPI and all of its modules.<br>
 
 **Some examples:**<br>
 
-Want to validate the HTTP request to check for possible intrusions:
+Want an application specific logger to log data audits and event statuses to:
 ```
-application.ESAPI.validator().assertIsValidHTTPRequest();
+var logger = application.ESAPI.getLogger(application.name & "-Logger");
+logger.info(logger.SECURITY_AUDIT, "Data changed!");
 ```
 Want to authenticate and persist a user across requests:
 ```
-application.ESAPI.authenticator().login(httpRequest=request, httpResponse=response);
+application.ESAPI.authenticator().login();
 ```
 
 Want to see if the current user is logged in:
@@ -84,11 +92,14 @@ EXTENSIBILITY
 -
 All ESAPI4CF modules can be extended so you can add your own features or override the default implementations.  If, for example, you find that you want implement your own password complexity rules, you can extend the Authenticator implementation and override the **verifyPasswordStrength** method with your own.  Then you simply need to tell ESAPI to use your Authenticator implementation instead of the default.  You do this in your onApplicationStart right after the ESAPI initialization.
 ```
-application.ESAPI = new org.owasp.esapi.ESAPI("/WEB-INF/esapi-resources/");
-application.ESAPI.setAuthenticator(myAuthenticatorInstance);
+application.ESAPI = new org.owasp.esapi.ESAPI({
+	"ESAPI": {
+		"Authenticator": "CFCpathToMyAuthenticatorInstance",
+	}
+});
 ```
 
-You will need to extend ESAPI4CF in order to tie the Authenticator and AccessController modules to your database.  If you want to store the ESAPI4CF logs, you will also have to extend the Logger module.
+You no longer need to extended the Authenitcator or AccessController in order to hook ESAPI into your DB model.  As of v2 you can now accomplish this without extending by the use the the ESAPIAdaptor.  The Adaptor simply needs to implement the org.owasp.esapi.Adapter interface.
 
 Or use the provided ESAPI interfaces to create your own implementation entirely.  The choice is yours!
 
