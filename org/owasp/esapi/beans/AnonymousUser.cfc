@@ -74,6 +74,13 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 	}
 
 	public string function getLastHostAddress() {
+		var httpRequest = variables.ESAPI.currentRequest();
+		if (!isNull(httpRequest) && isObject(httpRequest)) {
+			var remoteAddr = httpRequest.getRemoteAddr();
+			if (!isNull(remoteAddr)) {
+				return remoteAddr;
+			}
+		}
 		return "unknown";
 	}
 
