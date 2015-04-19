@@ -288,12 +288,11 @@ component implements="org.owasp.esapi.Logger" extends="org.owasp.esapi.util.Obje
 		var text = "[" & typeInfo & getUserInfo() & " -> " & appInfo & "] " & clean;
 		if (structKeyExists(arguments, "throwable")) {
 			variables.jlogger.log(arguments.level, text, arguments.throwable);
-			writeLog(text & " | " & serializeStackTrace(arguments.throwable), convertJTypetoCFType(arguments.type), true, variables.ESAPI.securityConfiguration().getLogFileName());
 		}
 		else {
 			variables.jlogger.log(arguments.level, text);
-			writeLog(text, convertJTypetoCFType(arguments.type), true, variables.ESAPI.securityConfiguration().getLogFileName());
 		}
+		writeLog(text, convertJTypetoCFType(arguments.type), true, variables.ESAPI.securityConfiguration().getLogFileName());
     }
 
 	public boolean function isDebugEnabled() {
@@ -354,24 +353,6 @@ component implements="org.owasp.esapi.Logger" extends="org.owasp.esapi.util.Obje
 
 	public string function toString() {
 		return variables.moduleName;
-	}
-
-	private string function serializeStackTrace(required throwable) {
-		var stack = [];
-		if (!isNull(arguments.throwable)) {
-			if (structKeyExists(arguments.throwable, "stacktrace")) {
-				if (isSimpleValue(arguments.throwable.stacktrace)) {
-					stack = arguments.throwable.stacktrace;
-				}
-				else {
-					stack = new Utils().parseStackTrace(arguments.throwable.stacktrace);
-				}
-			}
-			else {
-				stack = new Utils().parseStackTrace(arguments.throwable.getStackTrace());
-			}
-		}
-		return serializeJSON(stack);
 	}
 
 }
