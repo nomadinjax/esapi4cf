@@ -53,8 +53,13 @@ component extends="org.owasp.esapi.util.Object" {
 		if (structKeyExists(arguments, "cipher") && !isNull(arguments.cipher)) {
 			setCipherTransformation(arguments.cipher.getAlgorithm(), true);
 			setBlockSize(arguments.cipher.getBlockSize());
-			if (!isNull(arguments.cipher.getIV())) {
-				setIV(arguments.cipher.getIV());
+			var cipherIV = "";
+			try {
+				cipherIV = arguments.cipher.getIV();
+			}
+			catch (any e) {}
+			if (!isNull(cipherIV) && isObject(cipherIV)) {
+				setIV(cipherIV);
 			}
 		}
 		else {
@@ -231,8 +236,12 @@ component extends="org.owasp.esapi.util.Object" {
 	 */
 	public string function toString() {
 		var sb = createObject("java", "java.lang.StringBuilder").init("CipherSpec: ");
-		sb.append( getCipherTransformation() ).append("; keysize= ").append( getKeySize() );
-		sb.append(" bits; blocksize= ").append( getBlockSize() ).append(" bytes");
+		sb.append( getCipherTransformation() );
+		sb.append("; keysize= ");
+		sb.append( toString(getKeySize()) );
+		sb.append(" bits; blocksize= ");
+		sb.append( toString(getBlockSize()) );
+		sb.append(" bytes");
 		var iv = getIV();
 		var ivLen = "";
 		if (isBinary(iv)) {

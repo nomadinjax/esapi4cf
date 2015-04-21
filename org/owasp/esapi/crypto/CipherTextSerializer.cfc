@@ -368,12 +368,12 @@ component extends="org.owasp.esapi.util.Object" {
 		var KeyDerivationFunction = new KeyDerivationFunction(variables.ESAPI);
 
 		switch ( arguments.readKdfVers ) {
-		case KeyDerivationFunction.originalVersion:		// First version
+		case 20110203://KeyDerivationFunction.originalVersion:		// First version
 			return true;
 		// Add new versions here; hard coding is OK...
 		// case YYYYMMDD:
 		//	return true;
-		case KeyDerivationFunction.kdfVersion:			// Current version
+		case 20130830://KeyDerivationFunction.kdfVersion:			// Current version
 			return true;
 		default:
 			return false;

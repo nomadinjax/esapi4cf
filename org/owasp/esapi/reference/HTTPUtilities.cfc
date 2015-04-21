@@ -523,7 +523,11 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 	        try {
 	            var nvpair = listToArray(part, "=");
 				var name = variables.ESAPI.encoder().decodeFromURL(nvpair[1]);
-				var value = variables.ESAPI.encoder().decodeFromURL(nvpair[2]);
+				var value = "";
+				// url parameters may not always have a value
+				if (arrayLen(nvpair) > 1) {
+					value = variables.ESAPI.encoder().decodeFromURL(nvpair[2]);
+				}
 	            map[name] = value;
 	         }
 	         catch (org.owasp.esapi.errors.EncodingException e) {
@@ -676,7 +680,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
      * return the serialized ciphertext as a hex-encoded string.
      */
     private string function encryptString(required string plaintext) {
-        var pt = new PlainText(variables.ESAPI, plaintext);
+        var pt = new PlainText(variables.ESAPI, arguments.plaintext);
         var ct = variables.ESAPI.encryptor().encrypt(pt);
         var serializedCiphertext = ct.asPortableSerializedByteArray();
         return createObject("java", "org.owasp.esapi.codecs.Hex").encode(serializedCiphertext, false);
@@ -686,7 +690,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
      * to decrypt it using the new Encryptor decryption methods.
      */
     private string function decryptString(required string ciphertext) {
-        var serializedCiphertext = createObject("java", "org.owasp.esapi.codecs.Hex").decode(ciphertext);
+        var serializedCiphertext = createObject("java", "org.owasp.esapi.codecs.Hex").decode(arguments.ciphertext);
         var restoredCipherText = new CipherText(variables.ESAPI).fromPortableSerializedBytes(serializedCiphertext);
         var plaintext = variables.ESAPI.encryptor().decrypt(restoredCipherText);
         return plaintext.toString();

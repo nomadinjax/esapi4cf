@@ -475,7 +475,7 @@ component extends="org.owasp.esapi.util.Object" {
 	                     "computed and stored. Call the method " &
 	                     "computeAndStoreMAC(SecretKey) first before " &
 	                     "attempting serialization.";
-	        raiseException(EncryptionException("Can't serialize ciphertext info: Data integrity issue.", msg));
+	        raiseException(new EncryptionException(variables.ESAPI, "Can't serialize ciphertext info: Data integrity issue.", msg));
 	    }
 
 	    // OK, everything ready, so give it a shot.

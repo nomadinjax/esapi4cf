@@ -324,7 +324,7 @@ component extends="org.owasp.esapi.util.Object" {
             //
 			mac.update( createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromInt( ctr++ ) );
 			mac.update(label);
-			mac.update(javaCast("null", ""));
+			mac.update(toBinary(javaCast("null", "")));
 			mac.update(context); // This is problematic for us. See Jeff Walton's
 								  // analysis of ESAPI 2.0's KDF for details.
 								  // Maybe for 2.1, we'll see; 2.0 too close to GA.
