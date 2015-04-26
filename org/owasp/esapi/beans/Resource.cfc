@@ -16,7 +16,10 @@ component implements="org.owasp.esapi.Resource" extends="org.owasp.esapi.util.Ob
 
 	public org.owasp.esapi.Resource function init(required org.owasp.esapi.ESAPI ESAPI, required string baseName, required Locale) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.ResourceBundle = createObject("java", "java.util.ResourceBundle").getBundle(javaCast("string", arguments.baseName), arguments.Locale, createObject("java", "java.lang.Thread").currentThread().getContextClassLoader());
+		try {
+			variables.ResourceBundle = createObject("java", "java.util.ResourceBundle").getBundle(javaCast("string", arguments.baseName), arguments.Locale, createObject("java", "java.lang.Thread").currentThread().getContextClassLoader());
+		}
+		catch (java.util.MissingResourceException e) {}
 		return this;
 	}
 
