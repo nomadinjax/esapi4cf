@@ -13,6 +13,6 @@
 
 interface {
 
-	public org.owasp.esapi.beans.Resource function getResource(string baseName, Locale);
+	public org.owasp.esapi.Resource function getResource(string baseName, Locale);
 
 }

@@ -32,6 +32,6 @@ interface {
 	 * @return
 	 * 			The Logger associated with this module.
 	 */
-	public org.owasp.esapi.beans.Logger function getLogger(required string moduleName);
+	public org.owasp.esapi.Logger function getLogger(required string moduleName);
 
 }

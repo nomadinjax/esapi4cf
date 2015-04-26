@@ -20,7 +20,7 @@ component implements="org.owasp.esapi.LogFactory" extends="org.owasp.esapi.util.
 		return this;
 	}
 
-	public org.owasp.esapi.beans.Logger function getLogger(required string moduleName) {
+	public org.owasp.esapi.Logger function getLogger(required string moduleName) {
 		if (structKeyExists(variables.factory, arguments.moduleName)) {
 			return variables.factory[arguments.moduleName];
 		}
