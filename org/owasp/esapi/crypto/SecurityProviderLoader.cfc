@@ -82,7 +82,7 @@ component extends="org.owasp.esapi.util.Object" {
 
 	public SecurityProviderLoader function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("SecurityProviderLoader");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 		return this;
 	}
 

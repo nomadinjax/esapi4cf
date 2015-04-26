@@ -53,7 +53,7 @@ component extends="org.owasp.esapi.util.Exception" {
      */
 	public EnterpriseSecurityException function init(required org.owasp.esapi.ESAPI ESAPI, required string userMessage, required string logMessage, cause) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("EnterpriseSecurityException");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		if (structKeyExists(arguments, "cause")) {
 			super.init(arguments.userMessage, arguments.cause);

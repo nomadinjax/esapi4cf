@@ -72,7 +72,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 
 	public org.owasp.esapi.Encryptor function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("Encryptor");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		// Load the preferred JCE provider if one has been specified.
 	    try {

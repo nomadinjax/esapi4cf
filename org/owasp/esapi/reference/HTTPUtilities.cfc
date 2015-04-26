@@ -73,7 +73,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 
 	public org.owasp.esapi.HTTPUtilities function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("HTTPUtilities");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 		variables.maxBytes = variables.ESAPI.securityConfiguration().getAllowedFileUploadSize();
 
 		variables.currentRequest = new ThreadLocalRequest(variables.ESAPI);

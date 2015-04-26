@@ -73,7 +73,7 @@ component implements="org.owasp.esapi.HttpResponse" extends="org.owasp.esapi.uti
      */
     public org.owasp.esapi.HttpResponse function init(required org.owasp.esapi.ESAPI ESAPI, httpResponse) {
     	variables.ESAPI = arguments.ESAPI;
-    	variables.logger = variables.ESAPI.getLogger("SafeResponse");
+    	variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
     	if (structKeyExists(arguments, "httpResponse")) {
     		variables.httpResponse = arguments.httpResponse;

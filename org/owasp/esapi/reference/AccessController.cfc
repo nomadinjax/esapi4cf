@@ -20,7 +20,7 @@ component implements="org.owasp.esapi.AccessController" extends="org.owasp.esapi
 
 	public AccessController function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("DefaultAccessController");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		var policyDescriptor = new ACRPolicyFileLoader(variables.ESAPI);
 		var policyDTO = policyDescriptor.load();

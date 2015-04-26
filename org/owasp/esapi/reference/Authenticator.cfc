@@ -40,7 +40,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
 
 	public org.owasp.esapi.Authenticator function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("Authenticator");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		variables.currentUser = new ThreadLocalUser(variables.ESAPI);
 

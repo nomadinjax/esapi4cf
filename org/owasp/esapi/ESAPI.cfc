@@ -160,7 +160,7 @@ component extends="org.owasp.esapi.util.Object" {
 	 * @return The default Logger.
 	 */
 	public Logger function log() {
-        return logFactory().getLogger("DefaultLogger");
+        return logFactory().getLogger(getMetaData(this).fullName);
     }
 
 	/**

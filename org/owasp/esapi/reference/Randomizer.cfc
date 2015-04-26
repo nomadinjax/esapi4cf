@@ -27,7 +27,7 @@ component implements="org.owasp.esapi.Randomizer" extends="org.owasp.esapi.util.
 
 	public org.owasp.esapi.Randomizer function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("Randomizer");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 		return this;
 	}
 

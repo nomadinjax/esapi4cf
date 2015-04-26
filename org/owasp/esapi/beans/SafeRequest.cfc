@@ -39,7 +39,7 @@ component implements="org.owasp.esapi.HttpRequest" extends="org.owasp.esapi.util
      */
     public org.owasp.esapi.HttpRequest function init(required org.owasp.esapi.ESAPI ESAPI, httpRequest) {
     	variables.ESAPI = arguments.ESAPI;
-    	variables.logger = variables.ESAPI.getLogger("SafeRequest");
+    	variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
     	if (structKeyExists(arguments, "httpRequest")) {
     		variables.httpRequest = arguments.httpRequest;

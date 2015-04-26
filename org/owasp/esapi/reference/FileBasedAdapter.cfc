@@ -20,7 +20,7 @@ component implements="org.owasp.esapi.Adapter" extends="org.owasp.esapi.util.Obj
 
 	public org.owasp.esapi.Adapter function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("FileBasedAdapter");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		return this;
 	}

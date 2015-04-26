@@ -34,7 +34,7 @@ component implements="org.owasp.esapi.IntrusionDetector" extends="org.owasp.esap
 
     public org.owasp.esapi.IntrusionDetector function init(required org.owasp.esapi.ESAPI ESAPI) {
     	variables.ESAPI = arguments.ESAPI;
-    	variables.logger = variables.ESAPI.getLogger("IntrusionDetector");
+    	variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
     	return this;
 	}

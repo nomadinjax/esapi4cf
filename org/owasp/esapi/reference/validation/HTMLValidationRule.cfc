@@ -35,7 +35,7 @@ component extends="StringValidationRule" {
 			super.init( arguments.ESAPI, arguments.typeName );
 		}
 
-		variables.logger = variables.ESAPI.getLogger("HTMLValidationRule");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		variables.resourceStream = variables.ESAPI.securityConfiguration().getAntiSamyPolicyFile();
 		try {

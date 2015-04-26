@@ -56,7 +56,7 @@ component implements="org.owasp.esapi.Encoder" extends="org.owasp.esapi.util.Obj
 	 */
 	public org.owasp.esapi.Encoder function init(required org.owasp.esapi.ESAPI ESAPI, array codecNames) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("Encoder");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		if (isNull(arguments.codecNames)) {
 			variables.ESAPIEncoder = createObject("java", "org.owasp.esapi.ESAPI").encoder();

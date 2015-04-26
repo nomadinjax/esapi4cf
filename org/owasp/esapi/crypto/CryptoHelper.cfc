@@ -26,7 +26,7 @@ component extends="org.owasp.esapi.util.Object" {
 
 	public CryptoHelper function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("CryptoHelper");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		return this;
 	}

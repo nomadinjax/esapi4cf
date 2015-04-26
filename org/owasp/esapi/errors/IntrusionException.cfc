@@ -42,7 +42,7 @@ component extends="org.owasp.esapi.util.RuntimeException" {
      */
     public IntrusionException function init(required org.owasp.esapi.ESAPI ESAPI, required string userMessage, required string logMessage, cause) {
     	variables.ESAPI = arguments.ESAPI;
-    	variables.logger = variables.ESAPI.getLogger("IntrusionException");
+    	variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
         variables.logMessage = arguments.logMessage;
 

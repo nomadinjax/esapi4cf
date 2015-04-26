@@ -42,7 +42,7 @@ component extends="org.owasp.esapi.util.Object" {
 	 */
 	public PlainText function init(required org.owasp.esapi.ESAPI ESAPI, required str) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("PlainText");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		if (isNull(arguments.str)) {
 	    	raiseException(createObject("java", "java.lang.IllegalArgumentException").init("String representing plaintext cannot be null."));

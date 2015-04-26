@@ -97,7 +97,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 	 */
 	public AuthenticatedUser function init(required org.owasp.esapi.ESAPI ESAPI, required string accountName) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("AuthenticatedUser");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		variables.csrfToken = resetCSRFToken();
 

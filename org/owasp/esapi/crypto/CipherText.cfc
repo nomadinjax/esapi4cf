@@ -111,7 +111,7 @@ component extends="org.owasp.esapi.util.Object" {
      */
     public CipherText function init(required org.owasp.esapi.ESAPI ESAPI, CipherSpec cipherSpec, binary cipherText) {
     	variables.ESAPI = arguments.ESAPI;
-    	variables.logger = variables.ESAPI.getLogger("CipherText");
+    	variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
     	var KeyDerivationFunction = new KeyDerivationFunction(variables.ESAPI);
 

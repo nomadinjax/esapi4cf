@@ -54,7 +54,7 @@ component extends="org.owasp.esapi.util.Object" {
 
     public CipherTextSerializer function init(required org.owasp.esapi.ESAPI ESAPI, required cipherTextObj) {
     	variables.ESAPI = arguments.ESAPI;
-    	variables.logger = variables.ESAPI.getLogger("CipherTextSerializer");
+    	variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
     	if (isNull(arguments.cipherTextObj)) {
     		raiseException(createObject("java", "java.lang.IllegalArgumentException").init("CipherText object must not be null."));

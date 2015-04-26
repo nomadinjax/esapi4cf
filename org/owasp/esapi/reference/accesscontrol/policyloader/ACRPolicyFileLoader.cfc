@@ -16,7 +16,7 @@ component extends="org.owasp.esapi.util.Object" {
 
 	public ACRPolicyFileLoader function init(required org.owasp.esapi.ESAPI ESAPI) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("ACRPolicyFileLoader");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		return this;
 	}

@@ -81,7 +81,7 @@ component extends="org.owasp.esapi.util.Object" {
 	 */
 	public KeyDerivationFunction function init(required org.owasp.esapi.ESAPI ESAPI, prfAlg) {
 		variables.ESAPI = arguments.ESAPI;
-		variables.logger = variables.ESAPI.getLogger("KeyDerivationFunction");
+		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		if (structKeyExists(arguments, "prfAlg") && !isNull(arguments.prfAlg)) {
 			variables.prfAlg_ = arguments.prfAlg.getAlgName();
