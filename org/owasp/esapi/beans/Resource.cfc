@@ -32,7 +32,7 @@ component implements="org.owasp.esapi.Resource" extends="org.owasp.esapi.util.Ob
 		try {
 			return variables.ResourceBundle.getString(javaCast("string", arguments.key));
 		}
-		catch (java.util.MissingResourceException e) {}
+		catch (any e) {}
 		return "**" & arguments.key & "**";
 	}
 
