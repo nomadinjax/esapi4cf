@@ -30,16 +30,19 @@
 <body>
 
 <div class="container-fluid">
-<h1>Generating a new secret master key</h1>
-<p>Copy and paste these lines into ESAPI init configuration in Application.cfc##onApplicationStart().</p>
-<pre>
-application.ESAPI = new org.owasp.esapi.ESAPI({
-	&quot;Encryptor&quot;: {
-		&quot;MasterKey&quot;: &quot;#ESAPI.encoder().encodeForBase64(raw, false)#&quot;,
-		&quot;MasterSalt&quot;: &quot;#ESAPI.encoder().encodeForBase64(salt, false)#&quot;
-	}
-});
-</pre>
+	<h1>Generating a new secret master key/salt</h1>
+	<p>Copy and paste these lines into ESAPI init configuration in Application.cfc##onApplicationStart().</p>
+	<pre>
+	application.ESAPI = new org.owasp.esapi.ESAPI({
+		&quot;Encryptor&quot;: {
+			&quot;MasterKey&quot;: &quot;#ESAPI.encoder().encodeForBase64(raw, false)#&quot;,
+			&quot;MasterSalt&quot;: &quot;#ESAPI.encoder().encodeForBase64(salt, false)#&quot;
+		}
+	});
+	</pre>
+	<div class="alert alert-danger">
+		<p>Please note that once you set these that changing these keys would invalidate any data that has been encrypted or hashed by ESAPI.</p>
+	</div>
 </div>
 
 <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
