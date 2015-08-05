@@ -25,7 +25,7 @@ component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
 	variables.PREFERRED_ENCODING = "UTF-8";
 
 	variables.testForNull = false;
-	if (server.coldfusion.productName == "Railo") {
+	if (server.coldfusion.productName == "Railo" || server.coldfusion.productName == "Lucee") {
 		variables.testForNull = true;
 	}
 
@@ -90,15 +90,17 @@ component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
     	var instance = variables.ESAPI.validator();
     	var errors = {};
     	var jDateFormat = createObject("java", "java.text.DateFormat");
+    	var minDate = createDate(1900, 1, 1);
+        var maxDate = createDate(2100, 1, 1);
     	var Locale = createObject("java", "java.util.Locale");
-    	assertTrue(instance.getValidDate("datetest1", "June 23, 1967", jDateFormat.getDateInstance(jDateFormat.MEDIUM, Locale.US), false) != "");
-    	instance.getValidDate("datetest2", "freakshow", jDateFormat.getDateInstance(), false, errors);
+    	assertTrue(instance.getValidDate("datetest1", "June 23, 1967", jDateFormat.getDateInstance(jDateFormat.MEDIUM, Locale.US), minDate, maxDate, false) != "");
+    	instance.getValidDate("datetest2", "freakshow", jDateFormat.getDateInstance(), minDate, maxDate, false, errors);
     	assertEquals(1, errors.size());
 
     	// TODO: This test case fails due to an apparent bug in SimpleDateFormat
     	// Note: This seems to be fixed in JDK 6. Will leave it commented out since
     	//		 we only require JDK 5. -kww
-    	instance.getValidDate("test", "June 32, 2008", jDateFormat.getDateInstance(), false, errors);
+    	instance.getValidDate("test", "June 32, 2008", jDateFormat.getDateInstance(), minDate, maxDate, false, errors);
     	// assertEquals( 2, errors.size() );
     }
 
@@ -122,6 +124,8 @@ component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
     		var instance = variables.ESAPI.validator();
     		lenientDateTest = instance.getValidDate("datatest3-lenient", "15/2/2009 11:83:00",
     				                                jDateFormat.getDateInstance(jDateFormat.SHORT, Locale.US),
+    				                                createDate(2000, 1, 1),
+    				                                createDate(2100, 1, 1),
     				                                false);
     		fail("Failed to throw expected ValidationException when Validator.AcceptLenientDates set to false.");
     	} catch (org.owasp.esapi.errors.ValidationException ve) {
@@ -284,19 +288,21 @@ component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
         variables.System.out.println("isValidDate");
         var instance = variables.ESAPI.validator();
         var format = createObject("java", "java.text.SimpleDateFormat").getDateInstance();
-        assertTrue(instance.isValidDate("datetest1", "September 11, 2001", format, true));
+        var minDate = createDate(1900, 1, 1);
+        var maxDate = createDate(2100, 1, 1);
+        assertTrue(instance.isValidDate("datetest1", "September 11, 2001", format, minDate, maxDate, true));
         if (variables.testForNull) {
-       		assertFalse(instance.isValidDate("datetest2", javaCast("null", ""), format, false));
+       		assertFalse(instance.isValidDate("datetest2", javaCast("null", ""), format, minDate, maxDate, false));
         }
-        assertFalse(instance.isValidDate("datetest3", "", format, false));
+        assertFalse(instance.isValidDate("datetest3", "", format, minDate, maxDate, false));
 
         var errors = {};
-        assertTrue(instance.isValidDate("datetest1", "September 11, 2001", format, true, errors));
+        assertTrue(instance.isValidDate("datetest1", "September 11, 2001", format, minDate, maxDate, true, errors));
         assertTrue(errors.size()==0);
-        assertFalse(instance.isValidDate("datetest3", "", format, false, errors));
+        assertFalse(instance.isValidDate("datetest3", "", format, minDate, maxDate, false, errors));
         assertTrue(errors.size()==1);
        	if (variables.testForNull) {
-        	assertFalse(instance.isValidDate("datetest2", javaCast("null", ""), format, false, errors));
+        	assertFalse(instance.isValidDate("datetest2", javaCast("null", ""), format, minDate, maxDate, false, errors));
 	        assertTrue(errors.size()==2);
         }
     }

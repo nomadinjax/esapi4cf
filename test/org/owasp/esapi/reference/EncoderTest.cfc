@@ -22,7 +22,7 @@ component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
 	variables.PREFERRED_ENCODING = "UTF-8";
 
 	variables.testForNull = false;
-	if (server.coldfusion.productName == "Railo") {
+	if (server.coldfusion.productName == "Railo" || server.coldfusion.productName == "Lucee") {
 		variables.testForNull = true;
 	}
 

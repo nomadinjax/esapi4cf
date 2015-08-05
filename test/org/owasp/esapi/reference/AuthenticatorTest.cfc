@@ -25,7 +25,7 @@ component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
 	}
 
 	variables.testForNull = false;
-	if (server.coldfusion.productName == "Railo") {
+	if (server.coldfusion.productName == "Railo" || server.coldfusion.productName == "Lucee") {
 		variables.testForNull = true;
 	}
 
