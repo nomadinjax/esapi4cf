@@ -17,7 +17,7 @@
 	versionData = {};
 	versionData["lucee4"] = {
 		jvm: "1.8.0_45",
-		engine: "4.5.1.000",
+		engine: "4.5.1.022",
 		display: "Lucee 4.5.x"
 	};
 	versionData["railo4"] = {
