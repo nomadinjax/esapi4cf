@@ -24,6 +24,9 @@ component extends="org.owasp.esapi.util.Object" {
 		if (structKeyExists(server, "railo")) {
 			return server.railo.version;
 		}
+		else if (structKeyExists(server, "lucee")) {
+			return server.lucee.version;
+		}
 		return server.ColdFusion.ProductVersion;
 	}
 
