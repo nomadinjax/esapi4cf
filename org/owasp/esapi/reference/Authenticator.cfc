@@ -148,8 +148,8 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
      * @throws AuthenticationException if the submitted credentials are invalid.
      */
     private org.owasp.esapi.User function loginWithUsernameAndPassword(httpRequest=variables.ESAPI.httpUtilities().getCurrentRequest(), httpResponse=variables.ESAPI.httpUtilities().getCurrentResponse()) {
-        var username = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getUsernameParameterName());
-        var password = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getPasswordParameterName());
+        var httpUsername = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getUsernameParameterName());
+        var httpPassword = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getPasswordParameterName());
 
         // if a logged-in user is requesting to login, log them out first
         var user = getCurrentUser();
@@ -159,22 +159,21 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
         }
 
         // now authenticate with username and password
-        if (isNull(username) || isNull(password)) {
-            if (isNull(username)) {
-                username = "unspecified user";
+        if (isNull(httpUsername) || isNull(httpPassword)) {
+            if (isNull(httpUsername)) {
+                httpUsername = "unspecified user";
             }
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Authentication failed", "Authentication failed for " & username & " because of null username or password"));
+            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Authentication failed", "Authentication failed for " & httpUsername & " because of null username or password"));
         }
-        user = getUserByAccountName(username);
+        user = getUserByAccountName(httpUsername);
         if (isNull(user)) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Authentication failed", "Authentication failed because user " & username & " doesn't exist"));
+            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Authentication failed", "Authentication failed because user " & httpUsername & " doesn't exist"));
         }
-        user.loginWithPassword(password, arguments.httpRequest, arguments.httpResponse);
+        user.loginWithPassword(httpPassword, arguments.httpRequest, arguments.httpResponse);
 
         arguments.httpRequest.setAttribute(user.getCSRFToken(), "authenticated");
         return user;
     }
-
 
     public org.owasp.esapi.User function login(httpRequest=variables.ESAPI.httpUtilities().getCurrentRequest(), httpResponse=variables.ESAPI.httpUtilities().getCurrentResponse()) {
         if (isNull(arguments.httpRequest) || isNull(arguments.httpResponse)) {
