@@ -88,7 +88,7 @@ interface {
      *
      * @return the account id
      */
-	public numeric function getAccountId();
+	public function getAccountId();
 
 	/**
      * Gets this user's account name.

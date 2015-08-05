@@ -61,16 +61,16 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 	variables.lastHostAddress = "";
 
 	/** The last password change time for this user. */
-	variables.lastPasswordChangeTime = createObject("java", "java.util.Date").init(javaCast("long", 0));
+	variables.lastPasswordChangeTime = createDateTime(1970, 1, 1, 0, 0, 0);
 
 	/** The last login time for this user. */
-	variables.lastLoginTime = createObject("java", "java.util.Date").init(javaCast("long", 0));
+	variables.lastLoginTime = createDateTime(1970, 1, 1, 0, 0, 0);
 
 	/** The last failed login time for this user. */
-	variables.lastFailedLoginTime = createObject("java", "java.util.Date").init(javaCast("long", 0));
+	variables.lastFailedLoginTime = createDateTime(1970, 1, 1, 0, 0, 0);
 
 	/** The expiration date/time for this user's account. */
-	variables.expirationTime = createObject("java", "java.util.Date").init(javaCast("long", createObject("java", "java.lang.Long").MAX_VALUE));
+	variables.expirationTime = createDateTime(9999, 12, 31, 23, 59, 59);
 
 	/** The sessions this user is associated with */
 	variables.sessions = [];
@@ -141,7 +141,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 		variables.logger.info(variables.Logger.SECURITY_SUCCESS, new Utils().messageFormat("Account enabled: {0}", [getAccountName()]));
 	}
 
-	public numeric function getAccountId() {
+	public function getAccountId() {
 		return variables.accountId;
 	}
 
@@ -352,7 +352,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 		return variables.csrfToken;
 	}
 
-	public void function setAccountId(required numeric accountId) {
+	public void function setAccountId(required accountId) {
 		variables.accountId = arguments.accountId;
 	}
 
