@@ -11,6 +11,7 @@
  * LICENSE before you use, modify, and/or redistribute this software.
  */
 import "org.owasp.esapi.errors.ConfigurationException";
+import "org.owasp.esapi.errors.ValidationException";
 
 /**
  * A validator performs syntax and possibly semantic validation of a single
@@ -55,14 +56,14 @@ component extends="StringValidationRule" {
 		return this;
 	}
 
-	public function getValid(required string context, required string input, struct errorList) {
+	public function getValid(required string context, required input, struct errorList) {
 		if (structKeyExists(arguments, "errorList")) {
 			return super.getValid(arguments.context, arguments.input, arguments.errorList);
 		}
 		return invokeAntiSamy( arguments.context, arguments.input );
 	}
 
-	public string function sanitize( required string context, required string input ) {
+	public string function sanitize( required string context, required input ) {
 		var safe = "";
 		try {
 			safe = invokeAntiSamy( arguments.context, arguments.input );
@@ -72,14 +73,14 @@ component extends="StringValidationRule" {
 		return safe;
 	}
 
-	private string function invokeAntiSamy( required string context, required string input ) {
+	private string function invokeAntiSamy( required string context, required input ) {
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
 		// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-	    if ( StringUtilities.isEmpty(arguments.input) ) {
+	    if ( StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
 			if (variables.allowNull) {
 				return null;
 			}
-			raiseException(new ValidationException( arguments.context & " is required", "AntiSamy validation error: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			raiseException(new ValidationException(variables.ESAPI, arguments.context & " is required", "AntiSamy validation error: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 	    }
 
 		var canonical = super.getValid( arguments.context, arguments.input );
@@ -96,9 +97,9 @@ component extends="StringValidationRule" {
 			return test.getCleanHTML().trim();
 
 		} catch (org.owasp.validator.html.ScanException e) {
-			raiseException(new ValidationException( arguments.context & ": Invalid HTML input", "Invalid HTML input: context=" & arguments.context & " error=" & e.getMessage(), arguments.context, e ));
+			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input: context=" & arguments.context & " error=" & e.getMessage(), arguments.context, e ));
 		} catch (org.owasp.validator.html.PolicyException e) {
-			raiseException(new ValidationException( arguments.context & ": Invalid HTML input", "Invalid HTML input does not follow rules in antisamy-esapi.xml: context=" & arguments.context & " error=" & e.getMessage(), arguments.context, e ));
+			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input does not follow rules in antisamy-esapi.xml: context=" & arguments.context & " error=" & e.getMessage(), arguments.context, e ));
 		}
 	}
 }

@@ -32,21 +32,21 @@ component extends="BaseValidationRule" {
 		return this;
 	}
 
-	public function getValid(required string context, required string input, struct errorList) {
+	public function getValid(required string context, required input, struct errorList) {
 		if (structKeyExists(arguments, "errorList")) {
 			return super.getValid(arguments.context, arguments.input, arguments.errorList);
 		}
 		return safelyParse(arguments.context, arguments.input);
 	}
 
-	private function safelyParse(required string context, required string input) {
+	private function safelyParse(required string context, required input) {
 		// do not allow empty Strings such as "   " - so trim to ensure
 		// isEmpty catches "    "
 		if (!isNull(arguments.input)) arguments.input = trim(arguments.input);
 
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
 
-	    if ( StringUtilities.isEmpty(arguments.input) ) {
+	    if ( StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
 			if (variables.allowNull) {
 				return "";
 			}
@@ -75,7 +75,7 @@ component extends="BaseValidationRule" {
 		}
 	}
 
-	public numeric function sanitize( required string context, required string input ) {
+	public numeric function sanitize( required string context, required input ) {
 		var toReturn = createObject("java", "java.lang.Integer").valueOf( 0 );
 		try {
 			toReturn = safelyParse(arguments.context, arguments.input);

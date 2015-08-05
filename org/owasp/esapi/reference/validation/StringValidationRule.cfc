@@ -101,7 +101,7 @@ component extends="BaseValidationRule" {
 	 * @return input upon a successful check
 	 * @throws ValidationException if the check fails.
 	 */
-	private string function checkWhitelist(required string context, required string input, string orig=arguments.input) {
+	private string function checkWhitelist(required string context, required input, string orig=arguments.input) {
 		// check whitelist patterns
 		for (var p in variables.whitelistPatterns) {
 			if (!p.matcher(arguments.input).matches()) {
@@ -121,7 +121,7 @@ component extends="BaseValidationRule" {
 	 * @return input upon a successful check
 	 * @throws ValidationException if the check fails.
 	 */
-	private string function checkBlacklist(required string context, required string input, string orig=arguments.input) {
+	private string function checkBlacklist(required string context, required input, string orig=arguments.input) {
 		// check blacklist patterns
 		for (var p in variables.blacklistPatterns) {
 			if ( p.matcher(arguments.input).matches() ) {
@@ -141,7 +141,7 @@ component extends="BaseValidationRule" {
 	 * @return input upon a successful check
 	 * @throws ValidationException if the check fails.
 	 */
-	private string function checkLength(required string context, required string input, string orig=arguments.input) {
+	private string function checkLength(required string context, required input, string orig=arguments.input) {
 		if (len(arguments.input) < variables.minLength) {
 			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. The minimum length of " & variables.minLength & " characters was not met.", "Input does not meet the minimum length of " & variables.minLength & " by " & (variables.minLength - len(arguments.input)) & " characters: context=" & arguments.context & ", type=" & getTypeName() & "), input=" & arguments.input & (arguments.input == arguments.orig ? "" : ", orig=" & arguments.orig), arguments.context));
 		}
@@ -163,9 +163,9 @@ component extends="BaseValidationRule" {
 	 * @return input upon a successful check
 	 * @throws ValidationException if the check fails.
 	 */
-	private string function checkEmpty(required string context, required string input, string orig=arguments.input) {
+	private string function checkEmpty(required string context, required input, string orig=arguments.input) {
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
-		if(!StringUtilities.isEmpty(arguments.input)) {
+		if(!StringUtilities.isEmpty(javaCast("string", arguments.input))) {
 			return arguments.input;
 		}
 		if(variables.allowNull) {
@@ -174,7 +174,7 @@ component extends="BaseValidationRule" {
 		raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input required.", "Input required: context=" & arguments.context & ", input=" & arguments.input & (arguments.input == arguments.orig ? "" : ", orig=" & arguments.orig), arguments.context));
 	}
 
-	public function getValid(required string context, required string input, struct errorList) {
+	public function getValid(required string context, required input, struct errorList) {
 		if (structKeyExists(arguments, "errorList")) {
 			return super.getValid(arguments.context, arguments.input, arguments.errorList);
 		}
@@ -227,7 +227,7 @@ component extends="BaseValidationRule" {
 	}
 
 
-	public string function sanitize( required string context, required string input ) {
+	public string function sanitize( required string context, required input ) {
 		return whitelist( arguments.input, variables.encoder.CHAR_ALPHANUMERICS );
 	}
 

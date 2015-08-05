@@ -43,7 +43,7 @@ component extends="BaseValidationRule" {
         variables.format.setLenient( variables.ESAPI.securityConfiguration().getLenientDatesAccepted() );
     }
 
-	public function getValid(required string context, required string input, struct errorList) {
+	public function getValid(required string context, required input, struct errorList) {
 		if (structKeyExists(arguments, "errorList")) {
 			return super.getValid(arguments.context, arguments.input, arguments.errorList);
 		}
@@ -53,7 +53,7 @@ component extends="BaseValidationRule" {
     /**
      * Calls sanitize(String, String, DateFormat) with DateFormat.getInstance()
      */
-	public date function sanitize( required string context, required string input )  {
+	public date function sanitize( required string context, required input )  {
 		var date = createObject("java", "java.lang.Date").init(0);
 		try {
 			date = safelyParse(arguments.context, arguments.input);
@@ -63,7 +63,7 @@ component extends="BaseValidationRule" {
 		return date;
 	}
 
-	private date function safelyParse(required string context, required string input) {
+	private date function safelyParse(required string context, required input) {
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
 		// CHECKME should this allow empty Strings? "   " use IsBlank instead?
 		if (StringUtilities.isEmpty(javaCast("string", arguments.input))) {

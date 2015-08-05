@@ -42,7 +42,7 @@ interface {
 	/**
 	 * Check if the input is valid, throw an Exception otherwise
 	 */
-	public void function assertValid(required string context, required string input);
+	public void function assertValid(required string context, required input);
 
 	/**
 	 * Get a validated value, add the errors to an existing error list
@@ -55,21 +55,21 @@ interface {
 	 * @throws ValidationException
 	 *             if any validation rules fail
 	 */
-	public function getValid(required string context, required string input, struct errorList);
+	public function getValid(required string context, required input, struct errorList);
 
 	/**
 	 * Try to call get valid, then call sanitize, finally return a default value
 	 */
-	public function getSafe(required string context, required string input);
+	public function getSafe(required string context, required input);
 
 	/**
 	 * @return true if the input passes validation
 	 */
-	public boolean function isValid(required string context, required string input);
+	public boolean function isValid(required string context, required input);
 
 	/**
 	 * String the input of all chars contained in the list
 	 */
-	public string function whitelist(required string input, required array whitelist);
+	public string function whitelist(required input, required array whitelist);
 
 }

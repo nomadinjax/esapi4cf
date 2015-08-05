@@ -94,7 +94,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 	 * @return The canonicalized user input.
 	 * @throws IntrusionException
 	 */
-    public boolean function isValidInput(required string context, required string input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize=true, struct errors) {
+    public boolean function isValidInput(required string context, required input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize=true, struct errors) {
 		try {
 			getValidInput( arguments.context, arguments.input, arguments.type, arguments.maxLength, arguments.allowNull, arguments.canonicalize);
 			return true;
@@ -121,7 +121,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 	 * @return The user input, may be canonicalized if canonicalize argument is true
 	 * @throws IntrusionException
 	 */
-	public string function getValidInput(required string context, required string input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize=true, struct errors) {
+	public string function getValidInput(required string context, required input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize=true, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidInput(arguments.context, arguments.input, arguments.type, arguments.maxLength, arguments.allowNull, arguments.canonicalize);
@@ -146,9 +146,9 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public boolean function isValidDate(required string context, required string input, required format, required boolean allowNull, struct errors) {
+	public boolean function isValidDate(required string context, required input, required format, required date minValue, required date maxValue, required boolean allowNull, struct errors) {
 		try {
-			getValidDate( arguments.context, arguments.input, arguments.format, arguments.allowNull);
+			getValidDate( arguments.context, arguments.input, arguments.format, arguments.minValue, arguments.maxValue, arguments.allowNull);
 			return true;
 		} catch(org.owasp.esapi.errors.ValidationException e ) {
 			if (structKeyExists(arguments, "errors")) {
@@ -158,10 +158,10 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public function getValidDate(required string context, required string input, required format, required boolean allowNull, struct errors) {
+	public function getValidDate(required string context, required input, required format, required date minValue, required date maxValue, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
-				return getValidDate(arguments.context, arguments.input, arguments.format, arguments.allowNull);
+				return getValidDate(arguments.context, arguments.input, arguments.format, arguments.minValue, arguments.maxValue, arguments.allowNull);
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
@@ -175,7 +175,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public boolean function isValidSafeHTML(required string context, required string input, required numeric maxLength, required boolean allowNull, struct errors) {
+	public boolean function isValidSafeHTML(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors) {
 		try {
 			getValidSafeHTML( arguments.context, arguments.input, arguments.maxLength, arguments.allowNull);
 			return true;
@@ -190,7 +190,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 	/**
 	 * This implementation relies on the OWASP AntiSamy project.
 	 */
-	public string function getValidSafeHTML(required string context, required string input, required numeric maxLength, required boolean allowNull, struct errors) {
+	public string function getValidSafeHTML(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidSafeHTML(arguments.context, arguments.input, arguments.maxLength, arguments.allowNull);
@@ -208,7 +208,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public boolean function isValidCreditCard(required string context, required string input, required boolean allowNull, struct errors) {
+	public boolean function isValidCreditCard(required string context, required input, required boolean allowNull, struct errors) {
 		try {
 			getValidCreditCard( arguments.context, arguments.input, arguments.allowNull);
 			return true;
@@ -220,7 +220,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public string function getValidCreditCard(required string context, required string input, required boolean allowNull, struct errors) {
+	public string function getValidCreditCard(required string context, required input, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidCreditCard(arguments.context, arguments.input, arguments.allowNull);
@@ -241,7 +241,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 	 * is a symlink. For example, on MacOS X, /etc is actually /private/etc. If you mean to use /etc, use its real
 	 * path (/private/etc), not the symlink (/etc).</p>
 	 */
-	public boolean function isValidDirectoryPath(required string context, required string input, required parent, required boolean allowNull, struct errors) {
+	public boolean function isValidDirectoryPath(required string context, required input, required parent, required boolean allowNull, struct errors) {
 		try {
 			getValidDirectoryPath( arguments.context, arguments.input, arguments.parent, arguments.allowNull);
 			return true;
@@ -253,7 +253,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public string function getValidDirectoryPath(required string context, required string input, required parent, required boolean allowNull, struct errors) {
+	public string function getValidDirectoryPath(required string context, required input, required parent, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidDirectoryPath(arguments.context, arguments.input, arguments.parent, arguments.allowNull);
@@ -306,7 +306,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public boolean function isValidFileName(required string context, required string input, required array allowedExtensions, required boolean allowNull, struct errors) {
+	public boolean function isValidFileName(required string context, required input, required array allowedExtensions, required boolean allowNull, struct errors) {
 		try {
 			getValidFileName( arguments.context, arguments.input, arguments.allowedExtensions, arguments.allowNull);
 			return true;
@@ -318,7 +318,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public string function getValidFileName(required string context, required string input, required array allowedExtensions, required boolean allowNull, struct errors) {
+	public string function getValidFileName(required string context, required input, required array allowedExtensions, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidFileName(arguments.context, arguments.input, arguments.allowedExtensions, arguments.allowNull);
@@ -370,7 +370,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public boolean function isValidNumber(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
+	public boolean function isValidNumber(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
 		try {
 			getValidNumber(arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
 			return true;
@@ -382,7 +382,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public function getValidNumber(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
+	public function getValidNumber(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidNumber(arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
@@ -399,7 +399,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public boolean function isValidDouble(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
+	public boolean function isValidDouble(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
         try {
             getValidDouble( arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull );
             return true;
@@ -411,7 +411,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
         }
 	}
 
-	public function getValidDouble(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
+	public function getValidDouble(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidDouble(arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
@@ -428,7 +428,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public boolean function isValidInteger(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
+	public boolean function isValidInteger(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
 		try {
 			getValidInteger( arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
 			return true;
@@ -440,7 +440,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public function getValidInteger(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
+	public function getValidInteger(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidInteger(arguments.context, arguments.input, arguments.minValue, arguments.maxValue, arguments.allowNull);
@@ -529,7 +529,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
     /**
 	 * Returns true if input is a valid list item.
 	 */
-	public boolean function isValidListItem(required string context, required string input, required array list, struct errors) {
+	public boolean function isValidListItem(required string context, required input, required array list, struct errors) {
 		try {
 			getValidListItem( arguments.context, arguments.input, arguments.list);
 			return true;
@@ -548,7 +548,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
      *
      * @param errors
      */
-	public string function getValidListItem(required string context, required string input, required array list, struct errors) {
+	public string function getValidListItem(required string context, required input, required array list, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidListItem(arguments.context, arguments.input, arguments.list);
@@ -614,7 +614,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
     /**
 	 * Returns true if input is valid printable ASCII characters (32-126).
 	 */
-	public boolean function isValidPrintable(required string context, required string input, required numeric maxLength, required boolean allowNull, struct errors) {
+	public boolean function isValidPrintable(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors) {
 		try {
 			getValidPrintable( arguments.context, arguments.input, arguments.maxLength, arguments.allowNull);
 			return true;
@@ -633,7 +633,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
      * @param errors
      * @throws IntrusionException
      */
-	public string function getValidPrintable(required string context, required string input, required numeric maxLength, required boolean allowNull, struct errors) {
+	public string function getValidPrintable(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidPrintable(arguments.context, arguments.input, arguments.maxLength, arguments.allowNull);
@@ -668,7 +668,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
     /**
 	 * Returns true if input is a valid redirect location.
 	 */
-	public boolean function isValidRedirectLocation(required string context, required string input, required boolean allowNull, struct errors) {
+	public boolean function isValidRedirectLocation(required string context, required input, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			return variables.ESAPI.validator().isValidInput( arguments.context, arguments.input, "Redirect", 512, arguments.allowNull, errors);
 		}
@@ -684,7 +684,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
      *
      * @param errors
      */
-	public string function getValidRedirectLocation(required string context, required string input, required boolean allowNull, struct errors) {
+	public string function getValidRedirectLocation(required string context, required input, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidRedirectLocation(arguments.context, arguments.input, arguments.allowNull);

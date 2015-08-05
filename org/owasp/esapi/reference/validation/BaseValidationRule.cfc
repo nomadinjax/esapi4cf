@@ -50,11 +50,11 @@ component implements="org.owasp.esapi.ValidationRule" extends="org.owasp.esapi.u
 		variables.encoder = arguments.encoder;
 	}
 
-	public void function assertValid(required string context, required string input) {
+	public void function assertValid(required string context, required input) {
 		getValid( arguments.context, arguments.input );
 	}
 
-	public function getValid(required string context, required string input, struct errorList) {
+	public function getValid(required string context, required input, struct errorList) {
 		var valid = "";
 		try {
 			valid = getValid(arguments.context, arguments.input);
@@ -64,7 +64,7 @@ component implements="org.owasp.esapi.ValidationRule" extends="org.owasp.esapi.u
 		return valid;
 	}
 
-	public function getSafe(required string context, required string input) {
+	public function getSafe(required string context, required input) {
 		var valid = "";
 		try {
 			valid = getValid( arguments.context, arguments.input );
@@ -87,7 +87,7 @@ component implements="org.owasp.esapi.ValidationRule" extends="org.owasp.esapi.u
 	 */
 //	protected abstract Object sanitize( String context, String input );
 
-	public boolean function isValid(required string context, required string input) {
+	public boolean function isValid(required string context, required input) {
 		var valid = false;
 		try {
 			getValid( arguments.context, arguments.input );
@@ -106,7 +106,7 @@ component implements="org.owasp.esapi.ValidationRule" extends="org.owasp.esapi.u
 	 * @param whitelist allowed characters
 	 * @return input stripped of all chars that aren't in the whitelist
 	 */
-	public string function whitelist(required string input, required array whitelist) {
+	public string function whitelist(required input, required array whitelist) {
 		var stripped = createObject("java", "java.lang.StringBuilder").init();
 		for (var i = 1; i <= len(arguments.input); i++) {
 			var c = mid(arguments.input, i, 1);

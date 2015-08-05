@@ -51,7 +51,7 @@ component extends="BaseValidationRule" {
 		return ccr;
 	}
 
-	public function getValid(required string context, required string input, struct errorList) {
+	public function getValid(required string context, required input, struct errorList) {
 		if (structKeyExists(arguments, "errorList")) {
 			return super.getValid(arguments.context, arguments.input, arguments.errorList);
 		}
@@ -59,7 +59,7 @@ component extends="BaseValidationRule" {
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
 
 		// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-	    if ( StringUtilities.isEmpty(arguments.input) ) {
+	    if ( StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
 			if (variables.allowNull) {
 				return null;
 			}
@@ -108,7 +108,7 @@ component extends="BaseValidationRule" {
 		return sum % 10 == 0;
 	}
 
-	public string function sanitize( required string context, required string input ) {
+	public string function sanitize( required string context, required input ) {
 		return whitelist( arguments.input, variables.encoder.CHAR_DIGITS );
 	}
 

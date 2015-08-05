@@ -33,7 +33,7 @@ interface {
 	/**
 	 * Calls isValidInput and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidInput(required string context, required string input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize, struct errors);
+	public boolean function isValidInput(required string context, required input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize, struct errors);
 
 	/**
 	 * Returns validated input as a String with optional canonicalization. Invalid input will generate a descriptive ValidationException,
@@ -57,12 +57,12 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public string function getValidInput(required string context, required string input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize, struct errors);
+	public string function getValidInput(required string context, required input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize, struct errors);
 
 	/**
 	 * Calls isValidDate and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidDate(required string context, required string input, required format, required boolean allowNull, struct errors);
+	public boolean function isValidDate(required string context, required input, required format, required date minValue, required date maxValue, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a valid date as a Date. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack
@@ -82,12 +82,12 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public function getValidDate(required string context, required string input, required format, required boolean allowNull, struct errors);
+	public function getValidDate(required string context, required input, required format, required date minValue, required date maxValue, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidSafeHTML and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidSafeHTML(required string context, required string input, required numeric maxLength, required boolean allowNull, struct errors);
+	public boolean function isValidSafeHTML(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns canonicalized and validated "safe" HTML that does not contain unwanted scripts in the body, attributes, CSS, URLs, or anywhere else.
@@ -108,12 +108,12 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public string function getValidSafeHTML(required string context, required string input, required numeric maxLength, required boolean allowNull, struct errors);
+	public string function getValidSafeHTML(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidCreditCard and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidCreditCard(required string context, required string input, required boolean allowNull, struct errors);
+	public boolean function isValidCreditCard(required string context, required input, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a canonicalized and validated credit card number as a String. Invalid input
@@ -132,12 +132,12 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public string function getValidCreditCard(required string context, required string input, required boolean allowNull, struct errors);
+	public string function getValidCreditCard(required string context, required input, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidDirectoryPath and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidDirectoryPath(required string context, required string input, required parent, required boolean allowNull, struct errors);
+	public boolean function isValidDirectoryPath(required string context, required input, required parent, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a canonicalized and validated directory path as a String, provided that the input
@@ -158,12 +158,12 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public string function getValidDirectoryPath(required string context, required string input, required parent, required boolean allowNull, struct errors);
+	public string function getValidDirectoryPath(required string context, required input, required parent, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidFileName with the default list of allowedExtensions
 	 */
-	public boolean function isValidFileName(required string context, required string input, required array allowedExtensions, required boolean allowNull, struct errors);
+	public boolean function isValidFileName(required string context, required input, required array allowedExtensions, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a canonicalized and validated file name as a String. Implementors should check for allowed file extensions here, as well as allowed file name characters, as declared in "ESAPI.properties". Invalid input
@@ -182,12 +182,12 @@ interface {
      * @throws ValidationException
      * @throws IntrusionException
 	 */
-	public string function getValidFileName(required string context, required string input, required array allowedExtensions, required boolean allowNull, struct errors);
+	public string function getValidFileName(required string context, required input, required array allowedExtensions, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidNumber and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidNumber(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
+	public boolean function isValidNumber(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a validated number as a double within the range of minValue to maxValue. Invalid input
@@ -210,12 +210,12 @@ interface {
      * @throws ValidationException
      * @throws IntrusionException
 	 */
-	public function getValidNumber(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
+	public function getValidNumber(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidInteger and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidInteger(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
+	public boolean function isValidInteger(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a validated integer. Invalid input
@@ -238,12 +238,12 @@ interface {
      * @throws ValidationException
      * @throws IntrusionException
 	 */
-	public function getValidInteger(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
+	public function getValidInteger(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidDouble and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidDouble(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
+	public boolean function isValidDouble(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a validated real number as a double. Invalid input
@@ -266,7 +266,7 @@ interface {
      * @throws ValidationException
      * @throws IntrusionException
 	 */
-	public function getValidDouble(required string context, required string input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
+	public function getValidDouble(required string context, required input, required numeric minValue, required numeric maxValue, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidFileContent and returns true if no exceptions are thrown.
@@ -325,7 +325,7 @@ interface {
 	/**
 	 * Calls getValidListItem and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidListItem(required string context, required string input, required array list, struct errors);
+	public boolean function isValidListItem(required string context, required input, required array list, struct errors);
 
 	/**
 	 * Returns the list item that exactly matches the canonicalized input. Invalid or non-matching input
@@ -344,7 +344,7 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public string function getValidListItem(required string context, required string input, required array list, struct errors);
+	public string function getValidListItem(required string context, required input, required array list, struct errors);
 
 	/**
 	 * Calls assertValidHTTPRequestParameterSet and returns true if no exceptions are thrown.
@@ -371,7 +371,7 @@ interface {
 	/**
 	 * Calls getValidPrintable and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidPrintable(required string context, required string input, required numeric maxLength, required boolean allowNull, struct errors);
+	public boolean function isValidPrintable(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns canonicalized and validated printable characters as a String. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack
@@ -390,12 +390,12 @@ interface {
 	 *
 	 *  @throws ValidationException
 	 */
-	public string function getValidPrintable(required string context, required string input, required numeric maxLength, required boolean allowNull, struct errors);
+	public string function getValidPrintable(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidRedirectLocation and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidRedirectLocation(required string context, required string input, required boolean allowNull, struct errors);
+	public boolean function isValidRedirectLocation(required string context, required input, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a canonicalized and validated redirect location as a String. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack
@@ -413,7 +413,7 @@ interface {
 	 *  @throws ValidationException
 	 *  @throws IntrusionException
 	 */
-	public string function getValidRedirectLocation(required string context, required string input, required boolean allowNull, struct errors);
+	public string function getValidRedirectLocation(required string context, required input, required boolean allowNull, struct errors);
 
 	/**
 	 * Reads from an input stream until end-of-line or a maximum number of

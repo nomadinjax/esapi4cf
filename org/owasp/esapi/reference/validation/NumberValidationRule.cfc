@@ -32,14 +32,14 @@ component extends="BaseValidationRule" {
 		return this;
 	}
 
-	public function getValid( required string context, required string input, struct errorList ) {
+	public function getValid( required string context, required input, struct errorList ) {
 		if (structKeyExists(arguments, "errorList")) {
 			return super.getValid(arguments.context, arguments.input, arguments.errorList);
 		}
 		return safelyParse(arguments.context, arguments.input);
 	}
 
-	public numeric function sanitize( required string context, required string input ) {
+	public numeric function sanitize( required string context, required input ) {
 		var toReturn = createObject("java", "java.lang.Double").valueOf(0);
 		try {
 			toReturn = safelyParse(arguments.context, arguments.input);
@@ -64,12 +64,12 @@ component extends="BaseValidationRule" {
 	//2^(-1022) ­ 2^(-1075)
 	variables.smallBad = variables.tiny.subtract(variables.one.divide(variables.two.pow(1075)));
 
-	private function safelyParse(required string context, required string input) {
+	private function safelyParse(required string context, required input) {
 		var Double = createObject("java", "java.lang.Double");
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
 
 		// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-	    if ( StringUtilities.isEmpty(arguments.input) ) {
+	    if ( StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
 			if (variables.allowNull) {
 				return "";
 			}
