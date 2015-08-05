@@ -12,12 +12,13 @@
  */
 interface {
 
-	public function getUserByAccountId(required numeric accountId);
+	public function getUserByAccountId(required accountId);
 	public function getUserByAccountName(required string accountName);
 	public array function getUserNames();
 	public void function saveUser(required org.owasp.esapi.User user);
 	public void function removeUser(required org.owasp.esapi.User user);
 	public void function savePasswordHashes(required org.owasp.esapi.User user, required array hashes);
 	public array function getAllHashedPasswords(required org.owasp.esapi.User user);
+	public array function getOldPasswordHashes(required org.owasp.esapi.User user);
 
 }

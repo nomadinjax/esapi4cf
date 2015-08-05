@@ -213,8 +213,13 @@ component extends="org.owasp.esapi.util.Object" {
 	 * Returns the implemented component containing the access to data.
 	 */
 	public Adapter function getAdapter() {
-		if (structKeyExists(variables, "Adapter") && isInstanceOf(variables.Adapter, "org.owasp.esapi.Adapter")) {
-			return variables.Adapter;
+		// FIXME: CF11 not sure why isInstanceOf() returns false when should be true
+		//if (structKeyExists(variables, "Adapter") && isInstanceOf(variables.Adapter, "org.owasp.esapi.Adapter")) {
+		if (structKeyExists(variables, "Adapter")) {
+			var implements = structKeyList(getMetaData(variables.Adapter).implements);
+			if (implements == "org.owasp.esapi.Adapter") {
+				return variables.Adapter;
+			}
 		}
 		raiseException(new ConfigurationException("ESAPI Configuration Error: Either no Adapter object has been defined or it does not implement the Adapter interface."));
 	}

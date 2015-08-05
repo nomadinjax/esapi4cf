@@ -52,7 +52,7 @@ component implements="org.owasp.esapi.Adapter" extends="org.owasp.esapi.util.Obj
      */
     variables.userMap = {};
 
-	public function getUserByAccountId(required numeric accountId) {
+	public function getUserByAccountId(required accountId) {
         loadUsersIfNecessary();
         if (structKeyExists(variables.userMap, arguments.accountId)) {
         	return variables.userMap[arguments.accountId];
@@ -338,7 +338,7 @@ component implements="org.owasp.esapi.Adapter" extends="org.owasp.esapi.util.Obj
      * @param user he user whose old password hashes should be returned
      * @return the specified User's old password hashes
      */
-    package array function getOldPasswordHashes(required org.owasp.esapi.User user) {
+    public array function getOldPasswordHashes(required org.owasp.esapi.User user) {
         var hashes = getAllHashedPasswords(arguments.user);
         if (hashes.size() > 1) {
             return duplicate(hashes.subList(1, hashes.size() - 1));
