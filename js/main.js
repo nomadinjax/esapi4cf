@@ -46,9 +46,11 @@
 						+ '<ul class="dropdown-menu">'
 							+ '<li><a href="https://github.com/damonmiller/esapi4cf">View on GitHub</a></li>'
 							+ '<li class="divider"></li>'
-							+ '<li class="dropdown-header">Download Latest</li>'
-							+ '<li><a href="https://github.com/damonmiller/esapi4cf/archive/v1.1.1a.zip">.zip file</a></li>'
-							+ '<li><a href="https://github.com/damonmiller/esapi4cf/archive/v1.1.1a.tar.gz">.tar.gz file</a></li>'
+							+ '<li class="dropdown-header">Download v2</li>'
+							+ '<li><a href="https://github.com/damonmiller/esapi4cf/archive/master.zip">.zip file</a></li>'
+							+ '<li class="dropdown-header">Download v1 <span class="label label-warning">legacy</span></li>'
+							+ '<li><a href="https://github.com/damonmiller/esapi4cf/archive/v1.2.0a.zip">.zip file</a></li>'
+							+ '<li><a href="https://github.com/damonmiller/esapi4cf/archive/v1.2.0a.tar.gz">.tar.gz file</a></li>'
 						+ '</ul>'
 					+ '</li>'
 				+ '</ul>'
@@ -64,7 +66,7 @@
 		}
 		
 		$("#bannerNav").append(createTopNav());
-		$("#copyright").html("Copyright &#169; 2014 OWASP ESAPI4CF");
+		$("#copyright").html("Copyright &#169; " + new Date().getFullYear() + " OWASP ESAPI4CF");
 		
 	});
 }(window.jQuery);
