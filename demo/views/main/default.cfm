@@ -16,17 +16,17 @@
 	// NOTE: maintain this list with each release
 	versionData = {};
 	versionData["lucee4"] = {
-		jvm: "1.8.0_45",
+		jvm: "1.8.0_51",
 		engine: "4.5.1.022",
 		display: "Lucee 4.5.x"
 	};
 	versionData["railo4"] = {
-		jvm: "1.8.0_45",
+		jvm: "1.8.0_51",
 		engine: "4.2.1.008",
 		display: "Railo 4.2.x"
 	};
 	versionData["coldfusion11"] = {
-		jvm: "1.8.0_45",
+		jvm: "1.8.0_51",
 		engine: "11,0,05,293506",
 		display: "ColdFusion 11.x"
 	};
@@ -109,7 +109,7 @@
 		</div>
 		<div class="col-md-3">
 			<h2>Tests</h2>
-			<p>The #Version.getESAPI4CFName()# TestBox runner is included and can be run locally for you here: <a href="../test/runner.cfm">Click Here</a>.</p>
+			<p>The #Version.getESAPI4CFName()# TestBox browser is included and can be run locally for you here: <a href="../test/">Click Here</a>.</p>
 			<p><em>Compatible with:</em> <small class="label label-info">#versionData["lucee4"].display#</small> <small class="label label-info">#versionData["coldfusion11"].display#</small></p>
 		</div>
 	</div>
