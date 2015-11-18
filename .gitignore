@@ -179,4 +179,5 @@ pip-log.txt
 #################
 /WEB-INF
 /testbox
+/apiref
 
