@@ -19,6 +19,7 @@ import "org.owasp.esapi.crypto.CipherText";
 import "org.owasp.esapi.errors.AccessControlException";
 import "org.owasp.esapi.errors.IntrusionException";
 import "org.owasp.esapi.errors.EncryptionException";
+import "org.owasp.esapi.errors.ValidationUploadException";
 
 /**
  * Reference implementation of the HTTPUtilities interface. This implementation
@@ -330,36 +331,40 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 			}
 		}
 
-		var ServletFileUpload = createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload");
-		var DiskFileItemFactory = createObject("java", "org.apache.commons.fileupload.disk.DiskFileItemFactory");
-
 		var newFiles = [];
-		try {
-			var httpSession = arguments.httpRequest.getSession(false);
-			if (!ServletFileUpload.isMultipartContent(arguments.httpRequest)) {
+		//try {
+			//var httpSession = arguments.httpRequest.getSession(false);
+
+			var realHttpRequest = arguments.httpRequest;
+			if (isInstanceOf(realHttpRequest, "org.owasp.esapi.Beans.SafeRequest")) {
+				realHttpRequest = realHttpRequest.getHttpServletRequest();
+			}
+
+			var ServletFileUpload = createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload");
+			if (!ServletFileUpload.isMultipartContent(realHttpRequest)) {
 				raiseException(new ValidationUploadException(variables.ESAPI, "Upload failed", "Not a multipart request"));
 			}
 
 			// this factory will store ALL files in the temp directory,
 			// regardless of size
-			var factory = new DiskFileItemFactory(0, tempDir);
-			var upload = new ServletFileUpload(factory);
-			upload.setSizeMax(maxBytes);
+			var factory = createObject("java", "org.apache.commons.fileupload.disk.DiskFileItemFactory").init(0, tempDir);
+			var upload = ServletFileUpload.init(factory);
+			upload.setSizeMax(variables.maxBytes);
 
 			// Create a progress listener
 			/*var progressListener = new ProgressListener() {
-				private long megaBytes = -1;
-				private long progress = 0;
+				var megaBytes = -1;
+				var progress = 0;
 
-				public void update(long pBytesRead, long pContentLength, int pItems) {
+				public void function update(required numeric pBytesRead, required numeric pContentLength, required numeric pItems) {
 					if (pItems == 0)
 						return;
-					long mBytes = pBytesRead / 1000000;
+					var mBytes = pBytesRead / 1000000;
 					if (megaBytes == mBytes)
 						return;
 					megaBytes = mBytes;
-					progress = (long) (((double) pBytesRead / (double) pContentLength) * 100);
-					if ( httpSession != null ) {
+					progress = ((pBytesRead / pContentLength) * 100);
+					if (!isNull(httpSession)) {
 					    httpSession.setAttribute("progress", Long.toString(progress));
 					}
 					// variables.logger.logSuccess(variables.Logger.SECURITY, "   Item " & pItems & " (" & progress & "% of " & pContentLength & " bytes]");
@@ -367,53 +372,53 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 			};
 			upload.setProgressListener(progressListener);*/
 
-			var items = upload.parseRequest(httpRequest);
-         for (var item in items)
-         {
-            if (!item.isFormField() && !isNull(item.getName()) && item.getName() != "")
-            {
+			var items = upload.parseRequest(realHttpRequest);
+
+			var src = createObject("java", "org.apache.commons.fileupload.servlet.ServletRequestContext").init(realHttpRequest);
+			writedump(src);
+
+			var iter = upload.getItemIterator(src);
+			writedump(iter.hasNext());
+
+
+			for (var item in items) {
+				if (!item.isFormField() && !isNull(item.getName()) && item.getName() != "") {
 					var fparts = item.getName().split("[\\/\\\\]");
 					var filename = fparts[fparts.length - 1];
 
-               if (!variables.ESAPI.validator().isValidFileName("upload", filename, allowedExtensions, false))
-               {
-						raiseException(new ValidationUploadException(variables.ESAPI, "Upload only simple filenames with the following extensions " & allowedExtensions, "Upload failed isValidFileName check"));
+					if (!variables.ESAPI.validator().isValidFileName("upload", filename, arguments.allowedExtensions, false)) {
+						raiseException(new ValidationUploadException(variables.ESAPI, "Upload only simple filenames with the following extensions " & arguments.allowedExtensions, "Upload failed isValidFileName check"));
 					}
 
 					variables.logger.info(variables.Logger.SECURITY_SUCCESS, "File upload requested: " & filename);
 					var f = new File(uploadDirObject, filename);
-               if (f.exists())
-               {
+					if (f.exists()) {
 						var parts = filename.split("\\/.");
 						var extension = "";
-                  if (parts.length > 1)
-                  {
+						if (parts.length > 1) {
 							extension = parts[parts.length - 1];
 						}
 						var filenm = filename.substring(0, filename.length() - extension.length());
 						f = File.createTempFile(filenm, "." & extension, uploadDirObject);
 					}
 					item.write(f);
-               newFiles.add(f);
+               				newFiles.add(f);
 					// delete temporary file
 					item.delete();
 					variables.logger.fatal(variables.Logger.SECURITY_SUCCESS, "File successfully uploaded: " & f);
-               if (!isNull(httpSession))
-               {
+					/*if (!isNull(httpSession)) {
 					    httpSession.setAttribute("progress", Long.toString(0));
+					}*/
 					}
 				}
-			}
-		} catch (Exception e) {
+		/*} catch (Exception e) {
 			if (instanceOf(e, org.owasp.esapi.errors.ValidationUploadException)) {
 				rethrow;
 			}
 			raiseException(new ValidationUploadException(variables.ESAPI, "Upload failure", "Problem during upload:" & e.getMessage(), e));
-		}
+		}*/
 		return newFiles;
 	}
-
-
 
 	/**
      * Utility to return the first cookie matching the provided name.

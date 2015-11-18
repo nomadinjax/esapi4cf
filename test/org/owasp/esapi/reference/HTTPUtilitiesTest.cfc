@@ -136,9 +136,9 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	public void function testGetFileUploads() {
 		var home = "";
 
-		//try {
-			home = getTempDirectory();
-			var content = '--ridiculous\r\nContent-Disposition: form-data; name="upload"; filename="testupload.txt"\r\nContent-Type: application/octet-stream\r\n\r\nThis is a test of the multipart broadcast variables.System.\r\nThis is only a test.\r\nStop.\r\n\r\n--ridiculous\r\nContent-Disposition: form-data; name="submit"\r\n\r\nSubmit Query\r\n--ridiculous--\r\nEpilogue';
+		try {
+			home = getTempDirectory() & "\HTTPUtilitiesTest";
+			var content = '--ridiculous\r\nContent-Disposition: form-data; name="upload"; filename="testupload.txt"\r\nContent-Type: application/octet-stream\r\n\r\nThis is a test of the multipart broadcast system.\r\nThis is only a test.\r\nStop.\r\n\r\n--ridiculous\r\nContent-Disposition: form-data; name="submit"\r\n\r\nSubmit Query\r\n--ridiculous--\r\nEpilogue';
 
 			var httpResponse = createObject("java", "org.owasp.esapi.http.MockHttpServletResponse").init();
 			var httpRequest1 = createObject("java", "org.owasp.esapi.http.MockHttpServletRequest").init("/test", content.getBytes(httpResponse.getCharacterEncoding()));
@@ -146,7 +146,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 			try {
 				variables.ESAPI.httpUtilities().getFileUploads(uploadDir=home, httpRequest=variables.ESAPI.httpUtilities().getCurrentRequest());
 				fail("");
-			} catch( org.owasp.esapi.errors.ValidationException e ) {
+			} catch( org.owasp.esapi.errors.ValidationUploadException e ) {
 				// expected
 			}
 
@@ -160,8 +160,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 					var f = i.next();
 					variables.System.out.println( "  " & f.getAbsolutePath() );
 				}
-				assertTrue( list.size() > 0 );
-			} catch (org.owasp.esapi.errors.ValidationException e) {
+				assertTrue( arrayLen(list) > 0 );
+			} catch (org.owasp.esapi.errors.ValidationUploadException e) {
 				fail("");
 			}
 
@@ -176,8 +176,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 					var f = i.next();
 					variables.System.out.println( "  " & f.getAbsolutePath() );
 				}
-				assertTrue( list.size() > 0 );
-			} catch (org.owasp.esapi.errors.ValidationException e) {
+				assertTrue( arrayLen(list) > 0 );
+			} catch (org.owasp.esapi.errors.ValidationUploadException e) {
 				variables.System.err.println("ERROR: " & e.toString());
 				fail("");
 			}
@@ -188,13 +188,13 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 			try {
 				variables.ESAPI.httpUtilities().getFileUploads(uploadDir=home, httpRequest=httpRequest3);
 				fail("");
-			} catch (org.owasp.esapi.errors.ValidationException e) {
+			} catch (org.owasp.esapi.errors.ValidationUploadException e) {
 				// expected
 			}
-		/*}
+		}
 		finally {
-			FileTestUtils.deleteRecursively(home);
-		}*/
+			directoryDelete(home);
+		}
 
 	}
 
