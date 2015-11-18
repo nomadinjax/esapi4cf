@@ -225,7 +225,7 @@ component implements="org.owasp.esapi.HttpRequest" extends="org.owasp.esapi.util
         while (en.hasMoreElements()) {
             try {
                 var value = en.nextElement();
-                var clean = variables.ESAPI.validator().getValidInput("HTTP header value (" & arguments.name & "): " & value, value, "HTTPHeaderValue", 150, true);
+                var clean = variables.ESAPI.validator().getValidInput("HTTP header value (" & arguments.name & "): " & value, value, "HTTPHeaderValue", 1000, true);
                 v.add(clean);
             } catch (org.owasp.esapi.errors.ValidationException e) {
                 // already logged

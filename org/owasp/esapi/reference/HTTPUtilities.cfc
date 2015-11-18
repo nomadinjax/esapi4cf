@@ -135,7 +135,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
             var strippedName = StringUtilities.replaceLinearWhiteSpace(arguments.name);
             var strippedValue = StringUtilities.replaceLinearWhiteSpace(arguments.value);
             var safeName = variables.ESAPI.validator().getValidInput("addHeader", strippedName, "HTTPHeaderName", 20, false);
-            var safeValue = variables.ESAPI.validator().getValidInput("addHeader", strippedValue, "HTTPHeaderValue", 500, false);
+            var safeValue = variables.ESAPI.validator().getValidInput("addHeader", strippedValue, "HTTPHeaderValue", 1000, false);
             arguments.httpResponse.addHeader(safeName, safeValue);
         } catch (org.owasp.esapi.errors.ValidationException e) {
             variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Attempt to add invalid header denied", e);
@@ -440,7 +440,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 	public string function getHeader(required string name, httpRequest=getCurrentRequest()) {
 		var value = arguments.httpRequest.getHeader(arguments.name);
 		if (!isNull(value)) {
-        		return variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 150, true);
+			return variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 1000, true);
 		}
 	}
 
@@ -595,7 +595,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
             var strippedName = StringUtilities.replaceLinearWhiteSpace(arguments.name);
             var strippedValue = StringUtilities.replaceLinearWhiteSpace(arguments.value);
             var safeName = variables.ESAPI.validator().getValidInput("setHeader", strippedName, "HTTPHeaderName", 20, false);
-            var safeValue = variables.ESAPI.validator().getValidInput("setHeader", strippedValue, "HTTPHeaderValue", 500, false);
+            var safeValue = variables.ESAPI.validator().getValidInput("setHeader", strippedValue, "HTTPHeaderValue", 1000, false);
             httpResponse.setHeader(safeName, safeValue);
         } catch (org.owasp.esapi.errors.ValidationException e) {
             variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Attempt to set invalid header denied", e);
