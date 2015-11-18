@@ -605,6 +605,21 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 		arguments.httpResponse.setDateHeader("Expires", -1);
 	}
 
+	public string function getRememberToken(httpRequest=getCurrentRequest()) {
+		// first check if token was set in this request
+		var value = getRequestAttribute(this.REMEMBER_TOKEN_COOKIE_NAME, arguments.httpRequest);
+		if (!isNull(value)) return value;
+
+		// API support - check first at HTTP Authorization header
+		var authHeader = getHeader("Authorization", arguments.httpRequest);
+		if (!isNull(authHeader) && listFirst(authHeader, " ") == "Token") {
+			return listLast(authHeader, " ");
+		}
+
+		// browser support - check for cookie
+		return getCookie(this.REMEMBER_TOKEN_COOKIE_NAME, arguments.httpRequest);
+	}
+
 	/**
 	 * Save the user's remember me data in an encrypted cookie and send it to the user.
 	 * Any old remember me cookie is destroyed first. Setting this cookie will keep the user
@@ -618,26 +633,36 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 	public string function setRememberToken(required string password, required numeric maxAge, required string domain, required string path, httpRequest=getCurrentRequest(), httpResponse=getCurrentResponse()) {
 		var user = variables.ESAPI.authenticator().getCurrentUser();
 		try {
-			killCookie(this.REMEMBER_TOKEN_COOKIE_NAME, arguments.httpRequest, arguments.httpResponse );
+			invalidateRememberToken(arguments.httpRequest, arguments.httpResponse);
+
 			// seal already contains random data
 			var clearToken = user.getAccountName() & "|" & arguments.password;
 			var expiry = variables.ESAPI.encryptor().getRelativeTimeStamp(arguments.maxAge * 1000);
 			var cryptToken = variables.ESAPI.encryptor().seal(clearToken, expiry);
 
-            // Do NOT URLEncode cryptToken before creating cookie. See Google Issue # 144,
-			// which was marked as "WontFix".
+			// add to request so it can be retrieved easily
+			arguments.httpRequest.setAttribute(this.REMEMBER_TOKEN_COOKIE_NAME, cryptToken);
 
-			var httpCookie = createObject("java", "javax.servlet.http.Cookie").init( this.REMEMBER_TOKEN_COOKIE_NAME, cryptToken );
-			httpCookie.setMaxAge( arguments.maxAge );
-			httpCookie.setDomain( arguments.domain );
-			httpCookie.setPath( arguments.path );
-			arguments.httpResponse.addCookie( httpCookie );
-			variables.logger.info(variables.Logger.SECURITY_SUCCESS, "Enabled remember me token for " & user.getAccountName() );
+			// add cookie to store for subsequent requests
+			var httpCookie = createObject("java", "javax.servlet.http.Cookie").init(this.REMEMBER_TOKEN_COOKIE_NAME, cryptToken);
+			httpCookie.setMaxAge(arguments.maxAge);
+			httpCookie.setDomain(arguments.domain);
+			httpCookie.setPath(arguments.path);
+			arguments.httpResponse.addCookie(httpCookie);
+			variables.logger.info(variables.Logger.SECURITY_SUCCESS, "Enabled remember me token for " & user.getAccountName());
 			return cryptToken;
-		} catch( org.owasp.esapi.errors.IntegrityException e ) {
-			variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Attempt to set remember me token failed for " & user.getAccountName(), e );
+		}
+		catch (org.owasp.esapi.errors.IntegrityException e) {
+			variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Attempt to set remember me token failed for " & user.getAccountName(), e);
 			return;
 		}
+	}
+
+	public void function invalidateRememberToken(httpRequest=getCurrentRequest(), httpResponse=getCurrentResponse()) {
+		// remove from request
+		arguments.httpRequest.removeAttribute(this.REMEMBER_TOKEN_COOKIE_NAME);
+		// destroy cookie
+		killCookie(this.REMEMBER_TOKEN_COOKIE_NAME, arguments.httpRequest, arguments.httpResponse);
 	}
 
     /**

@@ -102,7 +102,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
     private function getUserFromRememberToken(httpRequest=variables.ESAPI.httpUtilities().getCurrentRequest(), httpResponse=variables.ESAPI.httpUtilities().getCurrentResponse()) {
     	var HTTPUtilities = variables.ESAPI.httpUtilities();
         try {
-            var token = HTTPUtilities.getCookie(HTTPUtilities.REMEMBER_TOKEN_COOKIE_NAME, arguments.httpRequest);
+            var token = HTTPUtilities.getRememberToken(arguments.httpRequest);
             if (isNull(token)) return;
 
             // See Google Issue 144 regarding first URLDecode the token and THEN unsealing.
@@ -111,7 +111,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             var data = listToArray(variables.ESAPI.encryptor().unseal(token), "|");
             if (arrayLen(data) != 2) {
                 variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Found corrupt or expired remember token");
-                HTTPUtilities.killCookie(HTTPUtilities.REMEMBER_TOKEN_COOKIE_NAME, arguments.httpRequest, arguments.httpResponse);
+                HTTPUtilities.invalidateRememberToken(arguments.httpRequest, arguments.httpResponse);
                 return;
             }
 
@@ -136,7 +136,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
         catch (org.owasp.esapi.errors.EnterpriseSecurityException ex) {
             variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Remember token was missing, corrupt, or expired");
         }
-        HTTPUtilities.killCookie(HTTPUtilities.REMEMBER_TOKEN_COOKIE_NAME, arguments.httpRequest, arguments.httpResponse);
+        HTTPUtilities.invalidateRememberToken(arguments.httpRequest, arguments.httpResponse);
         return;
     }
 
