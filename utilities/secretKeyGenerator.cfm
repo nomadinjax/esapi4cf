@@ -41,7 +41,7 @@
 	});
 	</pre>
 	<div class="alert alert-danger">
-		<p>Please note that once you set these that changing these keys would invalidate any data that has been encrypted or hashed by ESAPI.</p>
+		<p>IMPORTANT: Please note that once you set these that changing these keys would invalidate any data that has been encrypted or hashed by ESAPI.</p>
 	</div>
 </div>
 
