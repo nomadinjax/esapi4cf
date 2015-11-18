@@ -78,7 +78,7 @@ component extends="StringValidationRule" {
 		// CHECKME should this allow empty Strings? "   " us IsBlank instead?
 	    if ( StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
 			if (variables.allowNull) {
-				return null;
+				return;
 			}
 			raiseException(new ValidationException(variables.ESAPI, arguments.context & " is required", "AntiSamy validation error: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 	    }
