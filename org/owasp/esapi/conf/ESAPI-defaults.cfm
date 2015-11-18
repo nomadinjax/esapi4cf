@@ -636,7 +636,7 @@ variables.properties = {
 		#    someObject.setEmail(ESAPI.validator().getValidInput("User Email", input, "Email", maxLength, allowNull));
 		*/
 		"SafeString": "^[.\p{Alnum}\p{Space}]{0,1024}$",
-		"Email": "^[A-Za-z0-9._%'-]+@[A-Za-z0-9.-]+\.[a-zA-Z]{2,4}$",
+		"Email": "^[a-zA-Z0-9.!##$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$",	// Source: http://www.w3.org/TR/html-markup/datatypes.html#form.data.emailaddress
 		"IPAddress": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
 		"URL": "^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\:\'\/\\\+=&amp;%\$##_]*)?$",
 		"CreditCard": "^(\d{4}[- ]?){3}\d{4}$",
