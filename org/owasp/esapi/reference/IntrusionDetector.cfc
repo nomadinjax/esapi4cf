@@ -10,7 +10,6 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  */
-import "org.owasp.esapi.beans.Event";
 
 /**
  * Reference implementation of the IntrusionDetector interface. This
@@ -146,7 +145,7 @@ component implements="org.owasp.esapi.IntrusionDetector" extends="org.owasp.esap
 				event = eventMap[arguments.eventName];
 			}
 			else {
-				event = new Event(variables.ESAPI, arguments.eventName);
+				event = new org.owasp.esapi.beans.Event(variables.ESAPI, arguments.eventName);
 				eventMap[arguments.eventName] = event;
 			}
 			// increment
