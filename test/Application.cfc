@@ -16,7 +16,6 @@ component {
 	this.sessionManagement = false;
 	this.clientManagement = false;
 
-	this.mappings["/org"] = expandPath("/esapi4cf/org");
 	this.mappings["/mxunit"] = expandPath("/testbox/system/compat");
 
 }
