@@ -184,7 +184,7 @@ component implements="org.owasp.esapi.HttpRequest" extends="org.owasp.esapi.util
         var clean = "";
         if (isDefined("value")) {
 	        try {
-	            clean = variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 150, true);
+	            clean = variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 1000, true);
 	        } catch (org.owasp.esapi.errors.ValidationException e) {
 	            // already logged
 	        }
