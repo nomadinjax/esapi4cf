@@ -287,11 +287,10 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
     }
 
 	public string function getCookie(required string name, httpRequest=getCurrentRequest()) {
-		var value = "";
-        var c = getFirstCookie(arguments.httpRequest, arguments.name);
-        if (isNull(c)) value = structKeyExists(cookie, arguments.name) ? cookie[arguments.name] : "";
-        else value = c.getValue();
-		return variables.ESAPI.validator().getValidInput("HTTP cookie value: " & value, value, "HTTPCookieValue", 1000, true);
+        	var c = getFirstCookie(arguments.httpRequest, arguments.name);
+		if (isNull(c)) return;
+		var value = c.getValue();
+		return variables.ESAPI.validator().getValidInput("HTTP cookie value: " & value, value, "HTTPCookieValue", 1000, false);
 	}
 
 	public string function getCSRFToken() {

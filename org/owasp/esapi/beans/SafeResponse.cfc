@@ -114,14 +114,28 @@ component implements="org.owasp.esapi.HttpResponse" extends="org.owasp.esapi.uti
 			value: cookieValue,
 			maxAge: maxAge
 		};
-		if (isDefined("domain")) cookieParams.domain = domain;
-		if (isDefined("path")) cookieParams.path = path;
-		if (isDefined("secure")) cookieParams.secure = secure;
+		var CFcookieParams = {
+			value: cookieValue,
+			expires: maxAge / 60 / 60 / 24	// convert from seconds to days
+		};
+		if (isDefined("domain")) {
+			cookieParams.domain = domain;
+			CFcookieParams.domain = domain;
+		}
+		if (isDefined("path")) {
+			cookieParams.path = path;
+			CFcookieParams.path = path;
+		}
+		if (isDefined("secure")) {
+			cookieParams.secure = secure;
+			CFcookieParams.secure = secure;
+		}
 
         // if there are no errors, then just set a cookie header
         if (structCount(errors) == 0) {
             var httpHeader = createCookieHeader(argumentCollection=cookieParams);
             this.addHeader("Set-Cookie", httpHeader);
+            cookie[cookieName] = CFcookieParams;
             return;
         }
 
@@ -137,6 +151,7 @@ component implements="org.owasp.esapi.HttpResponse" extends="org.owasp.esapi.uti
         if (mode == "log") {
             variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Attempt to add unsafe data to cookie (log mode). Adding unsafe cookie anyway and continuing.");
             getHttpServletResponse().addCookie(httpCookie);
+            cookie[cookieName] = CFcookieParams;
             return;
         }
 
@@ -145,6 +160,7 @@ component implements="org.owasp.esapi.HttpResponse" extends="org.owasp.esapi.uti
             variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Attempt to add unsafe data to cookie (sanitize mode). Sanitizing cookie and continuing.");
             var httpHeader = createCookieHeader(argumentCollection=cookieParams);
             this.addHeader("Set-Cookie", httpHeader);
+            cookie[cookieName] = CFcookieParams;
             return;
         }
 
