@@ -14,7 +14,7 @@ import "org.owasp.esapi.crypto.CryptoHelper";
 import "org.owasp.esapi.crypto.KeyDerivationFunction";
 import "org.owasp.esapi.util.Utils";
 
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
     public void function testGenerateSecretKeySunnyDay() {

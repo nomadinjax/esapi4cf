@@ -27,7 +27,7 @@ import "org.owasp.esapi.crypto.SecurityProviderLoader";
  * It has been tested with Bouncy Castle 1.44, but any later version should
  * do as well.
  */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
     variables.HAS_BOUNCY_CASTLE = false;

@@ -31,7 +31,7 @@ import "org.owasp.esapi.errors.ValidationUploadException";
 /**
  * The Class EnterpriseSecurityExceptionTest.
  */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
     /**

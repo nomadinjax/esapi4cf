@@ -13,7 +13,7 @@
 import "org.owasp.esapi.crypto.CipherSpec";
 
 /** JUnit test to test CipherSpec class. */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
 	variables.dfltAESCipher = "";

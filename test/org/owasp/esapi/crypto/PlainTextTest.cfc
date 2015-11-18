@@ -13,7 +13,7 @@
 import "org.owasp.esapi.crypto.PlainText";
 import "org.owasp.esapi.util.Utils";
 
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
 	variables.unicodeStr = new Utils().toUnicode("A\u00ea\u00f1\u00fcC");	// I.e., "AêñüC"

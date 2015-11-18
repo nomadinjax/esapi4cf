@@ -16,7 +16,7 @@ import "org.owasp.esapi.beans.SafeResponse";
 /**
  * The Class AuthenticatorTest.
  */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
 	public void function beforeTests() {

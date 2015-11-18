@@ -16,7 +16,7 @@ import "org.owasp.esapi.crypto.CipherTextSerializer";
 import "org.owasp.esapi.crypto.CryptoHelper";
 import "org.owasp.esapi.crypto.PlainText";
 
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
     variables.encryptor = "";

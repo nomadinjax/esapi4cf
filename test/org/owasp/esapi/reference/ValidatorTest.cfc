@@ -19,7 +19,7 @@ import "org.owasp.esapi.reference.validation.StringValidationRule";
 /**
  * The Class ValidatorTest.
  */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
 	variables.PREFERRED_ENCODING = "UTF-8";

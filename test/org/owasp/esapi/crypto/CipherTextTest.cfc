@@ -13,9 +13,9 @@
 import "org.owasp.esapi.crypto.CryptoHelper";
 import "org.owasp.esapi.crypto.CipherSpec";
 import "org.owasp.esapi.crypto.CipherText";
-import "esapi4cf.test.org.owasp.esapi.reference.crypto.CryptoPolicy";
+import "test.org.owasp.esapi.reference.crypto.CryptoPolicy";
 
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
     variables.POST_CLEANUP = true;

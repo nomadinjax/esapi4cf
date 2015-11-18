@@ -16,7 +16,7 @@ import "org.owasp.esapi.util.Utils";
 /**
  * The Class SafeRequestTest.
  */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
 	public void function testGetRequestParameters() {

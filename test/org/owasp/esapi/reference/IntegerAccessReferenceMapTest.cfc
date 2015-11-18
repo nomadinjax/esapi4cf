@@ -15,7 +15,7 @@ import "org.owasp.esapi.reference.IntegerAccessReferenceMap";
 /**
  * The Class AccessReferenceMapTest.
  */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
     /**

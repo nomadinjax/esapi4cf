@@ -12,7 +12,7 @@
  * LICENSE before you use, modify, and/or redistribute this software.
  */
 --->
-<cfcomponent extends="esapi4cf.test.automation.org.owasp.esapi.util.TestCase" output="false">
+<cfcomponent extends="test.automation.org.owasp.esapi.util.TestCase" output="false">
 
 	<cffunction access="public" returntype="void" name="beforeTests" output="false">
 		<cfscript>

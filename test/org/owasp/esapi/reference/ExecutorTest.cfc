@@ -14,7 +14,7 @@
 /**
  * The Class ExecutorTest.
  */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
 	variables.origConfig = "";

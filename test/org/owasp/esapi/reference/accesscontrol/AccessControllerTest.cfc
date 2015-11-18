@@ -14,7 +14,7 @@
 /**
  * Answers the question: is the AccessController itself working properly?
  */
-component extends="esapi4cf.test.org.owasp.esapi.util.TestCase" {
+component extends="test.org.owasp.esapi.util.TestCase" {
 	pageEncoding "utf-8";
 
 	variables.accessController = "";
