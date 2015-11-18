@@ -104,7 +104,7 @@ component extends="BaseValidationRule" {
 	private string function checkWhitelist(required string context, required input, string orig=arguments.input) {
 		// check whitelist patterns
 		for (var p in variables.whitelistPatterns) {
-			if (!p.matcher(arguments.input).matches()) {
+			if (!p.matcher(javaCast("string", arguments.input)).matches()) {
 				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. Please conform to regex " & p.pattern() & (variables.maxLength == createObject("java", "java.lang.Integer").MAX_VALUE ? "" : " with a maximum length of " & variables.maxLength), "Invalid input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & p.pattern() & ", input=" & arguments.input & (arguments.orig == arguments.input ? "" : ", orig=" & arguments.orig), arguments.context));
 			}
 		}
@@ -124,7 +124,7 @@ component extends="BaseValidationRule" {
 	private string function checkBlacklist(required string context, required input, string orig=arguments.input) {
 		// check blacklist patterns
 		for (var p in variables.blacklistPatterns) {
-			if ( p.matcher(arguments.input).matches() ) {
+			if ( p.matcher(javaCast("string", arguments.input)).matches() ) {
 				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. Dangerous input matching " & p.pattern() & " detected.", "Dangerous input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & p.pattern() & ", input=" & arguments.input & (arguments.orig == arguments.input ? "" : ", orig=" & arguments.orig), arguments.context));
 			}
 		}
