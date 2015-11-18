@@ -10,7 +10,7 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  */
-component extends="esapi4cf.demo.framework.one" {
+component extends="demo.framework.one" {
 
 	// you should always name your application
 	// ESAPI4CF needs a name for logging
