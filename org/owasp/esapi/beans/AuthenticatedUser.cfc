@@ -105,8 +105,6 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 		this.ABSOLUTE_TIMEOUT_LENGTH = variables.ESAPI.securityConfiguration().getSessionAbsoluteTimeoutLength();
 
 		variables.accountName = lCase(arguments.accountName);
-		var id = javaCast("long", abs(variables.ESAPI.randomizer().getRandomLong()));
-		variables.accountId = id;
 
 		return this;
 	}
