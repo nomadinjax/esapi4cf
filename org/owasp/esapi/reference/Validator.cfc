@@ -366,7 +366,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 					return canonical;
 				}
 			}
-			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file name does not have valid extension ( "&arrayToList(arguments.allowedExtensions)&")", "Invalid file name does not have valid extension ( "&arrayToList(arguments.allowedExtensions)&"): context=" & arguments.context&", input=" & arguments.input, arguments.context ));
+			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file name does not have valid extension ("&arrayToList(arguments.allowedExtensions)&")", "Invalid file name does not have valid extension ("&arrayToList(arguments.allowedExtensions)&"): context=" & arguments.context&", input=" & arguments.input, arguments.context ));
 		}
 	}
 
@@ -511,10 +511,10 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public void function assertValidFileUpload(required string context, required string filepath, required string filename, required parent, required binary content, required numeric maxBytes, required array allowedExtensions, required boolean allowNull, struct errors) {
+	public void function assertValidFileUpload(required string context, required string directorypath, required string filename, required parent, required binary content, required numeric maxBytes, required array allowedExtensions, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
-				assertValidFileUpload(arguments.context, filepath, arguments.filename, arguments.parent, arguments.content, arguments.maxBytes, arguments.allowedExtensions, arguments.allowNull);
+				assertValidFileUpload(arguments.context, arguments.directorypath, arguments.filename, arguments.parent, arguments.content, arguments.maxBytes, arguments.allowedExtensions, arguments.allowNull);
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}

@@ -306,8 +306,8 @@ interface {
 	 *
 	 * @param context
 	 * 		A descriptive name of the parameter that you are validating (e.g., LoginPage_UsernameField). This value is used by any logging or error handling that is done with respect to the value passed in.
-	 * @param filepath
-	 * 		The file path of the uploaded file.
+	 * @param directorypath
+	 * 		The directory path of the uploaded file.
 	 * @param filename
 	 * 		The filename of the uploaded file
 	 * @param content
@@ -320,7 +320,7 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public void function assertValidFileUpload(required string context, required string filepath, required string filename, required parent, required binary content, required numeric maxBytes, required array allowedExtensions, required boolean allowNull, struct errors);
+	public void function assertValidFileUpload(required string context, required string directorypath, required string filename, required parent, required binary content, required numeric maxBytes, required array allowedExtensions, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidListItem and returns true if no exceptions are thrown.
