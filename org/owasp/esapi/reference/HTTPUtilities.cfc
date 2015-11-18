@@ -433,13 +433,17 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 	}
 
 	public string function getHeader(required string name, httpRequest=getCurrentRequest()) {
-        var value = arguments.httpRequest.getHeader(arguments.name);
-        return variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 150, false);
+		var value = arguments.httpRequest.getHeader(arguments.name);
+		if (!isNull(value)) {
+        		return variables.ESAPI.validator().getValidInput("HTTP header value: " & value, value, "HTTPHeaderValue", 150, true);
+		}
 	}
 
 	public string function getParameter(required string name, httpRequest=getCurrentRequest()) {
-	    var value = arguments.httpRequest.getParameter(arguments.name);
-	    return variables.ESAPI.validator().getValidInput("HTTP parameter value: " & value, value, "HTTPParameterValue", 2000, true);
+		var value = arguments.httpRequest.getParameter(arguments.name);
+        	if (!isNull(value)) {
+	    		return variables.ESAPI.validator().getValidInput("HTTP parameter value: " & value, value, "HTTPParameterValue", 2000, true);
+		}
 	}
 
 	/**
