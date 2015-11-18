@@ -174,3 +174,6 @@ pip-log.txt
 /test/resources/users.txt
 
 /org/owasp/esapi/conf/users.txt
+
+
+/WEB-INF
