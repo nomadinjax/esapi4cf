@@ -81,7 +81,7 @@ component implements="org.owasp.esapi.HttpResponse" extends="org.owasp.esapi.uti
     	return this;
     }
 
-    private function getHttpServletResponse() {
+    public function getHttpServletResponse() {
     	if (!isObject(variables.httpResponse)) {
     		//variables.httpResponse = getPageContext().getResponse();
     	}

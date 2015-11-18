@@ -47,7 +47,7 @@ component implements="org.owasp.esapi.HttpRequest" extends="org.owasp.esapi.util
     	return this;
     }
 
-    private function getHttpServletRequest() {
+    public function getHttpServletRequest() {
     	if (!isObject(variables.httpRequest)) {
     		//variables.httpRequest = getPageContext().getRequest();
     	}

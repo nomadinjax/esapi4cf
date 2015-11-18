@@ -22,9 +22,9 @@ component implements="org.owasp.esapi.HttpSession" extends="org.owasp.esapi.util
     	return this;
     }
 
-    private function getHttpServletSession() {
+    public function getHttpServletSession() {
     	if (!isObject(variables.httpSession)) {
-    		variables.httpSession = getPageContext().getRequest().getSession(true);
+    		//variables.httpSession = getPageContext().getRequest().getSession(true);
     	}
     	return variables.httpSession;
     }
