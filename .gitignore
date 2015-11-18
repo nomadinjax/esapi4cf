@@ -172,8 +172,11 @@ pip-log.txt
 ## users.txt
 ############
 /test/resources/users.txt
-
 /org/owasp/esapi/conf/users.txt
 
-
+#################
+## ESAPI4CF
+#################
 /WEB-INF
+/testbox
+
