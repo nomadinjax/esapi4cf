@@ -261,7 +261,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 
         assertEquals("Test. &lt;<div>load=alert()</div>", rule.getSafe("test", "Test. <<div on<script></script>load=alert()"));
         assertEquals("Test. <div>b</div>", rule.getSafe("test", "Test. <div style={xss:expression(xss)}>b</div>"));
-        assertEquals("Test.", rule.getSafe("test", "Test. <s%00cript>alert(document.cookie)</script>"));
+        assertEquals("Test. alert(document.cookie)", rule.getSafe("test", "Test. <s%00cript>alert(document.cookie)</script>"));
         assertEquals("Test. alert(document.cookie)", rule.getSafe("test", "Test. <s\tcript>alert(document.cookie)</script>"));
         assertEquals("Test. alert(document.cookie)", rule.getSafe("test", "Test. <s\tcript>alert(document.cookie)</script>"));
         // TODO: ENHANCE waiting for a way to validate text headed for an attribute for scripts
