@@ -59,12 +59,12 @@ component extends="test.org.owasp.esapi.util.TestCase" {
         variables.System.out.println("addEvent");
 		var username = variables.ESAPI.randomizer().getRandomString(8, variables.ESAPI.encoder().CHAR_ALPHANUMERICS);
         var auth = variables.ESAPI.authenticator();
-		var user = auth.createUser(username, "addEvent", "addEvent");
+		var user = auth.createUser(username, "addEvent1", "addEvent1");
 		user.enable();
 	    var httpRequest = createObject("java", "org.owasp.esapi.http.MockHttpServletRequest").init();
 		var httpResponse = createObject("java", "org.owasp.esapi.http.MockHttpServletResponse").init();
 		variables.ESAPI.httpUtilities().setCurrentHTTP(httpRequest, httpResponse);
-		user.loginWithPassword("addEvent");
+		user.loginWithPassword("addEvent1");
 
         // Now generate some events to disable user account
         for ( var i = 0; i < variables.ESAPI.securityConfiguration().getQuota("event.test").count; i++ ) {
