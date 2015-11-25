@@ -25,9 +25,110 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 		assertEquals(expected, secConf.getApplicationName());
 	}
 
+	public void function testGetLogImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.LogFactory", secConf.getLogImplementation());
+
+		var expected = "TestLogger";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.Logger: expected});
+		assertEquals(expected, secConf.getLogImplementation());
+	}
+
+	public void function testAuthenticationImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.Authenticator", secConf.getAuthenticationImplementation());
+
+		var expected = "TestAuthentication";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.Authenticator: expected});
+		assertEquals(expected, secConf.getAuthenticationImplementation());
+	}
+
+	public void function testEncoderImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.Encoder", secConf.getEncoderImplementation());
+
+		var expected = "TestEncoder";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.Encoder: expected});
+		assertEquals(expected, secConf.getEncoderImplementation());
+	}
+
+	public void function testAccessControlImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.AccessController", secConf.getAccessControlImplementation());
+
+		var expected = "TestAccessControl";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.AccessControl: expected});
+		assertEquals(expected, secConf.getAccessControlImplementation());
+	}
+
+	public void function testEncryptionImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.crypto.Encryptor", secConf.getEncryptionImplementation());
+
+		var expected = "TestEncryption";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.Encryptor: expected});
+		assertEquals(expected, secConf.getEncryptionImplementation());
+	}
+
+	public void function testIntrusionDetectionImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.IntrusionDetector", secConf.getIntrusionDetectionImplementation());
+
+		var expected = "TestIntrusionDetection";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.IntrusionDetector: expected});
+		assertEquals(expected, secConf.getIntrusionDetectionImplementation());
+	}
+
+	public void function testRandomizerImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.Randomizer", secConf.getRandomizerImplementation());
+
+		var expected = "TestRandomizer";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.Randomizer: expected});
+		assertEquals(expected, secConf.getRandomizerImplementation());
+	}
+
+	public void function testExecutorImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.Executor", secConf.getExecutorImplementation());
+
+		var expected = "TestExecutor";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.Executor: expected});
+		assertEquals(expected, secConf.getExecutorImplementation());
+	}
+
+	public void function testHTTPUtilitiesImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.HTTPUtilities", secConf.getHTTPUtilitiesImplementation());
+
+		var expected = "TestHTTPUtilities";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.HTTPUtilities: expected});
+		assertEquals(expected, secConf.getHTTPUtilitiesImplementation());
+	}
+
+	public void function testValidationImplementation() {
+		//test the default
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("org.owasp.esapi.reference.Validator", secConf.getValidationImplementation());
+
+		var expected = "TestValidation";
+		var secConf = new SecurityConfiguration(variables.ESAPI, {ESAPI.Validator: expected});
+		assertEquals(expected, secConf.getValidationImplementation());
+	}
+
 	public void function testGetEncryptionKeyLength() {
 		// test the default
-		assertEquals(128, variables.ESAPI.securityConfiguration().getEncryptionKeyLength());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals(128, secConf.getEncryptionKeyLength());
 
 		// test override
 		var expected = 256;
@@ -37,7 +138,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 
 	public void function testGetKDFPseudoRandomFunction() {
 		// test the default
-		assertEquals("HmacSHA256", variables.ESAPI.securityConfiguration().getKDFPseudoRandomFunction());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("HmacSHA256", secConf.getKDFPseudoRandomFunction());
 
 		var expected = "HmacSHA1";
 		var secConf = new SecurityConfiguration(variables.ESAPI, {Encryptor.KDF.PRF: expected});
@@ -46,7 +148,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 
 	public void function testGetMasterSalt() {
 		try {
-			var salt = variables.ESAPI.securityConfiguration().getMasterSalt();
+			var secConf = new SecurityConfiguration(variables.ESAPI, {});
+			secConf.getMasterSalt();
 			fail("Expected Exception not thrown");
 		}
 		catch (org.owasp.esapi.errors.ConfigurationException ce) {
@@ -60,7 +163,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	}
 
 	public void function testGetAllowedExecutables() {
-		var allowedExecutables = variables.ESAPI.securityConfiguration().getAllowedExecutables();
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		var allowedExecutables = secConf.getAllowedExecutables();
 
 		//is this really what should be returned? what about an empty list?
 		assertEquals(0, arrayLen(allowedExecutables));
@@ -78,7 +182,9 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	}
 
 	public void function testGetAllowedFileExtensions() {
-		var allowedFileExtensions = variables.ESAPI.securityConfiguration().getAllowedFileExtensions();
+
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		var allowedFileExtensions = secConf.getAllowedFileExtensions();
 		assertFalse(allowedFileExtensions.isEmpty());
 
 		var secConf = new SecurityConfiguration(variables.ESAPI, {HttpUtilities.ApprovedUploadExtensions: listToArray(".txt,.xml,.html,.png")});
@@ -88,8 +194,9 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	}
 
 	public void function testGetAllowedFileUploadSize() {
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
 		//assert that the default is of some reasonable size
-		assertTrue(variables.ESAPI.securityConfiguration().getAllowedFileUploadSize() > (1024 * 100));
+		assertTrue(secConf.getAllowedFileUploadSize() > (1024 * 100));
 
 		var expected = (1024 * 1000);
 		var secConf = new SecurityConfiguration(variables.ESAPI, {HttpUtilities.MaxUploadFileBytes: expected});
@@ -98,8 +205,9 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 
 	public void function testGetParameterNames() {
 		//test the default
-		assertEquals("password", variables.ESAPI.securityConfiguration().getPasswordParameterName());
-		assertEquals("username", variables.ESAPI.securityConfiguration().getUsernameParameterName());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("password", secConf.getPasswordParameterName());
+		assertEquals("username", secConf.getUsernameParameterName());
 
 		var secConf = new SecurityConfiguration(variables.ESAPI, {
 			Authenticator.PasswordParameterName: "j_password",
@@ -111,15 +219,17 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 
 	public void function testGetEncryptionAlgorithm() {
 		//test the default
-		assertEquals("AES", variables.ESAPI.securityConfiguration().getEncryptionAlgorithm());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("AES", secConf.getEncryptionAlgorithm());
 
 		var secConf = new SecurityConfiguration(variables.ESAPI, {Encryptor.EncryptionAlgorithm: "3DES"});
 		assertEquals("3DES", secConf.getEncryptionAlgorithm());
 	}
 
 	public void function testGetCipherXProperties() {
-		assertEquals("AES/CBC/PKCS5Padding", variables.ESAPI.securityConfiguration().getCipherTransformation());
-		//assertEquals("AES/CBC/PKCS5Padding", variables.ESAPI.securityConfiguration().getC);
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("AES/CBC/PKCS5Padding", secConf.getCipherTransformation());
+		//assertEquals("AES/CBC/PKCS5Padding", secConf.getC);
 
 		var secConf = new SecurityConfiguration(variables.ESAPI, {Encryptor.CipherTransformation: "Blowfish/CFB/ISO10126Padding"});
 		assertEquals("Blowfish/CFB/ISO10126Padding", secConf.getCipherTransformation());
@@ -132,9 +242,10 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	}
 
 	public void function testIV() {
-		assertEquals("random", variables.ESAPI.securityConfiguration().getIVType());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("random", secConf.getIVType());
 		try {
-			variables.ESAPI.securityConfiguration().getFixedIV();
+			secConf.getFixedIV();
 			fail();
 		}
 		catch (org.owasp.esapi.errors.ConfigurationException ce) {
@@ -166,7 +277,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	}
 
 	public void function testGetAllowMultipleEncoding() {
-		assertFalse(variables.ESAPI.securityConfiguration().getAllowMultipleEncoding());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertFalse(secConf.getAllowMultipleEncoding());
 
 		var secConf = new SecurityConfiguration(variables.ESAPI, {Encoder.AllowMultipleEncoding: "yes"});
 		assertTrue(secConf.getAllowMultipleEncoding());
@@ -179,7 +291,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	}
 
 	public void function testGetDefaultCanonicalizationCodecs() {
-		assertEquals(3, arrayLen(variables.ESAPI.securityConfiguration().getDefaultCanonicalizationCodecs()));
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals(3, arrayLen(secConf.getDefaultCanonicalizationCodecs()));
 
 		var property = "org.owasp.esapi.codecs.TestCodec1,org.owasp.esapi.codecs.TestCodec2";
 		var secConf = new SecurityConfiguration(variables.ESAPI, {Encoder.DefaultCodecList: property});
@@ -187,7 +300,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	}
 
 	public void function testGetDisableIntrusionDetection() {
-		assertFalse(variables.ESAPI.securityConfiguration().getDisableIntrusionDetection());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertFalse(secConf.getDisableIntrusionDetection());
 
 		var secConf = new SecurityConfiguration(variables.ESAPI, {IntrusionDetector.Disable: "TRUE"});
 		assertTrue(secConf.getDisableIntrusionDetection());
@@ -202,7 +316,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	public void function testGetLogLevel() {
 		var Logger = createObject("java", "org.owasp.esapi.Logger");
 
-		assertEquals(Logger.WARNING, variables.ESAPI.securityConfiguration().getLogLevel());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals(Logger.WARNING, secConf.getLogLevel());
 
 		var secConf = new SecurityConfiguration(variables.ESAPI, {Logger.LogLevel: "trace"});
 		assertEquals(Logger.TRACE, secConf.getLogLevel());
@@ -224,7 +339,8 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 	}
 
 	public void function testGetLogFileName() {
-		assertEquals("ESAPI_logging_file", variables.ESAPI.securityConfiguration().getLogFileName());
+		var secConf = new SecurityConfiguration(variables.ESAPI, {});
+		assertEquals("ESAPI_logging_file", secConf.getLogFileName());
 
 		var secConf = new SecurityConfiguration(variables.ESAPI, {Logger.LogFileName: "log.txt"});
 		assertEquals("log.txt", secConf.getLogFileName());
