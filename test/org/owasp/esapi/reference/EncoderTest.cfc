@@ -753,22 +753,22 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 			thread action="run" name="#threadName#_#i#" {
 				// EncoderConcurrencyMock
 				thread.returnValue = false;
-				// run each thread for no more than 5s
-				while (thread.elapsedTime < 5000) {
+				while (thread.elapsedTime < 750) {
 					var nonce = variables.ESAPI.randomizer().getRandomString(20, variables.ESAPI.encoder().CHAR_SPECIALS);
 					var result = variables.ESAPI.encoder().encodeForJavaScript(nonce);
 					// randomize the threads
-					sleep(variables.ESAPI.randomizer().getRandomInteger(100, 500));
+					thread.sleep = variables.ESAPI.randomizer().getRandomInteger(100, 500);
+					sleep(thread.sleep);
 
-					if (!result.equals(variables.ESAPI.encoder().encodeForJavaScript(nonce))) {
+					if (result.equals(variables.ESAPI.encoder().encodeForJavaScript(nonce))) {
+						thread.returnValue = true;
 						break;
 					}
 				}
-				thread.returnValue = true;
 			}
 		}
 		// join threads and loop results for any failures
-		thread action="join" name="#structKeyList(cfthread)#";
+		thread action="join" name="#structKeyList(cfthread)#" timeout=2000;
 
 		for (var key in cfthread) {
 			if (structKeyExists(cfthread[key], "error")) {
