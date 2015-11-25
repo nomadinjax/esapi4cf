@@ -134,6 +134,11 @@
 			<p>Generates a new strongly random secret key and salt that can be copy and pasted in the #Version.getESAPI4CFName()# init configuration.</p>
 			<p><em>Compatible with:</em> <small class="label label-info">#versionData["lucee4"].display#</small> <small class="label label-info">#versionData["coldfusion11"].display#</small></p>
 		</div>
+		<div class="col-md-4">
+			<h3><a href="../utilities/isUnlimitedStrengthCryptoAvailable.cfm">Unlimited Strength Crypto Available?</a></h3>
+			<p>Test whether unlimited strength crypto is available on your server.</p>
+			<p><em>Compatible with:</em> <small class="label label-info">#versionData["lucee4"].display#</small> <small class="label label-info">#versionData["coldfusion11"].display#</small></p>
+		</div>
 		<!---<div class="col-md-4">
 			<h3><small class="label label-danger">TODO</small> <a href="../utilities/DefaultEncryptedProperties.cfm">Encrypted Properties</a></h3>
 			<p>Loads encrypted properties file based on the location passed in args then prompts the user to input key-value pairs.</p>
