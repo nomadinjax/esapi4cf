@@ -100,6 +100,17 @@ variables.properties = {
 	"AccountNameLengthMax": 254,
 
 	/*
+	# This number represents how complex a password is required to be. Choose what you want
+	# the absolute minimum password length to be and multiple by 4 to get this number.
+	# The ESAPI4J defaulted to 4 character password minimum: 4*4=16.
+	# The ESAPI4CF defaults to a 6 character password minimum: 6*4=24.
+	# No password should be less than 6 characters in length.
+	# You can increase this number if you want your passwords to be even more complex.
+	# It is strongly recommended not to use a number lower than 24 - DO SO AT YOUR OWN RISK!
+	*/
+	"PasswordStrengthComplexity": 24,
+
+	/*
 	#
 	*/
 	"UserSessionKey": "ESAPIUserSessionKey"

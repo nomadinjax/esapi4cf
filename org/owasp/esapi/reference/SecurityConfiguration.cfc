@@ -637,4 +637,8 @@ component implements="org.owasp.esapi.SecurityConfiguration" extends="org.owasp.
 		return getProperty("Authenticator.AccountNameLengthMax", 254);
 	}
 
+	public numeric function getPasswordStrengthComplexity() {
+		return getProperty("Authenticator.PasswordStrengthComplexity", 24);
+	}
+
 }

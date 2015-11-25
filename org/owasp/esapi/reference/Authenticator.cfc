@@ -507,7 +507,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
 
         // calculate and verify password strength
         var strength = arguments.newPassword.length() * charsets;
-        if (strength < 16) {
+        if (strength < variables.ESAPI.securityConfiguration().getPasswordStrengthComplexity()) {
             raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "New password is not long and complex enough"));
         }
 
