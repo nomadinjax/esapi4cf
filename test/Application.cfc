@@ -18,4 +18,9 @@ component {
 
 	this.mappings["/mxunit"] = expandPath("/testbox/system/compat");
 
+	public boolean function onRequestStart(required string targetPage) {
+		setting requesttimeout = 0;	// disables timeout
+		return true;
+	}
+
 }
