@@ -564,7 +564,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
     public void function sendRedirect(required string location, httpResponse=getCurrentResponse()){
         if (!variables.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
             variables.logger.fatal(variables.Logger.SECURITY_FAILURE, "Bad redirect location: " & arguments.location);
-            raiseException(createObject("java", "java.io.IOException").init("Redirect failed"));
+            raiseException(createObject("java", "java.io.IOException").init("Redirect failed", "Bad redirect location: " & arguments.location));
         }
 		arguments.httpResponse.sendRedirect(location);
     }
