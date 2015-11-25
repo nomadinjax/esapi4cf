@@ -353,25 +353,25 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 		} catch (InvalidKeyException ike) {
 			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure: Invalid key exception.",
 					 "Requested key size: " & keySize & "bits greater than 128 bits. Must install unlimited strength crypto extension from Sun: " &
-					 ike.getMessage(), ike));
+					 ike.message, ike));
 		 } catch (ConfigurationException cex) {
 			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure: Configuration error. Details in log.", "Key size mismatch or unsupported IV method. " &
 					 "Check encryption key size vs. ESAPI.EncryptionKeyLength or Encryptor.ChooseIVMethod property.", cex));
 		 } catch (InvalidAlgorithmParameterException e) {
 			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure (invalid IV)",
-					 "Encryption problem: Invalid IV spec: " & e.getMessage(), e));
+					 "Encryption problem: Invalid IV spec: " & e.message, e));
 		 } catch (IllegalBlockSizeException e) {
 			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure (no padding used; invalid input size)",
-					 "Encryption problem: Invalid input size without padding (" & xform & "). " & e.getMessage(), e));
+					 "Encryption problem: Invalid input size without padding (" & xform & "). " & e.message, e));
 		 } catch (BadPaddingException e) {
 			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure",
-					 "[Note: Should NEVER happen in encryption mode.] Encryption problem: " & e.getMessage(), e));
+					 "[Note: Should NEVER happen in encryption mode.] Encryption problem: " & e.message, e));
 		 } catch (java.security.NoSuchAlgorithmException e) {
 			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure (unavailable cipher requested)",
-					 "Encryption problem: specified algorithm in cipher xform " & xform & " not available: " & e.getMessage(), e));
+					 "Encryption problem: specified algorithm in cipher xform " & xform & " not available: " & e.message, e));
 		 } catch (NoSuchPaddingException e) {
 			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure (unavailable padding scheme requested)",
-					 "Encryption problem: specified padding scheme in cipher xform " & xform & " not available: " & e.getMessage(), e));
+					 "Encryption problem: specified padding scheme in cipher xform " & xform & " not available: " & e.message, e));
 		 } finally {
 			 // Don't overwrite anything in the case of exceptions because they may wish to retry.
 			 if ( success && overwritePlaintext ) {
@@ -531,15 +531,15 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
             raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Must install JCE Unlimited Strength Jurisdiction Policy Files from Sun", ike));
         } catch (java.security.NoSuchAlgorithmException e) {
             raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Invalid algorithm for available JCE providers - " &
-                    arguments.ciphertext.getCipherTransformation() & ": " & e.getMessage(), e));
+                    arguments.ciphertext.getCipherTransformation() & ": " & e.message, e));
         } catch (NoSuchPaddingException e) {
             raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Invalid padding scheme (" &
                     arguments.ciphertext.getPaddingScheme() & ") for cipher transformation " & arguments.ciphertext.getCipherTransformation() &
-                    ": " & e.getMessage(), e));
+                    ": " & e.message, e));
         } catch (InvalidAlgorithmParameterException e) {
-            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.getMessage(), e));
+            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
         } catch (IllegalBlockSizeException e) {
-            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.getMessage(), e));
+            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
         } catch (BadPaddingException e) {
             //DISCUSS: This needs fixed. Already validated MAC in CryptoHelper.isCipherTextMACvalid() above.
             //So only way we could get a padding exception is if invalid padding were used originally by
@@ -553,15 +553,15 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
                 		                     arguments.key, keySize, "authenticity");
             } catch (Exception e1) {
                 raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED,
-                        "Decryption problem -- failed to compute derived key for authenticity: " & e1.getMessage(), e1));
+                        "Decryption problem -- failed to compute derived key for authenticity: " & e1.message, e1));
             }
             var success = arguments.ciphertext.validateMAC( authKey );
             if ( success ) {
-                raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.getMessage(), e));
+                raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
             } else {
                 raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED,
                         "Decryption problem: WARNING: Adversary may have tampered with " &
-                        "CipherText object orCipherText object mangled in transit: " & e.getMessage(), e));
+                        "CipherText object orCipherText object mangled in transit: " & e.message, e));
             }
         }
     }
@@ -591,7 +591,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 		    // NOTE: EncryptionException constructed *only* for side-effect of causing logging.
 		    // FindBugs complains about this and since it examines byte-code, there's no way to
 		    // shut it up.
-			new EncryptionException(variables.ESAPI, "Invalid signature", "Problem verifying signature: " & e.getMessage(), e);
+			new EncryptionException(variables.ESAPI, "Invalid signature", "Problem verifying signature: " & e.message, e);
 			return false;
 		}
 	}
@@ -660,7 +660,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 		} catch (org.owasp.esapi.errors.EncryptionException e) {
 			raiseException(e);
 		} catch (any e) {
-			raiseException(new EncryptionException(variables.ESAPI, "Invalid seal", "Invalid seal:" & e.getMessage(), e));
+			raiseException(new EncryptionException(variables.ESAPI, "Invalid seal", "Invalid seal:" & e.message, e));
 		}
 	}
 
