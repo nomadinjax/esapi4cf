@@ -46,11 +46,11 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 
 	public void function testGetMasterSalt() {
 		try {
-			variables.ESAPI.securityConfiguration().getMasterSalt();
+			var salt = variables.ESAPI.securityConfiguration().getMasterSalt();
 			fail("Expected Exception not thrown");
 		}
 		catch (org.owasp.esapi.errors.ConfigurationException ce) {
-			assertFalse(isNull(ce.getMessage()));
+			assertFalse(isNull(ce.message));
 		}
 
 		var salt = "53081";
@@ -66,7 +66,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 		assertEquals(0, arrayLen(allowedExecutables));
 		//assertEquals("", allowedExecutables[1]);
 
-		secConf = new SecurityConfiguration(variables.ESAPI, {Executor.ApprovedExecutables: listToArray("/bin/bzip2,/bin/diff, /bin/cvs")});
+		var secConf = new SecurityConfiguration(variables.ESAPI, {Executor.ApprovedExecutables: listToArray("/bin/bzip2,/bin/diff, /bin/cvs")});
 		allowedExecutables = secConf.getAllowedExecutables();
 		assertEquals(3, arrayLen(allowedExecutables));
 		assertEquals("/bin/bzip2", allowedExecutables[1]);
@@ -81,7 +81,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 		var allowedFileExtensions = variables.ESAPI.securityConfiguration().getAllowedFileExtensions();
 		assertFalse(allowedFileExtensions.isEmpty());
 
-		secConf = new SecurityConfiguration(variables.ESAPI, {HttpUtilities.ApprovedUploadExtensions: listToArray(".txt,.xml,.html,.png")});
+		var secConf = new SecurityConfiguration(variables.ESAPI, {HttpUtilities.ApprovedUploadExtensions: listToArray(".txt,.xml,.html,.png")});
 		allowedFileExtensions = secConf.getAllowedFileExtensions();
 		assertEquals(4, arrayLen(allowedFileExtensions));
 		assertEquals(".html", allowedFileExtensions[3]);
@@ -101,7 +101,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 		assertEquals("password", variables.ESAPI.securityConfiguration().getPasswordParameterName());
 		assertEquals("username", variables.ESAPI.securityConfiguration().getUsernameParameterName());
 
-		secConf = new SecurityConfiguration(variables.ESAPI, {
+		var secConf = new SecurityConfiguration(variables.ESAPI, {
 			Authenticator.PasswordParameterName: "j_password",
 			Authenticator.UsernameParameterName: "j_username"
 		});
@@ -121,7 +121,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 		assertEquals("AES/CBC/PKCS5Padding", variables.ESAPI.securityConfiguration().getCipherTransformation());
 		//assertEquals("AES/CBC/PKCS5Padding", variables.ESAPI.securityConfiguration().getC);
 
-		secConf = new SecurityConfiguration(variables.ESAPI, {Encryptor.CipherTransformation: "Blowfish/CFB/ISO10126Padding"});
+		var secConf = new SecurityConfiguration(variables.ESAPI, {Encryptor.CipherTransformation: "Blowfish/CFB/ISO10126Padding"});
 		assertEquals("Blowfish/CFB/ISO10126Padding", secConf.getCipherTransformation());
 
 		secConf.setCipherTransformation("DESede/PCBC/PKCS5Padding");
@@ -138,30 +138,30 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 			fail();
 		}
 		catch (org.owasp.esapi.errors.ConfigurationException ce) {
-			assertFalse(isNull(ce.getMessage()));
+			assertFalse(isNull(ce.message));
 		}
 
-		secConf = new SecurityConfiguration(variables.ESAPI, {
+		var secConf = new SecurityConfiguration(variables.ESAPI, {
 			Encryptor.ChooseIVMethod: "fixed",
 			Encryptor.fixedIV: "ivValue"
 		});
 		assertEquals("fixed", secConf.getIVType());
 		assertEquals("ivValue", secConf.getFixedIV());
 
-		secConf = new SecurityConfiguration(variables.ESAPI, {Encryptor.ChooseIVMethod: "illegal"});
+		var secConf = new SecurityConfiguration(variables.ESAPI, {Encryptor.ChooseIVMethod: "illegal"});
 		try {
 			secConf.getIVType();
 			fail("");
 		}
 		catch (org.owasp.esapi.errors.ConfigurationException ce) {
-			assertFalse(isNull(ce.getMessage()));
+			assertFalse(isNull(ce.message));
 		}
 		try {
 			secConf.getFixedIV();
 			fail("");
 		}
 		catch (org.owasp.esapi.errors.ConfigurationException ce) {
-			assertFalse(isNull(ce.getMessage()));
+			assertFalse(isNull(ce.message));
 		}
 	}
 
