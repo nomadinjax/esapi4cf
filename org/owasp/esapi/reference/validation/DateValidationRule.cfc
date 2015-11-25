@@ -66,7 +66,7 @@ component extends="BaseValidationRule" {
 	private function safelyParse(required string context, required input) {
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
 		// CHECKME should this allow empty Strings? "   " use IsBlank instead?
-		if (StringUtilities.isEmpty(javaCast("string", arguments.input))) {
+		if (isNull(arguments.input) || StringUtilities.isEmpty(javaCast("string", arguments.input))) {
 			if (variables.allowNull) {
 				return;
 			}

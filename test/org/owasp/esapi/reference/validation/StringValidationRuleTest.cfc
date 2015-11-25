@@ -26,7 +26,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 			fail("Expected Exception not thrown");
 		}
 		catch (org.owasp.esapi.errors.ValidationException ve) {
-			assertFalse(isNull(ve.getMessage()));
+			assertFalse(isNull(ve.message));
 		}
 		assertEquals("MagnumPI", validationRule.getValid("", "MagnumPI"));
 	}
@@ -37,21 +37,21 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 
 		//null white list patterns throw IllegalArgumentException
 		try {
-			var pattern = "";
+			var pattern = javaCast("null", "");
 			validationRule.addWhitelistPattern(pattern);
 			fail("Expected Exception not thrown");
 		}
 		catch (java.lang.IllegalArgumentException ie) {
-			assertFalse(isNull(ie.getMessage()));
+			assertFalse(isNull(ie.message));
 		}
 
 		try {
-			var pattern = "";
+			var pattern = javaCast("null", "");
 			validationRule.addWhitelistPattern(pattern);
 			fail("Expected Exception not thrown");
 		}
 		catch (java.lang.IllegalArgumentException ie) {
-			assertFalse(isNull(ie.getMessage()));
+			assertFalse(isNull(ie.message));
 		}
 
 		//invalid white list patterns throw PatternSyntaxException
@@ -61,7 +61,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 			fail("Expected Exception not thrown");
 		}
 		catch (java.lang.IllegalArgumentException ie) {
-			assertFalse(isNull(ie.getMessage()));
+			assertFalse(isNull(ie.message));
 		}
 	}
 
@@ -83,7 +83,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 			fail("Expected Exception not thrown");
 		}
 		catch (org.owasp.esapi.errors.ValidationException ve) {
-			assertFalse(isNull(ve.getMessage()));
+			assertFalse(isNull(ve.message));
 		}
 		assertEquals("beg script end", validationRule.getValid("", "beg script end"));
 	}
@@ -94,21 +94,21 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 
 		//null black list patterns throw IllegalArgumentException
 		try {
-			var pattern = "";
+			var pattern = javaCast("null", "");
 			validationRule.addBlacklistPattern(pattern);
 			fail("Expected Exception not thrown");
 		}
 		catch (java.lang.IllegalArgumentException ie) {
-			assertFalse(isNull(ie.getMessage()));
+			assertFalse(isNull(ie.message));
 		}
 
 		try {
-			var pattern = "";
+			var pattern = javaCast("null", "");
 			validationRule.addBlacklistPattern(pattern);
 			fail("Expected Exception not thrown");
 		}
 		catch (java.lang.IllegalArgumentException ie) {
-			assertFalse(isNull(ie.getMessage()));
+			assertFalse(isNull(ie.message));
 		}
 
 		//invalid black list patterns throw PatternSyntaxException
@@ -118,7 +118,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
 			fail("Expected Exception not thrown");
 		}
 		catch (java.lang.IllegalArgumentException ie) {
-			assertFalse(isNull(ie.getMessage()));
+			assertFalse(isNull(ie.message));
 		}
 	}
 

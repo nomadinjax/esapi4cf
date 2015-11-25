@@ -69,7 +69,7 @@ component extends="BaseValidationRule" {
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
 
 		// CHECKME should this allow empty Strings? "   " us IsBlank instead?
-	    if ( StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
+	    if (isNull(arguments.input) || StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
 			if (variables.allowNull) {
 				return "";
 			}

@@ -48,7 +48,7 @@ component extends="BaseValidationRule" {
 				variables.whitelistPatterns.add(createObject("java", "java.util.regex.Pattern").compile(arguments.pattern));
 			}
 			catch (java.util.regex.PatternSyntaxException e) {
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e));
+				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Validation misconfiguration, problem with specified pattern: " & arguments.pattern));
 			}
 		}
 		else {
@@ -65,7 +65,7 @@ component extends="BaseValidationRule" {
 				variables.blacklistPatterns.add( createObject("java", "java.util.regex.Pattern").compile( arguments.pattern ) );
 			}
 			catch( java.util.regex.PatternSyntaxException e ) {
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
+				raiseException(createObject("java", "java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern));
 			}
 		}
 		else {
