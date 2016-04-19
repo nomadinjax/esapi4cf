@@ -221,7 +221,7 @@ component extends="org.owasp.esapi.util.Object" {
 				return variables.Adapter;
 			}
 		}
-		raiseException(new ConfigurationException("ESAPI Configuration Error: Either no Adapter object has been defined or it does not implement the Adapter interface."));
+		throws(new ConfigurationException("ESAPI Configuration Error: Either no Adapter object has been defined or it does not implement the Adapter interface."));
 	}
 
 	/**

@@ -163,11 +163,11 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             if (isNull(httpUsername)) {
                 httpUsername = "unspecified user";
             }
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Authentication failed", "Authentication failed for " & httpUsername & " because of null username or password"));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Authentication failed", "Authentication failed for " & httpUsername & " because of null username or password"));
         }
         user = getUserByAccountName(httpUsername);
         if (isNull(user)) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Authentication failed", "Authentication failed because user " & httpUsername & " doesn't exist"));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Authentication failed", "Authentication failed because user " & httpUsername & " doesn't exist"));
         }
         user.loginWithPassword(httpPassword, arguments.httpRequest, arguments.httpResponse);
 
@@ -177,7 +177,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
 
     public org.owasp.esapi.User function login(httpRequest=variables.ESAPI.httpUtilities().getCurrentRequest(), httpResponse=variables.ESAPI.httpUtilities().getCurrentResponse()) {
         if (isNull(arguments.httpRequest) || isNull(arguments.httpResponse)) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid request", "Request or response objects were null"));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Invalid request", "Request or response objects were null"));
         }
 
         // if there's a user in the session then use that
@@ -197,7 +197,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
 	            variables.ESAPI.httpUtilities().assertSecureRequest(arguments.httpRequest);
 	        }
 	        catch (org.owasp.esapi.errors.AccessControlException ex) {
-	            raiseException(new AuthenticationException(variables.ESAPI, "Attempt to login with an insecure request", ex.detail, ex));
+	            throws(new AuthenticationException(variables.ESAPI, "Attempt to login with an insecure request", ex.detail, ex));
 	        }
         }
         else {
@@ -206,7 +206,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
 				variables.ESAPI.httpUtilities().assertSecureChannel(arguments.httpRequest);
 			}
 			catch (org.owasp.esapi.errors.AccessControlException ex) {
-				raiseException(new AuthenticationException(variables.ESAPI, "Attempt to access secure content with an insecure request", ex.detail, ex));
+				throws(new AuthenticationException(variables.ESAPI, "Attempt to access secure content with an insecure request", ex.detail, ex));
 			}
         }
 
@@ -216,7 +216,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
         // don't let anonymous user log in
         if (user.isAnonymous()) {
             user.logout(arguments.httpRequest, arguments.httpResponse);
-            raiseException(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Anonymous user cannot be set to current user. User: " & user.getAccountName()));
+            throws(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Anonymous user cannot be set to current user. User: " & user.getAccountName()));
         }
 
         // don't let disabled users log in
@@ -225,7 +225,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             user.incrementFailedLoginCount();
             user.setLastFailedLoginTime(now());
             variables.ESAPI.getAdapter().saveUser(user);
-            raiseException(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & user.getAccountName()));
+            throws(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Disabled user cannot be set to current user. User: " & user.getAccountName()));
         }
 
         // don't let locked users log in
@@ -234,7 +234,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             user.incrementFailedLoginCount();
             user.setLastFailedLoginTime(now());
             variables.ESAPI.getAdapter().saveUser(user);
-            raiseException(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & user.getAccountName()));
+            throws(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Locked user cannot be set to current user. User: " & user.getAccountName()));
         }
 
         // don't let expired users log in
@@ -243,7 +243,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             user.incrementFailedLoginCount();
             user.setLastFailedLoginTime(now());
             variables.ESAPI.getAdapter().saveUser(user);
-            raiseException(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Expired user cannot be set to current user. User: " & user.getAccountName()));
+            throws(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Expired user cannot be set to current user. User: " & user.getAccountName()));
         }
 
         // check session inactivity timeout
@@ -252,7 +252,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             user.incrementFailedLoginCount();
             user.setLastFailedLoginTime(now());
             variables.ESAPI.getAdapter().saveUser(user);
-            raiseException(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Session inactivity timeout: " & user.getAccountName()));
+            throws(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Session inactivity timeout: " & user.getAccountName()));
         }
 
         // check session absolute timeout
@@ -261,7 +261,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             user.incrementFailedLoginCount();
             user.setLastFailedLoginTime(now());
             variables.ESAPI.getAdapter().saveUser(user);
-            raiseException(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Session absolute timeout: " & user.getAccountName()));
+            throws(new AuthenticationLoginException(variables.ESAPI, "Login failed", "Session absolute timeout: " & user.getAccountName()));
         }
 
         //set Locale to the user object in the session from request
@@ -296,16 +296,16 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
 
     public org.owasp.esapi.User function createUser(required string accountName, required string password1, required string password2) {
         if (isNull(arguments.accountName)) {
-            raiseException(new AuthenticationAccountsException(variables.ESAPI, "Account creation failed", "Attempt to create user with null accountName"));
+            throws(new AuthenticationAccountsException(variables.ESAPI, "Account creation failed", "Attempt to create user with null accountName"));
         }
         if (!isNull(getUserByAccountName(arguments.accountName))) {
-            raiseException(new AuthenticationAccountsException(variables.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName));
+            throws(new AuthenticationAccountsException(variables.ESAPI, "Account creation failed", "Duplicate user creation denied for " & arguments.accountName));
         }
 
         verifyAccountNameStrength(arguments.accountName);
 
         if (isNull(arguments.password1)) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password"));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Invalid account name", "Attempt to create account " & arguments.accountName & " with a null password"));
         }
 
         var user = getAuthenticatedUserInstance(arguments.accountName);
@@ -313,7 +313,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
         verifyPasswordStrength(user, arguments.password1);
 
         if (!arguments.password1.equals(arguments.password2)) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match"));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Passwords do not match", "Passwords for " & arguments.accountName & " do not match"));
         }
 
         variables.ESAPI.getAdapter().saveUser(user);
@@ -322,7 +322,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
         try {
             setHashedPassword(user, hashPassword(arguments.password1, arguments.accountName));
         } catch (org.owasp.esapi.errors.EncryptionException ee) {
-            raiseException(new AuthenticationException(variables.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee));
+            throws(new AuthenticationException(variables.ESAPI, "Internal error", "Error hashing password for " & arguments.accountName, ee));
         }
         return user;
     }
@@ -333,22 +333,22 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             var currentHash = getHashedPassword(arguments.user);
             var verifyHash = hashPassword(arguments.currentPassword, accountName);
             if (!currentHash.equals(verifyHash)) {
-                raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Password change failed", "Authentication failed for password change on user: " & accountName));
+                throws(new AuthenticationCredentialsException(variables.ESAPI, "Password change failed", "Authentication failed for password change on user: " & accountName));
             }
             if (isNull(arguments.newPassword) || isNull(arguments.newPassword2) || arguments.newPassword != arguments.newPassword2) {
-                raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & accountName));
+                throws(new AuthenticationCredentialsException(variables.ESAPI, "Password change failed", "Passwords do not match for password change on user: " & accountName));
             }
             verifyPasswordStrength(arguments.user, arguments.newPassword, arguments.currentPassword);
             arguments.user.setLastPasswordChangeTime(now());
             var newHash = hashPassword(arguments.newPassword, accountName);
             if (arrayFind(variables.ESAPI.getAdapter().getOldPasswordHashes(arguments.user), newHash)) {
-                raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Password change failed", "Password change matches a recent password for user: " & accountName));
+                throws(new AuthenticationCredentialsException(variables.ESAPI, "Password change failed", "Password change matches a recent password for user: " & accountName));
             }
             setHashedPassword(arguments.user, newHash);
             variables.logger.info(variables.Logger.SECURITY_SUCCESS, "Password changed for user: " & accountName);
             variables.ESAPI.getAdapter().saveUser(arguments.user);
         } catch (EncryptionException ee) {
-            raiseException(new AuthenticationException(variables.ESAPI, "Password change failed", "Encryption exception changing password for " & accountName, ee));
+            throws(new AuthenticationException(variables.ESAPI, "Password change failed", "Encryption exception changing password for " & accountName, ee));
         }
     }
 
@@ -433,7 +433,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
     public void function removeUser(required string accountName) {
         var user = getUserByAccountName(arguments.accountName);
         if (isNull(user)) {
-			raiseException(new AuthenticationAccountsException(variables.ESAPI, "Remove user failed", "Can't remove invalid accountName " & accountName));
+			throws(new AuthenticationAccountsException(variables.ESAPI, "Remove user failed", "Can't remove invalid accountName " & accountName));
         }
         variables.ESAPI.getAdapter().removeUser(user);
         variables.logger.info(variables.Logger.SECURITY_SUCCESS, "Removing user " & user.getAccountName());
@@ -448,10 +448,10 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
      */
     public void function verifyAccountNameStrength(required string accountName) {
         if (isNull(arguments.accountName)) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid account name", "Attempt to create account with a null account name"));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Invalid account name", "Attempt to create account with a null account name"));
         }
         if (!variables.ESAPI.validator().isValidInput("verifyAccountNameStrength", arguments.accountName, "AccountName", variables.ESAPI.securityConfiguration().getAccountNameLengthMax(), false)) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Invalid account name", "New account name is not valid: " & arguments.accountName));
         }
     }
 
@@ -463,7 +463,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
      */
     public void function verifyPasswordStrength(required org.owasp.esapi.User user, required string newPassword, string oldPassword) {
         if (isNull(arguments.newPassword)) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "New password cannot be null"));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "New password cannot be null"));
         }
 
         // can't change to a password that contains any 3 character substring of old password
@@ -472,7 +472,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
             for (var i = 0; i < length - 2; i++) {
                 var sub = arguments.oldPassword.substring(i, i + 3);
                 if (arguments.newPassword.indexOf(sub) > -1) {
-                    raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "New password cannot contain pieces of old password"));
+                    throws(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "New password cannot contain pieces of old password"));
                 }
             }
         }
@@ -508,7 +508,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
         // calculate and verify password strength
         var strength = arguments.newPassword.length() * charsets;
         if (strength < variables.ESAPI.securityConfiguration().getPasswordStrengthComplexity()) {
-            raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "New password is not long and complex enough"));
+            throws(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "New password is not long and complex enough"));
         }
 
         var accountName = arguments.user.getAccountName();
@@ -516,7 +516,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
         //jtm - 11/3/2010 - fix for bug http://code.google.com/p/owasp-esapi-java/issues/detail?id=108
         if (accountName.equalsIgnoreCase(arguments.newPassword)) {
         	//password can't be account name
-        	raiseException(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "Password matches account name, irrespective of case"));
+        	throws(new AuthenticationCredentialsException(variables.ESAPI, "Invalid password", "Password matches account name, irrespective of case"));
         }
     }
 

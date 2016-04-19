@@ -222,7 +222,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 	// private methods
 
 	private void function anonymousAccessFailure() {
-		raiseException(createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
+		throws(createObject("java", "java.lang.RuntimeException").init("Invalid operation for the anonymous user"));
 	}
 
 }

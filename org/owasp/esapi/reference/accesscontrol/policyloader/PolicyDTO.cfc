@@ -30,7 +30,7 @@ component extends="org.owasp.esapi.util.Object" {
 
 	public void function addAccessControlRule(required string key, required string accessControlRuleClassName, required policyParameter) {
 		if (!isNull(variables.accessControlRules.get(arguments.key))) {
-			raiseException(new AccessControlException(variables.ESAPI, "Duplicate keys are not allowed. " & "Key: " & arguments.key, ""));
+			throws(new AccessControlException(variables.ESAPI, "Duplicate keys are not allowed. " & "Key: " & arguments.key, ""));
 		}
 		var accessControlRuleConstructor = "";
 		try {
@@ -40,7 +40,7 @@ component extends="org.owasp.esapi.util.Object" {
 			accessControlRule.setPolicyParameters(arguments.policyParameter);
 			variables.accessControlRules.put(arguments.key, accessControlRule);
 		} catch (Exception e) {
-			raiseException(variables.ESAPI, new AccessControlException(variables.ESAPI, "Unable to create Access Control Rule for key: " & chr(34) & arguments.key & chr(34) & " with policyParameters: " & chr(34) & arguments.policyParameter & chr(34), "", e));
+			throws(variables.ESAPI, new AccessControlException(variables.ESAPI, "Unable to create Access Control Rule for key: " & chr(34) & arguments.key & chr(34) & " with policyParameters: " & chr(34) & arguments.policyParameter & chr(34), "", e));
 		}
 	}
 	public string function toString() {

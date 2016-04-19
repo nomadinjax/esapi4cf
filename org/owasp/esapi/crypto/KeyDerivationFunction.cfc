@@ -89,7 +89,7 @@ component extends="org.owasp.esapi.util.Object" {
 		else {
 			var prfName = variables.ESAPI.securityConfiguration().getKDFPseudoRandomFunction();
 			if (!variables.isValidPRF(prfName)) {
-	    		raiseException(new ConfigurationException("Algorithm name " & prfName & " not a valid algorithm name for property " & DefaultSecurityConfiguration.KDF_PRF_ALG));
+	    		throws(new ConfigurationException("Algorithm name " & prfName & " not a valid algorithm name for property " & DefaultSecurityConfiguration.KDF_PRF_ALG));
 			}
 			variables.prfAlg_ = prfName;
 		}
@@ -117,7 +117,7 @@ component extends="org.owasp.esapi.util.Object" {
 				return this.PRF_ALGORITHMS[prf].getValue();
 			}
 		}
-		raiseException(new ConfigurationException("Algorithm name " & prfName & " not a valid algorithm name for property " & DefaultSecurityConfiguration.KDF_PRF_ALG));
+		throws(new ConfigurationException("Algorithm name " & prfName & " not a valid algorithm name for property " & DefaultSecurityConfiguration.KDF_PRF_ALG));
 	}
 
 	/**
@@ -181,7 +181,7 @@ component extends="org.owasp.esapi.util.Object" {
 	 */
 	public void function setContext(required string context) {
 		if (isNull(arguments.context)) {
-			raiseException(new IllegalArgumentException("Context may not be null."));
+			throws(new IllegalArgumentException("Context may not be null."));
 		}
 		variables.context_ = arguments.context;
 	}
@@ -254,12 +254,12 @@ component extends="org.owasp.esapi.util.Object" {
 		//
         // These probably should be turned into actual runtime checks and an
         // IllegalArgumentException should be thrown if they are violated.
-		if (isNull(arguments.keyDerivationKey)) raiseException("Key derivation key cannot be null.");
+		if (isNull(arguments.keyDerivationKey)) throws("Key derivation key cannot be null.");
 			// We would choose a larger minimum key size, but we want to be
 			// able to accept DES for legacy encryption needs.
-		if (arguments.keySize < 56) raiseException("Key has size of " & arguments.keySize & ", which is less than minimum of 56-bits.");
-		if ((arguments.keySize % 8) != 0) raiseException("Key size (" & arguments.keySize & ") must be a even multiple of 8-bits.");
-		if (isNull(arguments.purpose) || arguments.purpose == "") raiseException("Purpose may not be null or empty.");
+		if (arguments.keySize < 56) throws("Key has size of " & arguments.keySize & ", which is less than minimum of 56-bits.");
+		if ((arguments.keySize % 8) != 0) throws("Key size (" & arguments.keySize & ") must be a even multiple of 8-bits.");
+		if (isNull(arguments.purpose) || arguments.purpose == "") throws("Purpose may not be null or empty.");
 
 		arguments.keySize = calcKeySize( arguments.keySize );	// Safely convert to whole # of bytes.
 		var derivedKey = new Utils().newByte(arguments.keySize);
@@ -269,7 +269,7 @@ component extends="org.owasp.esapi.util.Object" {
 			label = arguments.purpose.getBytes("UTF-8");
 			context = variables.context_.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			raiseException(new EncryptionException("Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.getMessage(), e));
+			throws(new EncryptionException("Encryption failure (internal encoding error: UTF-8)", "UTF-8 encoding is NOT supported as a standard byte encoding: " & e.getMessage(), e));
 		}
 
 			// Note that keyDerivationKey is going to be some SecretKey like an AES or
@@ -290,7 +290,7 @@ component extends="org.owasp.esapi.util.Object" {
 			mac.init(sk);
 		} catch( InvalidKeyException ex ) {
 			variables.logger.error(Logger.SECURITY_FAILURE, "Created HmacSHA1 Mac but SecretKey sk has alg " & sk.getAlgorithm(), ex);
-			raiseException(ex);
+			throws(ex);
 		}
 
 		// Repeatedly call of HmacSHA1 hash until we've collected enough bits
@@ -381,7 +381,7 @@ component extends="org.owasp.esapi.util.Object" {
 				return this.PRF_ALGORITHMS[prf];
 			}
 		}
-		raiseException(new IllegalArgumentException("Algorithm name " & arguments.prfAlgName & " not a valid PRF algorithm name for the ESAPI KDF."));
+		throws(new IllegalArgumentException("Algorithm name " & arguments.prfAlgName & " not a valid PRF algorithm name for the ESAPI KDF."));
 	}
 
 	public function convertIntToPRF(required numeric selection) {
@@ -390,7 +390,7 @@ component extends="org.owasp.esapi.util.Object" {
 				return this.PRF_ALGORITHMS[prf];
 			}
 		}
-		raiseException(new IllegalArgumentException("No KDF PRF algorithm found for value name " & arguments.selection));
+		throws(new IllegalArgumentException("No KDF PRF algorithm found for value name " & arguments.selection));
 	}
 
     /**
@@ -405,7 +405,7 @@ component extends="org.owasp.esapi.util.Object" {
      *              {@code ks} bits.
      */
     private numeric function calcKeySize(required numeric ks) {
-        if (arguments.ks <= 0) raiseException("Key size must be > 0 bits.");
+        if (arguments.ks <= 0) throws("Key size must be > 0 bits.");
         var numBytes = 0;
         var n = arguments.ks/8;
         var rem = arguments.ks % 8;

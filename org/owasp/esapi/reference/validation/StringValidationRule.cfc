@@ -40,7 +40,7 @@ component extends="BaseValidationRule" {
 
 	public void function addWhitelistPattern(required pattern) {
 		if (isNull(arguments.pattern)) {
-			raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Pattern cannot be null"));
+			throws(createObject("java", "java.lang.IllegalArgumentException").init("Pattern cannot be null"));
 		}
 
 		if (isSimpleValue(arguments.pattern)) {
@@ -48,7 +48,7 @@ component extends="BaseValidationRule" {
 				variables.whitelistPatterns.add(createObject("java", "java.util.regex.Pattern").compile(arguments.pattern));
 			}
 			catch (java.util.regex.PatternSyntaxException e) {
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e));
+				throws(createObject("java", "java.lang.IllegalArgumentException").init("Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e));
 			}
 		}
 		else {
@@ -58,14 +58,14 @@ component extends="BaseValidationRule" {
 
 	public void function addBlacklistPattern( required pattern ) {
 		if (isNull(arguments.pattern)) {
-			raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Pattern cannot be null"));
+			throws(createObject("java", "java.lang.IllegalArgumentException").init("Pattern cannot be null"));
 		}
 		if (isSimpleValue(arguments.pattern)) {
 			try {
 				variables.blacklistPatterns.add( createObject("java", "java.util.regex.Pattern").compile( arguments.pattern ) );
 			}
 			catch( java.util.regex.PatternSyntaxException e ) {
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
+				throws(createObject("java", "java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
 			}
 		}
 		else {
@@ -105,7 +105,7 @@ component extends="BaseValidationRule" {
 		// check whitelist patterns
 		for (var p in variables.whitelistPatterns) {
 			if (!p.matcher(javaCast("string", arguments.input)).matches()) {
-				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. Please conform to regex " & p.pattern() & (variables.maxLength == createObject("java", "java.lang.Integer").MAX_VALUE ? "" : " with a maximum length of " & variables.maxLength), "Invalid input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & p.pattern() & ", input=" & arguments.input & (arguments.orig == arguments.input ? "" : ", orig=" & arguments.orig), arguments.context));
+				throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. Please conform to regex " & p.pattern() & (variables.maxLength == createObject("java", "java.lang.Integer").MAX_VALUE ? "" : " with a maximum length of " & variables.maxLength), "Invalid input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & p.pattern() & ", input=" & arguments.input & (arguments.orig == arguments.input ? "" : ", orig=" & arguments.orig), arguments.context));
 			}
 		}
 		return arguments.input;
@@ -125,7 +125,7 @@ component extends="BaseValidationRule" {
 		// check blacklist patterns
 		for (var p in variables.blacklistPatterns) {
 			if ( p.matcher(javaCast("string", arguments.input)).matches() ) {
-				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. Dangerous input matching " & p.pattern() & " detected.", "Dangerous input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & p.pattern() & ", input=" & arguments.input & (arguments.orig == arguments.input ? "" : ", orig=" & arguments.orig), arguments.context));
+				throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. Dangerous input matching " & p.pattern() & " detected.", "Dangerous input: context=" & arguments.context & ", type(" & getTypeName() & ")=" & p.pattern() & ", input=" & arguments.input & (arguments.orig == arguments.input ? "" : ", orig=" & arguments.orig), arguments.context));
 			}
 		}
 		return arguments.input;
@@ -143,11 +143,11 @@ component extends="BaseValidationRule" {
 	 */
 	private string function checkLength(required string context, required input, string orig=arguments.input) {
 		if (len(arguments.input) < variables.minLength) {
-			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. The minimum length of " & variables.minLength & " characters was not met.", "Input does not meet the minimum length of " & variables.minLength & " by " & (variables.minLength - len(arguments.input)) & " characters: context=" & arguments.context & ", type=" & getTypeName() & "), input=" & arguments.input & (arguments.input == arguments.orig ? "" : ", orig=" & arguments.orig), arguments.context));
+			throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. The minimum length of " & variables.minLength & " characters was not met.", "Input does not meet the minimum length of " & variables.minLength & " by " & (variables.minLength - len(arguments.input)) & " characters: context=" & arguments.context & ", type=" & getTypeName() & "), input=" & arguments.input & (arguments.input == arguments.orig ? "" : ", orig=" & arguments.orig), arguments.context));
 		}
 
 		if (len(arguments.input) > variables.maxLength) {
-			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. The maximum length of " & variables.maxLength & " characters was exceeded.", "Input exceeds maximum allowed length of " & variables.maxLength & " by " & (len(arguments.input) - variables.maxLength) & " characters: context=" & arguments.context & ", type=" & getTypeName() & ", orig=" & arguments.orig & ", input=" & arguments.input, arguments.context));
+			throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input. The maximum length of " & variables.maxLength & " characters was exceeded.", "Input exceeds maximum allowed length of " & variables.maxLength & " by " & (len(arguments.input) - variables.maxLength) & " characters: context=" & arguments.context & ", type=" & getTypeName() & ", orig=" & arguments.orig & ", input=" & arguments.input, arguments.context));
 		}
 
 		return arguments.input;
@@ -171,7 +171,7 @@ component extends="BaseValidationRule" {
 		if(variables.allowNull) {
 			return;
 		}
-		raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input required.", "Input required: context=" & arguments.context & ", input=" & arguments.input & (arguments.input == arguments.orig ? "" : ", orig=" & arguments.orig), arguments.context));
+		throws(new ValidationException(variables.ESAPI, arguments.context & ": Input required.", "Input required: context=" & arguments.context & ", input=" & arguments.input & (arguments.input == arguments.orig ? "" : ", orig=" & arguments.orig), arguments.context));
 	}
 
 	public function getValid(required string context, required input, struct errorList) {

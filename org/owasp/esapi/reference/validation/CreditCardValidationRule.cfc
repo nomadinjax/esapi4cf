@@ -63,13 +63,13 @@ component extends="BaseValidationRule" {
 			if (variables.allowNull) {
 				return;
 			}
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Input credit card required", "Input credit card required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Input credit card required", "Input credit card required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 	    }
 
 	    var canonical = variables.ccrule.getValid( arguments.context, arguments.input );
 
 		if( !validCreditCardFormat(canonical)) {
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Invalid credit card input", "Invalid credit card input: context=" & arguments.context, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Invalid credit card input", "Invalid credit card input: context=" & arguments.context, arguments.context ));
 		}
 
 		return canonical;

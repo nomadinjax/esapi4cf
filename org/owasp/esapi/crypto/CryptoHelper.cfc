@@ -46,9 +46,9 @@ component extends="org.owasp.esapi.util.Object" {
 	 * 				specifying an unavailable algorithm or invalid key size.
 	 */
 	public function generateSecretKey(required string alg, required numeric keySize) {
-		if (isNull(arguments.alg)) raiseException("Algorithm must not be null.");			// NPE if null and assertions disabled.
-		if (arguments.alg == "") raiseException("Algorithm must not be empty");	// NoSuchAlgorithmExeption if empty & assertions disabled.
-		if (arguments.keySize <= 0) raiseException("Key size must be positive.");	// Usually should be even multiple of 8, but not strictly required by alg.
+		if (isNull(arguments.alg)) throws("Algorithm must not be null.");			// NPE if null and assertions disabled.
+		if (arguments.alg == "") throws("Algorithm must not be empty");	// NoSuchAlgorithmExeption if empty & assertions disabled.
+		if (arguments.keySize <= 0) throws("Key size must be positive.");	// Usually should be even multiple of 8, but not strictly required by alg.
 		// Don't use CipherSpec here to get algorithm as this may cause assertion
 		// to fail (when enabled) if only algorithm name is passed to us.
 		var cipherSpec = arguments.alg.split("/");
@@ -63,9 +63,9 @@ component extends="org.owasp.esapi.util.Object" {
 			kgen.init(arguments.keySize);
 			return kgen.generateKey();
 		} catch (java.security.NoSuchAlgorithmException e) {
-			raiseException(new EncryptionException(variables.ESAPI, "Failed to generate random secret key", "Invalid algorithm. Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e));
+			throws(new EncryptionException(variables.ESAPI, "Failed to generate random secret key", "Invalid algorithm. Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e));
 		} catch (java.security.InvalidParameterException e) {
-			raiseException(new EncryptionException(variables.ESAPI, "Failed to generate random secret key - invalid key size specified.", "Invalid key size. Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e));
+			throws(new EncryptionException(variables.ESAPI, "Failed to generate random secret key - invalid key size specified.", "Invalid key size. Failed to generate secret key for " & arguments.alg & " with size of " & arguments.keySize & " bits.", e));
 		}
 	}
 
@@ -119,13 +119,13 @@ component extends="org.owasp.esapi.util.Object" {
 	public function computeDerivedKey(required keyDerivationKey, required numeric keySize, required string purpose) {
         // These really should be turned into actual runtime checks and an
         // IllegalArgumentException should be thrown if they are violated.
-		if (isNull(arguments.keyDerivationKey)) raiseException("Key derivation key cannot be null.");
+		if (isNull(arguments.keyDerivationKey)) throws("Key derivation key cannot be null.");
 			// We would choose a larger minimum key size, but we want to be
 			// able to accept DES for legacy encryption needs.
-		if (arguments.keySize < 56) raiseException("Key has size of " & arguments.keySize & ", which is less than minimum of 56-bits.");
-		if ((arguments.keySize % 8) != 0) raiseException("Key size (" & arguments.keySize & ") must be a even multiple of 8-bits.");
-		if (isNull(arguments.purpose)) raiseException("purpose cannot be null");
-		if (arguments.purpose != "encryption" && arguments.purpose != "authenticity") raiseException("Purpose must be ""encryption"" or ""authenticity"".");
+		if (arguments.keySize < 56) throws("Key has size of " & arguments.keySize & ", which is less than minimum of 56-bits.");
+		if ((arguments.keySize % 8) != 0) throws("Key size (" & arguments.keySize & ") must be a even multiple of 8-bits.");
+		if (isNull(arguments.purpose)) throws("purpose cannot be null");
+		if (arguments.purpose != "encryption" && arguments.purpose != "authenticity") throws("Purpose must be ""encryption"" or ""authenticity"".");
 
 		// DISCUSS: Should we use HmacSHA1 (what we were using) or the HMAC defined by
 		//			Encryptor.KDF.PRF instead? Either way, this is not compatible with
@@ -148,8 +148,8 @@ component extends="org.owasp.esapi.util.Object" {
 	 * @see org.owasp.esapi.SecurityConfiguration#getCombinedCipherModes()
 	 */
 	public boolean function isCombinedCipherMode(required string cipherMode) {
-	    if (isNull(arguments.cipherMode)) raiseException("Cipher mode may not be null");
-	    if (arguments.cipherMode == "") raiseException("Cipher mode may not be empty string");
+	    if (isNull(arguments.cipherMode)) throws("Cipher mode may not be null");
+	    if (arguments.cipherMode == "") throws("Cipher mode may not be empty string");
 	    var combinedCipherModes = variables.ESAPI.securityConfiguration().getCombinedCipherModes();
 	    return combinedCipherModes.contains( arguments.cipherMode );
 	}
@@ -328,7 +328,7 @@ component extends="org.owasp.esapi.util.Object" {
 		} else {					// False, so throw or not.
 			variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Possible data tampering. Encountered invalid KDF version ##. " & ( arguments.throwIfError ? "Throwing IllegalArgumentException" : "" ));
 			if ( arguments.throwIfError ) {
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Version (" & arguments.kdfVers & ") invalid. " & "Must be date in format of YYYYMMDD between " & KeyDerivationFunction.originalVersion & " and 99991231."));
+				throws(createObject("java", "java.lang.IllegalArgumentException").init("Version (" & arguments.kdfVers & ") invalid. " & "Must be date in format of YYYYMMDD between " & KeyDerivationFunction.originalVersion & " and 99991231."));
 			}
 		}
 		return false;

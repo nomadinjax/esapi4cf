@@ -207,7 +207,7 @@ component extends="test.org.owasp.esapi.util.TestCase" {
         variables.testLogger.always(variables.testLogger.SECURITY_SUCCESS, "test message always 3 (SECURITY_SUCCESS)", javaCast("null", "") );
         variables.testLogger.always(variables.testLogger.SECURITY_AUDIT,   "test message always 4 (SECURITY_AUDIT)", javaCast("null", "") );
         try {
-        	raiseException(createObject("java", "java.lang.RuntimeException").init("What? You call that a 'throw'? My grandmother throws " &
+        	throws(createObject("java", "java.lang.RuntimeException").init("What? You call that a 'throw'? My grandmother throws " &
         							   "better than that and she's been dead for more than 10 years!"));
         } catch(java.lang.RuntimeException rtex) {
             variables.testLogger.always(variables.testLogger.SECURITY_AUDIT,   "test message always 5", rtex );

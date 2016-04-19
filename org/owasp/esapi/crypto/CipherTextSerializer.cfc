@@ -57,7 +57,7 @@ component extends="org.owasp.esapi.util.Object" {
     	variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
     	if (isNull(arguments.cipherTextObj)) {
-    		raiseException(createObject("java", "java.lang.IllegalArgumentException").init("CipherText object must not be null."));
+    		throws(createObject("java", "java.lang.IllegalArgumentException").init("CipherText object must not be null."));
     	}
     	if (isBinary(arguments.cipherTextObj)) {
 			variables.cipherText_ = convertToCipherText(arguments.cipherTextObj);
@@ -80,18 +80,18 @@ component extends="org.owasp.esapi.util.Object" {
         debug("asSerializedByteArray: kdfInfo = " & kdfInfo);
         var timestamp = variables.cipherText_.getEncryptionTimestamp();
         var cipherXform = variables.cipherText_.getCipherTransformation();
-        if (variables.cipherText_.getKeySize() >= Short.MAX_VALUE) raiseException("Key size too large. Max is " & Short.MAX_VALUE);
+        if (variables.cipherText_.getKeySize() >= Short.MAX_VALUE) throws("Key size too large. Max is " & Short.MAX_VALUE);
         var keySize = variables.cipherText_.getKeySize();
-        if (variables.cipherText_.getBlockSize() >= Short.MAX_VALUE) raiseException("Block size too large. Max is " & Short.MAX_VALUE);
+        if (variables.cipherText_.getBlockSize() >= Short.MAX_VALUE) throws("Block size too large. Max is " & Short.MAX_VALUE);
         var blockSize = variables.cipherText_.getBlockSize();
         var iv = variables.cipherText_.getIV();
-        if (arrayLen(iv) >= Short.MAX_VALUE) raiseException("IV size too large. Max is " & Short.MAX_VALUE);
+        if (arrayLen(iv) >= Short.MAX_VALUE) throws("IV size too large. Max is " & Short.MAX_VALUE);
         var ivLen = arrayLen(iv);
         var rawCiphertext = variables.cipherText_.getRawCipherText();
         var ciphertextLen = arrayLen(rawCiphertext);
-        if (ciphertextLen < 1) raiseException("Raw ciphertext length must be >= 1 byte.");
+        if (ciphertextLen < 1) throws("Raw ciphertext length must be >= 1 byte.");
         var mac = variables.cipherText_.getSeparateMAC();
-        if (arrayLen(mac) >= Short.MAX_VALUE) raiseException("MAC length too large. Max is " & Short.MAX_VALUE);
+        if (arrayLen(mac) >= Short.MAX_VALUE) throws("MAC length too large. Max is " & Short.MAX_VALUE);
         var macLen = arrayLen(mac);
 
         var serializedObj = computeSerialization(kdfInfo,
@@ -164,7 +164,7 @@ component extends="org.owasp.esapi.util.Object" {
         writeInt(baos, arguments.kdfInfo);
         writeLong(baos, arguments.timestamp);
         var parts = arguments.cipherXform.split("/");
-        if (arrayLen(parts) != 3) raiseException("Malformed cipher transformation");
+        if (arrayLen(parts) != 3) throws("Malformed cipher transformation");
         writeString(baos, arguments.cipherXform); // Size of string is prepended to string
         writeShort(baos, arguments.keySize);
         writeShort(baos, arguments.blockSize);
@@ -184,9 +184,9 @@ component extends="org.owasp.esapi.util.Object" {
     private void function writeString(required baos, required string str) {
         var bytes = "";
         try {
-            if (isNull(arguments.str) || len(arguments.str) == 0) raiseException("");
+            if (isNull(arguments.str) || len(arguments.str) == 0) throws("");
             bytes = arguments.str.getBytes("UTF8");
-            if (arrayLen(bytes) >= createObject("java", "java.lang.Short").MAX_VALUE) raiseException("writeString: String exceeds max length");
+            if (arrayLen(bytes) >= createObject("java", "java.lang.Short").MAX_VALUE) throws("writeString: String exceeds max length");
             writeShort(arguments.baos, arrayLen(bytes));
             arguments.baos.write(bytes, 0, arrayLen(bytes));
         } catch (UnsupportedEncodingException e) {
@@ -200,20 +200,20 @@ component extends="org.owasp.esapi.util.Object" {
     private string function readString(required bais, required numeric sz) {
         var bytes = new Utils().newByte(sz);
         var ret = arguments.bais.read(bytes, 0, sz);
-        if (ret != sz) raiseException("readString: Failed to read " & sz & " bytes.");
+        if (ret != sz) throws("readString: Failed to read " & sz & " bytes.");
         return charsetEncode(bytes, "UTF-8");
     }
 
     private void function writeShort(required baos, required numeric s) {
         var shortAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromShort(javaCast("short", arguments.s));
-        if (arrayLen(shortAsByteArray) != 2) raiseException("Error");
+        if (arrayLen(shortAsByteArray) != 2) throws("Error");
         arguments.baos.write(shortAsByteArray, 0, 2);
     }
 
     private numeric function readShort(required bais) {
         var shortAsByteArray = new Utils().newByte(2);
         var ret = arguments.bais.read(shortAsByteArray, 0, 2);
-        if (ret != 2) raiseException("readShort: Failed to read 2 bytes.");
+        if (ret != 2) throws("readShort: Failed to read 2 bytes.");
         return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toShort(shortAsByteArray);
     }
 
@@ -225,20 +225,20 @@ component extends="org.owasp.esapi.util.Object" {
     private numeric function readInt(required bais) {
         var intAsByteArray = new Utils().newByte(4);
         var ret = arguments.bais.read(intAsByteArray, 0, 4);
-        if (ret != 4) raiseException("readInt: Failed to read 4 bytes.");
+        if (ret != 4) throws("readInt: Failed to read 4 bytes.");
         return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toInt(intAsByteArray);
     }
 
     private void function writeLong(required baos, required numeric l) {
         var longAsByteArray = createObject("java", "org.owasp.esapi.util.ByteConversionUtil").fromLong(javaCast("long", arguments.l));
-        if (arrayLen(longAsByteArray) != 8) raiseException("error");
+        if (arrayLen(longAsByteArray) != 8) throws("error");
         arguments.baos.write(longAsByteArray, 0, 8);
     }
 
     private numeric function readLong(required bais) {
         var longAsByteArray = new Utils().newByte(8);
         var ret = arguments.bais.read(longAsByteArray, 0, 8);
-        if (ret != 8) raiseException("readLong: Failed to read 8 bytes.");
+        if (ret != 8) throws("readLong: Failed to read 8 bytes.");
         return createObject("java", "org.owasp.esapi.util.ByteConversionUtil").toLong(longAsByteArray);
     }
 
@@ -254,8 +254,8 @@ component extends="org.owasp.esapi.util.Object" {
     	var CryptoHelper = new CryptoHelper(variables.ESAPI);
     	var KeyDerivationFunction = new KeyDerivationFunction(variables.ESAPI);
         try {
-        	if (isNull(arguments.cipherTextSerializedBytes)) raiseException("cipherTextSerializedBytes cannot be null.");
-        	if (arrayLen(arguments.cipherTextSerializedBytes) == 0) raiseException("cipherTextSerializedBytes must be > 0 in length.");
+        	if (isNull(arguments.cipherTextSerializedBytes)) throws("cipherTextSerializedBytes cannot be null.");
+        	if (arrayLen(arguments.cipherTextSerializedBytes) == 0) throws("cipherTextSerializedBytes must be > 0 in length.");
             var bais = createObject("java", "java.io.ByteArrayInputStream").init(arguments.cipherTextSerializedBytes);
             var kdfInfo = readInt(bais);
             debug("kdfInfo: " & kdfInfo);
@@ -263,7 +263,7 @@ component extends="org.owasp.esapi.util.Object" {
             /* ORIGINAL LINE: var kdfPrf = (kdfInfo >>> 28); */
             var kdfPrf = bitSHRN(kdfInfo, 28);
             debug("kdfPrf: " & kdfPrf);
-            if (kdfPrf < 0 || kdfPrf > 15) raiseException("kdfPrf == " & kdfPrf & " must be between 0 and 15.");
+            if (kdfPrf < 0 || kdfPrf > 15) throws("kdfPrf == " & kdfPrf & " must be between 0 and 15.");
             /* ORIGINAL LINE: var kdfVers = ( kdfInfo & 0x07ffffff); */
             var kdfVers = bitAnd(kdfInfo, 134217727);
 
@@ -274,12 +274,12 @@ component extends="org.owasp.esapi.util.Object" {
             	// This should never happen under actual circumstances (barring programming errors; but we've
             	// tested the code, right?), so it is likely an attempted attack. Thus don't get the originator
             	// of the suspect ciphertext too much info. They ought to know what they sent anyhow.
-            	raiseException(new EncryptionException(variables.ESAPI, "Version info from serialized ciphertext not in valid range.", "Likely tampering with KDF version on serialized ciphertext." & logMsg));
+            	throws(new EncryptionException(variables.ESAPI, "Version info from serialized ciphertext not in valid range.", "Likely tampering with KDF version on serialized ciphertext." & logMsg));
             }
 
             debug("convertToCipherText: kdfPrf = " & kdfPrf & ", kdfVers = " & kdfVers);
             if ( ! versionIsCompatible( kdfVers) ) {
-            	raiseException(new EncryptionException(variables.ESAPI, "This version of ESAPI does is not compatible with the version of ESAPI that encrypted your data.", "KDF version " & kdfVers & " from serialized ciphertext not compatibile with current KDF version of " & KeyDerivationFunction.kdfVersion));
+            	throws(new EncryptionException(variables.ESAPI, "This version of ESAPI does is not compatible with the version of ESAPI that encrypted your data.", "KDF version " & kdfVers & " from serialized ciphertext not compatibile with current KDF version of " & KeyDerivationFunction.kdfVersion));
             }
             var timestamp = readLong(bais);
             debug("convertToCipherText: timestamp = " & createObject("java", "java.util.Date").init(javaCast("long", timestamp)));
@@ -288,11 +288,11 @@ component extends="org.owasp.esapi.util.Object" {
             var cipherXform = readString(bais, strSize);
             debug("convertToCipherText: cipherXform = " & cipherXform);
             var parts = cipherXform.split("/");
-            if (arrayLen(parts) != 3) raiseException("Malformed cipher transformation");
+            if (arrayLen(parts) != 3) throws("Malformed cipher transformation");
             var cipherMode = parts[2];
             if ( ! CryptoHelper.isAllowedCipherMode(cipherMode) ) {
                 var msg = "Cipher mode " & cipherMode & " is not an allowed cipher mode";
-                raiseException(new EncryptionException(variables.ESAPI, msg, msg));
+                throws(new EncryptionException(variables.ESAPI, msg, msg));
             }
             var keySize = readShort(bais);
             debug("convertToCipherText: keySize = " & keySize);
@@ -307,7 +307,7 @@ component extends="org.owasp.esapi.util.Object" {
             }
             var ciphertextLen = readInt(bais);
             debug("convertToCipherText: ciphertextLen = " & ciphertextLen);
-            if (ciphertextLen <= 0) raiseException("convertToCipherText: Invalid cipher text length");
+            if (ciphertextLen <= 0) throws("convertToCipherText: Invalid cipher text length");
             var rawCiphertext = Utils.newByte(ciphertextLen);
             bais.read(rawCiphertext, 0, arrayLen(rawCiphertext));
             var macLen = readShort(bais);
@@ -324,7 +324,7 @@ component extends="org.owasp.esapi.util.Object" {
             debug("convertToCipherText: CipherSpec: " & cipherSpec.toString());
             var ct = new CipherText(variables.ESAPI, cipherSpec);
             if ( ! (ivLen > 0 && ct.requiresIV()) ) {
-                    raiseException(new EncryptionException(variables.ESAPI, "convertToCipherText: Mismatch between IV length and cipher mode.", "Possible tampering of serialized ciphertext?"));
+                    throws(new EncryptionException(variables.ESAPI, "convertToCipherText: Mismatch between IV length and cipher mode.", "Possible tampering of serialized ciphertext?"));
             }
             ct.setCiphertext(rawCiphertext);
               // Set this *AFTER* setting raw ciphertext because setCiphertext()
@@ -342,9 +342,9 @@ component extends="org.owasp.esapi.util.Object" {
             ct.setKDFVersion(kdfVers);
             return ct;
         } catch(org.owaspi.esapi.errors.EncryptionException ex) {
-            raiseException(new EncryptionException(variables.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", ex));
+            throws(new EncryptionException(variables.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", ex));
         } catch (java.io.IOException e) {
-            raiseException(new EncryptionException(variables.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", e));
+            throws(new EncryptionException(variables.ESAPI, "Cannot deserialize byte array into CipherText object", "Cannot deserialize byte array into CipherText object", e));
         }
     }
 
@@ -363,7 +363,7 @@ component extends="org.owasp.esapi.util.Object" {
      */
     private boolean function versionIsCompatible(required numeric readKdfVers) {
     	// We've checked elsewhere for this, so assertion is OK here.
-    	if (arguments.readKdfVers <= 0) raiseException("Extracted KDF version is negative!");
+    	if (arguments.readKdfVers <= 0) throws("Extracted KDF version is negative!");
 
 		var KeyDerivationFunction = new KeyDerivationFunction(variables.ESAPI);
 

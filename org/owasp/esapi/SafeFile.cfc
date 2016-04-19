@@ -38,34 +38,34 @@ component extends="org.owasp.esapi.util.File" {
 	private void function doDirCheck(required string path) {
 		var m1 = variables.DIR_BLACKLIST_PAT.matcher(arguments.path);
 		if(m1.find()) {
-			raiseException(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & m1.group()));
+			throws(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & m1.group()));
 		}
 
 		var m2 = variables.PERCENTS_PAT.matcher(arguments.path);
 		if(m2.find()) {
-			raiseException(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains encoded characters: " & m2.group()));
+			throws(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains encoded characters: " & m2.group()));
 		}
 
 		var ch = containsUnprintableCharacters(arguments.path);
 		if(ch != -1) {
-			raiseException(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains unprintable character: " & ch));
+			throws(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains unprintable character: " & ch));
 		}
 	}
 
 	private void function doFileCheck(required string path) {
 		var m1 = variables.FILE_BLACKLIST_PAT.matcher(arguments.path);
 		if(m1.find()) {
-			raiseException(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & m1.group()));
+			throws(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid directory", "Directory path (" & arguments.path & ") contains illegal character: " & m1.group()));
 		}
 
 		var m2 = variables.PERCENTS_PAT.matcher(arguments.path);
 		if(m2.find()) {
-			raiseException(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains encoded characters: " & m2.group()));
+			throws(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains encoded characters: " & m2.group()));
 		}
 
 		var ch = containsUnprintableCharacters(arguments.path);
 		if(ch != -1) {
-			raiseException(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains unprintable character: " & ch));
+			throws(new org.owasp.esapi.errors.ValidationException(variables.ESAPI, "Invalid file", "File path (" & arguments.path & ") contains unprintable character: " & ch));
 		}
 	}
 

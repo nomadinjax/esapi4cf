@@ -45,7 +45,7 @@ component extends="org.owasp.esapi.util.Object" {
 		variables.logger = variables.ESAPI.getLogger(getMetaData(this).fullName);
 
 		if (isNull(arguments.str)) {
-	    	raiseException(createObject("java", "java.lang.IllegalArgumentException").init("String representing plaintext cannot be null."));
+	    	throws(createObject("java", "java.lang.IllegalArgumentException").init("String representing plaintext cannot be null."));
 	    }
 
 		if (isBinary(arguments.str)) {
@@ -61,7 +61,7 @@ component extends="org.owasp.esapi.util.Object" {
 			catch (UnsupportedEncodingException e) {
 				// Should never happen.
 				variables.logger.error(variables.Logger.EVENT_FAILURE, "PlainText(String) CTOR failed: Can't find UTF-8 byte-encoding!", e);
-				raiseException(createObject("java", "java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
+				throws(createObject("java", "java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
 			}
 		}
 
@@ -78,7 +78,7 @@ component extends="org.owasp.esapi.util.Object" {
 		} catch (UnsupportedEncodingException e) {
 			// Should never happen.
 			variables.logger.error(variables.Logger.EVENT_FAILURE, "PlainText.toString() failed: Can't find UTF-8 byte-encoding!", e);
-			raiseException(createObject("java", "java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
+			throws(createObject("java", "java.lang.RuntimeException").init("Can't find UTF-8 byte-encoding!", e));
 		}
 	}
 

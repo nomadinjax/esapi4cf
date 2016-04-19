@@ -129,10 +129,10 @@ component implements="org.owasp.esapi.AccessReferenceMap" extends="org.owasp.esa
             return variables.itod.get(arguments.indirectReference);
          }
          catch (ClassCastException e) {
-            raiseException(new AccessControlException(variables.ESAPI, "Access denied.", "Request for incorrect type reference: " & arguments.indirectReference));
+            throws(new AccessControlException(variables.ESAPI, "Access denied.", "Request for incorrect type reference: " & arguments.indirectReference));
          }
       }
-      raiseException(new AccessControlException(variables.ESAPI, "Access denied", "Request for invalid indirect reference: " & arguments.indirectReference));
+      throws(new AccessControlException(variables.ESAPI, "Access denied", "Request for invalid indirect reference: " & arguments.indirectReference));
    }
 
 }

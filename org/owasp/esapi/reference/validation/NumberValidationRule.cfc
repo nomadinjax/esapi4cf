@@ -73,7 +73,7 @@ component extends="BaseValidationRule" {
 			if (variables.allowNull) {
 				return;
 			}
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Input number required", "Input number required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Input number required", "Input number required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 	    }
 
 	    // canonicalize
@@ -81,7 +81,7 @@ component extends="BaseValidationRule" {
 
 	    //if MinValue is greater than maxValue then programmer is likely calling this wrong
 		if (variables.minValue > variables.maxValue) {
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input: context", "Validation parameter error for number: maxValue ( " & variables.maxValue & ") must be greater than minValue ( " & variables.minValue & ") for " & arguments.context, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input: context", "Validation parameter error for number: maxValue ( " & variables.maxValue & ") must be greater than minValue ( " & variables.minValue & ") for " & arguments.context, arguments.context ));
 		}
 
 		//convert to BigDecimal so we can safely parse dangerous numbers to
@@ -92,11 +92,11 @@ component extends="BaseValidationRule" {
 		}
 		// Railo (preferred)
 		catch (java.lang.NumberFormatException e) {
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e));
 		}
 		// CF (why does CF not pick up on the java.lang.NumberFormatException type?)
 		catch (Object e) {
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e));
 		}
 
 		// Thanks to Brian Chess for this suggestion
@@ -113,20 +113,20 @@ component extends="BaseValidationRule" {
 		try {
 			d = Double.valueOf(Double.parseDouble( canonical ));
 		} catch (NumberFormatException e) {
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e));
 		}
 
 		if (d.isInfinite()) {
-			raiseException(new ValidationException( variables.ESAPI, "Invalid number input: context=" & arguments.context, "Invalid double input is infinite: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, "Invalid number input: context=" & arguments.context, "Invalid double input is infinite: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 		}
 		if (d.isNaN()) {
-			raiseException(new ValidationException( variables.ESAPI, "Invalid number input: context=" & arguments.context, "Invalid double input is not a number: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, "Invalid number input: context=" & arguments.context, "Invalid double input is not a number: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 		}
 		if (d.doubleValue() < variables.minValue) {
-			raiseException(new ValidationException( variables.ESAPI, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 		}
 		if (d.doubleValue() > variables.maxValue) {
-			raiseException(new ValidationException( variables.ESAPI, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 		}
 		return d;
 	}

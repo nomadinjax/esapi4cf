@@ -160,7 +160,7 @@ component extends="org.owasp.esapi.util.Object" {
         var providerClass = "";
         var clzName = "";
         var cryptoProvider = "";
-        if (arguments.pos < -1 || arguments.pos == 0) raiseException("Position pos must be -1 or integer >= 1");
+        if (arguments.pos < -1 || arguments.pos == 0) throws("Position pos must be -1 or integer >= 1");
         try {
             // Does algProvider look like a class name?
             if (arguments.algProvider.indexOf(".") != -1) {
@@ -169,7 +169,7 @@ component extends="org.owasp.esapi.util.Object" {
                 // One of the special cases we know about.
                 clzName = variables.jceProviders[arguments.algProvider];
             } else {
-                raiseException(createObject("java", "java.security.NoSuchProviderException").init("Unable to locate Provider class for provider " & arguments.algProvider & ". Try using fully qualified class name or check provider name for typos. Builtin provider names are: " & variables.jceProviders.toString()));
+                throws(createObject("java", "java.security.NoSuchProviderException").init("Unable to locate Provider class for provider " & arguments.algProvider & ". Try using fully qualified class name or check provider name for typos. Builtin provider names are: " & variables.jceProviders.toString()));
             }
 
             providerClass = clzName;
@@ -223,7 +223,7 @@ component extends="org.owasp.esapi.util.Object" {
         	// by the current user of this thread. Will log it here. Can always
         	// be ignored.
         	variables.logger.always(variables.Logger.SECURITY_FAILURE, "Failed to load preferred JCE provider " & arguments.algProvider & " at position " & arguments.pos, ex);
-            raiseException(createObject("java", "java.lang.SecurityException").init(ex.message));
+            throws(createObject("java", "java.lang.SecurityException").init(ex.message));
         } catch(any ex) {
             // Possibilities include: ClassNotFoundException,
             //                        InstantiationException, and others???
@@ -233,7 +233,7 @@ component extends="org.owasp.esapi.util.Object" {
         	// error (e.g., classpath problem, etc.) so we use EVENT_FAILURE rather than
         	// SECURITY_FAILURE here.
             variables.logger.error(variables.Logger.EVENT_FAILURE, "Failed to insert failed crypto provider " & arguments.algProvider & " at position " & arguments.pos, ex);
-            raiseException(createObject("java", "java.security.NoSuchProviderException").init("Failed to insert crypto provider for " & arguments.algProvider & "; exception msg: " & ex.toString()));
+            throws(createObject("java", "java.security.NoSuchProviderException").init("Failed to insert crypto provider for " & arguments.algProvider & "; exception msg: " & ex.toString()));
         }
     }
 
@@ -272,7 +272,7 @@ component extends="org.owasp.esapi.util.Object" {
         	var msg = "failed to load *preferred* JCE crypto provider, " & prefJCEProvider;
         	variables.logger.always(variables.Logger.SECURITY_AUDIT, msg);	// Per NSA suggestion.
             variables.logger.error(variables.Logger.SECURITY_FAILURE, msg);
-            raiseException(ex);
+            throws(ex);
         }
     }
 }

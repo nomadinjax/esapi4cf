@@ -150,15 +150,15 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 	 */
 	public void function assertSecureChannel(httpRequest=getCurrentRequest()) {
 	    if ( isNull(arguments.httpRequest) ) {
-	    	raiseException(new AccessControlException( variables.ESAPI, "Insecure request received", "HTTP request was null" ));
+	    	throws(new AccessControlException( variables.ESAPI, "Insecure request received", "HTTP request was null" ));
 	    }
 	    var sb = arguments.httpRequest.getRequestURL();
 	    if (isNull(sb)) {
-	    	raiseException(new AccessControlException( variables.ESAPI, "Insecure request received", "HTTP request URL was null" ));
+	    	throws(new AccessControlException( variables.ESAPI, "Insecure request received", "HTTP request URL was null" ));
 	    }
 	    var protocol = sb.toString();
 	    if (left(protocol, 5) != "https") {
-	    	raiseException(new AccessControlException( variables.ESAPI, "Insecure request received", "HTTP request did not use SSL" ));
+	    	throws(new AccessControlException( variables.ESAPI, "Insecure request received", "HTTP request did not use SSL" ));
 	    }
 	}
 
@@ -167,7 +167,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 		var receivedMethod = arguments.httpRequest.getMethod();
 		var requiredMethod = "POST";
 		if ( receivedMethod != requiredMethod ) {
-			raiseException(new AccessControlException( variables.ESAPI, "Insecure request received", "Received request using " & receivedMethod & " when only " & requiredMethod & " is allowed" ));
+			throws(new AccessControlException( variables.ESAPI, "Insecure request received", "Received request using " & receivedMethod & " when only " & requiredMethod & " is allowed" ));
 		}
 	}
 
@@ -230,7 +230,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
     	try {
     		return decryptString(arguments.encrypted);
     	} catch( org.owasp.esapi.errors.EncryptionException e ) {
-    		raiseException(new IntrusionException(variables.ESAPI, "Invalid request","Tampering detected. Hidden field data did not decrypt properly.", e));
+    		throws(new IntrusionException(variables.ESAPI, "Invalid request","Tampering detected. Hidden field data did not decrypt properly.", e));
     	}
     }
 
@@ -279,7 +279,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 
 		if ( encrypted.length() > (this.MAX_COOKIE_LEN ) ) {
 			variables.logger.error(variables.Logger.SECURITY_FAILURE, "Problem encrypting state in cookie - skipping entry");
-			raiseException(new EncryptionException(variables.ESAPI, "Encryption failure", "Encrypted cookie state of " & encrypted.length() & " longer than allowed " & this.MAX_COOKIE_LEN ));
+			throws(new EncryptionException(variables.ESAPI, "Encryption failure", "Encrypted cookie state of " & encrypted.length() & " longer than allowed " & this.MAX_COOKIE_LEN ));
 		}
 
     	var httpCookie = createObject("java", "javax.servlet.http.Cookie").init( this.ESAPI_STATE, encrypted );
@@ -310,7 +310,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 	public array function getFileUploads(uploadDir=variables.ESAPI.securityConfiguration().getUploadDirectory(), array allowedExtensions=variables.ESAPI.securityConfiguration().getAllowedFileExtensions(), httpRequest=getCurrentRequest()) {
         var tempDir = createObject("java", "java.io.File").init(variables.ESAPI.securityConfiguration().getUploadTempDirectory());
 		if ( !tempDir.exists() ) {
-		    if ( !tempDir.mkdirs() ) raiseException(new ValidationUploadException( variables.ESAPI, "Upload failed", "Could not create temp directory: " & tempDir.getAbsolutePath() ));
+		    if ( !tempDir.mkdirs() ) throws(new ValidationUploadException( variables.ESAPI, "Upload failed", "Could not create temp directory: " & tempDir.getAbsolutePath() ));
 		}
 
 		var uploadDirObject = "";
@@ -320,13 +320,13 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 
 		if (!isNull(uploadDirObject)) {
 			if ( !uploadDirObject.exists() ) {
-				if ( !uploadDirObject.mkdirs() ) raiseException(new ValidationUploadException( variables.ESAPI, "Upload failed", "Could not create final upload directory: " & uploadDirObject.getAbsolutePath() ));
+				if ( !uploadDirObject.mkdirs() ) throws(new ValidationUploadException( variables.ESAPI, "Upload failed", "Could not create final upload directory: " & uploadDirObject.getAbsolutePath() ));
 			}
 		}
 		else {
 			uploadDirObject = createObject("java", "java.io.File").init(variables.ESAPI.securityConfiguration().getUploadDirectory());
 			if ( !uploadDirObject.exists()) {
-				if ( !uploadDirObject.mkdirs() ) raiseException(new ValidationUploadException( variables.ESAPI, "Upload failed", "Could not create final upload directory: " & uploadDirObject.getAbsolutePath() ));
+				if ( !uploadDirObject.mkdirs() ) throws(new ValidationUploadException( variables.ESAPI, "Upload failed", "Could not create final upload directory: " & uploadDirObject.getAbsolutePath() ));
 			}
 		}
 
@@ -341,7 +341,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 
 			var ServletFileUpload = createObject("java", "org.apache.commons.fileupload.servlet.ServletFileUpload");
 			if (!ServletFileUpload.isMultipartContent(realHttpRequest)) {
-				raiseException(new ValidationUploadException(variables.ESAPI, "Upload failed", "Not a multipart request"));
+				throws(new ValidationUploadException(variables.ESAPI, "Upload failed", "Not a multipart request"));
 			}
 
 			// this factory will store ALL files in the temp directory,
@@ -386,7 +386,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 					var filename = fparts[fparts.length - 1];
 
 					if (!variables.ESAPI.validator().isValidFileName("upload", filename, arguments.allowedExtensions, false)) {
-						raiseException(new ValidationUploadException(variables.ESAPI, "Upload only simple filenames with the following extensions " & arguments.allowedExtensions, "Upload failed isValidFileName check"));
+						throws(new ValidationUploadException(variables.ESAPI, "Upload only simple filenames with the following extensions " & arguments.allowedExtensions, "Upload failed isValidFileName check"));
 					}
 
 					variables.logger.info(variables.Logger.SECURITY_SUCCESS, "File upload requested: " & filename);
@@ -414,7 +414,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 			if (instanceOf(e, org.owasp.esapi.errors.ValidationUploadException)) {
 				rethrow;
 			}
-			raiseException(new ValidationUploadException(variables.ESAPI, "Upload failure", "Problem during upload:" & e.getMessage(), e));
+			throws(new ValidationUploadException(variables.ESAPI, "Upload failure", "Problem during upload:" & e.getMessage(), e));
 		}*/
 		return newFiles;
 	}
@@ -550,7 +550,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 	 */
 	public void function sendForward(required string location, httpRequest=getCurrentRequest(), httpResponse=getCurrentResponse()) {
 		if (!arguments.location.startsWith("WEB-INF")) {
-			raiseException(new AccessControlException(variables.ESAPI, "Forward failed", "Bad forward location: " & arguments.location));
+			throws(new AccessControlException(variables.ESAPI, "Forward failed", "Bad forward location: " & arguments.location));
 		}
 		var dispatcher = arguments.httpRequest.getRequestDispatcher(arguments.location);
 		dispatcher.forward( arguments.httpRequest, arguments.httpResponse );
@@ -564,7 +564,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
     public void function sendRedirect(required string location, httpResponse=getCurrentResponse()){
         if (!variables.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
             variables.logger.fatal(variables.Logger.SECURITY_FAILURE, "Bad redirect location: " & arguments.location);
-            raiseException(createObject("java", "java.io.IOException").init("Redirect failed", "Bad redirect location: " & arguments.location));
+            throws(createObject("java", "java.io.IOException").init("Redirect failed", "Bad redirect location: " & arguments.location));
         }
 		arguments.httpResponse.sendRedirect(location);
     }
@@ -688,7 +688,7 @@ component implements="org.owasp.esapi.HTTPUtilities" extends="org.owasp.esapi.ut
 		var token = arguments.httpRequest.getParameter(this.CSRF_TOKEN_NAME);
 		if (!isDefined("token")) token = "";
 		if (user.getCSRFToken() != token) {
-			raiseException(new IntrusionException(variables.ESAPI, "Authentication failed", "Possibly forged HTTP request without proper CSRF token detected"));
+			throws(new IntrusionException(variables.ESAPI, "Authentication failed", "Possibly forged HTTP request without proper CSRF token detected"));
 		}
 	}
 

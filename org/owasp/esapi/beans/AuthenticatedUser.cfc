@@ -115,7 +115,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 			variables.roles.add(roleName);
 			variables.logger.info(variables.Logger.SECURITY_SUCCESS, new Utils().messageFormat("Role {0} added to {1}", [roleName, getAccountName()]) );
 		} else {
-			raiseException(new AuthenticationAccountsException( "Add role failed", new Utils().messageFormat("Attempt to add invalid role {0} to {1}", [roleName, getAccountName()]) ));
+			throws(new AuthenticationAccountsException( "Add role failed", new Utils().messageFormat("Attempt to add invalid role {0} to {1}", [roleName, getAccountName()]) ));
 		}
 	}
 
@@ -266,7 +266,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 			setLastFailedLoginTime(now());
 			incrementFailedLoginCount();
 			variables.ESAPI.getAdapter().saveUser(this);
-			raiseException(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Missing password: {0}", [variables.accountName])));
+			throws(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Missing password: {0}", [variables.accountName])));
 		}
 
 		// don't let disabled users log in
@@ -274,7 +274,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 			setLastFailedLoginTime(now());
 			incrementFailedLoginCount();
 			variables.ESAPI.getAdapter().saveUser(this);
-			raiseException(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Disabled user attempt to login: {0}", [variables.accountName])));
+			throws(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Disabled user attempt to login: {0}", [variables.accountName])));
 		}
 
 		// don't let locked users log in
@@ -282,7 +282,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 			setLastFailedLoginTime(now());
 			incrementFailedLoginCount();
 			variables.ESAPI.getAdapter().saveUser(this);
-			raiseException(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Locked user attempt to login: {0}", [variables.accountName])));
+			throws(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Locked user attempt to login: {0}", [variables.accountName])));
 		}
 
 		// don't let expired users log in
@@ -290,7 +290,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 			setLastFailedLoginTime(now());
 			incrementFailedLoginCount();
 			variables.ESAPI.getAdapter().saveUser(this);
-			raiseException(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Expired user attempt to login: {0}", [variables.accountName])));
+			throws(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Expired user attempt to login: {0}", [variables.accountName])));
 		}
 
 		logout(arguments.httpRequest, arguments.httpResponse);
@@ -313,7 +313,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 				this.lock();
 			}
 			variables.ESAPI.getAdapter().saveUser(this);
-			raiseException(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Incorrect password provided for {0}", [variables.accountName])));
+			throws(new AuthenticationLoginException(variables.ESAPI, variables.ESAPI.getResource().getString("Authenticator.loginFailed"), new Utils().messageFormat("Incorrect password provided for {0}", [variables.accountName])));
 		}
 	}
 
@@ -378,7 +378,7 @@ component implements="org.owasp.esapi.User" extends="org.owasp.esapi.util.Object
 	public void function setLastHostAddress(required string remoteHost) {
 		if(!isNull(variables.lastHostAddress) && len(trim(variables.lastHostAddress)) && variables.lastHostAddress != arguments.remoteHost) {
 			// returning remote address not remote hostname to prevent DNS lookup
-			raiseException(new AuthenticationHostException(variables.ESAPI, variables.ESAPI.getResource().getString("User.hostAddressMismatch"), new Utils().messageFormat("User session just jumped from {0} to {1}", [variables.lastHostAddress, arguments.remoteHost])));
+			throws(new AuthenticationHostException(variables.ESAPI, variables.ESAPI.getResource().getString("User.hostAddressMismatch"), new Utils().messageFormat("User session just jumped from {0} to {1}", [variables.lastHostAddress, arguments.remoteHost])));
 		}
 		variables.lastHostAddress = arguments.remoteHost;
 	}

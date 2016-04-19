@@ -170,7 +170,7 @@ component implements="org.owasp.esapi.Logger" extends="org.owasp.esapi.util.Obje
 			case 100:			/*this.LEVEL_TRACE:*/   return variables.Level.FINEST;
 			case -2147483648:	/*this.LEVEL_ALL:*/     return variables.Level.ALL;
 			default: {
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));
+				throws(createObject("java", "java.lang.IllegalArgumentException").init("Invalid logging level. Value was: " & arguments.level));
 			}
 		}
 	}

@@ -81,7 +81,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 	    catch (java.security.NoSuchProviderException ex) {
 	    	// Note that audit logging is done elsewhere in called method.
 	        variables.logger.fatal(Logger.SECURITY_FAILURE, "JavaEncryptor failed to load preferred JCE provider.", ex);
-	        raiseException(createObject("java", "java.lang.ExceptionInInitializerError").init(ex));
+	        throws(createObject("java", "java.lang.ExceptionInInitializerError").init(ex));
 	    }
 	    setupAlgorithms();
 
@@ -89,16 +89,16 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
         var skey = variables.ESAPI.securityConfiguration().getMasterKey();
 
         if (isNull(salt)) {
-        	raiseException("Can't obtain master salt, Encryptor.MasterSalt");
+        	throws("Can't obtain master salt, Encryptor.MasterSalt");
         }
         else if (arrayLen(salt) < 16) {
-        	raiseException("Encryptor.MasterSalt must be at least 16 bytes. Length is: " & arrayLen(salt) & " bytes.");
+        	throws("Encryptor.MasterSalt must be at least 16 bytes. Length is: " & arrayLen(salt) & " bytes.");
         }
         if (isNull(skey)) {
-        	raiseException("Can't obtain master key, Encryptor.MasterKey");
+        	throws("Can't obtain master key, Encryptor.MasterKey");
         }
         else if (arrayLen(skey) < 7) {
-        	raiseException("Encryptor.MasterKey must be at least 7 bytes. Length is: " & arrayLen(skey) & " bytes.");
+        	throws("Encryptor.MasterKey must be at least 7 bytes. Length is: " & arrayLen(skey) & " bytes.");
         }
 
         // Set up secretKeySpec for use for symmetric encryption and decryption,
@@ -130,7 +130,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
             initKeyPair(prng);
         }
         catch (Exception ex) {
-            raiseException(new EncryptionException(variables.ESAPI, "Encryption failure", "Error creating Encryptor", ex));
+            throws(new EncryptionException(variables.ESAPI, "Encryption failure", "Error creating Encryptor", ex));
         }
 
 		return this;
@@ -160,19 +160,19 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 			return encoded;
 		}
 		catch (java.security.NoSuchAlgorithmException ex) {
-			raiseException(new EncryptionException(variables.ESAPI, "Internal error", "Can't find hash algorithm " & variables.hashAlgorithm, ex));
+			throws(new EncryptionException(variables.ESAPI, "Internal error", "Can't find hash algorithm " & variables.hashAlgorithm, ex));
 		}
 		catch (java.io.UnsupportedEncodingException ex) {
-			raiseException(new EncryptionException(variables.ESAPI, "Internal error", "Can't find encoding for " & variables.encoding, ex));
+			throws(new EncryptionException(variables.ESAPI, "Internal error", "Can't find encoding for " & variables.encoding, ex));
 		}
 	}
 
 	public CipherText function encrypt(required PlainText plain, key=variables.secretKeySpec) {
 		 if (isNull(arguments.key)) {
-			 raiseException(createObject("java", "java.lang.IllegalArgumentException").init("(Master) encryption key arg may not be null. Is Encryptor.MasterKey set?"));
+			 throws(createObject("java", "java.lang.IllegalArgumentException").init("(Master) encryption key arg may not be null. Is Encryptor.MasterKey set?"));
 		 }
 		 if (isNull(arguments.plain)) {
-			 raiseException(createObject("java", "java.lang.IllegalArgumentException").init("PlainText argument may not be null"));
+			 throws(createObject("java", "java.lang.IllegalArgumentException").init("PlainText argument may not be null"));
 		 }
 		 var plaintext = arguments.plain.asBytes();
 		 var overwritePlaintext = variables.ESAPI.securityConfiguration().overwritePlainText();
@@ -185,7 +185,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 			 xform = variables.ESAPI.securityConfiguration().getCipherTransformation();
              var parts = listToArray(xform, "/");
              if (arrayLen(parts) != 3) {
-             	raiseException("Malformed cipher transformation: " & xform);
+             	throws("Malformed cipher transformation: " & xform);
              }
              var cipherMode = parts[1];
 
@@ -198,7 +198,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
              // monotonically increasing function).
              // DISCUSS: Should we include the permitted cipher modes in the exception msg?
              if (!CryptoHelper.isAllowedCipherMode(cipherMode)) {
-                 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure: invalid cipher mode (" & cipherMode & ") for encryption", "Encryption failure: Cipher transformation " & xform & " specifies invalid " & "cipher mode " & cipherMode));
+                 throws(new EncryptionException(variables.ESAPI, "Encryption failure: invalid cipher mode (" & cipherMode & ") for encryption", "Encryption failure: Cipher transformation " & xform & " specifies invalid " & "cipher mode " & cipherMode));
              }
 
 			 // Note - Cipher is not thread-safe so we create one locally
@@ -351,26 +351,26 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 			 success = true;	// W00t!!!
 			 return ciphertext;
 		} catch (InvalidKeyException ike) {
-			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure: Invalid key exception.",
+			 throws(new EncryptionException(variables.ESAPI, "Encryption failure: Invalid key exception.",
 					 "Requested key size: " & keySize & "bits greater than 128 bits. Must install unlimited strength crypto extension from Sun: " &
 					 ike.message, ike));
 		 } catch (ConfigurationException cex) {
-			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure: Configuration error. Details in log.", "Key size mismatch or unsupported IV method. " &
+			 throws(new EncryptionException(variables.ESAPI, "Encryption failure: Configuration error. Details in log.", "Key size mismatch or unsupported IV method. " &
 					 "Check encryption key size vs. ESAPI.EncryptionKeyLength or Encryptor.ChooseIVMethod property.", cex));
 		 } catch (InvalidAlgorithmParameterException e) {
-			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure (invalid IV)",
+			 throws(new EncryptionException(variables.ESAPI, "Encryption failure (invalid IV)",
 					 "Encryption problem: Invalid IV spec: " & e.message, e));
 		 } catch (IllegalBlockSizeException e) {
-			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure (no padding used; invalid input size)",
+			 throws(new EncryptionException(variables.ESAPI, "Encryption failure (no padding used; invalid input size)",
 					 "Encryption problem: Invalid input size without padding (" & xform & "). " & e.message, e));
 		 } catch (BadPaddingException e) {
-			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure",
+			 throws(new EncryptionException(variables.ESAPI, "Encryption failure",
 					 "[Note: Should NEVER happen in encryption mode.] Encryption problem: " & e.message, e));
 		 } catch (java.security.NoSuchAlgorithmException e) {
-			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure (unavailable cipher requested)",
+			 throws(new EncryptionException(variables.ESAPI, "Encryption failure (unavailable cipher requested)",
 					 "Encryption problem: specified algorithm in cipher xform " & xform & " not available: " & e.message, e));
 		 } catch (NoSuchPaddingException e) {
-			 raiseException(new EncryptionException(variables.ESAPI, "Encryption failure (unavailable padding scheme requested)",
+			 throws(new EncryptionException(variables.ESAPI, "Encryption failure (unavailable padding scheme requested)",
 					 "Encryption problem: specified padding scheme in cipher xform " & xform & " not available: " & e.message, e));
 		 } finally {
 			 // Don't overwrite anything in the case of exceptions because they may wish to retry.
@@ -383,10 +383,10 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 	public PlainText function decrypt(required CipherText ciphertext, key=variables.secretKeySpec) {
 	    var start = createObject("java", "java.lang.System").nanoTime();  // Current time in nanosecs; used to prevent timing attacks
 	    if (isNull(arguments.key)) {
-	        raiseException(createObject("java", "java.lang.IllegalArgumentException").init("SecretKey arg may not be null"));
+	        throws(createObject("java", "java.lang.IllegalArgumentException").init("SecretKey arg may not be null"));
 	    }
 	    if (isNull(arguments.ciphertext)) {
-	        raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Ciphertext may arg not be null"));
+	        throws(createObject("java", "java.lang.IllegalArgumentException").init("Ciphertext may arg not be null"));
 	    }
 
 		var CryptoHelper = new CryptoHelper(variables.ESAPI);
@@ -397,7 +397,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 	        // you do not accept, so it's a bit more complex than that. Also
 	        // throwing an IllegalArgumentException doesn't allow us to provide
 	        // the two separate error messages or automatically log it.
-	        raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Invalid cipher mode " & arguments.ciphertext.getCipherMode() & " not permitted for decryption or encryption operations."));
+	        throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Invalid cipher mode " & arguments.ciphertext.getCipherMode() & " not permitted for decryption or encryption operations."));
 	    }
 	    variables.logger.debug(variables.Logger.EVENT_SUCCESS,
 	            "Args valid for JavaEncryptor.decrypt(SecretKey,CipherText): " &
@@ -424,7 +424,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 	            } catch(Exception ex) {
 	                ;   // Ignore
 	            }
-	            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption failed because MAC invalid for " & arguments.ciphertext));
+	            throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption failed because MAC invalid for " & arguments.ciphertext));
 	        }
 	        progressMark++;
 	        // The decryption only counts if the MAC was valid.
@@ -470,7 +470,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 	                var millis = extraSleep / Long.init("1000000L");
 	                var nanos  = (extraSleep - (millis * Long.init("1000000L")));
 	                if (nanos < 0 && nanos > Integer.MAX_VALUE) {
-                            raiseException("Nanosecs out of bounds; nanos = " & nanos);
+                            throws("Nanosecs out of bounds; nanos = " & nanos);
 					}
 	                try {
 	                    Thread.sleep(millis, nanos);
@@ -528,18 +528,18 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
             return new PlainText(variables.ESAPI, output);
 
         } catch (InvalidKeyException ike) {
-            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Must install JCE Unlimited Strength Jurisdiction Policy Files from Sun", ike));
+            throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Must install JCE Unlimited Strength Jurisdiction Policy Files from Sun", ike));
         } catch (java.security.NoSuchAlgorithmException e) {
-            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Invalid algorithm for available JCE providers - " &
+            throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Invalid algorithm for available JCE providers - " &
                     arguments.ciphertext.getCipherTransformation() & ": " & e.message, e));
         } catch (NoSuchPaddingException e) {
-            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Invalid padding scheme (" &
+            throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Invalid padding scheme (" &
                     arguments.ciphertext.getPaddingScheme() & ") for cipher transformation " & arguments.ciphertext.getCipherTransformation() &
                     ": " & e.message, e));
         } catch (InvalidAlgorithmParameterException e) {
-            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
+            throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
         } catch (IllegalBlockSizeException e) {
-            raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
+            throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
         } catch (BadPaddingException e) {
             //DISCUSS: This needs fixed. Already validated MAC in CryptoHelper.isCipherTextMACvalid() above.
             //So only way we could get a padding exception is if invalid padding were used originally by
@@ -552,14 +552,14 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
                 authKey = computeDerivedKey( arguments.ciphertext.getKDFVersion(), arguments.ciphertext.getKDF_PRF(),
                 		                     arguments.key, keySize, "authenticity");
             } catch (Exception e1) {
-                raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED,
+                throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED,
                         "Decryption problem -- failed to compute derived key for authenticity: " & e1.message, e1));
             }
             var success = arguments.ciphertext.validateMAC( authKey );
             if ( success ) {
-                raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
+                throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED, "Decryption problem: " & e.message, e));
             } else {
-                raiseException(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED,
+                throws(new EncryptionException(variables.ESAPI, variables.DECRYPTION_FAILED,
                         "Decryption problem: WARNING: Adversary may have tampered with " &
                         "CipherText object orCipherText object mangled in transit: " & e.message, e));
             }
@@ -574,9 +574,9 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 			var bytes = signer.sign();
 			return variables.ESAPI.encoder().encodeForBase64(bytes, false);
 		} catch (InvalidKeyException ike) {
-			raiseException(new EncryptionException(variables.ESAPI, "Encryption failure", "Must install unlimited strength crypto extension from Sun", ike));
+			throws(new EncryptionException(variables.ESAPI, "Encryption failure", "Must install unlimited strength crypto extension from Sun", ike));
 		} catch (Exception e) {
-			raiseException(new EncryptionException(variables.ESAPI, "Signature failure", "Can't find signature algorithm " & variables.signatureAlgorithm, e));
+			throws(new EncryptionException(variables.ESAPI, "Signature failure", "Can't find signature algorithm " & variables.signatureAlgorithm, e));
 		}
 	}
 
@@ -602,7 +602,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
      */
 	public string function seal(required string data, required numeric expiration) {
 	    if (isNull(arguments.data)) {
-	        raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Data to be sealed may not be null."));
+	        throws(createObject("java", "java.lang.IllegalArgumentException").init("Data to be sealed may not be null."));
 	    }
 
 		try {
@@ -621,7 +621,7 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 			var sealedData = variables.ESAPI.encoder().encodeForBase64(ciphertext.asPortableSerializedByteArray(), false);
 			return sealedData;
 		} catch(org.owasp.esapi.errors.EncryptionException e) {
-			raiseException(new IntegrityException(variables.ESAPI, e.getUserMessage(), e.getLogMessage(), e ));
+			throws(new IntegrityException(variables.ESAPI, e.getUserMessage(), e.getLogMessage(), e ));
 		}
 	}
 
@@ -635,32 +635,32 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 		    } catch( AssertionError e) {
 	            // Some of the tests in EncryptorTest.testVerifySeal() are examples of
 		        // this if assertions are enabled.
-		        raiseException(new EncryptionException(variables.ESAPI, "Invalid seal", "Seal passed garbarge data resulting in AssertionError: " & e));
+		        throws(new EncryptionException(variables.ESAPI, "Invalid seal", "Seal passed garbarge data resulting in AssertionError: " & e));
 	        }
 			plaintext = this.decrypt(cipherText);
 
 			var parts = plaintext.toString().split(":");
 			if (arrayLen(parts) != 4) {
-				raiseException(new EncryptionException(variables.ESAPI, "Invalid seal", "Seal was not formatted properly."));
+				throws(new EncryptionException(variables.ESAPI, "Invalid seal", "Seal was not formatted properly."));
 			}
 
 			var timestring = parts[1];
 			var now = now().getTime();
 			var expiration = timestring;
 			if (now > expiration) {
-				raiseException(new EncryptionException(variables.ESAPI, "Invalid seal", "Seal expiration date of " & createObject("java", "java.util.Date").init(javaCast("long", expiration)) & " has past."));
+				throws(new EncryptionException(variables.ESAPI, "Invalid seal", "Seal expiration date of " & createObject("java", "java.util.Date").init(javaCast("long", expiration)) & " has past."));
 			}
 			var nonce = parts[2];
 			var b64data = parts[3];
 			var sig = parts[4];
 			if (!this.verifySignature(sig, timestring & ":" & nonce & ":" & b64data ) ) {
-				raiseException(new EncryptionException(variables.ESAPI, "Invalid seal", "Seal integrity check failed"));
+				throws(new EncryptionException(variables.ESAPI, "Invalid seal", "Seal integrity check failed"));
 			}
 			return charsetEncode(variables.ESAPI.encoder().decodeFromBase64(b64data), "UTF-8");
 		} catch (org.owasp.esapi.errors.EncryptionException e) {
-			raiseException(e);
+			throws(e);
 		} catch (any e) {
-			raiseException(new EncryptionException(variables.ESAPI, "Invalid seal", "Invalid seal:" & e.message, e));
+			throws(new EncryptionException(variables.ESAPI, "Invalid seal", "Invalid seal:" & e.message, e));
 		}
 	}
 
@@ -718,9 +718,9 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
 			byte[] bytes = hmac.doFinal( inBytes );
 			return ESAPI.encoder().encodeForBase64(bytes, false);
 		} catch (InvalidKeyException ike) {
-			raiseException(new EncryptionException(variables.ESAPI, "Encryption failure", "Must install unlimited strength crypto extension from Sun", ike));
+			throws(new EncryptionException(variables.ESAPI, "Encryption failure", "Must install unlimited strength crypto extension from Sun", ike));
 	    } catch (java.security.NoSuchAlgorithmException e) {
-	    	raiseException(new EncryptionException(variables.ESAPI, "Could not compute HMAC", "Can't find HMacSHA1 algorithm. " &
+	    	throws(new EncryptionException(variables.ESAPI, "Could not compute HMAC", "Can't find HMacSHA1 algorithm. " &
 	    															"Problem computing HMAC for " & input, e ));
 	    }
 	}
@@ -779,15 +779,15 @@ component implements="org.owasp.esapi.Encryptor" extends="org.owasp.esapi.util.O
     	// But this should be OK since this is a private method. Also, this method will
     	// be called quite often so assertions are a big win as they can be disabled or
     	// enabled at will.
-    	if (isNull(arguments.prf)) raiseException("Pseudo Random Function for KDF cannot be null");
-    	if (isNull(arguments.kdk)) raiseException("Key derivation key cannot be null.");
+    	if (isNull(arguments.prf)) throws("Pseudo Random Function for KDF cannot be null");
+    	if (isNull(arguments.kdk)) throws("Key derivation key cannot be null.");
     	// We would choose a larger minimum key size, but we want to be
     	// able to accept DES for legacy encryption needs. NIST says 112-bits is min. If less than that,
     	// we print warning.
-    	if (arguments.keySize < 56) raiseException("Key has size of " & arguments.keySize & ", which is less than minimum of 56-bits.");
-    	if ((arguments.keySize % 8) != 0) raiseException("Key size (" & arguments.keySize & ") must be a even multiple of 8-bits.");
-    	if (isNull(arguments.purpose)) raiseException("Purpose cannot be null. Should be 'encryption' or 'authenticity'.");
-    	if (arguments.purpose != "encryption" && arguments.purpose !="authenticity") raiseException("Purpose must be ""encryption"" or ""authenticity"".");
+    	if (arguments.keySize < 56) throws("Key has size of " & arguments.keySize & ", which is less than minimum of 56-bits.");
+    	if ((arguments.keySize % 8) != 0) throws("Key size (" & arguments.keySize & ") must be a even multiple of 8-bits.");
+    	if (isNull(arguments.purpose)) throws("Purpose cannot be null. Should be 'encryption' or 'authenticity'.");
+    	if (arguments.purpose != "encryption" && arguments.purpose !="authenticity") throws("Purpose must be ""encryption"" or ""authenticity"".");
 
     	var kdf = new KeyDerivationFunction(variables.ESAPI, arguments.prf);
     	if ( arguments.kdfVersion != 0 ) {

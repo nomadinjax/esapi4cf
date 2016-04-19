@@ -50,28 +50,28 @@ component extends="BaseValidationRule" {
 			if (variables.allowNull) {
 				return;
 			}
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Input number required", "Input number required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Input number required", "Input number required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 	    }
 
 	    // canonicalize
 	    var canonical = variables.encoder.canonicalize( arguments.input );
 
 		if (variables.minValue > variables.maxValue) {
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input: context", "Validation parameter error for number: maxValue ( " & variables.maxValue & ") must be greater than minValue ( " & variables.minValue & ") for " & arguments.context, arguments.context ));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input: context", "Validation parameter error for number: maxValue ( " & variables.maxValue & ") must be greater than minValue ( " & variables.minValue & ") for " & arguments.context, arguments.context ));
 		}
 
 		// validate min and max
 		try {
 			var i = createObject("java", "java.lang.Integer").valueOf(canonical);
 			if (i < variables.minValue) {
-				raiseException(new ValidationException( variables.ESAPI, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+				throws(new ValidationException( variables.ESAPI, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 			}
 			if (i > variables.maxValue) {
-				raiseException(new ValidationException( variables.ESAPI, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+				throws(new ValidationException( variables.ESAPI, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context, "Invalid number input must be between " & variables.minValue & " and " & variables.maxValue & ": context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 			}
 			return i;
 		} catch (java.lang.NumberFormatException e) {
-			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e));
+			throws(new ValidationException( variables.ESAPI, arguments.context & ": Invalid number input", "Invalid number input format: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e));
 		}
 	}
 

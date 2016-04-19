@@ -85,7 +85,7 @@ component extends="org.owasp.esapi.util.Object" {
                 // Not using padding so # bytes must be multiple of AES cipher
                 // block size which is 16 bytes. Also, OK not to use UTF-8 here.
             var encrypted = cipher.doFinal(toBinary("1234567890123456"));
-            if (isNull(encrypted)) raiseException("Encryption of test string failed!");
+            if (isNull(encrypted)) throws("Encryption of test string failed!");
             var em = cipher.getExemptionMechanism();
             if (!isNull(em)) {
                 createObject("java", "java.lang.System").out.println("Cipher uses exemption mechanism " & em.getName());

@@ -39,7 +39,7 @@ component extends="org.owasp.esapi.util.Object" {
             var plong = past.getTime();
             var nlong = timestamp.getTime();
             if ( nlong - plong < arguments.interval * 1000 ) {
-                raiseException(new IntrusionException( variables.ESAPI, "Threshold exceeded", "Exceeded threshold for " & variables.key ));
+                throws(new IntrusionException( variables.ESAPI, "Threshold exceeded", "Exceeded threshold for " & variables.key ));
             }
         }
     }

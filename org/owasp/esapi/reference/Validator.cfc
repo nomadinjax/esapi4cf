@@ -138,7 +138,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 				rvr.addWhitelistPattern( p );
 			} else {
 	            // Issue 232 - Specify requested type in exception message - CS
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("The selected type [" & arguments.type & "] was not set via the ESAPI validation configuration"));
+				throws(createObject("java", "java.lang.IllegalArgumentException").init("The selected type [" & arguments.type & "] was not set via the ESAPI validation configuration"));
 			}
 			rvr.setMaximumLength(arguments.maxLength);
 			rvr.setAllowNull(arguments.allowNull);
@@ -271,7 +271,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			try {
 				if (isEmpty(arguments.input)) {
 					if (arguments.allowNull) return;
-	       			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input directory path required", "Input directory path required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+	       			throws(new ValidationException(variables.ESAPI, arguments.context & ": Input directory path required", "Input directory path required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 				}
 
 				// canonicalPath never has trailing slash so remove it from input if it is not root so the paths will match
@@ -283,30 +283,30 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 
 				// check dir exists and parent exists and dir is inside parent
 				if ( !dir.exists() ) {
-					raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, does not exist: context=" & arguments.context & ", input=" & arguments.input ));
+					throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, does not exist: context=" & arguments.context & ", input=" & arguments.input ));
 				}
 				if ( !dir.isDirectory() ) {
-					raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not a directory: context=" & arguments.context & ", input=" & arguments.input ));
+					throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not a directory: context=" & arguments.context & ", input=" & arguments.input ));
 				}
 				if ( !arguments.parent.exists() ) {
-					raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, specified parent does not exist: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
+					throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, specified parent does not exist: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
 				}
 				if ( !arguments.parent.isDirectory() ) {
-					raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, specified parent is not a directory: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
+					throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, specified parent is not a directory: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
 				}
 				if ( !dir.getCanonicalPath().startsWith(arguments.parent.getCanonicalPath() ) ) {
-					raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not inside specified parent: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
+					throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory, not inside specified parent: context=" & arguments.context & ", input=" & arguments.input & ", parent=" & arguments.parent ));
 				}
 
 				// check canonical form matches input
 				var canonicalPath = dir.getCanonicalPath();
 				var canonical = getFileValidator().getValidInput( arguments.context, canonicalPath, "DirectoryName", 255, false);
 				if ( !canonical.equals( arguments.input ) ) {
-					raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & canonical, arguments.context ));
+					throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & canonical, arguments.context ));
 				}
 				return canonical;
 			} catch (any e) {
-				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Failure to validate directory path: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e ));
+				throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid directory name", "Failure to validate directory path: context=" & arguments.context & ", input=" & arguments.input, arguments.context, e ));
 			}
 		}
 	}
@@ -335,7 +335,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 		else {
 			if ((!structKeyExists(arguments, "allowedExtensions") || arrayLen(arguments.allowedExtensions) == 0)) {
-				raiseException(new ValidationException(variables.ESAPI, "Internal Error", "getValidFileName called with an empty or null list of allowed Extensions, therefore no files can be uploaded" ));
+				throws(new ValidationException(variables.ESAPI, "Internal Error", "getValidFileName called with an empty or null list of allowed Extensions, therefore no files can be uploaded" ));
 			}
 
 			var File = createObject("java", "java.io.File");
@@ -344,7 +344,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			try {
 				if (isEmpty(arguments.input)) {
 					if (arguments.allowNull) return;
-		   			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input file name required", "Input required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+		   			throws(new ValidationException(variables.ESAPI, arguments.context & ": Input file name required", "Input required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 				}
 
 				// do basic validation
@@ -357,11 +357,11 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 
 				// the path is valid if the input matches the canonical path
 				if (!arguments.input.equals(cpath)) {
-					raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file name", "Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & canonical, arguments.context ));
+					throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file name", "Invalid directory name does not match the canonical path: context=" & arguments.context & ", input=" & arguments.input & ", canonical=" & canonical, arguments.context ));
 				}
 
 			} catch (java.io.IOException e) {
-				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file name", "Invalid file name does not exist: context=" & arguments.context & ", canonical=" & canonical, arguments.context, e ));
+				throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file name", "Invalid file name does not exist: context=" & arguments.context & ", canonical=" & canonical, arguments.context, e ));
 			}
 
 			// verify extensions
@@ -372,7 +372,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 					return canonical;
 				}
 			}
-			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file name does not have valid extension ("&arrayToList(arguments.allowedExtensions)&")", "Invalid file name does not have valid extension ("&arrayToList(arguments.allowedExtensions)&"): context=" & arguments.context&", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file name does not have valid extension ("&arrayToList(arguments.allowedExtensions)&")", "Invalid file name does not have valid extension ("&arrayToList(arguments.allowedExtensions)&"): context=" & arguments.context&", input=" & arguments.input, arguments.context ));
 		}
 	}
 
@@ -490,12 +490,12 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		else {
 			if (isEmpty(arguments.input)) {
 				if (arguments.allowNull) return toBinary("");
-	   			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input required", "Input required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+	   			throws(new ValidationException(variables.ESAPI, arguments.context & ": Input required", "Input required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 			}
 
 			var esapiMaxBytes = variables.ESAPI.securityConfiguration().getAllowedFileUploadSize();
-			if (arrayLen(arguments.input) > esapiMaxBytes ) raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file content can not exceed " & esapiMaxBytes & " bytes", "Exceeded ESAPI max length", arguments.context ));
-			if (arrayLen(arguments.input) > arguments.maxBytes ) raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file content can not exceed " & arguments.maxBytes & " bytes", "Exceeded maxBytes ( " & arrayLen(arguments.input) & ")", arguments.context ));
+			if (arrayLen(arguments.input) > esapiMaxBytes ) throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file content can not exceed " & esapiMaxBytes & " bytes", "Exceeded ESAPI max length", arguments.context ));
+			if (arrayLen(arguments.input) > arguments.maxBytes ) throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file content can not exceed " & arguments.maxBytes & " bytes", "Exceeded maxBytes ( " & arrayLen(arguments.input) & ")", arguments.context ));
 
 			if (isNull(arguments.input)) return;
 			return arguments.input;
@@ -570,7 +570,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 		else {
 			if (arguments.list.contains(arguments.input)) return arguments.input;
-			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid list item", "Invalid list item: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid list item", "Invalid list item: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 		}
 	}
 
@@ -608,7 +608,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			var missing = duplicate(arguments.requiredNames);
 			missing.removeAll(actualNames);
 			if (missing.size() > 0) {
-				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTTP request missing parameters", "Invalid HTTP request missing parameters " & arrayToList(missing) & ": context=" & arguments.context, arguments.context ));
+				throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTTP request missing parameters", "Invalid HTTP request missing parameters " & arrayToList(missing) & ": context=" & arguments.context, arguments.context ));
 			}
 
 			// verify ONLY optional & required parameters are present
@@ -616,7 +616,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			extra.removeAll(arguments.requiredNames);
 			extra.removeAll(arguments.optionalNames);
 			if (extra.size() > 0) {
-				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTTP request extra parameters " & extra, "Invalid HTTP request extra parameters " & extra & ": context=" & arguments.context, arguments.context ));
+				throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTTP request extra parameters " & extra, "Invalid HTTP request extra parameters " & extra & ": context=" & arguments.context, arguments.context ));
 			}
 		}
 	}
@@ -660,16 +660,16 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 
 			if (isEmpty(canonical)) {
 				if (arguments.allowNull) return;
-	   			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input bytes required", "Input bytes required: HTTP request is null", arguments.context));
+	   			throws(new ValidationException(variables.ESAPI, arguments.context & ": Input bytes required", "Input bytes required: HTTP request is null", arguments.context));
 			}
 
 			if (len(canonical) > arguments.maxLength) {
-				raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input bytes can not exceed " & arguments.maxLength & " bytes", "Input exceeds maximum allowed length of " & arguments.maxLength & " by " & (len(canonical)-arguments.maxLength) & " bytes: context=" & arguments.context & ", input=" & canonical, arguments.context));
+				throws(new ValidationException(variables.ESAPI, arguments.context & ": Input bytes can not exceed " & arguments.maxLength & " bytes", "Input exceeds maximum allowed length of " & arguments.maxLength & " by " & (len(canonical)-arguments.maxLength) & " bytes: context=" & arguments.context & ", input=" & canonical, arguments.context));
 			}
 
 			for (var i = 1; i <= len(canonical); i++) {
 				if (asc(mid(canonical, i, 1)) <= 32 || asc(mid(canonical, i, 1)) >= 126 ) {
-					raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input bytes: context=" & arguments.context, "Invalid non-ASCII input bytes, context=" & arguments.context & ", input=" & canonical, arguments.context));
+					throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid input bytes: context=" & arguments.context, "Invalid non-ASCII input bytes, context=" & arguments.context & ", input=" & canonical, arguments.context));
 				}
 			}
 			return canonical;
@@ -720,7 +720,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
      */
 	public string function safeReadLine(required input, required numeric max) {
 		if (arguments.max <= 0) {
-			raiseException(new ValidationAvailabilityException(variables.ESAPI, "Invalid input", "Invalid readline. Must read a positive number of bytes from the stream"));
+			throws(new ValidationAvailabilityException(variables.ESAPI, "Invalid input", "Invalid readline. Must read a positive number of bytes from the stream"));
 		}
 
 		var sb = createObject("java", "java.lang.StringBuilder").init();
@@ -741,13 +741,13 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 				}
 				count++;
 				if (count > arguments.max) {
-					raiseException(new ValidationAvailabilityException(variables.ESAPI, "Invalid input", "Invalid readLine. Read more than maximum characters allowed (" & arguments.max & ")"));
+					throws(new ValidationAvailabilityException(variables.ESAPI, "Invalid input", "Invalid readLine. Read more than maximum characters allowed (" & arguments.max & ")"));
 				}
 				sb.append(c);
 			}
 			return sb.tostring();
 		} catch (java.io.IOException e) {
-			raiseException(new ValidationAvailabilityException(variables.ESAPI, "Invalid input", "Invalid readLine. Problem reading from input stream", e));
+			throws(new ValidationAvailabilityException(variables.ESAPI, "Invalid input", "Invalid readLine. Problem reading from input stream", e));
 		}
 	}
 

@@ -43,13 +43,13 @@ component extends="StringValidationRule" {
 			// attempt read to ensure file exists
 			fileRead(variables.resourceStream);
 		} catch (expression e) {
-			raiseException(new ConfigurationException("Couldn't find antisamy-esapi.xml", e));
+			throws(new ConfigurationException("Couldn't find antisamy-esapi.xml", e));
 		}
 	    if (isSimpleValue(variables.resourceStream)) {
 	    	try {
 				variables.antiSamyPolicy = createObject("java", "org.owasp.validator.html.Policy").getInstance(variables.resourceStream);
 			} catch (org.owasp.validator.html.PolicyException e) {
-				raiseException(new ConfigurationException("Couldn't parse antisamy policy", e));
+				throws(new ConfigurationException("Couldn't parse antisamy policy", e));
 		    }
 		}
 
@@ -80,7 +80,7 @@ component extends="StringValidationRule" {
 			if (variables.allowNull) {
 				return;
 			}
-			raiseException(new ValidationException(variables.ESAPI, arguments.context & " is required", "AntiSamy validation error: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
+			throws(new ValidationException(variables.ESAPI, arguments.context & " is required", "AntiSamy validation error: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 	    }
 
 		var canonical = super.getValid( arguments.context, arguments.input );
@@ -97,9 +97,9 @@ component extends="StringValidationRule" {
 			return test.getCleanHTML().trim();
 
 		} catch (org.owasp.validator.html.ScanException e) {
-			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input: context=" & arguments.context & " error=" & e.getMessage(), arguments.context, e ));
+			throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input: context=" & arguments.context & " error=" & e.getMessage(), arguments.context, e ));
 		} catch (org.owasp.validator.html.PolicyException e) {
-			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input does not follow rules in antisamy-esapi.xml: context=" & arguments.context & " error=" & e.getMessage(), arguments.context, e ));
+			throws(new ValidationException(variables.ESAPI, arguments.context & ": Invalid HTML input", "Invalid HTML input does not follow rules in antisamy-esapi.xml: context=" & arguments.context & " error=" & e.getMessage(), arguments.context, e ));
 		}
 	}
 }

@@ -385,8 +385,8 @@ component extends="org.owasp.esapi.util.Object" {
 			// TODO: Need to do something like this for custom serialization and then
 	        // document order / format so it can be used by other ESAPI implementations.
 	public void function computeAndStoreMAC(required authKey) {
-	    if (macComputed()) raiseException("Programming error: Can't store message integrity code while encrypting; computeAndStoreMAC() called multiple times.");
-	    if (!collectedAll()) raiseException("Have not collected all required information to compute and store MAC.");
+	    if (macComputed()) throws("Programming error: Can't store message integrity code while encrypting; computeAndStoreMAC() called multiple times.");
+	    if (!collectedAll()) throws("Have not collected all required information to compute and store MAC.");
 	    var result = computeMAC(arguments.authKey);
 	    if (!isNull(result)) {
 	        storeSeparateMAC(result);
@@ -402,7 +402,7 @@ component extends="org.owasp.esapi.util.Object" {
 	    if ( !macComputed() ) {
 	        variables.separate_mac_ = new Utils().newByte(arrayLen(arguments.macValue));
 	        new CryptoHelper(variables.ESAPI).copyByteArray(arguments.macValue, variables.separate_mac_);
-	        if (!macComputed()) raiseException("");
+	        if (!macComputed()) throws("");
 	    }
 	}
 
@@ -435,7 +435,7 @@ component extends="org.owasp.esapi.util.Object" {
 	        // compare to stored value (separate_mac_). If same, then return true,
 	        // else return false.
 	        var mac = computeMAC(arguments.authKey);
-	        if (arrayLen(mac) != arrayLen(variables.separate_mac_)) raiseException("MACs are of differnt lengths. Should both be the same.");
+	        if (arrayLen(mac) != arrayLen(variables.separate_mac_)) throws("MACs are of differnt lengths. Should both be the same.");
 	        return new CryptoHelper(variables.ESAPI).arrayCompare(mac, variables.separate_mac_); // Safe compare!!!
 	    } else if ( ! requiresMAC ) {           // Doesn't require a MAC
 	        return true;
@@ -463,7 +463,7 @@ component extends="org.owasp.esapi.util.Object" {
         // mandatory has been collected.
 	    if ( ! collectedAll() ) {
 	        var msg = "Can't serialize this CipherText object yet as not all mandatory information has been collected";
-	        raiseException(new EncryptionException(variables.ESAPI, "Can't serialize incomplete ciphertext info", msg));
+	        throws(new EncryptionException(variables.ESAPI, "Can't serialize incomplete ciphertext info", msg));
 	    }
 
 	    // If we are supposed to be using a (separate) MAC, also make sure
@@ -475,7 +475,7 @@ component extends="org.owasp.esapi.util.Object" {
 	                     "computed and stored. Call the method " &
 	                     "computeAndStoreMAC(SecretKey) first before " &
 	                     "attempting serialization.";
-	        raiseException(new EncryptionException(variables.ESAPI, "Can't serialize ciphertext info: Data integrity issue.", msg));
+	        throws(new EncryptionException(variables.ESAPI, "Can't serialize ciphertext info: Data integrity issue.", msg));
 	    }
 
 	    // OK, everything ready, so give it a shot.
@@ -492,7 +492,7 @@ component extends="org.owasp.esapi.util.Object" {
     public void function setCiphertext(required binary ciphertext) {
         if ( ! macComputed() ) {
             if ( isNull(arguments.ciphertext) || arrayLen(arguments.ciphertext) == 0 ) {
-                raiseException(new EncryptionException("Encryption faled; no ciphertext", "Ciphertext may not be null or 0 length!"));
+                throws(new EncryptionException("Encryption faled; no ciphertext", "Ciphertext may not be null or 0 length!"));
             }
             if ( isCollected(variables.CipherTextFlags.CIPHERTEXT) ) {
                 variables.logger.warning(variables.Logger.SECURITY_FAILURE, "Raw ciphertext was already set; resetting.");
@@ -504,7 +504,7 @@ component extends="org.owasp.esapi.util.Object" {
         } else {
             var logMsg = "Programming error: Attempt to set ciphertext after MAC already computed.";
             variables.logger.error(variables.Logger.SECURITY_FAILURE, logMsg);
-            raiseException(new EncryptionException("MAC already set; cannot store new raw ciphertext", logMsg));
+            throws(new EncryptionException("MAC already set; cannot store new raw ciphertext", logMsg));
         }
     }
 
@@ -523,15 +523,15 @@ component extends="org.owasp.esapi.util.Object" {
         }
         if ( ! macComputed() ) {
             if (isNull(arguments.ciphertext) || arrayLen(arguments.ciphertext) == 0 ) {
-                raiseException(new EncryptionException("Encryption faled; no ciphertext", "Ciphertext may not be null or 0 length!"));
+                throws(new EncryptionException("Encryption faled; no ciphertext", "Ciphertext may not be null or 0 length!"));
             }
             if ( isNull(arguments.iv) || arrayLen(arguments.iv) == 0 ) {
                 if ( requiresIV() ) {
-                    raiseException(new EncryptionException("Encryption failed -- mandatory IV missing", // DISCUSS - also log? See below.
+                    throws(new EncryptionException("Encryption failed -- mandatory IV missing", // DISCUSS - also log? See below.
                                                   "Cipher mode " & getCipherMode() & " has null or empty IV"));
                 }
             } else if ( arrayLen(arguments.iv) != getBlockSize() ) {
-                    raiseException(new EncryptionException("Encryption failed -- bad parameters passed to encrypt",  // DISCUSS - also log? See below.
+                    throws(new EncryptionException("Encryption failed -- bad parameters passed to encrypt",  // DISCUSS - also log? See below.
                                                   "IV length does not match cipher block size of " & getBlockSize()));
             }
             variables.cipherSpec_.setIV(arguments.iv);
@@ -540,7 +540,7 @@ component extends="org.owasp.esapi.util.Object" {
         } else {
             var logMsg = "MAC already computed from previously set IV and raw ciphertext; may not be reset -- object is immutable.";
             variables.logger.error(variables.Logger.SECURITY_FAILURE, logMsg);  // Discuss: By throwing, this gets logged as warning, but it's really error! Why is an exception only a warning???
-            raiseException(new EncryptionException(variables.ESAPI, "Validation of decryption failed.", logMsg));
+            throws(new EncryptionException(variables.ESAPI, "Validation of decryption failed.", logMsg));
         }
     }
 
@@ -562,7 +562,7 @@ component extends="org.owasp.esapi.util.Object" {
     }
 
     public void function setKDF_PRF(required numeric prfSelection) {
-        if (arguments.prfSelection < 0 && arguments.prfSelection > 15) raiseException("kdfPrf == " & arguments.prfSelection & " must be between 0 and 15.");
+        if (arguments.prfSelection < 0 && arguments.prfSelection > 15) throws("kdfPrf == " & arguments.prfSelection & " must be between 0 and 15.");
     	variables.kdfPrfSelection_ = arguments.prfSelection;
     }
 
@@ -581,7 +581,7 @@ component extends="org.owasp.esapi.util.Object" {
      */ // Package level access. ESAPI jar should be sealed and signed.
     public void function setEncryptionTimestamp(numeric timestamp) {
     	if (structKeyExists(arguments, "timestamp")) {
-	        if (arguments.timestamp <= 0) raiseException("Timestamp must be greater than zero.");
+	        if (arguments.timestamp <= 0) throws("Timestamp must be greater than zero.");
 	        if ( variables.encryption_timestamp_ == 0 ) {     // Only set it if it's not yet been set.
 	            variables.logger.warning(variables.Logger.EVENT_FAILURE, "Attempt to reset non-zero CipherText encryption timestamp to " & new Date(arguments.timestamp) & "!");
 	        }
@@ -716,8 +716,8 @@ component extends="org.owasp.esapi.util.Object" {
      * @return The value for the MAC.
      */
     private binary function computeMAC(required authKey) {
-        if (isNull(variables.raw_ciphertext_) || arrayLen(variables.raw_ciphertext_) == 0) raiseException("Raw ciphertext may not be null or empty.");
-        if (isNull(authKey) || arrayLen(authKey.getEncoded()) == 0) raiseException("Authenticity secret key may not be null or zero length.");
+        if (isNull(variables.raw_ciphertext_) || arrayLen(variables.raw_ciphertext_) == 0) throws("Raw ciphertext may not be null or empty.");
+        if (isNull(authKey) || arrayLen(authKey.getEncoded()) == 0) throws("Authenticity secret key may not be null or zero length.");
         try {
         	// IMPORTANT NOTE: The NSA review was (apparently) OK with using HmacSHA1
         	// to calculate the MAC that ensures authenticity of the IV+ciphertext.
@@ -806,10 +806,10 @@ component extends="org.owasp.esapi.util.Object" {
 		// 		kdf version is bits 1-27, bit 28 (reserved) should be 0, and
 		//		bits 29-32 are the MAC algorithm indicating which PRF to use for the KDF.
 		var kdfVers = this.getKDFVersion();
-		if (!new CryptoHelper(variables.ESAPI).isValidKDFVersion(kdfVers, true, false)) raiseException("");
+		if (!new CryptoHelper(variables.ESAPI).isValidKDFVersion(kdfVers, true, false)) throws("");
 		var kdfInfo = kdfVers;
 		var macAlg = kdfPRFAsInt();
-		if (macAlg < 0 && macAlg > 15) raiseException("MAC algorithm indicator must be between 0 to 15 inclusion; value is: " & macAlg);
+		if (macAlg < 0 && macAlg > 15) throws("MAC algorithm indicator must be between 0 to 15 inclusion; value is: " & macAlg);
 
 	    // Make sure bit28 is cleared. (Reserved for future use.)
 	    kdfInfo = bitAnd(kdfInfo, bitNot(unusedBit28));

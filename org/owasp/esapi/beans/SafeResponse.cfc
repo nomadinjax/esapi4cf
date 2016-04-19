@@ -165,7 +165,7 @@ component implements="org.owasp.esapi.HttpResponse" extends="org.owasp.esapi.uti
         }
 
         // throw an exception if necessary or add original cookie header
-        raiseException(new IntrusionException(variables.ESAPI, "Security error", "Attempt to add unsafe data to cookie (throw mode)"));
+        throws(new IntrusionException(variables.ESAPI, "Security error", "Attempt to add unsafe data to cookie (throw mode)"));
     }
 
     private string function createCookieHeader(required string name, required string value, required numeric maxAge, string domain, string path, boolean secure) {
@@ -385,7 +385,7 @@ component implements="org.owasp.esapi.HttpResponse" extends="org.owasp.esapi.uti
     public void function sendRedirect(required string location) {
         if (!variables.ESAPI.validator().isValidRedirectLocation("Redirect", arguments.location, false)) {
             variables.logger.fatal(variables.Logger.SECURITY_FAILURE, "Bad redirect location: " & arguments.location);
-            raiseException(createObject("java", "java.io.IOException").init("Redirect failed"));
+            throws(createObject("java", "java.io.IOException").init("Redirect failed"));
         }
         getHttpServletResponse().sendRedirect(javaCast("string", arguments.location));
     }

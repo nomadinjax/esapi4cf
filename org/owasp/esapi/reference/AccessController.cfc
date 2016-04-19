@@ -33,7 +33,7 @@ component implements="org.owasp.esapi.AccessController" extends="org.owasp.esapi
 		try {
 			var rule = variables.ruleMap.get(arguments.key);
 			if(isNull(rule)) {
-				raiseException(new AccessControlException("Access Denied", "AccessControlRule was not found for key: " & arguments.key));
+				throws(new AccessControlException("Access Denied", "AccessControlRule was not found for key: " & arguments.key));
 			}
 			if(variables.logger.isDebugEnabled()){
 				variables.logger.debug(Logger.EVENT_SUCCESS, 'Evaluating Authorization Rule "' & arguments.key & '" Using class: ' & rule.getClass().getCanonicalName());
@@ -43,7 +43,7 @@ component implements="org.owasp.esapi.AccessController" extends="org.owasp.esapi
 			try {
 				//Log the exception by throwing and then catching it.
 				//TODO figure out what which string goes where.
-				raiseException(new AccessControlException("Access Denied", "An unhandled Exception was caught, so access is denied.", e));
+				throws(new AccessControlException("Access Denied", "An unhandled Exception was caught, so access is denied.", e));
 			} catch(org.owasp.esapi.errors.AccessControlException ace) {
 				//the exception was just logged. There's nothing left to do.
 			}
@@ -56,7 +56,7 @@ component implements="org.owasp.esapi.AccessController" extends="org.owasp.esapi
 		try {
 			var rule = variables.ruleMap.get(arguments.key);
 			if(isNull(rule)) {
-				raiseException(new AccessControlException("Access Denied", "AccessControlRule was not found for key: " & arguments.key));
+				throws(new AccessControlException("Access Denied", "AccessControlRule was not found for key: " & arguments.key));
 			}
 			if(variables.logger.isDebugEnabled()) {
 				variables.logger.debug(Logger.EVENT_SUCCESS, 'Asserting Authorization Rule "' & arguments.key & '" Using class: ' & rule.getClass().getCanonicalName());
@@ -64,10 +64,10 @@ component implements="org.owasp.esapi.AccessController" extends="org.owasp.esapi
 			isAuthorized = rule.isAuthorized(arguments.runtimeParameter);
 		} catch(Exception e) {
 			//TODO figure out what which string goes where.
-			raiseException(new AccessControlException("Access Denied", "An unhandled Exception was caught, so access is denied.", e));
+			throws(new AccessControlException("Access Denied", "An unhandled Exception was caught, so access is denied.", e));
 		}
 		if(!isAuthorized) {
-			raiseException(new AccessControlException("Access Denied", "Access Denied for key: " & arguments.key & " runtimeParameter: " & arguments.runtimeParameter));
+			throws(new AccessControlException("Access Denied", "Access Denied for key: " & arguments.key & " runtimeParameter: " & arguments.runtimeParameter));
 		}
 	}
 

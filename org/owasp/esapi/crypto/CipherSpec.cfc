@@ -87,10 +87,10 @@ component extends="org.owasp.esapi.util.Object" {
 	 */
 	public CipherSpec function setCipherTransformation(required string cipherXform, boolean fromCipher=false) {
 		if ( !createObject("java", "org.owasp.esapi.StringUtilities").notNullOrEmpty(arguments.cipherXform, true) ) {	// Yes, really want '!' here.
-			raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Cipher transformation may not be null or empty string (after trimming whitespace)."));
+			throws(createObject("java", "java.lang.IllegalArgumentException").init("Cipher transformation may not be null or empty string (after trimming whitespace)."));
 		}
 		var parts = arrayLen(listToArray(arguments.cipherXform, "/"));
-		if (!arguments.fromCipher && parts != 3) raiseException("Malformed cipherXform (" & arguments.cipherXform & "); must have form: ""alg/mode/paddingscheme""");
+		if (!arguments.fromCipher && parts != 3) throws("Malformed cipherXform (" & arguments.cipherXform & "); must have form: ""alg/mode/paddingscheme""");
 		if ( arguments.fromCipher && parts != 3  ) {
 				// Indicates cipherXform was set based on Cipher.getAlgorithm()
 				// and thus may not be a *complete* cipher transformation.
@@ -106,12 +106,12 @@ component extends="org.owasp.esapi.util.Object" {
 				;	// Do nothing - shown only for completeness.
 			} else {
 				// Should never happen unless Cipher implementation is totally screwed up.
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Cipher transformation '" & arguments.cipherXform & "' must have form ""alg/mode/paddingscheme"""));
+				throws(createObject("java", "java.lang.IllegalArgumentException").init("Cipher transformation '" & arguments.cipherXform & "' must have form ""alg/mode/paddingscheme"""));
 			}
 		} else if ( !arguments.fromCipher && parts != 3 ) {
-			raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Malformed cipherXform (" & arguments.cipherXform & "); must have form: ""alg/mode/paddingscheme"""));
+			throws(createObject("java", "java.lang.IllegalArgumentException").init("Malformed cipherXform (" & arguments.cipherXform & "); must have form: ""alg/mode/paddingscheme"""));
 		}
-		if (arrayLen(listToArray(arguments.cipherXform, "/")) != 3) raiseException("Implementation error setCipherTransformation()");
+		if (arrayLen(listToArray(arguments.cipherXform, "/")) != 3) throws("Implementation error setCipherTransformation()");
 		variables.cipher_xform_ = arguments.cipherXform;
 		return this;
 	}
@@ -130,7 +130,7 @@ component extends="org.owasp.esapi.util.Object" {
 	 * @return	This current {@code CipherSpec} object.
 	 */
 	public CipherSpec function setKeySize(required numeric keySize) {
-		if (arguments.keySize <= 0) raiseException("keySize must be > 0; keySize=" & arguments.keySize);
+		if (arguments.keySize <= 0) throws("keySize must be > 0; keySize=" & arguments.keySize);
 		variables.keySize_ = arguments.keySize;
 		return this;
 	}
@@ -149,7 +149,7 @@ component extends="org.owasp.esapi.util.Object" {
 	 * @return	This current {@code CipherSpec} object.
 	 */
 	public CipherSpec function setBlockSize(required numeric blockSize) {
-		if (arguments.blockSize <= 0) raiseException("blockSize must be > 0; blockSize=" & arguments.blockSize);
+		if (arguments.blockSize <= 0) throws("blockSize must be > 0; blockSize=" & arguments.blockSize);
 		variables.blockSize_ = arguments.blockSize;
 		return this;
 	}
@@ -202,7 +202,7 @@ component extends="org.owasp.esapi.util.Object" {
 	 * @return		This current {@code CipherSpec} object.
 	 */
 	public CipherSpec function setIV(required binary iv) {
-		if (requiresIV() && (isNull(arguments.iv) || arrayLen(arguments.iv) == 0)) raiseException("Required IV cannot be null or 0 length");
+		if (requiresIV() && (isNull(arguments.iv) || arrayLen(arguments.iv) == 0)) throws("Required IV cannot be null or 0 length");
 		// Don't store a reference, but make a copy!
 		if (!isNull(arguments.iv) && isBinary(arguments.iv)) {	// Allow null IV for ECB mode.
 			variables.iv_ = new Utils().newByte(arrayLen(arguments.iv));
@@ -315,7 +315,7 @@ component extends="org.owasp.esapi.util.Object" {
 	private string function getFromCipherXform(required numeric comp) {
         var part = arguments.comp;
 		var parts = listToArray(getCipherTransformation(), "/");
-		if (arrayLen(parts) != 3) raiseException("Invalid cipher transformation: " & getCipherTransformation());
+		if (arrayLen(parts) != 3) throws("Invalid cipher transformation: " & getCipherTransformation());
 		return parts[part];
 	}
 }

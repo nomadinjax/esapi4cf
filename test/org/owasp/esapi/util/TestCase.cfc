@@ -10,7 +10,8 @@
  * The ESAPI is published by OWASP under the BSD license. You should read and accept the
  * LICENSE before you use, modify, and/or redistribute this software.
  */
-component extends="mxunit.framework.TestCase" asyncAll=true {
+
+component extends="mxunit.framework.TestCase" skip=true {
 
 	/**
 	 * Executes once before all tests for the entire test bundle CFC
@@ -53,7 +54,7 @@ component extends="mxunit.framework.TestCase" asyncAll=true {
 
 	/* PRIVATE METHODS */
 
-	private void function raiseException(required exception) {
+	private void function throws(required exception) {
 		if (isInstanceOf(arguments.exception, "java.lang.Throwable")) {
 			throw(object=arguments.exception);
 		}

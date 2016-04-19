@@ -44,7 +44,7 @@ component {
 		return;
 	}
 
-	private void function raiseException(required exception) {
+	private void function throws(required exception) {
 		if (isInstanceOf(arguments.exception, "java.lang.Throwable")) {
 			throw(object=arguments.exception);
 		}

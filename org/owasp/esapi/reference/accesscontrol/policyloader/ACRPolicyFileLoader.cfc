@@ -32,9 +32,9 @@ component extends="org.owasp.esapi.util.Object" {
 		catch(ConfigurationException cex)
 		{
 			if(file == null) {
-				raiseException(new AccessControlException(variables.ESAPI, "Unable to load configuration file for the following: " & "ESAPI-AccessControlPolicy.xml", "", cex));
+				throws(new AccessControlException(variables.ESAPI, "Unable to load configuration file for the following: " & "ESAPI-AccessControlPolicy.xml", "", cex));
 			}
-		    raiseException(new AccessControlException(variables.ESAPI, "Unable to load configuration file from the following location: " & file.getAbsolutePath(), "", cex));
+		    throws(new AccessControlException(variables.ESAPI, "Unable to load configuration file from the following location: " & file.getAbsolutePath(), "", cex));
 		}
 
 		var property = config.getProperty("AccessControlRules.AccessControlRule[@name]");
@@ -65,7 +65,7 @@ component extends="org.owasp.esapi.util.Object" {
 			}
 			logger.info(Logger.EVENT_SUCCESS, "policyDTO loaded: " & policyDTO);
 		} catch (Exception e) {
-			raiseException(new AccessControlException(variables.ESAPI, "Unable to load AccessControlRule parameter. " &
+			throws(new AccessControlException(variables.ESAPI, "Unable to load AccessControlRule parameter. " &
 					" Rule number: " & currentRule &
 					" Probably: Rule.name: " & ruleName &
 					" Probably: Rule.class: " & ruleClass &

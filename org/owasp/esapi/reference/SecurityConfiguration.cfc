@@ -126,7 +126,7 @@ component implements="org.owasp.esapi.SecurityConfiguration" extends="org.owasp.
     public binary function getMasterKey() {
     	var key = getPropertyEncoded("Encryptor.MasterKey");
     	if (isNull(key) || arrayLen(key) == 0 ) {
-    		raiseException(new ConfigurationException("Property 'Encryptor.MasterKey' missing or empty in configuration."));
+    		throws(new ConfigurationException("Property 'Encryptor.MasterKey' missing or empty in configuration."));
    		}
     	return key;
     }
@@ -138,7 +138,7 @@ component implements="org.owasp.esapi.SecurityConfiguration" extends="org.owasp.
     public binary function getMasterSalt() {
     	var salt = getPropertyEncoded("Encryptor.MasterSalt");
     	if (isNull(salt) || arrayLen(salt) == 0 ) {
-    		raiseException(new ConfigurationException("Property 'Encryptor.MasterSalt' missing or empty in configuration."));
+    		throws(new ConfigurationException("Property 'Encryptor.MasterSalt' missing or empty in configuration."));
     	}
     	return salt;
     }
@@ -206,7 +206,7 @@ component implements="org.owasp.esapi.SecurityConfiguration" extends="org.owasp.
 
     public string function getCipherTransformation() {
     	if (isNull(variables.cipherXformCurrent)) {
-    		raiseException(createObject("java", "java.lang.RuntimeException").init("Current cipher transformation is null"));
+    		throws(createObject("java", "java.lang.RuntimeException").init("Current cipher transformation is null"));
     	}
     	return variables.cipherXformCurrent;
     }
@@ -244,11 +244,11 @@ component implements="org.owasp.esapi.SecurityConfiguration" extends="org.owasp.
     		// that for a given key, any particular IV is *NEVER* reused. For
     		// now, we will assume that generating a random IV is usually going
     		// to be sufficient to prevent this.
-    		raiseException(new ConfigurationException("'Encryptor.ChooseIVMethod=specified' is not yet implemented. Use 'fixed' or 'random'"));
+    		throws(new ConfigurationException("'Encryptor.ChooseIVMethod=specified' is not yet implemented. Use 'fixed' or 'random'"));
     	} else {
     		// TODO: Once 'specified' is legal, adjust exception msg, below.
     		// DISCUSS: Could just log this and then silently return "random" instead.
-    		raiseException(new ConfigurationException(value & " is illegal value for Encryptor.ChooseIVMethod. Use 'random' (preferred) or 'fixed'."));
+    		throws(new ConfigurationException(value & " is illegal value for Encryptor.ChooseIVMethod. Use 'random' (preferred) or 'fixed'."));
     	}
     }
 
@@ -256,13 +256,13 @@ component implements="org.owasp.esapi.SecurityConfiguration" extends="org.owasp.
     	if ( getIVType().equalsIgnoreCase("fixed") ) {
     		var ivAsHex = getProperty("Encryptor.fixedIV", ""); // No default
     		if ( isNull(ivAsHex) || ivAsHex.trim() == "" ) {
-    			raiseException(new ConfigurationException("Fixed IV requires property Encryptor.fixedIV to be set, but it is not."));
+    			throws(new ConfigurationException("Fixed IV requires property Encryptor.fixedIV to be set, but it is not."));
     		}
     		return ivAsHex;		// We do no further checks here as we have no context.
     	} else {
     		// DISCUSS: Should we just log a warning here and return null instead?
     		//			If so, may cause NullPointException somewhere later.
-    		raiseException(new ConfigurationException("IV type not 'fixed' (set to '" & getIVType() & "'), so no fixed IV applicable."));
+    		throws(new ConfigurationException("IV type not 'fixed' (set to '" & getIVType() & "'), so no fixed IV applicable."));
     	}
     }
 

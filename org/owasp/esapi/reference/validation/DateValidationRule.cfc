@@ -29,7 +29,7 @@ component extends="BaseValidationRule" {
 
     public void function setDateFormat( required newFormat ) {
         if (isNull(arguments.newFormat) || !isObject(arguments.newFormat)) {
-			raiseException(createObject("java", "java.lang.IllegalArgumentException").init("DateValidationRule.setDateFormat requires a non-null DateFormat"));
+			throws(createObject("java", "java.lang.IllegalArgumentException").init("DateValidationRule.setDateFormat requires a non-null DateFormat"));
 		}
     	// CHECKME fail fast?
 /*
@@ -70,7 +70,7 @@ component extends="BaseValidationRule" {
 			if (variables.allowNull) {
 				return;
 			}
-			raiseException(new ValidationException(variables.ESAPI,
+			throws(new ValidationException(variables.ESAPI,
 				arguments.context & ": Input date required",
 				"Input date required: context=" & arguments.context & ", input=" & arguments.input,
 				arguments.context
@@ -84,7 +84,7 @@ component extends="BaseValidationRule" {
 		try {
 			return variables.format.parse(javaCast("string", canonical));
 		} catch (any e) {
-			raiseException(new ValidationException(variables.ESAPI,
+			throws(new ValidationException(variables.ESAPI,
 				arguments.context & ": Invalid date must follow the " & variables.format.toPattern() & " format",
 				"Invalid date: context=" & arguments.context & ", format=" & variables.format.toPattern() & ", input=" & arguments.input,
 				arguments.context,

@@ -87,7 +87,7 @@ component implements="org.owasp.esapi.Encoder" extends="org.owasp.esapi.util.Obj
 			return variables.ESAPIEncoder.canonicalize(javaCast("string", arguments.input), javaCast("boolean", arguments.restrictMultiple), javaCast("boolean", arguments.restrictMixed));
 		}
 		catch (org.owasp.esapi.errors.IntrusionException e) {
-			raiseException(new IntrusionException(variables.ESAPI, e.userMessage, e.logMessage));
+			throws(new IntrusionException(variables.ESAPI, e.userMessage, e.logMessage));
 		}
 	}
 
@@ -384,7 +384,7 @@ component implements="org.owasp.esapi.Encoder" extends="org.owasp.esapi.util.Obj
 	}
 
 	private void function missingJavaEncoder() {
-		raiseException(new EncodingException(variables.ESAPI, "Error encoding data.", "Java Encoder must be loaded."));
+		throws(new EncodingException(variables.ESAPI, "Error encoding data.", "Java Encoder must be loaded."));
 	}
 
 }

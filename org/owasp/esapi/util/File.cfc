@@ -57,7 +57,7 @@ component extends="Object" {
 			variables.File = variables.File.init(arguments.uri);
 		}
 		else {
-			raiseException(createObject("java", "java.io.IOException").init("Invalid File Instantiation.", "You must provide either a path, a parent and child, or a uri."));
+			throws(createObject("java", "java.io.IOException").init("Invalid File Instantiation.", "You must provide either a path, a parent and child, or a uri."));
 		}
 
 		return this;

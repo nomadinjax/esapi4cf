@@ -243,7 +243,7 @@ component implements="org.owasp.esapi.Adapter" extends="org.owasp.esapi.util.Obj
 			}
 			catch(java.io.IOException e) {
 				variables.logger.fatal(variables.Logger.SECURITY_FAILURE, "Problem saving user file " & variables.userDB.getAbsolutePath(), e);
-				raiseException(new AuthenticationException(variables.ESAPI, "Internal Error", "Problem saving user file " & variables.userDB.getAbsolutePath(), e));
+				throws(new AuthenticationException(variables.ESAPI, "Internal Error", "Problem saving user file " & variables.userDB.getAbsolutePath(), e));
 			}
 			if(isObject(printWriter)) {
 				printWriter.close();
