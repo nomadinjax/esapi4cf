@@ -35,6 +35,10 @@
  * the first place.)
  * </p>
  */
+
+/*
+ * @skip
+ */
 component extends="org.owasp.esapi.util.Object" {
 	pageEncoding "utf-8";
 
