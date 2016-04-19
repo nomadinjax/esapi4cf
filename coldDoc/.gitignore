@@ -1,6 +1,0 @@
-#ignore these files
-.*
-!.gitignore
-settings.xml
-*.iml
-docs/*
