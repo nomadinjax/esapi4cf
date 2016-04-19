@@ -12,14 +12,6 @@
  */
 component {
 
-	public boolean function isEquals(required object, required another) {
-		var System = createObject("java", "java.lang.System");
-		var objHash1 = System.identityHashCode(arguments.object);
-		var objHash2 = System.identityHashCode(arguments.another);
-		if (objHash1 == objHash2) return true;
-		return false;
-	}
-
 	public string function toUnicode(required string input) {
 		var sb = createObject("java", "java.lang.StringBuffer").init();
 		var l = len(arguments.input);

@@ -12,10 +12,36 @@
  */
 import "org.owasp.esapi.util.Utils";
 
+/**
+ * @doc_abstract true
+ */
 component {
 
-	public boolean function isEquals(required another) {
-		return new Utils().isEquals(this, arguments.another);
+	// private init with void return ensures this is treated as Abstract class
+	private void function init() {
+		return;
+	}
+
+	/**
+	 * Compares the hashCode of the instances to determine if they are the identical instance in memory.
+	 */
+	public boolean function isEquals(required obj) {
+		if (this.hashCode() == arguments.obj.hashCode()) return true;
+		return false;
+	}
+
+	/**
+	 * Returns a Java hash code for this instance in memory.
+	 */
+	public function hashCode() {
+		return createObject("java", "java.lang.System").identityHashCode(this);
+	}
+
+	/**
+	 * Easy way to assign a null value.
+	 */
+	private function null() {
+		return;
 	}
 
 	private void function raiseException(required exception) {

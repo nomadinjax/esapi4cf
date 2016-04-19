@@ -176,23 +176,22 @@ component implements="org.owasp.esapi.Logger" extends="org.owasp.esapi.util.Obje
 	}
 
 	private string function convertJTypetoCFType(required type) {
-		var utils = new Utils();
-		if (utils.isEquals(arguments.type, this.SECURITY_SUCCESS)) {
+		if (arguments.type.equals(this.SECURITY_SUCCESS)) {
 			return "INFORMATION";
 		}
-		else if (utils.isEquals(arguments.type, this.SECURITY_FAILURE)) {
+		else if (arguments.type.equals(this.SECURITY_FAILURE)) {
 			return "WARNING";
 		}
-		else if (utils.isEquals(arguments.type, this.SECURITY_AUDIT)) {
+		else if (arguments.type.equals(this.SECURITY_AUDIT)) {
 			return "INFORMATION";
 		}
-		else if (utils.isEquals(arguments.type, this.EVENT_SUCCESS)) {
+		else if (arguments.type.equals(this.EVENT_SUCCESS)) {
 			return "INFORMATION";
 		}
-		else if (utils.isEquals(arguments.type, this.EVENT_FAILURE)) {
+		else if (arguments.type.equals(this.EVENT_FAILURE)) {
 			return "WARNING";
 		}
-		else if (utils.isEquals(arguments.type, this.EVENT_UNSPECIFIED)) {
+		else if (arguments.type.equals(this.EVENT_UNSPECIFIED)) {
 			return "INFORMATION";
 		}
 	}
