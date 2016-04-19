@@ -61,7 +61,7 @@ component extends="BaseValidationRule" {
 		// CHECKME should this allow empty Strings? "   " us IsBlank instead?
 	    if (isNull(arguments.input) || StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
 			if (variables.allowNull) {
-				return "";
+				return;
 			}
 			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Input credit card required", "Input credit card required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 	    }

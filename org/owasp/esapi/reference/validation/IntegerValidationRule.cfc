@@ -48,7 +48,7 @@ component extends="BaseValidationRule" {
 
 	    if (isNull(arguments.input) || StringUtilities.isEmpty(javaCast("string", arguments.input)) ) {
 			if (variables.allowNull) {
-				return "";
+				return;
 			}
 			raiseException(new ValidationException( variables.ESAPI, arguments.context & ": Input number required", "Input number required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 	    }

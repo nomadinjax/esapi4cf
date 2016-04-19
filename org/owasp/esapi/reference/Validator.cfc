@@ -128,7 +128,8 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
-			return "";
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			var rvr = new StringValidationRule( variables.ESAPI, arguments.type, variables.encoder );
@@ -165,8 +166,9 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
-			// error has been added to list, so return null
-			return "";
+			// error has been added to list, so return input
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			var dvr = new DateValidationRule( variables.ESAPI, "SimpleDate", variables.encoder, arguments.format);
@@ -197,7 +199,8 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
-			return "";
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			var hvr = new HTMLValidationRule( variables.ESAPI, "safehtml", variables.encoder );
@@ -227,7 +230,8 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
-			return "";
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			var ccvr = new CreditCardValidationRule( variables.ESAPI, "creditcard", variables.encoder );
@@ -260,12 +264,13 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
-			return "";
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			try {
 				if (isEmpty(arguments.input)) {
-					if (arguments.allowNull) return "";
+					if (arguments.allowNull) return;
 	       			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input directory path required", "Input directory path required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 				}
 
@@ -325,7 +330,8 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
-			return "";
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			if ((!structKeyExists(arguments, "allowedExtensions") || arrayLen(arguments.allowedExtensions) == 0)) {
@@ -337,7 +343,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			// detect path manipulation
 			try {
 				if (isEmpty(arguments.input)) {
-					if (arguments.allowNull) return "";
+					if (arguments.allowNull) return;
 		   			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input file name required", "Input required: context=" & arguments.context & ", input=" & arguments.input, arguments.context ));
 				}
 
@@ -389,7 +395,8 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
-			return "";
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			var Double = createObject("java", "java.lang.Double");
@@ -418,8 +425,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
-			var Double = createObject("java", "java.lang.Double");
-			return Double.init(Double.NaN);
+			return arguments.input;
 		}
 		else {
 			var nvr = new NumberValidationRule( variables.ESAPI, "number", variables.encoder, arguments.minValue, arguments.maxValue );
@@ -448,7 +454,8 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 				arguments.errors[arguments.context] = e;
 			}
 			// error has been added to list, so return original input
-			return "";
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			var ivr = new IntegerValidationRule( variables.ESAPI, "number", variables.encoder, arguments.minValue, arguments.maxValue );
@@ -477,7 +484,8 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 				arguments.errors[arguments.context] = e;
 			}
 			// return empty byte array on error
-			return charsetDecode("", "utf-8");
+			if (isNull(arguments.input)) return;
+			return arguments.input;
 		}
 		else {
 			if (isEmpty(arguments.input)) {
@@ -489,6 +497,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 			if (arrayLen(arguments.input) > esapiMaxBytes ) raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file content can not exceed " & esapiMaxBytes & " bytes", "Exceeded ESAPI max length", arguments.context ));
 			if (arrayLen(arguments.input) > arguments.maxBytes ) raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Invalid file content can not exceed " & arguments.maxBytes & " bytes", "Exceeded maxBytes ( " & arrayLen(arguments.input) & ")", arguments.context ));
 
+			if (isNull(arguments.input)) return;
 			return arguments.input;
 		}
 	}
@@ -556,6 +565,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 				arguments.errors[arguments.context] = e;
 			}
 			// error has been added to list, so return original input
+			if (isNull(arguments.input)) return;
 			return arguments.input;
 		}
 		else {
@@ -642,13 +652,14 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 				arguments.errors[arguments.context] = e;
 			}
 			// error has been added to list, so return original input
+			if (isNull(arguments.input)) return;
 			return arguments.input;
 		}
 		else {
 			var canonical = variables.encoder.canonicalize(arguments.input);
 
 			if (isEmpty(canonical)) {
-				if (arguments.allowNull) return "";
+				if (arguments.allowNull) return;
 	   			raiseException(new ValidationException(variables.ESAPI, arguments.context & ": Input bytes required", "Input bytes required: HTTP request is null", arguments.context));
 			}
 
@@ -692,6 +703,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 				arguments.errors[arguments.context] = e;
 			}
 			// error has been added to list, so return original input
+			if (isNull(arguments.input)) return;
 			return arguments.input;
 		}
 		else {

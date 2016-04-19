@@ -48,7 +48,7 @@ component extends="BaseValidationRule" {
 				variables.whitelistPatterns.add(createObject("java", "java.util.regex.Pattern").compile(arguments.pattern));
 			}
 			catch (java.util.regex.PatternSyntaxException e) {
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Validation misconfiguration, problem with specified pattern: " & arguments.pattern));
+				raiseException(createObject("java", "java.lang.IllegalArgumentException").init("Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e));
 			}
 		}
 		else {
@@ -65,7 +65,7 @@ component extends="BaseValidationRule" {
 				variables.blacklistPatterns.add( createObject("java", "java.util.regex.Pattern").compile( arguments.pattern ) );
 			}
 			catch( java.util.regex.PatternSyntaxException e ) {
-				raiseException(createObject("java", "java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern));
+				raiseException(createObject("java", "java.lang.IllegalArgumentException").init( "Validation misconfiguration, problem with specified pattern: " & arguments.pattern, e ));
 			}
 		}
 		else {
@@ -163,7 +163,7 @@ component extends="BaseValidationRule" {
 	 * @return input upon a successful check
 	 * @throws ValidationException if the check fails.
 	 */
-	private string function checkEmpty(required string context, required input, string orig=arguments.input) {
+	private string function checkEmpty(required string context, required input, orig=arguments.input) {
 		var StringUtilities = createObject("java", "org.owasp.esapi.StringUtilities");
 		if(!StringUtilities.isEmpty(javaCast("string", arguments.input))) {
 			return arguments.input;
@@ -185,7 +185,7 @@ component extends="BaseValidationRule" {
 
 		// check for empty/null
 		if(isNull(checkEmpty(arguments.context, arguments.input))) {
-			return "";
+			return;
 		}
 
 		if (variables.validateInputAndCanonical) {
@@ -210,7 +210,7 @@ component extends="BaseValidationRule" {
 
 		// check for empty/null
 		if(isNull(checkEmpty(arguments.context, data, arguments.input))) {
-			return "";
+			return;
 		}
 
 		// check length
