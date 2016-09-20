@@ -121,7 +121,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 	 * @return The user input, may be canonicalized if canonicalize argument is true
 	 * @throws IntrusionException
 	 */
-	public string function getValidInput(required string context, required input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize=true, struct errors) {
+	public function getValidInput(required string context, required input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize=true, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidInput(arguments.context, arguments.input, arguments.type, arguments.maxLength, arguments.allowNull, arguments.canonicalize);
@@ -147,9 +147,9 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public boolean function isValidDate(required string context, required input, required format, required date minValue, required date maxValue, required boolean allowNull, struct errors) {
+	public boolean function isValidDate(required string context, required input, required format, required boolean allowNull, struct errors) {
 		try {
-			getValidDate( arguments.context, arguments.input, arguments.format, arguments.minValue, arguments.maxValue, arguments.allowNull);
+			getValidDate( arguments.context, arguments.input, arguments.format, arguments.allowNull);
 			return true;
 		} catch(org.owasp.esapi.errors.ValidationException e ) {
 			if (structKeyExists(arguments, "errors")) {
@@ -159,10 +159,10 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 		}
 	}
 
-	public function getValidDate(required string context, required input, required format, required date minValue, required date maxValue, required boolean allowNull, struct errors) {
+	public function getValidDate(required string context, required input, required format, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
-				return getValidDate(arguments.context, arguments.input, arguments.format, arguments.minValue, arguments.maxValue, arguments.allowNull);
+				return getValidDate(arguments.context, arguments.input, arguments.format, arguments.allowNull);
 			} catch (org.owasp.esapi.errors.ValidationException e) {
 				arguments.errors[arguments.context] = e;
 			}
@@ -192,7 +192,7 @@ component implements="org.owasp.esapi.Validator" extends="org.owasp.esapi.util.O
 	/**
 	 * This implementation relies on the OWASP AntiSamy project.
 	 */
-	public string function getValidSafeHTML(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors) {
+	public function getValidSafeHTML(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors) {
 		if (structKeyExists(arguments, "errors")) {
 			try {
 				return getValidSafeHTML(arguments.context, arguments.input, arguments.maxLength, arguments.allowNull);

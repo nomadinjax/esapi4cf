@@ -57,12 +57,12 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public string function getValidInput(required string context, required input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize, struct errors);
+	public function getValidInput(required string context, required input, required string type, required numeric maxLength, required boolean allowNull, boolean canonicalize, struct errors);
 
 	/**
 	 * Calls isValidDate and returns true if no exceptions are thrown.
 	 */
-	public boolean function isValidDate(required string context, required input, required format, required date minValue, required date maxValue, required boolean allowNull, struct errors);
+	public boolean function isValidDate(required string context, required input, required format, required boolean allowNull, struct errors);
 
 	/**
 	 * Returns a valid date as a Date. Invalid input will generate a descriptive ValidationException, and input that is clearly an attack
@@ -82,7 +82,7 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public function getValidDate(required string context, required input, required format, required date minValue, required date maxValue, required boolean allowNull, struct errors);
+	public function getValidDate(required string context, required input, required format, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidSafeHTML and returns true if no exceptions are thrown.
@@ -108,7 +108,7 @@ interface {
 	 * @throws ValidationException
 	 * @throws IntrusionException
 	 */
-	public string function getValidSafeHTML(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors);
+	public function getValidSafeHTML(required string context, required input, required numeric maxLength, required boolean allowNull, struct errors);
 
 	/**
 	 * Calls getValidCreditCard and returns true if no exceptions are thrown.
@@ -435,4 +435,3 @@ interface {
 	public string function safeReadLine(required input, required numeric max);
 
 }
-
