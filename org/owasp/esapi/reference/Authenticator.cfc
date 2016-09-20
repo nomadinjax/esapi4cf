@@ -149,7 +149,7 @@ component implements="org.owasp.esapi.Authenticator" extends="org.owasp.esapi.ut
      */
     private org.owasp.esapi.User function loginWithUsernameAndPassword(httpRequest=variables.ESAPI.httpUtilities().getCurrentRequest(), httpResponse=variables.ESAPI.httpUtilities().getCurrentResponse()) {
         var httpUsername = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getUsernameParameterName());
-        var httpPassword = arguments.httpRequest.getParameter(variables.ESAPI.securityConfiguration().getPasswordParameterName());
+        var httpPassword = arguments.httpRequest.getParameter(name=variables.ESAPI.securityConfiguration().getPasswordParameterName(), canonicalize=false);
 
         // if a logged-in user is requesting to login, log them out first
         var user = getCurrentUser();

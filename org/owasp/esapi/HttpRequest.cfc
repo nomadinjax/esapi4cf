@@ -98,7 +98,7 @@ interface {
 
   public function getLocalPort();
 
-  public string function getParameter(required string name, boolean allowNull, numeric maxLength, string regexName);
+  public string function getParameter(required string name, boolean allowNull, numeric maxLength, string regexName, boolean canonicalize);
 
   public struct function getParameterMap();
 

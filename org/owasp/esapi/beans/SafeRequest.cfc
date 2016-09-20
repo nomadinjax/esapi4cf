@@ -317,7 +317,7 @@ component implements="org.owasp.esapi.HttpRequest" extends="org.owasp.esapi.util
      * @param regexName The name of the regex mapped from variables.ESAPI.properties
      * @return The "scrubbed" parameter value.
      */
-    public string function getParameter(required string name, boolean allowNull=true, numeric maxLength=2000, string regexName="HTTPParameterValue") {
+    public string function getParameter(required string name, boolean allowNull=true, numeric maxLength=2000, string regexName="HTTPParameterValue", boolean canonicalize=true) {
         var orig = getHttpServletRequest().getParameter(arguments.name);
 
         // *** begin workarounds ***
@@ -345,7 +345,7 @@ component implements="org.owasp.esapi.HttpRequest" extends="org.owasp.esapi.util
         if (isNull(orig)) return "";
         var clean = "";
         try {
-            clean = variables.ESAPI.validator().getValidInput("HTTP parameter name: " & arguments.name, orig, arguments.regexName, arguments.maxLength, arguments.allowNull);
+            clean = variables.ESAPI.validator().getValidInput("HTTP parameter name: " & arguments.name, orig, arguments.regexName, arguments.maxLength, arguments.allowNull, arguments.canonicalize);
         }
         catch (org.owasp.esapi.errors.ValidationException ex) {
             // already logged
