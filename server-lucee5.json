@@ -1,0 +1,8 @@
+{
+    "app":{
+        "cfengine":"lucee@5",
+        // can we set this without a full path?
+        "libDirs":"C:\\Users\\damon_v\\OneDrive\\Documents\\projects\\esapi4cf"
+    },
+    "name":"lucee5"
+}
