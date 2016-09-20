@@ -47,6 +47,12 @@ component extends="BaseValidationRule" {
 		if (structKeyExists(arguments, "errorList")) {
 			return super.getValid(arguments.context, arguments.input, arguments.errorList);
 		}
+
+		// checks on input itself
+		if (!isSimpleValue(arguments.input)) {
+			throws(new ValidationException( variables.ESAPI, "Invalid date input: context=" & arguments.context, "Invalid input must be a date value: context=" & arguments.context & ", input=" & serializeJSON(arguments.input), arguments.context ));
+		}
+
 		return safelyParse(arguments.context, arguments.input);
 	}
 

@@ -182,6 +182,9 @@ component extends="BaseValidationRule" {
 		var data = "";
 
 		// checks on input itself
+		if (!isSimpleValue(arguments.input)) {
+			throws(new ValidationException( variables.ESAPI, "Invalid string input: context=" & arguments.context, "Invalid input must be a string value: context=" & arguments.context & ", input=" & serializeJSON(arguments.input), arguments.context ));
+		}
 
 		// check for empty/null
 		if(isNull(checkEmpty(arguments.context, arguments.input))) {
@@ -232,4 +235,3 @@ component extends="BaseValidationRule" {
 	}
 
 }
-

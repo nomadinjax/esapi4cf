@@ -60,6 +60,12 @@ component extends="StringValidationRule" {
 		if (structKeyExists(arguments, "errorList")) {
 			return super.getValid(arguments.context, arguments.input, arguments.errorList);
 		}
+
+		// checks on input itself
+		if (!isSimpleValue(arguments.input)) {
+			throws(new ValidationException( variables.ESAPI, "Invalid HTML input: context=" & arguments.context, "Invalid input must be an HTML value: context=" & arguments.context & ", input=" & serializeJSON(arguments.input), arguments.context ));
+		}
+
 		return invokeAntiSamy( arguments.context, arguments.input );
 	}
 
@@ -103,4 +109,3 @@ component extends="StringValidationRule" {
 		}
 	}
 }
-
